@@ -1,0 +1,286 @@
+'use client';
+
+import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
+import { Message as MessageType, MessageSegment, Quote } from '@/lib/types';
+import Message from './Message';
+import StreamingMessage from './StreamingMessage';
+import MessageInput from './MessageInput';
+import WelcomeScreen from './WelcomeScreen';
+import { useAnimationQueue } from '@/hooks/useAnimationQueue';
+
+export interface ChatInterfaceRef {
+  reset: () => void;
+}
+
+interface SSEEvent {
+  type: string;
+  data: Record<string, unknown>;
+}
+
+// Parse SSE buffer into events
+function parseSSE(buffer: string): { events: SSEEvent[]; remaining: string } {
+  const events: SSEEvent[] = [];
+  const parts = buffer.split('\n\n');
+
+  // Last part might be incomplete
+  const remaining = buffer.endsWith('\n\n') ? '' : parts.pop() || '';
+
+  for (const part of parts) {
+    if (!part.trim()) continue;
+    const lines = part.split('\n');
+    let type = '';
+    let data = '';
+    for (const line of lines) {
+      if (line.startsWith('event: ')) type = line.slice(7);
+      if (line.startsWith('data: ')) data = line.slice(6);
+    }
+    if (type && data) {
+      try {
+        events.push({ type, data: JSON.parse(data) });
+      } catch {
+        // Skip malformed JSON
+      }
+    }
+  }
+
+  return { events, remaining };
+}
+
+const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref) {
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamDone, setStreamDone] = useState(false);
+  const [streamingQuotes, setStreamingQuotes] = useState<Quote[]>([]);
+
+  // Animation queue for streaming messages
+  const {
+    allChunks,
+    completedChunks,
+    currentChunk,
+    isFullyComplete,
+    isAnimating,
+    queueLength,
+    onChunkComplete,
+    addChunk,
+    reset: resetQueue,
+  } = useAnimationQueue();
+
+  // Scroll refs
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollAnchorRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom - only called when user sends a message
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    scrollAnchorRef.current?.scrollIntoView({ behavior, block: 'end' });
+  }, []);
+
+  const handleSend = async (content: string) => {
+    // Add user message
+    const userMessage: MessageType = {
+      id: Date.now().toString(),
+      role: 'user',
+      content,
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setIsStreaming(true);
+    setStreamDone(false);
+    setStreamingQuotes([]);
+    resetQueue();
+
+    // Scroll to bottom when user sends message (moves their message to top)
+    setTimeout(() => scrollToBottom('smooth'), 50);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: content,
+          history: messages.map((m) => ({ role: m.role, content: m.content })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get response');
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No reader available');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let quotes: Quote[] = [];
+      let chunkIdCounter = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const { events, remaining } = parseSSE(buffer);
+        buffer = remaining;
+
+        for (const event of events) {
+          if (event.type === 'meta') {
+            quotes = event.data.quotes as Quote[];
+            setStreamingQuotes(quotes);
+          } else if (event.type === 'chunk') {
+            const chunkData = event.data as { type: 'text' | 'quote'; content?: string; index?: number };
+            chunkIdCounter++;
+
+            if (chunkData.type === 'text' && chunkData.content) {
+              addChunk({
+                id: `chunk-${chunkIdCounter}`,
+                type: 'text',
+                content: chunkData.content,
+              });
+            } else if (chunkData.type === 'quote' && chunkData.index !== undefined) {
+              const quoteIndex = chunkData.index - 1; // Convert to 0-indexed
+              if (quoteIndex >= 0 && quoteIndex < quotes.length) {
+                addChunk({
+                  id: `chunk-${chunkIdCounter}`,
+                  type: 'quote',
+                  quote: quotes[quoteIndex],
+                });
+              }
+            }
+          } else if (event.type === 'done') {
+            // Mark stream as done - message will be finalized when animation completes
+            setStreamDone(true);
+          } else if (event.type === 'error') {
+            throw new Error(event.data.message as string);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Chat error:', error);
+      const errorMessage: MessageType = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: 'I apologize, but I encountered an error. Please try again.',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+      resetQueue();
+      setStreamingQuotes([]);
+      setIsStreaming(false);
+    }
+  };
+
+  // Finalize message when stream is done AND all animations are complete
+  useEffect(() => {
+    if (streamDone && isFullyComplete) {
+      // Convert chunks to segments for the final message
+      const segments: MessageSegment[] = allChunks.map((chunk) => {
+        if (chunk.type === 'text') {
+          return { type: 'text' as const, content: chunk.content };
+        } else {
+          return { type: 'quote' as const, quote: chunk.quote };
+        }
+      });
+
+      const assistantMessage: MessageType = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: segments
+          .filter((s) => s.type === 'text')
+          .map((s) => (s as { type: 'text'; content: string }).content)
+          .join(''),
+        segments,
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+      resetQueue();
+      setStreamingQuotes([]);
+      setStreamDone(false);
+      setIsStreaming(false);
+    }
+  }, [streamDone, isFullyComplete, allChunks, resetQueue]);
+
+  const handleReset = useCallback(() => {
+    setMessages([]);
+    resetQueue();
+    setStreamingQuotes([]);
+    setStreamDone(false);
+    setIsStreaming(false);
+  }, [resetQueue]);
+
+  // Expose reset function to parent via ref
+  useImperativeHandle(ref, () => ({
+    reset: handleReset,
+  }), [handleReset]);
+
+  const hasConversation = messages.length > 0 || allChunks.length > 0;
+  const hasStreamingContent = completedChunks.length > 0 || currentChunk !== null;
+  // Show loading dots when: streaming with no content yet, OR waiting for more chunks
+  const showLoadingDots = isStreaming && (
+    !hasStreamingContent ||
+    (!isAnimating && queueLength === 0 && !streamDone)
+  );
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Messages Area */}
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto chat-scroll px-4 py-6"
+      >
+        {!hasConversation ? (
+          <WelcomeScreen onSelectStarter={handleSend} />
+        ) : (
+          <div className="max-w-3xl mx-auto min-h-full flex flex-col">
+            {/* Messages container */}
+            <div>
+              {messages.map((message) => (
+                <Message key={message.id} message={message} />
+              ))}
+              {hasStreamingContent && (
+                <StreamingMessage
+                  completedChunks={completedChunks}
+                  currentChunk={currentChunk}
+                  onChunkComplete={onChunkComplete}
+                />
+              )}
+              {showLoadingDots && (
+                <div className="mb-6 flex gap-1">
+                  <span
+                    className="w-2 h-2 bg-[var(--acim-gold)] rounded-full animate-bounce"
+                    style={{ animationDelay: '0ms' }}
+                  ></span>
+                  <span
+                    className="w-2 h-2 bg-[var(--acim-gold)] rounded-full animate-bounce"
+                    style={{ animationDelay: '150ms' }}
+                  ></span>
+                  <span
+                    className="w-2 h-2 bg-[var(--acim-gold)] rounded-full animate-bounce"
+                    style={{ animationDelay: '300ms' }}
+                  ></span>
+                </div>
+              )}
+            </div>
+            {/* Flexible spacer - fills remaining space so messages stay near top */}
+            <div className="flex-grow min-h-[200px]" />
+            {/* Scroll anchor */}
+            <div ref={scrollAnchorRef} className="h-1" />
+          </div>
+        )}
+      </div>
+
+      {/* Input Area */}
+      <div className="border-t border-gray-200 bg-[var(--acim-bg-light)]">
+        <div className="max-w-3xl mx-auto px-4 py-4">
+          <MessageInput
+            onSend={handleSend}
+            disabled={isStreaming}
+            placeholder="Ask about A Course in Miracles..."
+          />
+        </div>
+      </div>
+    </div>
+  );
+});
+
+export default ChatInterface;

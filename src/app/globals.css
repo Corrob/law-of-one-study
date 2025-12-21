@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  /* ACIM Color Palette */
+  --acim-navy: #1E3A5F;
+  --acim-navy-dark: #152a45;
+  --acim-gold: #D4A84B;
+  --acim-gold-light: #e8c97a;
+  --acim-bg: #E8EDF2;
+  --acim-bg-light: #f5f7fa;
+  --acim-text: #2d3748;
+  --acim-text-light: #4a5568;
+
+  --background: var(--acim-bg);
+  --foreground: var(--acim-text);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-acim-navy: var(--acim-navy);
+  --color-acim-navy-dark: var(--acim-navy-dark);
+  --color-acim-gold: var(--acim-gold);
+  --color-acim-gold-light: var(--acim-gold-light);
+  --color-acim-bg: var(--acim-bg);
+  --color-acim-bg-light: var(--acim-bg-light);
+  --color-acim-text: var(--acim-text);
+  --color-acim-text-light: var(--acim-text-light);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar for chat */
+.chat-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+  background: var(--acim-bg-light);
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: var(--acim-navy);
+  border-radius: 3px;
+  opacity: 0.5;
+}
+
+/* Quote styling */
+.acim-quote {
+  border-left: 3px solid var(--acim-gold);
+  padding-left: 1rem;
+  font-style: italic;
+  color: var(--acim-text);
+}
+
+/* Starburst icon animation */
+@keyframes gentle-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.starburst {
+  animation: gentle-glow 3s ease-in-out infinite;
+}
+
+/* Fade-in animation for streaming elements */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
