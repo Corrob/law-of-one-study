@@ -61,7 +61,7 @@ Building on the ACIM Helper project: `/Users/cory/Documents/fip/ai-experiment/ac
 
 **Infrastructure:**
 - [ ] Pool tracking (Firestore)
-- [ ] Deploy to Vercel
+- [x] Deploy to Vercel
 
 ### Phase 2: Community Donations
 

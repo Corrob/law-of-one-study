@@ -22,14 +22,14 @@ export default function WelcomeScreen({ onSelectStarter }: WelcomeScreenProps) {
       {/* Welcome Quote */}
       {quote && (
         <div className="max-w-xl text-center mb-10">
-          <p className="font-[family-name:var(--font-playfair)] italic text-xl md:text-2xl text-[var(--acim-navy)] leading-relaxed mb-4">
+          <p className="font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-4">
             "{quote.text}"
           </p>
           <a
             href={quote.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--acim-text-light)] hover:text-[var(--acim-gold)] text-sm"
+            className="text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] text-sm transition-colors"
           >
             — {quote.reference}
           </a>
@@ -38,7 +38,7 @@ export default function WelcomeScreen({ onSelectStarter }: WelcomeScreenProps) {
 
       {/* Conversation Starters */}
       <div className="w-full max-w-2xl">
-        <p className="text-[var(--acim-text-light)] text-sm mb-4 text-center">
+        <p className="text-[var(--lo1-stardust)] text-sm mb-4 text-center">
           Try asking:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -46,9 +46,10 @@ export default function WelcomeScreen({ onSelectStarter }: WelcomeScreenProps) {
             <button
               key={index}
               onClick={() => onSelectStarter(starter)}
-              className="p-4 rounded-xl bg-white border border-gray-200
-                       hover:border-[var(--acim-gold)] hover:shadow-md
-                       text-[var(--acim-text)] text-sm text-left
+              className="p-4 rounded-xl bg-[var(--lo1-indigo)]/50 backdrop-blur-sm
+                       border border-[var(--lo1-celestial)]/30
+                       hover:border-[var(--lo1-gold)]/60 hover:bg-[var(--lo1-indigo)]/70
+                       text-[var(--lo1-text-light)] text-sm text-left
                        transition-all duration-200 cursor-pointer"
             >
               {starter}

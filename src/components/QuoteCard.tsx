@@ -44,42 +44,41 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
   const shortRef = getShortReference(quote.reference);
 
   return (
-    <div className="ra-quote my-4 rounded-lg bg-[var(--acim-bg)] border-l-4 border-[var(--acim-gold)] p-4">
+    <div className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg">
+      {/* Header with reference number */}
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
+          Questioner
+        </span>
+        <a
+          href={quote.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
+        >
+          {shortRef}
+        </a>
+      </div>
+
       {segments.map((segment, index) => (
-        <div key={index} className={segment.type !== 'text' && index > 0 ? 'mt-3' : ''}>
-          {segment.type === 'questioner' && (
-            <div className="mb-1">
-              <span className="text-xs font-semibold text-[var(--acim-text-light)] uppercase tracking-wide">
-                Questioner
-              </span>
-            </div>
-          )}
+        <div key={index} className={segment.type === 'ra' ? 'mt-3' : ''}>
+          {/* Only show Ra label, Questioner is in header */}
           {segment.type === 'ra' && (
             <div className="mb-1">
-              <span className="text-xs font-semibold text-[var(--acim-gold)] uppercase tracking-wide">
+              <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide">
                 Ra
               </span>
             </div>
           )}
-          <div className={`leading-relaxed whitespace-pre-line ${
+          <div className={`whitespace-pre-line leading-relaxed ${
             segment.type === 'ra'
-              ? 'text-[var(--acim-text)] font-[family-name:var(--font-playfair)] italic'
-              : 'text-[var(--acim-text-light)]'
+              ? 'text-[var(--lo1-starlight)]'
+              : 'text-[var(--lo1-text-light)]'
           }`}>
             {segment.content}
           </div>
         </div>
       ))}
-      <div className="mt-3 text-right">
-        <a
-          href={quote.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-[var(--acim-gold)] hover:text-[var(--acim-gold-light)] hover:underline"
-        >
-          {shortRef}
-        </a>
-      </div>
     </div>
   );
 }

@@ -32,20 +32,21 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={placeholder || "Ask about A Course in Miracles..."}
+        placeholder={placeholder || "Ask about the Ra Material..."}
         disabled={disabled}
         rows={1}
-        className="flex-1 resize-none rounded-xl border border-gray-300 px-4 py-3
-                   focus:outline-none focus:ring-2 focus:ring-[var(--acim-gold)] focus:border-transparent
+        className="flex-1 resize-none rounded-xl border border-[var(--lo1-celestial)]/30 px-4 py-3
+                   focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:border-transparent
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   bg-white text-[var(--acim-text)]"
+                   bg-[var(--lo1-deep-space)]/80 text-[var(--lo1-starlight)]
+                   placeholder:text-[var(--lo1-stardust)]"
         style={{ minHeight: '48px', maxHeight: '120px' }}
       />
       <button
         onClick={handleSend}
         disabled={disabled || !input.trim()}
-        className="rounded-xl bg-[var(--acim-gold)] hover:bg-[var(--acim-gold-light)]
-                   text-[var(--acim-navy-dark)] font-medium px-5 py-3
+        className="rounded-xl bg-[var(--lo1-gold)] hover:bg-[var(--lo1-gold-light)]
+                   text-[var(--lo1-deep-space)] font-medium px-5 py-3
                    disabled:opacity-50 disabled:cursor-not-allowed
                    transition-colors duration-200 cursor-pointer"
       >

@@ -13,7 +13,7 @@ export default function Message({ message }: MessageProps) {
   if (isUser) {
     return (
       <div className="flex justify-end mb-4">
-        <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-[var(--acim-navy)] text-white">
+        <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-[#2a3366] text-white border border-[var(--lo1-celestial)]/20">
           {message.content}
         </div>
       </div>
@@ -22,7 +22,7 @@ export default function Message({ message }: MessageProps) {
 
   // Assistant messages: no box, just text
   return (
-    <div className="mb-6 text-[var(--acim-text)] leading-relaxed">
+    <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
       {message.segments && message.segments.length > 0 ? (
         message.segments.map((segment, index) => (
           <SegmentRenderer key={index} segment={segment} isFirst={index === 0} />

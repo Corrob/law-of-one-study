@@ -19,7 +19,7 @@ export default function StreamingMessage({
   const allChunks = [...completedChunks, ...(currentChunk ? [currentChunk] : [])];
 
   return (
-    <div className="mb-6 text-[var(--acim-text)] leading-relaxed">
+    <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
       {/* Completed chunks - render statically */}
       {completedChunks.map((chunk, index) => (
         <ChunkRenderer key={chunk.id} chunk={chunk} animate={false} isFirst={index === 0} />

@@ -40,20 +40,20 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen flex flex-col bg-[var(--acim-bg)]">
+    <main className="h-screen flex flex-col cosmic-bg relative">
       {/* Header */}
-      <header className="bg-[var(--acim-navy)] text-white py-4 px-6 shadow-lg">
+      <header className="relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-4 px-6 border-b border-[var(--lo1-gold)]/20">
         <div className="max-w-3xl mx-auto flex items-center gap-3">
           <button
             onClick={handleHeaderClick}
             className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
           >
-            <UnityIcon className="w-8 h-8 text-[var(--acim-gold)] starburst" />
+            <UnityIcon className="w-8 h-8 text-[var(--lo1-gold)] starburst" />
             <div className="text-left">
               <h1 className="text-lg font-semibold tracking-wide">
                 Law of One Study
               </h1>
-              <p className="text-xs text-gray-300 tracking-wider uppercase">
+              <p className="text-xs text-[var(--lo1-stardust)] tracking-wider uppercase">
                 The Ra Material
               </p>
             </div>
@@ -62,7 +62,7 @@ export default function Home() {
       </header>
 
       {/* Chat Interface */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative z-10">
         <ChatInterface ref={chatRef} />
       </div>
     </main>

@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef } from 'react';
+import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef, useMemo } from 'react';
 import { Message as MessageType, MessageSegment, Quote } from '@/lib/types';
 import Message from './Message';
 import StreamingMessage from './StreamingMessage';
 import MessageInput from './MessageInput';
 import WelcomeScreen from './WelcomeScreen';
 import { useAnimationQueue } from '@/hooks/useAnimationQueue';
+import { getPlaceholder } from '@/data/placeholders';
 
 export interface ChatInterfaceRef {
   reset: () => void;
@@ -51,6 +52,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
   const [streamingQuotes, setStreamingQuotes] = useState<Quote[]>([]);
+  const [placeholder, setPlaceholder] = useState(() => getPlaceholder(0));
 
   // Animation queue for streaming messages
   const {
@@ -68,6 +70,37 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   // Scroll refs
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollAnchorRef = useRef<HTMLDivElement>(null);
+
+  // Scroll shadow state
+  const [scrollShadow, setScrollShadow] = useState({ top: false, bottom: false });
+
+  // Handle scroll to update shadows
+  const handleScroll = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const isScrollable = scrollHeight > clientHeight;
+    const atTop = scrollTop <= 10;
+    const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
+
+    setScrollShadow({
+      top: isScrollable && !atTop,
+      bottom: isScrollable && !atBottom,
+    });
+  }, []);
+
+  // Set up scroll listener
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    container.addEventListener('scroll', handleScroll);
+    // Initial check
+    handleScroll();
+
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   // Scroll to bottom - only called when user sends a message
   const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
@@ -192,7 +225,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         timestamp: new Date(),
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      setMessages((prev) => {
+        const newMessages = [...prev, assistantMessage];
+        // Update placeholder for next message
+        setPlaceholder(getPlaceholder(newMessages.length));
+        return newMessages;
+      });
       resetQueue();
       setStreamingQuotes([]);
       setStreamDone(false);
@@ -206,6 +244,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     setStreamingQuotes([]);
     setStreamDone(false);
     setIsStreaming(false);
+    setPlaceholder(getPlaceholder(0));
   }, [resetQueue]);
 
   // Expose reset function to parent via ref
@@ -221,13 +260,24 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     (!isAnimating && queueLength === 0 && !streamDone)
   );
 
+  // Build scroll shadow classes
+  const scrollShadowClasses = [
+    'scroll-shadow-container',
+    scrollShadow.top ? 'shadow-top' : '',
+    scrollShadow.bottom ? 'shadow-bottom' : '',
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className="flex flex-col h-full">
-      {/* Messages Area */}
-      <div
-        ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto chat-scroll px-4 py-6"
-      >
+    <div className="flex flex-col h-full relative">
+      {/* Starfield - only on welcome screen */}
+      {!hasConversation && <div className="starfield" />}
+
+      {/* Messages Area with scroll shadows */}
+      <div className={`flex-1 overflow-hidden relative z-10 ${hasConversation ? scrollShadowClasses : ''}`}>
+        <div
+          ref={scrollContainerRef}
+          className="h-full overflow-y-auto chat-scroll px-4 py-6"
+        >
         {!hasConversation ? (
           <WelcomeScreen onSelectStarter={handleSend} />
         ) : (
@@ -247,15 +297,15 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               {showLoadingDots && (
                 <div className="mb-6 flex gap-1">
                   <span
-                    className="w-2 h-2 bg-[var(--acim-gold)] rounded-full animate-bounce"
+                    className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
                     style={{ animationDelay: '0ms' }}
                   ></span>
                   <span
-                    className="w-2 h-2 bg-[var(--acim-gold)] rounded-full animate-bounce"
+                    className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
                     style={{ animationDelay: '150ms' }}
                   ></span>
                   <span
-                    className="w-2 h-2 bg-[var(--acim-gold)] rounded-full animate-bounce"
+                    className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
                     style={{ animationDelay: '300ms' }}
                   ></span>
                 </div>
@@ -267,15 +317,16 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             <div ref={scrollAnchorRef} className="h-1" />
           </div>
         )}
+        </div>
       </div>
 
       {/* Input Area */}
-      <div className="border-t border-gray-200 bg-[var(--acim-bg-light)]">
+      <div className="border-t border-[var(--lo1-celestial)]/20 bg-[var(--lo1-indigo)]/50 backdrop-blur-sm">
         <div className="max-w-3xl mx-auto px-4 py-4">
           <MessageInput
             onSend={handleSend}
             disabled={isStreaming}
-            placeholder="Ask about A Course in Miracles..."
+            placeholder={placeholder}
           />
         </div>
       </div>

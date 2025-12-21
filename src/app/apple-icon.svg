@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#1a1f4e"/>
+
+  <!-- Outer eye shape (almond) -->
+  <path
+    d="M28 90 C28 90, 56 45, 90 45 C124 45, 152 90, 152 90 C152 90, 124 135, 90 135 C56 135, 28 90, 28 90 Z"
+    stroke="#d4a853"
+    stroke-width="5"
+    fill="none"
+    stroke-linecap="round"
+  />
+
+  <!-- Inner circle (iris) -->
+  <circle cx="90" cy="90" r="25" stroke="#d4a853" stroke-width="5" fill="none"/>
+
+  <!-- Pupil/center point -->
+  <circle cx="90" cy="90" r="8" fill="#d4a853"/>
+</svg>
