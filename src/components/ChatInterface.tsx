@@ -7,7 +7,7 @@ import StreamingMessage from './StreamingMessage';
 import MessageInput from './MessageInput';
 import WelcomeScreen from './WelcomeScreen';
 import { useAnimationQueue } from '@/hooks/useAnimationQueue';
-import { getPlaceholder } from '@/data/placeholders';
+import { getPlaceholder, defaultPlaceholder } from '@/data/placeholders';
 
 export interface ChatInterfaceRef {
   reset: () => void;
@@ -52,7 +52,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
   const [streamingQuotes, setStreamingQuotes] = useState<Quote[]>([]);
-  const [placeholder, setPlaceholder] = useState(() => getPlaceholder(0));
+  const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+
+  // Randomize placeholder after hydration (client-side only)
+  useEffect(() => {
+    setPlaceholder(getPlaceholder(0));
+  }, []);
 
   // Animation queue for streaming messages
   const {

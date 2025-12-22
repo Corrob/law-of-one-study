@@ -19,12 +19,15 @@ export const followUpPlaceholders = [
   "What calls to your attention?",
 ];
 
-// Get a random placeholder from an array
+// Default placeholder for SSR (deterministic to avoid hydration mismatch)
+export const defaultPlaceholder = initialPlaceholders[0];
+
+// Get a random placeholder from an array (client-side only)
 function getRandomFrom(arr: string[]): string {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Get appropriate placeholder based on message count
+// Get appropriate placeholder based on message count (call only on client after hydration)
 export function getPlaceholder(messageCount: number): string {
   if (messageCount === 0) {
     return getRandomFrom(initialPlaceholders);
