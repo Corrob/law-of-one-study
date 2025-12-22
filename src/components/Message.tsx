@@ -2,12 +2,15 @@
 
 import { Message as MessageType, MessageSegment } from '@/lib/types';
 import QuoteCard from './QuoteCard';
+import ConceptPopover from './ConceptPopover';
+import { parseConceptsInText } from '@/lib/conceptParser';
 
 interface MessageProps {
   message: MessageType;
+  onSearch?: (term: string) => void;
 }
 
-export default function Message({ message }: MessageProps) {
+export default function Message({ message, onSearch }: MessageProps) {
   const isUser = message.role === 'user';
 
   if (isUser) {
@@ -20,15 +23,24 @@ export default function Message({ message }: MessageProps) {
     );
   }
 
-  // Assistant messages: no box, just text
+  // Assistant messages: no box, just text with concept linking
   return (
     <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
       {message.segments && message.segments.length > 0 ? (
         message.segments.map((segment, index) => (
-          <SegmentRenderer key={index} segment={segment} isFirst={index === 0} />
+          <SegmentRenderer
+            key={index}
+            segment={segment}
+            isFirst={index === 0}
+            onSearch={onSearch}
+          />
         ))
       ) : (
-        message.content
+        onSearch ? (
+          <LinkedText text={message.content} onSearch={onSearch} />
+        ) : (
+          message.content
+        )
       )}
     </div>
   );
@@ -37,11 +49,20 @@ export default function Message({ message }: MessageProps) {
 interface SegmentRendererProps {
   segment: MessageSegment;
   isFirst?: boolean;
+  onSearch?: (term: string) => void;
 }
 
-function SegmentRenderer({ segment, isFirst = false }: SegmentRendererProps) {
+function SegmentRenderer({ segment, isFirst = false, onSearch }: SegmentRendererProps) {
   if (segment.type === 'text') {
-    return <span className={isFirst ? '' : 'mt-3 block'}>{segment.content}</span>;
+    return (
+      <span className={isFirst ? '' : 'mt-3 block'}>
+        {onSearch ? (
+          <LinkedText text={segment.content} onSearch={onSearch} />
+        ) : (
+          segment.content
+        )}
+      </span>
+    );
   }
 
   if (segment.type === 'quote') {
@@ -49,4 +70,30 @@ function SegmentRenderer({ segment, isFirst = false }: SegmentRendererProps) {
   }
 
   return null;
+}
+
+interface LinkedTextProps {
+  text: string;
+  onSearch: (term: string) => void;
+}
+
+function LinkedText({ text, onSearch }: LinkedTextProps) {
+  const segments = parseConceptsInText(text);
+
+  return (
+    <>
+      {segments.map((seg, i) =>
+        seg.type === 'text' ? (
+          <span key={i}>{seg.content}</span>
+        ) : (
+          <ConceptPopover
+            key={i}
+            term={seg.searchTerm}
+            displayText={seg.displayText}
+            onSearch={onSearch}
+          />
+        )
+      )}
+    </>
+  );
 }

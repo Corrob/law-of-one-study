@@ -243,3 +243,131 @@ h1, h2, h3, h4, h5, h6 {
 .scroll-shadow-container.shadow-bottom::after {
   opacity: 1;
 }
+
+/* Concept link styling - subtle dotted underline */
+.concept-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--lo1-stardust);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: help;
+  transition: text-decoration-color 0.15s ease, color 0.15s ease;
+}
+
+.concept-link:hover {
+  color: var(--lo1-gold);
+  text-decoration-color: var(--lo1-gold);
+  text-decoration-style: solid;
+}
+
+.concept-link:focus {
+  outline: 2px solid var(--lo1-gold);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Concept popover wrapper */
+.concept-popover-wrapper {
+  position: relative;
+  display: inline;
+}
+
+/* Concept popover */
+.concept-popover {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  width: 280px;
+  max-width: 90vw;
+  animation: popover-fade-in 0.15s ease-out;
+}
+
+.concept-popover-below {
+  top: calc(100% + 8px);
+}
+
+.concept-popover-above {
+  bottom: calc(100% + 8px);
+}
+
+@keyframes popover-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.concept-popover-above {
+  animation-name: popover-fade-in-above;
+}
+
+@keyframes popover-fade-in-above {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.concept-popover-content {
+  background: var(--lo1-indigo);
+  border: 1px solid var(--lo1-gold);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.concept-popover-header {
+  margin-bottom: 8px;
+}
+
+.concept-popover-term {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lo1-gold);
+  text-transform: capitalize;
+}
+
+.concept-popover-definition {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--lo1-text-light);
+  margin: 0 0 12px 0;
+}
+
+.concept-popover-search-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: var(--lo1-gold);
+  color: var(--lo1-deep-space);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.concept-popover-search-btn:hover {
+  background: var(--lo1-gold-light);
+}
+
+.concept-popover-search-btn:focus {
+  outline: 2px solid var(--lo1-gold-light);
+  outline-offset: 2px;
+}

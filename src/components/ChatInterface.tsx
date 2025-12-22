@@ -290,13 +290,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             {/* Messages container */}
             <div>
               {messages.map((message) => (
-                <Message key={message.id} message={message} />
+                <Message key={message.id} message={message} onSearch={handleSend} />
               ))}
               {hasStreamingContent && (
                 <StreamingMessage
                   completedChunks={completedChunks}
                   currentChunk={currentChunk}
                   onChunkComplete={onChunkComplete}
+                  onSearch={handleSend}
                 />
               )}
               {showLoadingDots && (
