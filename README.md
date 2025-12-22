@@ -2,7 +2,7 @@
 
 An AI-powered study companion for the Ra Material (Law of One). Ask questions, explore concepts, and discover relevant passages from all 106 sessions.
 
-**Live site:** [Coming soon]
+**Live site:** [lawofone.study](https://lawofone.study)
 
 ---
 
