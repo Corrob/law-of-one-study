@@ -15,7 +15,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Law of One Study",
+  title: "Law of One Study Companion",
   description: "Explore the Ra Material with a wise study companion",
 };
 
