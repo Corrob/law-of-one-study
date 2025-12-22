@@ -1,22 +1,8 @@
-# Law of One Study Tool - Project Plan
+# Law of One Study Tool
 
 An AI-powered RAG chatbot for the Ra Material. Community-funded, open source, free for all.
 
-> See [lawofone-study-prd.md](./lawofone-study-prd.md) for full requirements.
-
----
-
-## Foundation
-
-Building on the ACIM Helper project: `/Users/cory/Documents/fip/ai-experiment/acim-helper`
-
-**Reusable from ACIM Helper:**
-- Chat UI with streaming animations
-- Pinecone integration + embedding pipeline
-- 3-phase response system (initial → search → continuation with quotes)
-- SSE streaming with animation queue
-- Quote card components (`{{QUOTE:N}}` marker system)
-- Starters pattern (welcome quotes + conversation prompts)
+**Live site:** https://lawofone.study
 
 ---
 
@@ -24,12 +10,23 @@ Building on the ACIM Helper project: `/Users/cory/Documents/fip/ai-experiment/ac
 
 | Component | Technology |
 |-----------|------------|
-| Frontend | Next.js (Vercel) |
+| Frontend | Next.js 14 (App Router) |
 | Database | Firestore |
 | Vector DB | Pinecone |
-| AI Model | GPT-5 mini |
-| Payments | Stripe Checkout |
+| AI Model | GPT-4o-mini |
 | Hosting | Vercel |
+
+---
+
+## Project Structure
+
+```
+/app              # Next.js app router pages and API routes
+/components       # React components
+/lib              # Firebase, Pinecone, OpenAI helpers
+/scripts          # Embedding generation scripts
+/sections         # Ra material source (105 JSON files)
+```
 
 ---
 
@@ -43,58 +40,40 @@ Building on the ACIM Helper project: `/Users/cory/Documents/fip/ai-experiment/ac
 
 ---
 
-## Build Progress
+## Coding Guidelines
 
-### Phase 1: Beta (MVP)
+**General:**
+- Use TypeScript throughout
+- Prefer functional components with hooks
+- Keep components small and focused
 
-**Setup & Data:**
-- [x] Copy ACIM helper codebase as foundation
-- [x] Create indexing script for Ra material (`scripts/index-ra.ts`)
-- [ ] Set up Pinecone index for Law of One
-- [ ] Index all 105 sessions
+**Styling:**
+- Tailwind CSS for all styling
+- Dark theme is the default/only theme
 
-**Adapt for Law of One:**
-- [x] Update `starters.ts` with Ra quotes and prompts
-- [x] Update links to lawofone.info format
-- [x] Update system prompts for Law of One philosophy
-- [x] Update branding (header, icon)
+**API Routes:**
+- Located in `/app/api/`
+- Use streaming responses (SSE) for chat
 
-**Infrastructure:**
-- [ ] Pool tracking (Firestore)
-- [x] Deploy to Vercel
-
-### Phase 2: Community Donations
-
-- [ ] Stripe account setup
-- [ ] Checkout integration
-- [ ] Webhook endpoint (`/api/webhook`)
-- [ ] Donation UI
-
-### Phase 3: Polish
-
-- [ ] Share on r/lawofone for feedback
-- [ ] Iterate based on usage data
-- [ ] Add optional auth if abuse occurs
-- [ ] "Just quotes" toggle mode
+**Quote System:**
+- Quotes use `{{QUOTE:N}}` markers in AI responses
+- QuoteCard components render the actual quote content
 
 ---
 
-## Key Directories
+## Working With This Repo
 
+**Don't run browser automation** unless explicitly asked - this is a code-focused project.
+
+**Environment variables** are in `.env.local` (not committed). See `.env.local.example` for required vars.
+
+**To run locally:**
+```bash
+npm install
+npm run dev
 ```
-/app              # Next.js app
-/components       # React components
-/lib              # Firebase, Pinecone, OpenAI helpers
-/scripts          # Embedding generation scripts
-/sections         # Ra material source (105 JSON files)
+
+**To index Ra material to Pinecone:**
+```bash
+npx ts-node scripts/index-ra.ts
 ```
-
----
-
-## Quick Reference
-
-- **Pool system:** Community-funded queries, graceful degradation to semantic-search-only when empty
-- **Cost per query:** ~$0.00263 (GPT-5 mini)
-- **Queries per $1:** ~380
-- **Seed funding:** $50/month (~19,000 queries)
-- **Link format:** `https://lawofone.info/s/{session}#{question}`
