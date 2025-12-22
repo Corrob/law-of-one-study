@@ -48,7 +48,8 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
         className="rounded-xl bg-[var(--lo1-gold)] hover:bg-[var(--lo1-gold-light)]
                    text-[var(--lo1-deep-space)] font-medium px-5 py-3
                    disabled:opacity-50 disabled:cursor-not-allowed
-                   transition-colors duration-200 cursor-pointer"
+                   hover:shadow-[0_0_20px_rgba(212,168,83,0.4)]
+                   transition-all duration-200 cursor-pointer"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
