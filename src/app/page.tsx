@@ -40,7 +40,7 @@ export default function Home() {
   };
 
   return (
-    <main className="h-screen flex flex-col cosmic-bg relative">
+    <main className="h-dvh flex flex-col cosmic-bg relative">
       {/* Header */}
       <header className="relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-4 px-6 border-b border-[var(--lo1-gold)]/20">
         <div className="max-w-3xl mx-auto flex items-center gap-3">
