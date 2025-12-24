@@ -18,8 +18,18 @@ interface Classification {
   intent: 'RETRIEVE' | 'UNDERSTAND' | 'APPLY';
   state: 'CURIOUS' | 'PROCESSING' | 'SEEKING_VALIDATION' | 'CHALLENGING';
   depth: 'SURFACE' | 'INTERMEDIATE' | 'DEEP';
+  confidence: {
+    intent: number;    // 0-1 confidence score
+    state: number;     // 0-1 confidence score
+    depth: number;     // 0-1 confidence score
+  };
 }
 ```
+
+**Confidence-Based Fallbacks:**
+- If `state` confidence < 0.7: Default to warm/neutral tone (blend of CURIOUS + SEEKING_VALIDATION)
+- If `depth` confidence < 0.6: Default to INTERMEDIATE
+- If `intent` confidence < 0.6: Default to UNDERSTAND
 
 **Classification Prompt:**
 ```
@@ -60,15 +70,13 @@ Classify this query.
   - Query 1: Direct match (exact terms/quoted phrases)
   - Query 2: Broader conceptual match
 
-- **UNDERSTAND**: 3 queries
+- **UNDERSTAND**: 2 queries
   - Query 1: Core concept
   - Query 2: Related mechanisms/relationships
-  - Query 3: Complementary perspective
 
-- **APPLY**: 3 queries
+- **APPLY**: 2 queries
   - Query 1: Practical/catalyst-oriented
   - Query 2: Conceptual foundation
-  - Query 3: Experiential wisdom
 
 **Search Query Generation Prompt:**
 ```
@@ -94,7 +102,7 @@ interface SearchQueries {
 }
 ```
 
-**Expected latency:** ~300-400ms
+**Expected latency:** ~200-300ms (optimized parallel execution)
 
 ---
 
@@ -115,7 +123,72 @@ interface SearchQueries {
 - If same session.question appears in multiple results, keep the one with highest similarity score
 - Maintain diversity: prefer passages from different sessions when possible
 
-**Expected latency:** ~400-600ms (parallel execution)
+**Expected latency:** ~300-400ms (parallel execution)
+
+---
+
+### 1.4 Conversation Continuity & State Tracking
+
+**Purpose:** Ensure smooth tone transitions and prevent jarring shifts mid-conversation.
+
+**State Persistence Logic:**
+- Track previous message classifications in conversation history
+- Apply smoothing rules to prevent abrupt tone changes
+
+**Smoothing Rules:**
+
+1. **PROCESSING State Persistence:**
+   - If previous message was classified as PROCESSING
+   - Maintain warm/gentle tone for next 2 messages
+   - Even if current message classifies as CURIOUS or SEEKING_VALIDATION
+   - Rationale: User is still in emotional processing mode
+
+2. **Depth Escalation (No Regression):**
+   - If user demonstrated DEEP knowledge in previous messages
+   - Don't regress to SURFACE in same conversation
+   - Only allow depth to stay same or increase
+   - Exception: Explicit user signals ("explain simply")
+
+3. **User Control Signals:**
+   - Detect phrases that override classification:
+     - "explain simply", "eli5", "for beginners" → Force SURFACE
+     - "more detail", "deeper", "full explanation" → Bump depth up one level
+     - "just the quote" → Force RETRIEVE intent
+   - These override ML classification
+
+4. **Topic Continuity:**
+   - If user asks follow-up question without context ("tell me more", "what about that?")
+   - Carry forward previous message's intent/depth classification
+   - Only adjust state based on current emotional tone
+
+**Implementation:**
+```typescript
+function applyConversationContinuity(
+  currentClassification: Classification,
+  conversationHistory: ChatMessage[],
+  previousClassifications: Classification[]
+): Classification {
+  // Apply smoothing rules here
+  // Return adjusted classification
+}
+```
+
+**Example Flow:**
+```
+Message 1: "I'm struggling with my child's illness"
+→ Classified: APPLY + PROCESSING + SURFACE
+→ Response: Warm, gentle, simple
+
+Message 2: "What did Ra say about this?"
+→ Initially classified: RETRIEVE + CURIOUS + INTERMEDIATE
+→ Smoothed to: RETRIEVE + PROCESSING + SURFACE (maintain warmth)
+→ Response: Still gentle, focused on healing quotes
+
+Message 3: "That helps. How does polarity work?"
+→ Classified: UNDERSTAND + CURIOUS + INTERMEDIATE
+→ No smoothing needed (topic shift, emotional shift)
+→ Response: More intellectual, standard tone
+```
 
 ---
 
@@ -306,7 +379,7 @@ GUIDELINES:
 - Avoid cross-references to other sessions
 - Shorter, clearer responses
 
-RESPONSE LENGTH: 2-4 sentences + 1 quote
+RESPONSE LENGTH: 1-2 short paragraphs (4-6 sentences) + 1 quote
 
 TERMINOLOGY:
 - Say "stages of consciousness" before "densities"
@@ -389,15 +462,17 @@ This cross-session synthesis reveals that harvest isn't a singular event but a c
 
 | Intent | Depth | Number of Quotes | Selection Criteria |
 |--------|-------|------------------|-------------------|
-| RETRIEVE | SURFACE | 2-3 | Direct matches, simple passages |
-| RETRIEVE | INTERMEDIATE | 2-4 | Best matches, some context |
-| RETRIEVE | DEEP | 3-4 | Comprehensive, cross-session |
-| UNDERSTAND | SURFACE | 1 | Clearest, most accessible |
+| RETRIEVE | SURFACE | 1-3 (typically 2) | Direct matches, simple passages |
+| RETRIEVE | INTERMEDIATE | 2-4 (typically 2-3) | Best matches, some context |
+| RETRIEVE | DEEP | 2-4 (typically 3) | Comprehensive, cross-session |
+| UNDERSTAND | SURFACE | 1-2 (typically 1) | Clearest, most accessible |
 | UNDERSTAND | INTERMEDIATE | 1-2 | Conceptually rich |
-| UNDERSTAND | DEEP | 2-3 | Multiple perspectives |
-| APPLY | SURFACE | 1 | Gentle, accessible |
+| UNDERSTAND | DEEP | 1-3 (typically 2) | Multiple perspectives |
+| APPLY | SURFACE | 1-2 (typically 1) | Gentle, accessible |
 | APPLY | INTERMEDIATE | 1-2 | Practical + conceptual |
-| APPLY | DEEP | 2 | Wisdom + mechanism |
+| APPLY | DEEP | 1-3 (typically 2) | Wisdom + mechanism |
+
+**Note:** Numbers are flexible guidelines. Use judgment based on quote quality and relevance. One perfect quote is better than forcing multiple mediocre ones.
 
 **Universal quote rules:**
 ```
@@ -413,8 +488,9 @@ QUOTE SELECTION:
 - Quality over quantity always
 
 POOR MATCH HANDLING:
-- For RETRIEVE: "I don't have that exact passage, but here's what touches on similar themes..."
-- For UNDERSTAND/APPLY: Use quotes that are relevant even if not perfect, or use fewer quotes
+- If no relevant quotes found: "I don't have Ra passages that directly address [topic]. Based on related teachings in the material, [general guidance]. You might explore sessions covering [related concepts] for more specific passages."
+- For RETRIEVE with poor matches: "I don't have that exact passage, but here's what touches on similar themes..."
+- For UNDERSTAND/APPLY with poor matches: Use quotes that are relevant even if not perfect, or use fewer quotes and acknowledge: "The passages I have don't directly address this, but based on Ra's broader teachings..."
 ```
 
 ---
@@ -461,16 +537,20 @@ COMPARATIVE QUESTIONS:
 - Maintain existing chunk/meta/done/error events
 
 **Flow:**
-1. Classify + search complete (~700ms total)
+1. Classify + search complete (~500-600ms total, optimized)
 2. Build dynamic prompt
 3. Call GPT-4o-mini with streaming
 4. Stream response with quote marker parsing
 5. Send done event
 
 **UX Impact:**
-- Slight increase in time-to-first-token (~700ms vs current ~300ms)
-- But response is more coherent, less repetitive
+- Slight increase in time-to-first-token (~500-600ms vs current ~300ms)
+- Response is more coherent, less repetitive
 - Trade-off: worth it for quality improvement
+
+**Loading State:**
+- If latency > 400ms, consider showing "Searching Ra Material..." indicator
+- Helps manage user expectations during classification + search
 
 ---
 
@@ -479,19 +559,26 @@ COMPARATIVE QUESTIONS:
 ### New Files
 
 **`/src/lib/classifier.ts`**
-- `classifyQuery(message: string, history: ChatMessage[]): Promise<Classification>`
+- `classifyQuery(message: string, history: ChatMessage[], previousClassifications?: Classification[]): Promise<Classification>`
 - Uses GPT-4o-mini with structured outputs
-- Returns classification object
+- Returns classification object with confidence scores
+- Implements conversation continuity logic (see section 1.4):
+  - PROCESSING state persistence for 2 messages
+  - Depth escalation (no regression)
+  - User control signal detection
+  - Topic continuity handling
+- Includes `applyConversationContinuity()` helper function
 
 **`/src/lib/search-optimizer.ts`**
 - `generateSearchQueries(message: string, classification: Classification): Promise<string[]>`
 - Uses GPT-4o-mini with structured outputs
-- Returns 2-3 optimized search queries
+- Returns 2 optimized search queries (not 3 - more focused)
 
 - `executeParallelSearch(queries: string[], topK: number): Promise<Quote[]>`
-- Creates embeddings in parallel
-- Searches Pinecone in parallel
+- Creates embeddings in parallel (optimize with Promise.all)
+- Searches Pinecone in parallel (optimize with Promise.all)
 - Deduplicates and returns top K unique results
+- Maintains diversity: prefer passages from different sessions when scores are similar
 
 **`/src/lib/dynamic-prompts.ts`**
 - `buildDynamicPrompt(classification: Classification, quotes: Quote[], history: ChatMessage[]): string`
@@ -561,10 +648,11 @@ COMPARATIVE QUESTIONS:
 - Better quote selection
 
 **Performance:**
-- Total latency: ~700-900ms (acceptable)
+- Total latency: ~500-600ms (optimized, acceptable)
 - Classification: ~200-300ms
-- Search: ~400-600ms
+- Search: ~300-400ms (parallel optimization)
 - Streaming starts immediately after
+- Target: <600ms to first token
 
 **User Experience:**
 - More coherent responses
@@ -591,8 +679,7 @@ COMPARATIVE QUESTIONS:
 
 **Search Queries:**
 - "polarity harvest relationship requirements"
-- "service to others service to self harvest"
-- "51% polarization harvest mechanics"
+- "service to others service to self harvest mechanics"
 
 **Response Character:**
 - 2-3 paragraphs
@@ -617,9 +704,8 @@ COMPARATIVE QUESTIONS:
 ```
 
 **Search Queries:**
-- "forgiveness catalyst healing"
-- "acceptance releasing resentment"
-- "love understanding difficult relationships"
+- "forgiveness catalyst healing relationships"
+- "acceptance releasing resentment love"
 
 **Response Character:**
 - 2-3 short paragraphs maximum
@@ -644,9 +730,8 @@ COMPARATIVE QUESTIONS:
 ```
 
 **Search Queries:**
-- "free will paradox determinism predestination"
-- "timeless state time/space all possibilities"
-- "choice illusion simultaneity octave"
+- "free will paradox determinism choice"
+- "timeless state time/space simultaneity"
 
 **Response Character:**
 - 3-4 paragraphs
@@ -697,9 +782,11 @@ COMPARATIVE QUESTIONS:
 - Response: ~1000-1500 tokens average
 
 **Error Handling:**
-- If classification fails: default to UNDERSTAND + CURIOUS + INTERMEDIATE
-- If search returns no results: acknowledge and respond from general knowledge
+- If classification fails: default to UNDERSTAND + CURIOUS + INTERMEDIATE (log for debugging)
+- If classification confidence is low: use safe defaults based on thresholds above
+- If search returns no results: Explicitly state lack of direct passages and provide general Ra Material context
 - If streaming fails: return error event (existing behavior)
+- Log all classification decisions for monitoring and improvement
 
 **Testing Checklist:**
 - [ ] All 3×4×3 = 36 classification combinations
