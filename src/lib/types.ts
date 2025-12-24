@@ -61,3 +61,24 @@ export interface QuoteChunk {
 }
 
 export type AnimationChunk = TextChunk | QuoteChunk;
+
+// Two-phase prompting system types
+export type Intent = 'RETRIEVE' | 'UNDERSTAND' | 'APPLY';
+export type State = 'CURIOUS' | 'PROCESSING' | 'SEEKING_VALIDATION' | 'CHALLENGING';
+export type Depth = 'SURFACE' | 'INTERMEDIATE' | 'DEEP';
+
+export interface Classification {
+  intent: Intent;
+  state: State;
+  depth: Depth;
+  confidence: {
+    intent: number;
+    state: number;
+    depth: number;
+  };
+}
+
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
