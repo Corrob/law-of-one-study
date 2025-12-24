@@ -1,0 +1,390 @@
+{
+  "summary": {
+    "total": 20,
+    "successful": 0,
+    "failed": 20,
+    "timestamp": "2025-12-24T23:56:18.285Z"
+  },
+  "results": [
+    {
+      "id": 1,
+      "description": "Simple quote request",
+      "query": "What did Ra say about wanderers?",
+      "expected": {
+        "intent": "RETRIEVE",
+        "state": "CURIOUS",
+        "depth": "SURFACE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 59,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 2,
+      "description": "Quote validation request",
+      "query": "I remember Ra saying wanderers chose to come here to help with harvest. Can you find that quote?",
+      "expected": {
+        "intent": "RETRIEVE",
+        "state": "SEEKING_VALIDATION",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 3,
+      "description": "Complex multi-session quote search",
+      "query": "Find all passages where Ra discusses the relationship between social memory complexes and fourth density harvest",
+      "expected": {
+        "intent": "RETRIEVE",
+        "state": "CURIOUS",
+        "depth": "DEEP"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 4,
+      "description": "Basic concept question from beginner",
+      "query": "What are densities?",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CURIOUS",
+        "depth": "SURFACE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 5,
+      "description": "Conceptual relationship question",
+      "query": "How does polarity relate to harvest?",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CURIOUS",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 6,
+      "description": "Complex synthesis question",
+      "query": "Explain the relationship between time/space and space/time in the context of harvest mechanics across different densities",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CURIOUS",
+        "depth": "DEEP"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 2,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 7,
+      "description": "Skeptical philosophical challenge",
+      "query": "Ra's concept of free will seems to contradict the idea that everything is predetermined. How do you reconcile this?",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CHALLENGING",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 2,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 8,
+      "description": "Deep philosophical contradiction",
+      "query": "The material claims both that all is one and that individual choice matters. This seems logically inconsistent. What am I missing?",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CHALLENGING",
+        "depth": "DEEP"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 9,
+      "description": "Emotional catalyst, simple",
+      "query": "I'm struggling to forgive my father",
+      "expected": {
+        "intent": "APPLY",
+        "state": "PROCESSING",
+        "depth": "SURFACE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 4,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 10,
+      "description": "Practical application with emotional weight",
+      "query": "I've been working with the concept of seeing others as myself, but when someone hurts me I find it impossible. How do I actually practice this?",
+      "expected": {
+        "intent": "APPLY",
+        "state": "PROCESSING",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 11,
+      "description": "Practical application without emotion",
+      "query": "How can I use Ra's teachings about catalyst in my daily meditation practice?",
+      "expected": {
+        "intent": "APPLY",
+        "state": "CURIOUS",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 12,
+      "description": "Professional application with complexity",
+      "query": "I'm a therapist working with trauma survivors. How does Ra's teaching on acceptance relate to healing without bypassing necessary grief work?",
+      "expected": {
+        "intent": "APPLY",
+        "state": "PROCESSING",
+        "depth": "DEEP"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 13,
+      "description": "Seeking confirmation of understanding",
+      "query": "So if I understand correctly, the veil was deliberately created to make polarization possible. Is that right?",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "SEEKING_VALIDATION",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 2,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 14,
+      "description": "User control signal for SURFACE",
+      "query": "Can you explain the octave simply? I'm new to this",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CURIOUS",
+        "depth": "SURFACE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 2,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 15,
+      "description": "User control signal for more depth",
+      "query": "Tell me more detail about how the logos creates archetypes",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CURIOUS",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 2,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 16,
+      "description": "Quote search on sensitive topic",
+      "query": "What did Ra say about death and what happens after?",
+      "expected": {
+        "intent": "RETRIEVE",
+        "state": "CURIOUS",
+        "depth": "SURFACE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 17,
+      "description": "Skeptical challenge from newcomer",
+      "query": "This whole thing sounds like pseudoscience. How is it different from new age nonsense?",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CHALLENGING",
+        "depth": "SURFACE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 18,
+      "description": "Vague query testing classification",
+      "query": "Tell me about Ra",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CURIOUS",
+        "depth": "SURFACE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 3,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 19,
+      "description": "Seeking validation on practice",
+      "query": "I've been trying to polarize toward service to others, but I wonder if I'm doing it right. Should I feel different?",
+      "expected": {
+        "intent": "APPLY",
+        "state": "SEEKING_VALIDATION",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 2,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    },
+    {
+      "id": 20,
+      "description": "Multi-part conceptual question",
+      "query": "What's the difference between third and fourth density, and how do we transition between them?",
+      "expected": {
+        "intent": "UNDERSTAND",
+        "state": "CURIOUS",
+        "depth": "INTERMEDIATE"
+      },
+      "metrics": {
+        "timeToFirstToken": 0,
+        "totalTime": 2,
+        "responseLength": 0,
+        "quoteCount": 0
+      },
+      "response": "",
+      "quotes": [],
+      "error": "fetch failed"
+    }
+  ]
+}
