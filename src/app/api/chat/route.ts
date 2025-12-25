@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
           const systemPrompt = buildDynamicPrompt(classification, passages, recentHistory);
 
           const response = await openai.chat.completions.create({
-            model: 'gpt-5',
+            model: 'gpt-5-mini',
             messages: [
               { role: 'system', content: systemPrompt },
               ...recentHistory.map((m) => ({
