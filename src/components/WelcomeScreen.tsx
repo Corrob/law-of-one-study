@@ -77,6 +77,16 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
           ))}
         </div>
       </div>
+
+      {/* Disclaimer */}
+      <div className="w-full max-w-2xl mt-8 animate-starter-0">
+        <p className="text-[var(--lo1-stardust)]/60 text-xs text-center leading-relaxed">
+          This AI companion provides helpful explanations, but only the highlighted quote cards contain authentic passages from the Ra Material.{' '}
+          <a href="/support" className="text-[var(--lo1-gold)]/70 hover:text-[var(--lo1-gold)] underline transition-colors">
+            Learn more
+          </a>
+        </p>
+      </div>
     </div>
   );
 }
