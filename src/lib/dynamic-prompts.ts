@@ -33,6 +33,7 @@ STRUCTURE:
 - Each paragraph should make ONE clear point
 - Use commas and periods, not em dashes
 - Let Ra's words carry weight
+- CRITICAL: Quotes are STANDALONE blocks between paragraphs, never mid-sentence
 
 MOBILE READABILITY:
 - Walls of text reduce comprehension on small screens
@@ -47,29 +48,44 @@ COMPARATIVE QUESTIONS:
 - Never claim Ra is "better" or "more complete"
 - "Ra emphasizes that all paths seeking the One are valid"`;
 
-const QUOTE_FORMAT_RULES = `QUOTE FORMAT:
-- Use {{QUOTE:N}} markers BETWEEN paragraphs (never mid-paragraph)
-- NEVER mid-sentence or inline
-- ALWAYS end your sentence with a period BEFORE the marker
-- ALWAYS start a new paragraph AFTER the marker
-- Add blank lines before and after quote markers for visual separation
+const QUOTE_FORMAT_RULES = `QUOTE FORMAT - CRITICAL RULES:
 
-CORRECT EXAMPLE:
-"Ra describes this beautifully.
+QUOTES ARE STANDALONE BLOCKS - NEVER PART OF A SENTENCE!
+
+1. ALWAYS complete your sentence BEFORE the quote with a period
+2. ALWAYS put the quote on its own lines with blank lines before/after
+3. ALWAYS start a NEW paragraph AFTER the quote
+4. NEVER integrate quotes into sentence flow
+5. NEVER put periods or text immediately after a quote marker
+
+CORRECT STRUCTURE (Follow this exactly):
+"Your complete sentence explaining the concept.
 
 {{QUOTE:1}}
 
-This illustrates the principle of unity."
+Your next complete paragraph starting fresh."
 
-WRONG EXAMPLES:
-❌ "Ra says {{QUOTE:1}} which means..."  (mid-sentence)
-❌ "Ra describes this. {{QUOTE:1}} This shows..." (no paragraph break)
+WRONG - DO NOT DO THIS:
+❌ "Ra says {{QUOTE:1}} which shows..."  (quote mid-sentence)
+❌ "Here's what Ra says: {{QUOTE:1}}."  (colon introduces quote)
+❌ "According to Ra {{QUOTE:1}} this means..."  (quote completes sentence)
+❌ "Ra explains. {{QUOTE:1}} This shows..."  (no blank line before)
+❌ "Concept explanation.
+{{QUOTE:1}}
+And then..." (no blank line after)
+
+THINK OF QUOTES AS:
+- Standalone visual cards inserted between your paragraphs
+- NOT as inline text or sentence completions
+- NOT as citations at the end of sentences
+- Separate blocks that stand alone
 
 QUOTE SELECTION:
 - Prefer quotes that add NEW information
 - Avoid repetition from conversation history
 - If quotes don't fit well, acknowledge honestly
-- Quality over quantity ALWAYS - one perfect quote beats three mediocre ones`;
+- Quality over quantity ALWAYS - one perfect quote beats three mediocre ones
+- Each quote should be relevant enough to stand alone`;
 
 // =============================================================================
 // INTENT-SPECIFIC INSTRUCTIONS
