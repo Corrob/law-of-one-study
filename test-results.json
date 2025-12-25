@@ -3,7 +3,7 @@
     "total": 20,
     "successful": 0,
     "failed": 20,
-    "timestamp": "2025-12-24T23:56:18.285Z"
+    "timestamp": "2025-12-25T00:00:00.353Z"
   },
   "results": [
     {
@@ -17,7 +17,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 59,
+        "totalTime": 58,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -112,7 +112,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 2,
+        "totalTime": 3,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -188,7 +188,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 3,
+        "totalTime": 4,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -207,7 +207,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 3,
+        "totalTime": 2,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -226,7 +226,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 3,
+        "totalTime": 2,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -245,7 +245,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 2,
+        "totalTime": 3,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -283,7 +283,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 2,
+        "totalTime": 3,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -302,7 +302,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 3,
+        "totalTime": 2,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -321,7 +321,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 3,
+        "totalTime": 2,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -340,7 +340,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 3,
+        "totalTime": 2,
         "responseLength": 0,
         "quoteCount": 0
       },
@@ -359,7 +359,7 @@
       },
       "metrics": {
         "timeToFirstToken": 0,
-        "totalTime": 2,
+        "totalTime": 3,
         "responseLength": 0,
         "quoteCount": 0
       },
