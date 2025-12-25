@@ -58,18 +58,37 @@ function getShortReference(reference: string): string {
 export default function QuoteCard({ quote }: QuoteCardProps) {
   // Apply sentence range if specified
   let displayText = quote.text;
+
+  console.log('[QuoteCard] Received quote:', {
+    reference: quote.reference,
+    sentenceStart: quote.sentenceStart,
+    sentenceEnd: quote.sentenceEnd,
+    fullTextLength: quote.text.length
+  });
+
   if (quote.sentenceStart !== undefined && quote.sentenceEnd !== undefined) {
     const sentences = splitIntoSentences(quote.text);
+    console.log('[QuoteCard] Total sentences:', sentences.length);
+    console.log('[QuoteCard] Sentence range:', quote.sentenceStart, 'to', quote.sentenceEnd);
+
     // Convert from 1-indexed to 0-indexed and extract range
     const start = Math.max(0, quote.sentenceStart - 1);
     const end = Math.min(sentences.length, quote.sentenceEnd);
     const selectedSentences = sentences.slice(start, end);
+
+    console.log('[QuoteCard] Selected sentences count:', selectedSentences.length);
+    console.log('[QuoteCard] First selected:', selectedSentences[0]?.substring(0, 50));
+    console.log('[QuoteCard] Last selected:', selectedSentences[selectedSentences.length - 1]?.substring(0, 50));
 
     const hasTextBefore = quote.sentenceStart > 1;
     const hasTextAfter = quote.sentenceEnd < sentences.length;
 
     const excerpt = selectedSentences.join(' ');
     displayText = `${hasTextBefore ? '... ' : ''}${excerpt}${hasTextAfter ? ' ...' : ''}`;
+
+    console.log('[QuoteCard] Final display text length:', displayText.length);
+  } else {
+    console.log('[QuoteCard] No sentence range, showing full quote');
   }
 
   const segments = formatRaText(displayText);

@@ -157,6 +157,8 @@ export async function POST(request: NextRequest) {
                     quoteData.sentenceStart = parseInt(markerMatch[2], 10);
                     quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
                   }
+                  console.log('[API] Matched marker:', markerMatch[0]);
+                  console.log('[API] Quote data being sent:', JSON.stringify(quoteData));
                   send('chunk', quoteData);
                   buffer = buffer.slice(markerMatch.index + markerMatch[0].length);
                 }
@@ -274,6 +276,8 @@ export async function POST(request: NextRequest) {
                     quoteData.sentenceStart = parseInt(markerMatch[2], 10);
                     quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
                   }
+                  console.log('[API] Matched marker:', markerMatch[0]);
+                  console.log('[API] Quote data being sent:', JSON.stringify(quoteData));
                   send('chunk', quoteData);
 
                   // Continue after marker

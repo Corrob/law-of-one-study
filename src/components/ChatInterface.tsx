@@ -176,13 +176,22 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                 content: chunkData.content,
               });
             } else if (chunkData.type === 'quote' && chunkData.index !== undefined) {
+              console.log('[ChatInterface] Received quote chunk:', chunkData);
               const quoteIndex = chunkData.index - 1; // Convert to 0-indexed
               if (quoteIndex >= 0 && quoteIndex < quotes.length) {
                 const quote = { ...quotes[quoteIndex] };
                 if (chunkData.sentenceStart !== undefined && chunkData.sentenceEnd !== undefined) {
+                  console.log('[ChatInterface] Adding sentence range to quote:', chunkData.sentenceStart, 'to', chunkData.sentenceEnd);
                   quote.sentenceStart = chunkData.sentenceStart;
                   quote.sentenceEnd = chunkData.sentenceEnd;
+                } else {
+                  console.log('[ChatInterface] No sentence range in chunk data');
                 }
+                console.log('[ChatInterface] Final quote object:', {
+                  reference: quote.reference,
+                  sentenceStart: quote.sentenceStart,
+                  sentenceEnd: quote.sentenceEnd
+                });
                 addChunk({
                   id: `chunk-${chunkIdCounter}`,
                   type: 'quote',
