@@ -14,12 +14,19 @@ interface ChatRequest {
   history: ChatMessage[];
 }
 
-// Check if string could be the start of a {{QUOTE:N}} marker
+// Check if string could be the start of a {{QUOTE:N}} or {{QUOTE:N:s2:s5}} marker
 function couldBePartialMarker(s: string): boolean {
   const prefixes = ['{', '{{', '{{Q', '{{QU', '{{QUO', '{{QUOT', '{{QUOTE', '{{QUOTE:'];
   if (prefixes.includes(s)) return true;
   if (/^\{\{QUOTE:\d+$/.test(s)) return true;
   if (/^\{\{QUOTE:\d+\}$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:s$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:s\d+$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:s\d+\}$/.test(s)) return true;
   return false;
 }
 
@@ -114,10 +121,10 @@ export async function POST(request: NextRequest) {
 
                 // Process buffer for complete markers
                 while (true) {
-                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)\}\}/);
+                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/);
                   if (!markerMatch || markerMatch.index === undefined) {
                     let partialStart = -1;
-                    for (let i = Math.max(0, buffer.length - 15); i < buffer.length; i++) {
+                    for (let i = Math.max(0, buffer.length - 25); i < buffer.length; i++) {
                       if (couldBePartialMarker(buffer.slice(i))) {
                         partialStart = i;
                         break;
@@ -142,7 +149,17 @@ export async function POST(request: NextRequest) {
                     accumulatedText = '';
                   }
 
-                  send('chunk', { type: 'quote', index: parseInt(markerMatch[1], 10) });
+                  const quoteData: { type: string; index: number; sentenceStart?: number; sentenceEnd?: number } = {
+                    type: 'quote',
+                    index: parseInt(markerMatch[1], 10)
+                  };
+                  if (markerMatch[2] && markerMatch[3]) {
+                    quoteData.sentenceStart = parseInt(markerMatch[2], 10);
+                    quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
+                  }
+                  console.log('[API] Matched marker:', markerMatch[0]);
+                  console.log('[API] Quote data being sent:', JSON.stringify(quoteData));
+                  send('chunk', quoteData);
                   buffer = buffer.slice(markerMatch.index + markerMatch[0].length);
                 }
               }
@@ -215,12 +232,12 @@ export async function POST(request: NextRequest) {
 
                 // Process buffer for complete markers
                 while (true) {
-                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)\}\}/);
+                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/);
                   if (!markerMatch || markerMatch.index === undefined) {
                     // No complete marker found
                     // Check if buffer ends with partial marker
                     let partialStart = -1;
-                    for (let i = Math.max(0, buffer.length - 15); i < buffer.length; i++) {
+                    for (let i = Math.max(0, buffer.length - 25); i < buffer.length; i++) {
                       if (couldBePartialMarker(buffer.slice(i))) {
                         partialStart = i;
                         break;
@@ -251,7 +268,17 @@ export async function POST(request: NextRequest) {
                   }
 
                   // Emit quote chunk
-                  send('chunk', { type: 'quote', index: parseInt(markerMatch[1], 10) });
+                  const quoteData: { type: string; index: number; sentenceStart?: number; sentenceEnd?: number } = {
+                    type: 'quote',
+                    index: parseInt(markerMatch[1], 10)
+                  };
+                  if (markerMatch[2] && markerMatch[3]) {
+                    quoteData.sentenceStart = parseInt(markerMatch[2], 10);
+                    quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
+                  }
+                  console.log('[API] Matched marker:', markerMatch[0]);
+                  console.log('[API] Quote data being sent:', JSON.stringify(quoteData));
+                  send('chunk', quoteData);
 
                   // Continue after marker
                   buffer = buffer.slice(markerMatch.index + markerMatch[0].length);

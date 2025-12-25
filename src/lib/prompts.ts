@@ -17,27 +17,46 @@ const STYLE_RULES = `STYLE:
 
 const QUOTE_FORMAT_RULES = `HOW TO INSERT QUOTES:
 - Insert quotes using: {{QUOTE:1}} or {{QUOTE:2}} (the number matches the passage provided)
+- For long quotes (10+ sentences), show only relevant sentences: {{QUOTE:1:s3:s7}} (sentences 3-7)
 - The quote displays as a formatted card - NEVER write out the quote text yourself
 - Place quotes BETWEEN paragraphs, never mid-sentence
 - End your sentence with a period BEFORE the marker, start fresh AFTER
 
-CORRECT:
+SHORT QUOTE (under 8 sentences):
 "Ra describes this beautifully.
 
 {{QUOTE:1}}
 
 This illustrates the core principle."
 
+LONG QUOTE (15+ sentences) - USE SENTENCE RANGE:
+Given: [2] "..." — Ra 50.7 (20 sentences)
+"Ra's famous poker game metaphor explains this perfectly.
+
+{{QUOTE:2:s6:s14}}
+
+This captures the essence without overwhelming the reader."
+
 WRONG:
 "As Ra says {{QUOTE:1}} which means..."
-"Ra states that '...' (1.1)"`;
+"Ra states that '...' (1.1)"
+"{{QUOTE:1}} for a 20-sentence quote" (missing sentence range!)`;
 
 const QUOTE_SELECTION_RULES = `CHOOSING QUOTES:
 - Pick quotes that DIRECTLY answer the user's question
-- Prefer quotes introducing NEW information over ones echoing your explanation
+- Use quotes to validate and support your explanations - it's good if they reinforce what you've said
+- Quote excerpts add credibility even if they echo your words - Ra's voice carries authority
 - If available quotes seem tangential, use only 1 or none
 - Quality over quantity - 1 perfect quote beats 2 mediocre ones
-- AVOID REPETITION: If a quote was shown earlier in this conversation, do not use it again. Choose a fresh passage or skip including a quote if all available ones have been used recently.`;
+- AVOID REPETITION: If a quote was shown earlier in this conversation, do not use it again. Choose a fresh passage or skip including a quote if all available ones have been used recently.
+
+SENTENCE RANGES - IMPORTANT:
+- Each quote shows its sentence count: "(20 sentences)" for example
+- If a quote has 10+ sentences, you MUST use a sentence range to show only the relevant portion
+- Use {{QUOTE:N:s3:s7}} to show sentences 3-7 (sentences are numbered 1, 2, 3, etc.)
+- Example: If quote [1] has "(20 sentences)" and you only need sentences 5-12, use {{QUOTE:1:s5:s12}}
+- Shorter quotes (under 8 sentences) can use {{QUOTE:N}} without a range
+- The system will automatically add "..." before and after truncated quotes`;
 
 const OFF_TOPIC_HANDLING = `OFF-TOPIC QUESTIONS:
 If the question isn't about the Ra Material or Law of One:
@@ -249,6 +268,10 @@ Remember: The goal isn't to convert or convince, but to illuminate. Each seeker 
 
 export function buildContextFromQuotes(quotes: Array<{ text: string; reference: string; url: string }>): string {
   return quotes
-    .map((q, i) => `[${i + 1}] "${q.text}" — ${q.reference}`)
+    .map((q, i) => {
+      // Count sentences in the quote
+      const sentenceCount = q.text.split(/(?<=[.!?])\s+/).filter(s => s.trim()).length;
+      return `[${i + 1}] "${q.text}" — ${q.reference} (${sentenceCount} sentences)`;
+    })
     .join('\n\n');
 }
