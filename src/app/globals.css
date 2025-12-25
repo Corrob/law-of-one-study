@@ -171,6 +171,14 @@ body {
   color: var(--lo1-starlight);
 }
 
+/* Ra quote card - prevent layout shifts */
+.ra-quote {
+  /* Use contain to prevent layout shifts */
+  contain: layout;
+  /* Reserve space to prevent shifts during animation */
+  will-change: auto;
+}
+
 /* Starburst icon animation */
 @keyframes gentle-glow {
   0%, 100% { opacity: 1; }

@@ -69,13 +69,14 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
         onFocus={handleFocus}
         placeholder={placeholder || "Ask about the Ra Material..."}
         disabled={disabled}
-        rows={1}
+        rows={2}
         className="flex-1 resize-none rounded-xl border border-[var(--lo1-celestial)]/30 px-4 py-3
                    focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:border-transparent
                    disabled:opacity-50 disabled:cursor-not-allowed
                    bg-[var(--lo1-deep-space)]/80 text-[var(--lo1-starlight)]
-                   placeholder:text-[var(--lo1-stardust)]"
-        style={{ minHeight: '48px', maxHeight: '120px' }}
+                   placeholder:text-[var(--lo1-stardust)]
+                   sm:rows-1"
+        style={{ minHeight: '56px', maxHeight: '120px' }}
       />
       <button
         onClick={handleSend}
