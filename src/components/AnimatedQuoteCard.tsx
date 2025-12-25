@@ -71,11 +71,9 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
         </a>
       </div>
 
-      {segments.length === 0 ? (
-        // Show placeholder while waiting for first character
-        <div className="h-6" />
-      ) : (
-        segments.map((segment, index) => (
+      {/* Content area - maintain consistent spacing */}
+      <div className="min-h-[1.5rem]">
+        {segments.map((segment, index) => (
           <div key={index} className={segment.type === 'ra' ? 'mt-3' : ''}>
             {/* Only show Ra label, Questioner is in header */}
             {segment.type === 'ra' && (
@@ -93,8 +91,8 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
               {segment.content}
             </div>
           </div>
-        ))
-      )}
+        ))}
+      </div>
     </div>
   );
 }
