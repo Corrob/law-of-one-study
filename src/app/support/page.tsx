@@ -51,7 +51,7 @@ export default function SupportPage() {
             </ul>
 
             <p className="!text-sm !mt-6 !mb-6 p-4 bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/30 rounded">
-              <strong className="!text-[var(--lo1-gold)]">Important:</strong> The AI's explanatory text is meant to help you understand, but it should not be considered authoritative. Only the direct quotes from Ra (shown in the highlighted quote cards) are authentic passages from the Ra Material. The AI's commentary and interpretation may contain inaccuracies or reflect the AI's own understanding rather than Ra's teachings.
+              <strong className="!text-[var(--lo1-gold)]">Important:</strong> The AI's explanatory text is meant to help you understand, but it should not be considered authoritative and may contain errors. Like all AI language models, this chatbot can sometimes "hallucinate" or generate inaccurate information. Only the direct quotes from Ra (shown in the highlighted quote cards) are authentic passages from the Ra Material. The AI's commentary and interpretation may contain inaccuracies or misinterpret Ra's teachings.
             </p>
           </section>
 
@@ -126,12 +126,15 @@ export default function SupportPage() {
 
           {/* Disclaimer */}
           <section className="mb-12 p-6 bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 rounded-lg">
-            <h2 className="!mt-0">Disclaimer</h2>
+            <h2 className="!mt-0">Important Disclaimer</h2>
             <p>
-              This AI study companion is designed to help you explore the Ra Material, but it is not a replacement for reading the original sessions. The AI's interpretations and explanatory text may contain errors or misunderstandings.
+              <strong>This tool is far from a primary study of the Ra Material and should only be used to supplement your study or for curiosity.</strong> It is not a replacement for reading the original sessions directly.
+            </p>
+            <p>
+              Like all AI language models, this chatbot has limitations and can potentially provide inaccurate or misleading information. The AI may sometimes "hallucinate" (generate information that doesn't exist in the source material) or misinterpret Ra's teachings. Only the highlighted quote cards contain verified passages from the Ra Material—all other explanatory text is AI-generated interpretation that may contain errors.
             </p>
             <p className="!mb-0">
-              <strong>Always verify important information</strong> by consulting the original Ra Material at <a href="https://www.lawofone.info" target="_blank" rel="noopener noreferrer">lawofone.info</a> or in the published books available from <a href="https://www.llresearch.org" target="_blank" rel="noopener noreferrer">L/L Research</a>.
+              <strong>Always verify important information</strong> by consulting the original Ra Material at <a href="https://www.lawofone.info" target="_blank" rel="noopener noreferrer">lawofone.info</a> or in the published books available from <a href="https://www.llresearch.org" target="_blank" rel="noopener noreferrer">L/L Research</a>. For serious study of the Law of One, there is no substitute for reading the primary source material.
             </p>
           </section>
 
