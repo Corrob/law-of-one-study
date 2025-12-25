@@ -40,7 +40,17 @@ function getShortReference(reference: string): string {
 }
 
 export default function QuoteCard({ quote }: QuoteCardProps) {
-  const segments = formatRaText(quote.text);
+  // Apply character range if specified
+  let displayText = quote.text;
+  if (quote.charStart !== undefined && quote.charEnd !== undefined) {
+    const excerpt = quote.text.slice(quote.charStart, quote.charEnd);
+    const hasTextBefore = quote.charStart > 0;
+    const hasTextAfter = quote.charEnd < quote.text.length;
+
+    displayText = `${hasTextBefore ? '...' : ''}${excerpt}${hasTextAfter ? '...' : ''}`;
+  }
+
+  const segments = formatRaText(displayText);
   const shortRef = getShortReference(quote.reference);
 
   return (

@@ -17,6 +17,7 @@ const STYLE_RULES = `STYLE:
 
 const QUOTE_FORMAT_RULES = `HOW TO INSERT QUOTES:
 - Insert quotes using: {{QUOTE:1}} or {{QUOTE:2}} (the number matches the passage provided)
+- For long quotes, you can show just a portion: {{QUOTE:1:100:500}} (characters 100-500)
 - The quote displays as a formatted card - NEVER write out the quote text yourself
 - Place quotes BETWEEN paragraphs, never mid-sentence
 - End your sentence with a period BEFORE the marker, start fresh AFTER
@@ -28,16 +29,31 @@ CORRECT:
 
 This illustrates the core principle."
 
+LONG QUOTE EXAMPLE:
+"Ra addresses this specific point directly.
+
+{{QUOTE:2:450:890}}
+
+This focused excerpt captures the essence without overwhelming."
+
 WRONG:
 "As Ra says {{QUOTE:1}} which means..."
 "Ra states that '...' (1.1)"`;
 
 const QUOTE_SELECTION_RULES = `CHOOSING QUOTES:
 - Pick quotes that DIRECTLY answer the user's question
-- Prefer quotes introducing NEW information over ones echoing your explanation
+- Use quotes to validate and support your explanations - it's good if they reinforce what you've said
+- Quote excerpts add credibility even if they echo your words - Ra's voice carries authority
 - If available quotes seem tangential, use only 1 or none
 - Quality over quantity - 1 perfect quote beats 2 mediocre ones
-- AVOID REPETITION: If a quote was shown earlier in this conversation, do not use it again. Choose a fresh passage or skip including a quote if all available ones have been used recently.`;
+- AVOID REPETITION: If a quote was shown earlier in this conversation, do not use it again. Choose a fresh passage or skip including a quote if all available ones have been used recently.
+
+WHEN TO USE CHARACTER RANGES:
+- If a quote is longer than ~600 characters, consider showing just the most relevant portion
+- Use character ranges to extract the exact part that answers the question
+- Typical range: 200-600 characters of focused content
+- Too short (<150 chars) loses context; too long (>800 chars) becomes overwhelming
+- Count characters carefully to capture complete sentences at both ends`;
 
 const OFF_TOPIC_HANDLING = `OFF-TOPIC QUESTIONS:
 If the question isn't about the Ra Material or Law of One:

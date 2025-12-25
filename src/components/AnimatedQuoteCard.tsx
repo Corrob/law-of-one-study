@@ -43,12 +43,22 @@ function getShortReference(reference: string): string {
 }
 
 export default function AnimatedQuoteCard({ quote, animate = true, onComplete }: AnimatedQuoteCardProps) {
+  // Apply character range if specified
+  let fullText = quote.text;
+  if (quote.charStart !== undefined && quote.charEnd !== undefined) {
+    const excerpt = quote.text.slice(quote.charStart, quote.charEnd);
+    const hasTextBefore = quote.charStart > 0;
+    const hasTextAfter = quote.charEnd < quote.text.length;
+
+    fullText = `${hasTextBefore ? '...' : ''}${excerpt}${hasTextAfter ? '...' : ''}`;
+  }
+
   const { displayedText, isComplete } = useQuoteAnimation(
-    animate ? quote.text : '',
+    animate ? fullText : '',
     { speed: 50, startDelay: 0, onComplete }
   );
 
-  const textToShow = animate ? displayedText : quote.text;
+  const textToShow = animate ? displayedText : fullText;
   const shortRef = getShortReference(quote.reference);
 
   // Format the text being displayed (works for both partial and complete text)
