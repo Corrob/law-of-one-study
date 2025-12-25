@@ -8,7 +8,7 @@ interface SearchQueriesResponse {
 
 /**
  * Generates optimized semantic search queries based on classification
- * Returns 2 focused queries for better results
+ * Returns 2 queries: user's original + AI-enhanced conceptual
  */
 export async function generateSearchQueries(
   message: string,
@@ -17,59 +17,66 @@ export async function generateSearchQueries(
   try {
     const { intent } = classification;
 
+    // Query 1: ALWAYS use the user's original question
+    // This preserves their exact terminology and phrasing
+    const userQuery = message;
+
+    // Query 2: Generate AI-enhanced conceptual query
     const response = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
-          content: `You are generating semantic search queries to find relevant Ra Material passages.
+          content: `You are generating ONE semantic search query to find relevant Ra Material passages.
 
-Generate 2 optimized search queries based on the user's intent:
+Your query should COMPLEMENT the user's original question by:
+- Adding conceptual keywords they didn't use
+- Including related Ra Material concepts
+- Expanding abbreviations or casual language
+- Adding relevant session topics
 
-- For RETRIEVE intent: Include exact terms, session references, specific concepts
-- For UNDERSTAND intent: Focus on conceptual keywords, relationships, mechanisms
-- For APPLY intent: Include catalyst-related terms, practical wisdom, personal experience themes
+For different intents:
+- RETRIEVE: Include session numbers, specific Ra terminology
+- UNDERSTAND: Add conceptual relationships, mechanisms
+- APPLY: Include catalyst, polarization, personal growth themes
 
-Make queries specific enough to find relevant passages but broad enough to capture related content.
-Avoid overly long queries - aim for 4-8 keywords per query.`
+Keep it focused: 5-10 keywords maximum.`
         },
         {
           role: 'user',
-          content: `User query: "${message}"
+          content: `User's original question: "${message}"
 Classification: ${intent}
 
-Generate 2 optimized search queries.`
+Generate ONE enhanced search query that complements (not replaces) the user's question.`
         }
       ],
       response_format: {
         type: 'json_schema',
         json_schema: {
-          name: 'search_queries',
+          name: 'search_query',
           strict: true,
           schema: {
             type: 'object',
             properties: {
-              queries: {
-                type: 'array',
-                items: { type: 'string' },
-                minItems: 2,
-                maxItems: 2
-              }
+              query: { type: 'string' }
             },
-            required: ['queries'],
+            required: ['query'],
             additionalProperties: false
           }
         }
       }
     });
 
-    const result = JSON.parse(response.choices[0]?.message?.content || '{}') as SearchQueriesResponse;
-    return result.queries || [message]; // Fallback to original message
+    const result = JSON.parse(response.choices[0]?.message?.content || '{}') as { query: string };
+    const enhancedQuery = result.query || message;
+
+    // Return both: user's original + AI enhancement
+    return [userQuery, enhancedQuery];
 
   } catch (error) {
     console.error('Search query generation error:', error);
-    // Fallback: use original message
-    return [message];
+    // Fallback: just use user's message twice
+    return [message, message];
   }
 }
 
