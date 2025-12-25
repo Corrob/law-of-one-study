@@ -166,7 +166,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             quotes = event.data.quotes as Quote[];
             setStreamingQuotes(quotes);
           } else if (event.type === 'chunk') {
-            const chunkData = event.data as { type: 'text' | 'quote'; content?: string; index?: number; charStart?: number; charEnd?: number };
+            const chunkData = event.data as { type: 'text' | 'quote'; content?: string; index?: number; sentenceStart?: number; sentenceEnd?: number };
             chunkIdCounter++;
 
             if (chunkData.type === 'text' && chunkData.content) {
@@ -179,9 +179,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               const quoteIndex = chunkData.index - 1; // Convert to 0-indexed
               if (quoteIndex >= 0 && quoteIndex < quotes.length) {
                 const quote = { ...quotes[quoteIndex] };
-                if (chunkData.charStart !== undefined && chunkData.charEnd !== undefined) {
-                  quote.charStart = chunkData.charStart;
-                  quote.charEnd = chunkData.charEnd;
+                if (chunkData.sentenceStart !== undefined && chunkData.sentenceEnd !== undefined) {
+                  quote.sentenceStart = chunkData.sentenceStart;
+                  quote.sentenceEnd = chunkData.sentenceEnd;
                 }
                 addChunk({
                   id: `chunk-${chunkIdCounter}`,

@@ -17,7 +17,7 @@ const STYLE_RULES = `STYLE:
 
 const QUOTE_FORMAT_RULES = `HOW TO INSERT QUOTES:
 - Insert quotes using: {{QUOTE:1}} or {{QUOTE:2}} (the number matches the passage provided)
-- For long quotes, you can show just a portion: {{QUOTE:1:100:500}} (characters 100-500)
+- For long quotes, you can show just a portion: {{QUOTE:1:s3:s7}} (sentences 3-7)
 - The quote displays as a formatted card - NEVER write out the quote text yourself
 - Place quotes BETWEEN paragraphs, never mid-sentence
 - End your sentence with a period BEFORE the marker, start fresh AFTER
@@ -32,7 +32,7 @@ This illustrates the core principle."
 LONG QUOTE EXAMPLE:
 "Ra addresses this specific point directly.
 
-{{QUOTE:2:450:890}}
+{{QUOTE:2:s4:s8}}
 
 This focused excerpt captures the essence without overwhelming."
 
@@ -48,12 +48,13 @@ const QUOTE_SELECTION_RULES = `CHOOSING QUOTES:
 - Quality over quantity - 1 perfect quote beats 2 mediocre ones
 - AVOID REPETITION: If a quote was shown earlier in this conversation, do not use it again. Choose a fresh passage or skip including a quote if all available ones have been used recently.
 
-WHEN TO USE CHARACTER RANGES:
-- If a quote is longer than ~600 characters, consider showing just the most relevant portion
-- Use character ranges to extract the exact part that answers the question
-- Typical range: 200-600 characters of focused content
-- Too short (<150 chars) loses context; too long (>800 chars) becomes overwhelming
-- Count characters carefully to capture complete sentences at both ends`;
+WHEN TO USE SENTENCE RANGES:
+- If a quote is very long (10+ sentences), consider showing just the most relevant portion
+- Use sentence ranges to extract specific sentences: {{QUOTE:N:s3:s7}} shows sentences 3 through 7
+- Sentences are numbered starting from 1 (the first sentence is s1)
+- Count sentences by looking for periods, question marks, or exclamation points
+- Typical range: 3-8 sentences for focused content
+- Make sure your range captures complete thoughts with proper context`;
 
 const OFF_TOPIC_HANDLING = `OFF-TOPIC QUESTIONS:
 If the question isn't about the Ra Material or Law of One:

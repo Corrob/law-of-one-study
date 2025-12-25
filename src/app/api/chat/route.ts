@@ -14,17 +14,19 @@ interface ChatRequest {
   history: ChatMessage[];
 }
 
-// Check if string could be the start of a {{QUOTE:N}} or {{QUOTE:N:START:END}} marker
+// Check if string could be the start of a {{QUOTE:N}} or {{QUOTE:N:s2:s5}} marker
 function couldBePartialMarker(s: string): boolean {
   const prefixes = ['{', '{{', '{{Q', '{{QU', '{{QUO', '{{QUOT', '{{QUOTE', '{{QUOTE:'];
   if (prefixes.includes(s)) return true;
   if (/^\{\{QUOTE:\d+$/.test(s)) return true;
   if (/^\{\{QUOTE:\d+\}$/.test(s)) return true;
   if (/^\{\{QUOTE:\d+:$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:\d+$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:\d+:$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:\d+:\d+$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:\d+:\d+\}$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:s$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:s\d+$/.test(s)) return true;
+  if (/^\{\{QUOTE:\d+:s\d+:s\d+\}$/.test(s)) return true;
   return false;
 }
 
@@ -119,7 +121,7 @@ export async function POST(request: NextRequest) {
 
                 // Process buffer for complete markers
                 while (true) {
-                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::(\d+):(\d+))?\}\}/);
+                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/);
                   if (!markerMatch || markerMatch.index === undefined) {
                     let partialStart = -1;
                     for (let i = Math.max(0, buffer.length - 25); i < buffer.length; i++) {
@@ -147,13 +149,13 @@ export async function POST(request: NextRequest) {
                     accumulatedText = '';
                   }
 
-                  const quoteData: { type: string; index: number; charStart?: number; charEnd?: number } = {
+                  const quoteData: { type: string; index: number; sentenceStart?: number; sentenceEnd?: number } = {
                     type: 'quote',
                     index: parseInt(markerMatch[1], 10)
                   };
                   if (markerMatch[2] && markerMatch[3]) {
-                    quoteData.charStart = parseInt(markerMatch[2], 10);
-                    quoteData.charEnd = parseInt(markerMatch[3], 10);
+                    quoteData.sentenceStart = parseInt(markerMatch[2], 10);
+                    quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
                   }
                   send('chunk', quoteData);
                   buffer = buffer.slice(markerMatch.index + markerMatch[0].length);
@@ -228,7 +230,7 @@ export async function POST(request: NextRequest) {
 
                 // Process buffer for complete markers
                 while (true) {
-                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::(\d+):(\d+))?\}\}/);
+                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/);
                   if (!markerMatch || markerMatch.index === undefined) {
                     // No complete marker found
                     // Check if buffer ends with partial marker
@@ -264,13 +266,13 @@ export async function POST(request: NextRequest) {
                   }
 
                   // Emit quote chunk
-                  const quoteData: { type: string; index: number; charStart?: number; charEnd?: number } = {
+                  const quoteData: { type: string; index: number; sentenceStart?: number; sentenceEnd?: number } = {
                     type: 'quote',
                     index: parseInt(markerMatch[1], 10)
                   };
                   if (markerMatch[2] && markerMatch[3]) {
-                    quoteData.charStart = parseInt(markerMatch[2], 10);
-                    quoteData.charEnd = parseInt(markerMatch[3], 10);
+                    quoteData.sentenceStart = parseInt(markerMatch[2], 10);
+                    quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
                   }
                   send('chunk', quoteData);
 

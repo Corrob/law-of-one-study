@@ -36,6 +36,22 @@ function formatRaText(text: string): { type: 'questioner' | 'ra' | 'text'; conte
   return segments;
 }
 
+// Split text into sentences (handles Ra Material formatting)
+function splitIntoSentences(text: string): string[] {
+  // Split on period followed by space or newline, question mark, or exclamation
+  // But preserve decimal numbers and common abbreviations
+  const sentences: string[] = [];
+  const parts = text.split(/(?<=[.!?])\s+/);
+
+  for (const part of parts) {
+    if (part.trim()) {
+      sentences.push(part.trim());
+    }
+  }
+
+  return sentences;
+}
+
 // Extract just the session.question from reference like "Ra 49.8"
 function getShortReference(reference: string): string {
   const match = reference.match(/(\d+\.\d+)/);
@@ -43,14 +59,20 @@ function getShortReference(reference: string): string {
 }
 
 export default function AnimatedQuoteCard({ quote, animate = true, onComplete }: AnimatedQuoteCardProps) {
-  // Apply character range if specified
+  // Apply sentence range if specified
   let fullText = quote.text;
-  if (quote.charStart !== undefined && quote.charEnd !== undefined) {
-    const excerpt = quote.text.slice(quote.charStart, quote.charEnd);
-    const hasTextBefore = quote.charStart > 0;
-    const hasTextAfter = quote.charEnd < quote.text.length;
+  if (quote.sentenceStart !== undefined && quote.sentenceEnd !== undefined) {
+    const sentences = splitIntoSentences(quote.text);
+    // Convert from 1-indexed to 0-indexed and extract range
+    const start = Math.max(0, quote.sentenceStart - 1);
+    const end = Math.min(sentences.length, quote.sentenceEnd);
+    const selectedSentences = sentences.slice(start, end);
 
-    fullText = `${hasTextBefore ? '...' : ''}${excerpt}${hasTextAfter ? '...' : ''}`;
+    const hasTextBefore = quote.sentenceStart > 1;
+    const hasTextAfter = quote.sentenceEnd < sentences.length;
+
+    const excerpt = selectedSentences.join(' ');
+    fullText = `${hasTextBefore ? '... ' : ''}${excerpt}${hasTextAfter ? ' ...' : ''}`;
   }
 
   const { displayedText, isComplete } = useQuoteAnimation(
