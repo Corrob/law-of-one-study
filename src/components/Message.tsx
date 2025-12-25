@@ -54,14 +54,24 @@ interface SegmentRendererProps {
 
 function SegmentRenderer({ segment, isFirst = false, onSearch }: SegmentRendererProps) {
   if (segment.type === 'text') {
+    // Split text by double newlines to preserve paragraph breaks
+    const paragraphs = segment.content.split('\n\n').filter(p => p.trim());
+
     return (
-      <span className={isFirst ? '' : 'mt-3 block'}>
-        {onSearch ? (
-          <LinkedText text={segment.content} onSearch={onSearch} />
-        ) : (
-          segment.content
-        )}
-      </span>
+      <>
+        {paragraphs.map((paragraph, idx) => (
+          <p
+            key={idx}
+            className={`${isFirst && idx === 0 ? '' : 'mt-4'} leading-relaxed`}
+          >
+            {onSearch ? (
+              <LinkedText text={paragraph} onSearch={onSearch} />
+            ) : (
+              paragraph
+            )}
+          </p>
+        ))}
+      </>
     );
   }
 
