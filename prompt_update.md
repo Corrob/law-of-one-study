@@ -115,9 +115,11 @@ interface SearchQueries {
 4. Select top K unique results based on depth
 
 **Results per depth level:**
-- **SURFACE**: 5 unique passages
-- **INTERMEDIATE**: 8 unique passages
-- **DEEP**: 12 unique passages
+- **SURFACE**: 3 unique passages (reduced from 5 to prevent quote overload)
+- **INTERMEDIATE**: 4 unique passages (reduced from 8 to prevent quote overload)
+- **DEEP**: 6 unique passages (reduced from 12 to prevent quote overload)
+
+**Rationale:** Providing 3-6 quotes allows LLM to select 1-2 best matches. Providing 5-12 quotes resulted in LLM using 4-5 quotes, overwhelming users.
 
 **Deduplication logic:**
 - If same session.question appears in multiple results, keep the one with highest similarity score

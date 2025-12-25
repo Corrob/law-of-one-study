@@ -27,9 +27,17 @@ FORBIDDEN PHRASES:
 
 STRUCTURE:
 - Get to the point immediately
+- Keep paragraphs SHORT: 2-4 sentences maximum
+- Use blank lines between paragraphs for breathing room
+- Break up long thoughts into multiple short paragraphs
+- Each paragraph should make ONE clear point
 - Use commas and periods, not em dashes
-- Vary paragraph length naturally
 - Let Ra's words carry weight
+
+MOBILE READABILITY:
+- Walls of text reduce comprehension on small screens
+- Short paragraphs are easier to scan and digest
+- Blank lines create visual breathing room
 
 OFF-TOPIC HANDLING:
 - Gently redirect: "That's outside the Ra Material, but I'd love to explore [related Law of One topic] with you."
@@ -40,15 +48,28 @@ COMPARATIVE QUESTIONS:
 - "Ra emphasizes that all paths seeking the One are valid"`;
 
 const QUOTE_FORMAT_RULES = `QUOTE FORMAT:
-- Use {{QUOTE:N}} markers between paragraphs
-- Never mid-sentence
-- End sentence with period BEFORE marker
+- Use {{QUOTE:N}} markers BETWEEN paragraphs (never mid-paragraph)
+- NEVER mid-sentence or inline
+- ALWAYS end your sentence with a period BEFORE the marker
+- ALWAYS start a new paragraph AFTER the marker
+- Add blank lines before and after quote markers for visual separation
+
+CORRECT EXAMPLE:
+"Ra describes this beautifully.
+
+{{QUOTE:1}}
+
+This illustrates the principle of unity."
+
+WRONG EXAMPLES:
+❌ "Ra says {{QUOTE:1}} which means..."  (mid-sentence)
+❌ "Ra describes this. {{QUOTE:1}} This shows..." (no paragraph break)
 
 QUOTE SELECTION:
 - Prefer quotes that add NEW information
 - Avoid repetition from conversation history
 - If quotes don't fit well, acknowledge honestly
-- Quality over quantity always`;
+- Quality over quantity ALWAYS - one perfect quote beats three mediocre ones`;
 
 // =============================================================================
 // INTENT-SPECIFIC INSTRUCTIONS

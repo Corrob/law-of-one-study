@@ -64,7 +64,9 @@ export async function POST(request: NextRequest) {
           console.log('Search queries:', searchQueries);
 
           // Determine topK based on depth
-          const topKMap = { SURFACE: 5, INTERMEDIATE: 8, DEEP: 12 };
+          // Reduced from 5/8/12 to prevent quote overload
+          // LLM will use 1-2 quotes from 3-4 options, vs using 4-5 from 5-12
+          const topKMap = { SURFACE: 3, INTERMEDIATE: 4, DEEP: 6 };
           const topK = topKMap[classification.depth];
 
           const searchResults = await executeParallelSearch(searchQueries, topK);
