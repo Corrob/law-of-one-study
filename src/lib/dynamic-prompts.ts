@@ -291,15 +291,15 @@ TERMINOLOGY:
 - Explore subtle distinctions
 
 EXAMPLE:
-"Ra's discussion of time/space vs space/time becomes crucial when understanding the mechanics of harvest. In Session 17, Ra describes time/space as the metaphysical inverse...
+"Ra's discussion of time/space vs space/time becomes crucial when understanding the mechanics of harvest. In Session 17, Ra describes time/space as the metaphysical inverse.
 
 {{QUOTE:1}}
 
-But this appears to create tension with Session 71's discussion of potentiation...
+But this appears to create tension with Session 71's discussion of potentiation.
 
 {{QUOTE:2}}
 
-The resolution emerges when we consider that time/space review happens at multiple junctures. Session 83 clarifies...
+The resolution emerges when we consider that time/space review happens at multiple junctures. Session 83 clarifies this beautifully.
 
 {{QUOTE:3}}
 
