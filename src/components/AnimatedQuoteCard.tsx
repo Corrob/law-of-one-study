@@ -38,10 +38,14 @@ function formatRaText(text: string): { type: 'questioner' | 'ra' | 'text'; conte
 
 // Split text into sentences (handles Ra Material formatting)
 function splitIntoSentences(text: string): string[] {
+  // Fix periods without spaces first (same normalization as formatRaText)
+  // This ensures sentence counting matches the display formatting
+  const normalized = text.replace(/\.(?=[A-Z])/g, '. ');
+
   // Split on period followed by space or newline, question mark, or exclamation
   // But preserve decimal numbers and common abbreviations
   const sentences: string[] = [];
-  const parts = text.split(/(?<=[.!?])\s+/);
+  const parts = normalized.split(/(?<=[.!?])\s+/);
 
   for (const part of parts) {
     if (part.trim()) {
@@ -54,6 +58,8 @@ function splitIntoSentences(text: string): string[] {
 
 // Find paragraph boundaries and expand sentence range to include full paragraphs
 function expandToParagraphBoundaries(text: string, sentenceStart: number, sentenceEnd: number): { start: number; end: number } {
+  // Normalize text to add spaces after periods (same as splitIntoSentences)
+  const normalizedText = text.replace(/\.(?=[A-Z])/g, '. ');
   const sentences = splitIntoSentences(text);
 
   // Find paragraph delimiters by detecting speaker changes
@@ -63,21 +69,21 @@ function expandToParagraphBoundaries(text: string, sentenceStart: number, senten
   // Find all occurrences of "Questioner:" and "Ra:" (after the first character)
   const speakerPattern = /\s(Questioner:|Ra:)/g;
   let match;
-  while ((match = speakerPattern.exec(text)) !== null) {
+  while ((match = speakerPattern.exec(normalizedText)) !== null) {
     // Add position right before the speaker marker (after the space)
     paragraphDelimiters.push(match.index + 1);
   }
 
-  paragraphDelimiters.push(text.length); // End of text
+  paragraphDelimiters.push(normalizedText.length); // End of text
 
   // Sort delimiters (should already be sorted, but just to be safe)
   paragraphDelimiters.sort((a, b) => a - b);
 
-  // Map sentences to character positions
+  // Map sentences to character positions in the normalized text
   const sentencePositions: { start: number; end: number }[] = [];
   let searchPos = 0;
   for (const sentence of sentences) {
-    const start = text.indexOf(sentence, searchPos);
+    const start = normalizedText.indexOf(sentence, searchPos);
     if (start !== -1) {
       sentencePositions.push({ start, end: start + sentence.length });
       searchPos = start + sentence.length;
