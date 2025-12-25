@@ -56,18 +56,22 @@ function splitIntoSentences(text: string): string[] {
 function expandToParagraphBoundaries(text: string, sentenceStart: number, sentenceEnd: number): { start: number; end: number } {
   const sentences = splitIntoSentences(text);
 
-  // Split text into paragraphs (by double newline or speaker changes)
+  // Find paragraph delimiters by detecting speaker changes
+  // In Ra material, paragraphs are separated by "Questioner:" and "Ra:" markers
   const paragraphDelimiters: number[] = [0]; // Start of text
-  const lines = text.split('\n');
-  let charCount = 0;
 
-  for (let i = 0; i < lines.length; i++) {
-    if (i > 0 && (lines[i-1].trim() === '' || lines[i].match(/^(Questioner:|Ra:)/))) {
-      paragraphDelimiters.push(charCount);
-    }
-    charCount += lines[i].length + 1; // +1 for newline
+  // Find all occurrences of "Questioner:" and "Ra:" (after the first character)
+  const speakerPattern = /\s(Questioner:|Ra:)/g;
+  let match;
+  while ((match = speakerPattern.exec(text)) !== null) {
+    // Add position right before the speaker marker (after the space)
+    paragraphDelimiters.push(match.index + 1);
   }
+
   paragraphDelimiters.push(text.length); // End of text
+
+  // Sort delimiters (should already be sorted, but just to be safe)
+  paragraphDelimiters.sort((a, b) => a - b);
 
   // Map sentences to character positions
   const sentencePositions: { start: number; end: number }[] = [];
