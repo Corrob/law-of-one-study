@@ -24,6 +24,7 @@ export async function generateSearchQueries(
     // Query 2: Generate AI-enhanced conceptual query
     const response = await openai.chat.completions.create({
       model: 'gpt-5-mini',
+      reasoning_effort: 'low',
       messages: [
         {
           role: 'system',

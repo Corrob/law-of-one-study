@@ -19,6 +19,7 @@ export async function classifyQuery(
 
     const response = await openai.chat.completions.create({
       model: 'gpt-5-mini',
+      reasoning_effort: 'low',
       messages: [
         {
           role: 'system',

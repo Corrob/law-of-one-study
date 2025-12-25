@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
 
           const response = await openai.chat.completions.create({
             model: 'gpt-5-mini',
+            reasoning_effort: 'low',
             messages: [
               { role: 'system', content: systemPrompt },
               ...recentHistory.map((m) => ({
