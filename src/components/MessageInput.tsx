@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent, useRef, useEffect } from 'react';
 
 interface MessageInputProps {
   onSend: (message: string) => void;
@@ -10,6 +10,7 @@ interface MessageInputProps {
 
 export default function MessageInput({ onSend, disabled, placeholder }: MessageInputProps) {
   const [input, setInput] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = () => {
     const trimmed = input.trim();
@@ -26,12 +27,46 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
     }
   };
 
+  // Scroll textarea into view when focused (for mobile keyboard)
+  const handleFocus = () => {
+    // Use setTimeout to ensure the keyboard has started to appear
+    setTimeout(() => {
+      textareaRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }, 300);
+  };
+
+  // Also handle when keyboard appears on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (document.activeElement === textareaRef.current) {
+        setTimeout(() => {
+          textareaRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+        }, 100);
+      }
+    };
+
+    // Listen for viewport resize (keyboard appearance)
+    window.visualViewport?.addEventListener('resize', handleResize);
+
+    return () => {
+      window.visualViewport?.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
     <div className="flex gap-3 items-end">
       <textarea
+        ref={textareaRef}
         value={input}
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
         placeholder={placeholder || "Ask about the Ra Material..."}
         disabled={disabled}
         rows={1}
