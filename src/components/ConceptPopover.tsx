@@ -14,6 +14,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   const [isPinned, setIsPinned] = useState(false); // Clicked to stay open
   const [position, setPosition] = useState<'above' | 'below'>('below');
   const [horizontalOffset, setHorizontalOffset] = useState(0);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -21,14 +22,19 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
 
   const definition = getConceptDefinition(term);
 
+  // Detect touch device on mount
+  useEffect(() => {
+    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  }, []);
+
   const closePopover = useCallback(() => {
     setIsOpen(false);
     setIsPinned(false);
-    // Prevent immediate reopen from hover
+    // Prevent immediate reopen from any interaction
     preventReopenRef.current = true;
     setTimeout(() => {
       preventReopenRef.current = false;
-    }, 300);
+    }, 500); // Increased to 500ms for better touch handling
   }, []);
 
   // Close popover when clicking outside (only if pinned)
@@ -101,6 +107,9 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   }, []);
 
   const handleMouseEnter = () => {
+    // Disable hover on touch devices
+    if (isTouchDevice) return;
+
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
@@ -115,6 +124,9 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   };
 
   const handleMouseLeave = () => {
+    // Disable hover on touch devices
+    if (isTouchDevice) return;
+
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
@@ -126,9 +138,17 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
     }
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Don't reopen if we just closed
+    if (preventReopenRef.current) {
+      return;
+    }
+
     // Click pins/unpins the popover
-    if (isPinned) {
+    if (isPinned || isOpen) {
       closePopover();
     } else {
       setIsOpen(true);
@@ -137,6 +157,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   };
 
   const handleSearch = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     closePopover();
     onSearch(`Please help me understand ${term}`);
