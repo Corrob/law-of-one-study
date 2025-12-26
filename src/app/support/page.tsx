@@ -1,6 +1,19 @@
-'use client';
-
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'About | Law of One Study Companion',
+  description: 'Learn about the Law of One Study Companion - an AI-powered tool for exploring the Ra Material. Free, open-source, and community-funded.',
+  alternates: {
+    canonical: '/support',
+  },
+  openGraph: {
+    title: 'About | Law of One Study Companion',
+    description: 'Learn about the Law of One Study Companion - an AI-powered tool for exploring the Ra Material.',
+    url: 'https://lawofone.study/support',
+    type: 'website',
+  },
+};
 
 // Spiral/Unity icon (same as main page)
 function UnityIcon({ className }: { className?: string }) {
