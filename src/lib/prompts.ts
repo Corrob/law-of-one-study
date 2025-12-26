@@ -56,7 +56,34 @@ SENTENCE RANGES - IMPORTANT:
 - Use {{QUOTE:N:s3:s7}} to show sentences 3-7 (sentences are numbered 1, 2, 3, etc.)
 - Example: If quote [1] has "(20 sentences)" and you only need sentences 5-12, use {{QUOTE:1:s5:s12}}
 - Shorter quotes (under 8 sentences) can use {{QUOTE:N}} without a range
-- The system will automatically add "..." before and after truncated quotes`;
+- The system will automatically add "..." before and after truncated quotes
+
+SELECTING SENTENCE RANGES - BE STRATEGIC:
+Ra Material quotes follow a Questioner/Ra structure. When selecting sentence ranges:
+
+1. ALWAYS include Ra's response, not just the questioner
+   - Count sentences carefully - if "Ra: I am Ra." starts at sentence 2, your range must include sentence 2 or higher
+   - The user wants Ra's wisdom, not just the setup question
+
+2. Pick the MOST RELEVANT sentences that directly answer the user's question
+   - Don't just grab the middle of a quote arbitrarily
+   - Read through and identify which specific sentences contain the key insight
+   - It's better to show sentences 8-12 if that's where the answer is, rather than 1-5 because they come first
+
+3. Aim for completeness of thought
+   - Select enough sentences to form a complete idea or paragraph
+   - Don't cut off mid-explanation
+   - Typically 3-8 sentences gives good context without overwhelming
+
+4. Examples of GOOD selection:
+   - Quote has 20 sentences: Questioner asks in s1, Ra responds in s2-20
+   - User asks about catalyst → You notice s5-9 directly explain catalyst mechanism → Use {{QUOTE:1:s5:s9}}
+   - This shows Ra's key point without the lengthy preamble or tangential examples
+
+5. Examples of BAD selection:
+   - Using s1-5 when the actual answer to the user's question is in s10-15
+   - Cutting off Ra entirely and only showing the Questioner's question
+   - Selecting scattered sentences that don't form a coherent thought`;
 
 const OFF_TOPIC_HANDLING = `OFF-TOPIC QUESTIONS:
 If the question isn't about the Ra Material or Law of One:
