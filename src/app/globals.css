@@ -75,6 +75,15 @@ body {
   min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
 }
 
+/* Prevent buttons and interactive elements from being copied */
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* Starfield background */
 .starfield {
   position: absolute;
@@ -268,6 +277,8 @@ h1, h2, h3, h4, h5, h6 {
   font: inherit;
   cursor: help;
   transition: text-decoration-color 0.15s ease, color 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .concept-link:hover {
@@ -288,7 +299,7 @@ h1, h2, h3, h4, h5, h6 {
   display: inline;
 }
 
-/* Concept popover */
+/* Concept popover - prevent copying and layout */
 .concept-popover {
   position: absolute;
   left: 50%;
@@ -297,6 +308,8 @@ h1, h2, h3, h4, h5, h6 {
   width: 280px;
   max-width: 90vw;
   animation: popover-fade-in 0.15s ease-out;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .concept-popover-below {
@@ -370,6 +383,8 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
   cursor: pointer;
   transition: background 0.15s ease;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .concept-popover-search-btn:hover {

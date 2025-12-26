@@ -13,6 +13,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   const [isOpen, setIsOpen] = useState(false);
   const [isPinned, setIsPinned] = useState(false); // Clicked to stay open
   const [position, setPosition] = useState<'above' | 'below'>('below');
+  const [horizontalOffset, setHorizontalOffset] = useState(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -54,14 +55,33 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
     };
   }, [isPinned, closePopover]);
 
-  // Calculate position when opening
+  // Calculate position when opening - prevent off-screen rendering
   useEffect(() => {
-    if (isOpen && triggerRef.current) {
+    if (isOpen && triggerRef.current && popoverRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
 
+      // Vertical positioning
       setPosition(spaceBelow < 200 && spaceAbove > spaceBelow ? 'above' : 'below');
+
+      // Horizontal positioning - prevent overflow
+      // Popover is 280px wide (max-width: 90vw)
+      const popoverWidth = Math.min(280, window.innerWidth * 0.9);
+      const triggerCenter = rect.left + rect.width / 2;
+      const popoverLeft = triggerCenter - popoverWidth / 2;
+      const popoverRight = triggerCenter + popoverWidth / 2;
+
+      let offset = 0;
+      if (popoverLeft < 10) {
+        // Too far left, shift right
+        offset = 10 - popoverLeft;
+      } else if (popoverRight > window.innerWidth - 10) {
+        // Too far right, shift left
+        offset = window.innerWidth - 10 - popoverRight;
+      }
+
+      setHorizontalOffset(offset);
     }
   }, [isOpen]);
 
@@ -106,7 +126,8 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
     }
   };
 
-  const handleSearch = () => {
+  const handleSearch = (e: React.MouseEvent) => {
+    e.stopPropagation();
     closePopover();
     onSearch(`Please help me understand ${term}`);
   };
@@ -133,6 +154,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
           role="dialog"
           aria-label={`Definition of ${term}`}
           className={`concept-popover ${position === 'above' ? 'concept-popover-above' : 'concept-popover-below'}`}
+          style={{ transform: `translateX(calc(-50% + ${horizontalOffset}px))` }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
