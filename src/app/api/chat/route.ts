@@ -3,6 +3,7 @@ import { openai, createEmbedding } from '@/lib/openai';
 import { searchRaMaterial } from '@/lib/pinecone';
 import { INITIAL_RESPONSE_PROMPT, CONTINUATION_PROMPT, QUOTE_SEARCH_PROMPT, buildContextFromQuotes } from '@/lib/prompts';
 import { Quote } from '@/lib/types';
+import { applySentenceRangeToQuote } from '@/lib/quote-utils';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -149,17 +150,30 @@ export async function POST(request: NextRequest) {
                     accumulatedText = '';
                   }
 
-                  const quoteData: { type: string; index: number; sentenceStart?: number; sentenceEnd?: number } = {
-                    type: 'quote',
-                    index: parseInt(markerMatch[1], 10)
-                  };
-                  if (markerMatch[2] && markerMatch[3]) {
-                    quoteData.sentenceStart = parseInt(markerMatch[2], 10);
-                    quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
+                  // Parse quote marker and apply sentence range filtering on backend
+                  const quoteIndex = parseInt(markerMatch[1], 10);
+                  const quote = passages[quoteIndex - 1]; // Convert from 1-indexed to 0-indexed
+
+                  if (quote) {
+                    let quoteText = quote.text;
+
+                    // Apply sentence range if specified
+                    if (markerMatch[2] && markerMatch[3]) {
+                      const sentenceStart = parseInt(markerMatch[2], 10);
+                      const sentenceEnd = parseInt(markerMatch[3], 10);
+                      quoteText = applySentenceRangeToQuote(quoteText, sentenceStart, sentenceEnd);
+                      console.log('[API] Applied sentence range', sentenceStart, '-', sentenceEnd, 'to quote', quoteIndex);
+                    }
+
+                    console.log('[API] Matched marker:', markerMatch[0]);
+                    send('chunk', {
+                      type: 'quote',
+                      text: quoteText,
+                      reference: quote.reference,
+                      url: quote.url
+                    });
                   }
-                  console.log('[API] Matched marker:', markerMatch[0]);
-                  console.log('[API] Quote data being sent:', JSON.stringify(quoteData));
-                  send('chunk', quoteData);
+
                   buffer = buffer.slice(markerMatch.index + markerMatch[0].length);
                 }
               }
@@ -267,18 +281,29 @@ export async function POST(request: NextRequest) {
                     accumulatedText = '';
                   }
 
-                  // Emit quote chunk
-                  const quoteData: { type: string; index: number; sentenceStart?: number; sentenceEnd?: number } = {
-                    type: 'quote',
-                    index: parseInt(markerMatch[1], 10)
-                  };
-                  if (markerMatch[2] && markerMatch[3]) {
-                    quoteData.sentenceStart = parseInt(markerMatch[2], 10);
-                    quoteData.sentenceEnd = parseInt(markerMatch[3], 10);
+                  // Parse quote marker and apply sentence range filtering on backend
+                  const quoteIndex = parseInt(markerMatch[1], 10);
+                  const quote = passages[quoteIndex - 1]; // Convert from 1-indexed to 0-indexed
+
+                  if (quote) {
+                    let quoteText = quote.text;
+
+                    // Apply sentence range if specified
+                    if (markerMatch[2] && markerMatch[3]) {
+                      const sentenceStart = parseInt(markerMatch[2], 10);
+                      const sentenceEnd = parseInt(markerMatch[3], 10);
+                      quoteText = applySentenceRangeToQuote(quoteText, sentenceStart, sentenceEnd);
+                      console.log('[API] Applied sentence range', sentenceStart, '-', sentenceEnd, 'to quote', quoteIndex);
+                    }
+
+                    console.log('[API] Matched marker:', markerMatch[0]);
+                    send('chunk', {
+                      type: 'quote',
+                      text: quoteText,
+                      reference: quote.reference,
+                      url: quote.url
+                    });
                   }
-                  console.log('[API] Matched marker:', markerMatch[0]);
-                  console.log('[API] Quote data being sent:', JSON.stringify(quoteData));
-                  send('chunk', quoteData);
 
                   // Continue after marker
                   buffer = buffer.slice(markerMatch.index + markerMatch[0].length);

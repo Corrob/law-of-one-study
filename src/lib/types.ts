@@ -2,8 +2,6 @@ export interface Quote {
   text: string;
   reference: string;
   url: string;
-  sentenceStart?: number;
-  sentenceEnd?: number;
 }
 
 export type MessageSegment =
