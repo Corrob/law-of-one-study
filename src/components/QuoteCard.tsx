@@ -179,6 +179,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
 
     // Preserve paragraph structure when joining sentences
     // Detect which sentences start a new paragraph in the original text
+    const normalizedText = quote.text.replace(/\.(?=[A-Z])/g, '. ');
     const sentencePositions: { start: number; end: number }[] = [];
     let searchPos = 0;
     for (const sentence of sentences) {
