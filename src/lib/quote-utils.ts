@@ -28,11 +28,9 @@ export interface Paragraph {
 
 // Parse Ra material text into paragraphs with sentence ranges
 export function parseIntoParagraphs(text: string): Paragraph[] {
-  // Normalize text to add spaces after periods
-  const normalizedText = text.replace(/\.(?=[A-Z])/g, '. ');
-
   // Split by speaker changes (Questioner: and Ra:)
-  const parts = normalizedText.split(/(?=\s(?:Questioner:|Ra:))/);
+  // Don't normalize yet - we need to detect paragraph breaks first
+  const parts = text.split(/(?=\s(?:Questioner:|Ra:))/);
 
   const paragraphs: Paragraph[] = [];
   let sentenceIndex = 0; // Track which sentence we're at (0-indexed)
@@ -53,8 +51,9 @@ export function parseIntoParagraphs(text: string): Paragraph[] {
       content = trimmed.substring('Ra:'.length).trim();
     }
 
-    // Split this speaker's content by paragraph breaks (". " followed by uppercase)
-    const subParagraphs = content.split(/\.(?=\s+[A-Z])/);
+    // Split by paragraph breaks: period followed directly by uppercase (NO space)
+    // This is how the original source denotes paragraph breaks
+    const subParagraphs = content.split(/\.(?=[A-Z])/);
 
     for (let i = 0; i < subParagraphs.length; i++) {
       let paragraphText = subParagraphs[i].trim();

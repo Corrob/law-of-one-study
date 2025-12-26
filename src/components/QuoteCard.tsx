@@ -24,9 +24,8 @@ function formatRaText(text: string): { type: 'questioner' | 'ra' | 'text'; conte
     } else if (trimmed === 'Ra:') {
       currentType = 'ra';
     } else {
-      // Fix periods without spaces (paragraph breaks)
-      const fixed = trimmed.replace(/\.(?=[A-Z])/g, '.\n\n');
-      segments.push({ type: currentType, content: fixed });
+      // Backend now handles paragraph breaks, just pass through
+      segments.push({ type: currentType, content: trimmed });
     }
   }
 
