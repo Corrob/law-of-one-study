@@ -97,7 +97,9 @@ export function reconstructTextFromParagraphs(paragraphs: Paragraph[], hasTextBe
   const parts: string[] = [];
   let lastType: 'questioner' | 'ra' | 'text' | null = null;
 
-  for (const para of paragraphs) {
+  for (let i = 0; i < paragraphs.length; i++) {
+    const para = paragraphs[i];
+
     // Add speaker label if type changed
     if (para.type !== lastType) {
       if (para.type === 'questioner') {
@@ -108,11 +110,24 @@ export function reconstructTextFromParagraphs(paragraphs: Paragraph[], hasTextBe
       lastType = para.type;
     }
 
+    // Add paragraph content
     parts.push(para.content);
+
+    // Add paragraph break after this paragraph if:
+    // - Not the last paragraph AND
+    // - Next paragraph is same speaker (different speakers already get separated by labels)
+    if (i < paragraphs.length - 1 && paragraphs[i + 1].type === para.type) {
+      parts.push('\n\n');
+    }
   }
 
   const text = parts.join(' ');
-  return `${hasTextBefore ? '... ' : ''}${text}${hasTextAfter ? ' ...' : ''}`;
+
+  // Add ellipsis as separate paragraphs
+  const prefix = hasTextBefore ? '...\n\n' : '';
+  const suffix = hasTextAfter ? '\n\n...' : '';
+
+  return `${prefix}${text}${suffix}`;
 }
 
 // Apply sentence range to quote text (main function to use)
