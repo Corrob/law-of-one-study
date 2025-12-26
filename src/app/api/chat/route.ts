@@ -4,6 +4,7 @@ import { searchRaMaterial } from '@/lib/pinecone';
 import { INITIAL_RESPONSE_PROMPT, CONTINUATION_PROMPT, QUOTE_SEARCH_PROMPT, buildContextFromQuotes } from '@/lib/prompts';
 import { Quote } from '@/lib/types';
 import { applySentenceRangeToQuote, formatWholeQuote } from '@/lib/quote-utils';
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -55,14 +56,98 @@ function detectQuoteSearch(message: string): { isQuoteSearch: boolean; searchTex
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - 10 requests per minute per IP
+    const clientIp = getClientIp(request);
+    const rateLimitResult = checkRateLimit(clientIp, {
+      maxRequests: 10,
+      windowMs: 60 * 1000, // 1 minute
+    });
+
+    if (!rateLimitResult.success) {
+      return new Response(
+        JSON.stringify({
+          error: 'Too many requests. Please wait before trying again.',
+          retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000)
+        }),
+        {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': new Date(rateLimitResult.resetAt).toISOString(),
+            'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+          }
+        }
+      );
+    }
+
     const body: ChatRequest = await request.json();
     const { message, history } = body;
 
+    // Input validation - message
     if (!message || typeof message !== 'string') {
       return new Response(
-        JSON.stringify({ error: 'Message is required' }),
+        JSON.stringify({ error: 'Message is required and must be a string' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    if (message.length === 0) {
+      return new Response(
+        JSON.stringify({ error: 'Message cannot be empty' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (message.length > 2000) {
+      return new Response(
+        JSON.stringify({ error: 'Message too long. Maximum 2000 characters.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Input validation - history
+    if (!Array.isArray(history)) {
+      return new Response(
+        JSON.stringify({ error: 'History must be an array' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (history.length > 20) {
+      return new Response(
+        JSON.stringify({ error: 'History too long. Maximum 20 messages.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate history structure
+    for (const msg of history) {
+      if (!msg || typeof msg !== 'object') {
+        return new Response(
+          JSON.stringify({ error: 'Invalid history format' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      if (!msg.role || (msg.role !== 'user' && msg.role !== 'assistant')) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid message role in history' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      if (!msg.content || typeof msg.content !== 'string') {
+        return new Response(
+          JSON.stringify({ error: 'Invalid message content in history' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+      if (msg.content.length > 10000) {
+        return new Response(
+          JSON.stringify({ error: 'Message in history too long' }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // Build conversation context (last 3 messages)

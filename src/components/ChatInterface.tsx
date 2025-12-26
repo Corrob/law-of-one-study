@@ -10,6 +10,9 @@ import WelcomeScreen from './WelcomeScreen';
 import { useAnimationQueue } from '@/hooks/useAnimationQueue';
 import { getPlaceholder, defaultPlaceholder } from '@/data/placeholders';
 
+// Maximum number of messages to keep in memory (prevents unbounded growth)
+const MAX_CONVERSATION_HISTORY = 30;
+
 export interface ChatInterfaceRef {
   reset: () => void;
 }
@@ -122,7 +125,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => {
+      const updated = [...prev, userMessage];
+      // Limit conversation history to prevent unbounded memory growth
+      if (updated.length > MAX_CONVERSATION_HISTORY) {
+        return updated.slice(-MAX_CONVERSATION_HISTORY);
+      }
+      return updated;
+    });
     setIsStreaming(true);
     setStreamDone(false);
     setStreamingQuotes([]);
@@ -238,10 +248,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       };
 
       setMessages((prev) => {
-        const newMessages = [...prev, assistantMessage];
+        const updated = [...prev, assistantMessage];
+        // Limit conversation history to prevent unbounded memory growth
+        const limited = updated.length > MAX_CONVERSATION_HISTORY
+          ? updated.slice(-MAX_CONVERSATION_HISTORY)
+          : updated;
         // Update placeholder for next message
-        setPlaceholder(getPlaceholder(newMessages.length));
-        return newMessages;
+        setPlaceholder(getPlaceholder(limited.length));
+        return limited;
       });
       resetQueue();
       setStreamingQuotes([]);
