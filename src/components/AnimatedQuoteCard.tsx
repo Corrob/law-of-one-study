@@ -124,8 +124,8 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
           </div>
         ))}
 
-        {/* Trailing ellipsis - always visible */}
-        {hasTrailing && (
+        {/* Trailing ellipsis - only show after animation completes */}
+        {hasTrailing && (!animate || isComplete) && (
           <a
             href={quote.url}
             target="_blank"
