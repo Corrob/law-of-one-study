@@ -100,9 +100,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (message.length > 2000) {
+    if (message.length > 5000) {
       return new Response(
-        JSON.stringify({ error: 'Message too long. Maximum 2000 characters.' }),
+        JSON.stringify({ error: 'Message too long. Maximum 5000 characters.' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }

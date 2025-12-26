@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: https:",
-              "connect-src 'self' https://*.openai.com https://*.pinecone.io",
+              "connect-src 'self'", // API calls to OpenAI/Pinecone happen server-side
               "frame-ancestors 'none'",
               "base-uri 'self'",
               "form-action 'self'",

@@ -152,7 +152,21 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get response');
+        // Parse error response for user-friendly messages
+        let errorMessage = 'Failed to get response';
+        try {
+          const errorData = await response.json();
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+          // Special handling for rate limiting
+          if (response.status === 429 && errorData.retryAfter) {
+            errorMessage = `${errorData.error} Please wait ${errorData.retryAfter} seconds.`;
+          }
+        } catch {
+          // If JSON parsing fails, use generic message
+        }
+        throw new Error(errorMessage);
       }
 
       const reader = response.body?.getReader();
@@ -211,10 +225,23 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       }
     } catch (error) {
       console.error('Chat error:', error);
+
+      // Extract error message - show specific validation errors to user
+      let errorText = 'I apologize, but I encountered an error. Please try again.';
+      if (error instanceof Error && error.message) {
+        // Show validation errors and rate limit errors directly to user
+        if (error.message.includes('Maximum') ||
+            error.message.includes('too long') ||
+            error.message.includes('Too many requests') ||
+            error.message.includes('required')) {
+          errorText = error.message;
+        }
+      }
+
       const errorMessage: MessageType = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'I apologize, but I encountered an error. Please try again.',
+        content: errorText,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
