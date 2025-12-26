@@ -157,8 +157,29 @@ export const welcomeQuotes = [
   },
 ];
 
-export function getRandomStarters(count: number = 3): string[] {
-  const shuffled = [...conversationStarters].sort(() => Math.random() - 0.5);
+// Quote search starters - semantic/conceptual queries that benefit from vector search
+// rather than simple keyword matching
+export const quoteSearchStarters = [
+  "suffering and spiritual growth",
+  "time as an illusion",
+  "the purpose of veiling consciousness",
+  "balancing love and wisdom",
+  "choosing between positive and negative paths",
+  "how do wanderers serve",
+  "relationship between love and light",
+  "the nature of intelligent infinity",
+  "graduation requirements for harvest",
+  "death and transition between densities",
+  "the role of catalyst in evolution",
+  "unity consciousness and separation",
+  "how entities evolve through densities",
+  "compassion versus wisdom",
+  "the heart of spiritual seeking",
+];
+
+export function getRandomStarters(count: number = 3, mode: "chat" | "quote" = "chat"): string[] {
+  const sourceArray = mode === "quote" ? quoteSearchStarters : conversationStarters;
+  const shuffled = [...sourceArray].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
 

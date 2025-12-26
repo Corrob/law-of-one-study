@@ -208,6 +208,10 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       let quoteCount = 0;
       let responseLength = 0;
 
+      // In explicit quote mode, accumulate all quotes then show at once
+      const accumulatedQuotes: MessageSegment[] = [];
+      const isQuoteOnlyMode = mode === "quote";
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -231,11 +235,13 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
             if (chunkData.type === "text" && chunkData.content) {
               responseLength += chunkData.content.length;
-              addChunk({
-                id: `chunk-${chunkIdCounter}`,
-                type: "text",
-                content: chunkData.content,
-              });
+              if (!isQuoteOnlyMode) {
+                addChunk({
+                  id: `chunk-${chunkIdCounter}`,
+                  type: "text",
+                  content: chunkData.content,
+                });
+              }
             } else if (
               chunkData.type === "quote" &&
               chunkData.text &&
@@ -248,20 +254,29 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                 textLength: chunkData.text.length,
               });
               quoteCount++;
-              addChunk({
-                id: `chunk-${chunkIdCounter}`,
+
+              const quoteSegment: MessageSegment = {
                 type: "quote",
                 quote: {
                   text: chunkData.text,
                   reference: chunkData.reference,
                   url: chunkData.url,
                 },
-              });
+              };
+
+              if (isQuoteOnlyMode) {
+                // Accumulate quotes for instant display
+                accumulatedQuotes.push(quoteSegment);
+              } else {
+                // Stream with animation
+                addChunk({
+                  id: `chunk-${chunkIdCounter}`,
+                  type: "quote",
+                  quote: quoteSegment.quote,
+                });
+              }
             }
           } else if (event.type === "done") {
-            // Mark stream as done - message will be finalized when animation completes
-            setStreamDone(true);
-
             // Track response complete
             const responseTimeMs = Date.now() - requestStartTime;
             analytics.responseComplete({
@@ -270,6 +285,31 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               messageLength: responseLength,
               isQuoteSearch: containsQuotedText,
             });
+
+            // In quote-only mode, show all quotes immediately
+            if (isQuoteOnlyMode && accumulatedQuotes.length > 0) {
+              const assistantMessage: MessageType = {
+                id: (Date.now() + 1).toString(),
+                role: "assistant",
+                content: "",
+                segments: accumulatedQuotes,
+                timestamp: new Date(),
+              };
+
+              setMessages((prev) => {
+                const updated = [...prev, assistantMessage];
+                const limited =
+                  updated.length > MAX_CONVERSATION_HISTORY
+                    ? updated.slice(-MAX_CONVERSATION_HISTORY)
+                    : updated;
+                setPlaceholder(getPlaceholder(limited.length));
+                return limited;
+              });
+              setIsStreaming(false);
+            } else {
+              // Mark stream as done - message will be finalized when animation completes
+              setStreamDone(true);
+            }
           } else if (event.type === "error") {
             throw new Error(event.data.message as string);
           }
@@ -392,7 +432,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   // Input element with layoutId for shared element animation
   const inputElement = (
     <motion.div layoutId="chat-input" transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-      <MessageInput onSend={handleSend} disabled={isStreaming} placeholder={placeholder} />
+      <MessageInput
+        onSend={handleSend}
+        disabled={isStreaming}
+        placeholder={placeholder}
+        hasConversation={hasConversation}
+      />
     </motion.div>
   );
 

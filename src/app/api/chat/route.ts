@@ -190,9 +190,11 @@ export async function POST(request: NextRequest) {
           const isQuoteSearch = isExplicitQuoteMode || isAutoDetectedQuoteSearch;
 
           if (isQuoteSearch) {
-            // Quote search mode: search first using user's text, then generate full response
+            // Quote search mode: search first using user's text
             const embedding = await createEmbedding(searchText);
-            const searchResults = await searchRaMaterial(embedding, 5);
+            // Get more results in explicit quote mode (10 vs 5)
+            const resultCount = isExplicitQuoteMode ? 10 : 5;
+            const searchResults = await searchRaMaterial(embedding, resultCount);
 
             const passages: Quote[] = searchResults.map((r) => ({
               text: r.text,
@@ -202,6 +204,25 @@ export async function POST(request: NextRequest) {
 
             // Send quotes metadata
             send("meta", { quotes: passages });
+
+            // EXPLICIT QUOTE MODE: Return quotes only, no AI text
+            if (isExplicitQuoteMode) {
+              // Stream quotes directly without AI generation
+              for (const quote of passages) {
+                const formattedQuote = formatWholeQuote(quote.text);
+                send("chunk", {
+                  type: "quote",
+                  text: formattedQuote,
+                  reference: quote.reference,
+                  url: quote.url,
+                });
+              }
+
+              // Signal completion
+              send("done", {});
+              controller.close();
+              return;
+            }
 
             const quotesContext = buildContextFromQuotes(passages);
 

@@ -12,18 +12,13 @@ interface WelcomeScreenProps {
 export default function WelcomeScreen({ onSelectStarter, inputElement }: WelcomeScreenProps) {
   const [quote, setQuote] = useState<{ text: string; reference: string; url: string } | null>(null);
   const [starters, setStarters] = useState<string[]>([]);
-  const { setMode } = useSearchMode();
+  const { mode } = useSearchMode();
 
   useEffect(() => {
     // Only run on client to avoid hydration mismatch
     setQuote(getRandomQuote());
-    setStarters(getRandomStarters(3));
-  }, []);
-
-  const handleQuoteSearchStarter = (searchTerm: string) => {
-    setMode("quote");
-    onSelectStarter(searchTerm);
-  };
+    setStarters(getRandomStarters(3, mode));
+  }, [mode]); // Re-shuffle starters when mode changes
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-4 py-8">
@@ -63,9 +58,9 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
       {/* Conversation Starters */}
       <div className="w-full max-w-2xl">
         <p className="text-[var(--lo1-starlight)]/70 text-sm font-medium mb-4 text-center tracking-wide animate-starter-0">
-          Or explore:
+          {mode === "quote" ? "Try searching for:" : "Or explore:"}
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {starters.map((starter, index) => (
             <button
               key={index}
@@ -83,37 +78,6 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
             </button>
           ))}
         </div>
-
-        {/* Quote Search Starter - Distinctive styling */}
-        <button
-          onClick={() => handleQuoteSearchStarter("wanderer")}
-          className="w-full p-4 rounded-2xl animate-starter-0
-                   bg-gradient-to-r from-[var(--lo1-gold)]/10 to-[var(--lo1-gold)]/5
-                   border border-[var(--lo1-gold)]/40
-                   shadow-[inset_0_1px_0_0_rgba(212,168,83,0.1)]
-                   hover:border-[var(--lo1-gold)]/60 hover:from-[var(--lo1-gold)]/15 hover:to-[var(--lo1-gold)]/8
-                   hover:shadow-[inset_0_1px_0_0_rgba(212,168,83,0.15),0_0_25px_rgba(212,168,83,0.15)]
-                   transition-all duration-200 cursor-pointer
-                   group"
-        >
-          <div className="flex items-center justify-center gap-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="w-4 h-4 text-[var(--lo1-gold)] group-hover:scale-110 transition-transform"
-            >
-              <path
-                fillRule="evenodd"
-                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span className="text-[var(--lo1-gold)] text-sm font-medium">
-              Try Quote Search: &ldquo;wanderer&rdquo;
-            </span>
-          </div>
-        </button>
       </div>
 
       {/* Disclaimer */}

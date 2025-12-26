@@ -7,11 +7,17 @@ interface MessageInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
   placeholder?: string;
+  hasConversation?: boolean; // Lock mode toggle when conversation has started
 }
 
 const MAX_MESSAGE_LENGTH = 5000;
 
-export default function MessageInput({ onSend, disabled, placeholder }: MessageInputProps) {
+export default function MessageInput({
+  onSend,
+  disabled,
+  placeholder,
+  hasConversation = false,
+}: MessageInputProps) {
   const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { mode, toggleMode } = useSearchMode();
@@ -75,8 +81,8 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Mode Toggle */}
-      <div className="flex gap-2">
+      {/* Mode Toggle - only show on welcome screen */}
+      {!hasConversation && <div className="flex gap-2">
         <button
           onClick={() => toggleMode()}
           disabled={disabled}
@@ -146,7 +152,7 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
             Search the Ra Material directly
           </div>
         )}
-      </div>
+      </div>}
 
       <div className="flex gap-3 items-end">
         <textarea
