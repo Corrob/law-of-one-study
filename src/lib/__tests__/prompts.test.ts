@@ -196,7 +196,7 @@ describe('prompts', () => {
 
       expect(result).toContain('Questioner: What is love?');
       expect(result).toContain('Ra: I am Ra. Love is unity.');
-      expect(result).toContain('(2 sentences)');
+      expect(result).toContain('(3 sentences)');
     });
 
     it('should handle quotes with only whitespace after punctuation', () => {

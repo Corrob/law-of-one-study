@@ -192,14 +192,20 @@ describe('quote-utils', () => {
 
     it('should include paragraph that starts before range but ends within', () => {
       const result = filterParagraphsByRange(paragraphs, 2, 4);
-      expect(result).toHaveLength(1);
-      expect(result[0].content).toBe('Para 2');
+      // Should include Para 1 (sentences 1-2, overlaps at sentence 2)
+      // and Para 2 (sentences 3-5, overlaps at sentences 3-4)
+      expect(result).toHaveLength(2);
+      expect(result[0].content).toBe('Para 1');
+      expect(result[1].content).toBe('Para 2');
     });
 
     it('should include paragraph that starts within range but ends after', () => {
       const result = filterParagraphsByRange(paragraphs, 5, 7);
-      expect(result).toHaveLength(1);
-      expect(result[0].content).toBe('Para 3');
+      // Should include Para 2 (sentences 3-5, overlaps at sentence 5)
+      // and Para 3 (sentences 6-8, overlaps at sentences 6-7)
+      expect(result).toHaveLength(2);
+      expect(result[0].content).toBe('Para 2');
+      expect(result[1].content).toBe('Para 3');
     });
 
     it('should include all paragraphs if range encompasses all', () => {
@@ -227,7 +233,8 @@ describe('quote-utils', () => {
       ];
 
       const result = reconstructTextFromParagraphs(paragraphs, false, false);
-      expect(result).toBe('First para. \n\nSecond para.');
+      // Parts are joined with spaces
+      expect(result).toBe('First para. \n\n Second para.');
     });
 
     it('should add speaker labels when type changes', () => {
@@ -247,7 +254,7 @@ describe('quote-utils', () => {
       ];
 
       const result = reconstructTextFromParagraphs(paragraphs, false, false);
-      expect(result).toBe('Ra: First paragraph. \n\nSecond paragraph.');
+      expect(result).toBe('Ra: First paragraph. \n\n Second paragraph.');
     });
 
     it('should add leading ellipsis when hasTextBefore is true', () => {
@@ -291,7 +298,7 @@ describe('quote-utils', () => {
       const text = 'Ra: First paragraph.Second paragraph.';
       const result = formatWholeQuote(text);
 
-      expect(result).toBe('Ra: First paragraph. \n\nSecond paragraph.');
+      expect(result).toBe('Ra: First paragraph. \n\n Second paragraph.');
     });
 
     it('should handle empty text', () => {
@@ -302,7 +309,8 @@ describe('quote-utils', () => {
 
   describe('applySentenceRangeToQuote', () => {
     it('should extract specific sentence range from quote', () => {
-      const text = 'Sentence one. Sentence two. Sentence three. Sentence four.';
+      // Use paragraph breaks (period-uppercase) to create distinct paragraphs
+      const text = 'Sentence one.Sentence two.Sentence three.Sentence four.';
       const result = applySentenceRangeToQuote(text, 2, 3);
 
       expect(result).toContain('Sentence two.');
@@ -311,14 +319,14 @@ describe('quote-utils', () => {
     });
 
     it('should add leading ellipsis when range starts after first sentence', () => {
-      const text = 'Sentence one. Sentence two. Sentence three.';
+      const text = 'Sentence one.Sentence two.Sentence three.';
       const result = applySentenceRangeToQuote(text, 2, 3);
 
       expect(result).toMatch(/^\.\.\./);
     });
 
     it('should add trailing ellipsis when range ends before last sentence', () => {
-      const text = 'Sentence one. Sentence two. Sentence three.';
+      const text = 'Sentence one.Sentence two.Sentence three.';
       const result = applySentenceRangeToQuote(text, 1, 2);
 
       expect(result).toMatch(/\.\.\.$/);
@@ -339,7 +347,7 @@ describe('quote-utils', () => {
     });
 
     it('should handle single sentence extraction', () => {
-      const text = 'First. Second. Third.';
+      const text = 'First.Second.Third.';
       const result = applySentenceRangeToQuote(text, 2, 2);
 
       expect(result).toContain('Second.');

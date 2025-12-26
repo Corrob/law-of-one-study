@@ -7,7 +7,9 @@ describe('useTypingAnimation', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
   });
 
@@ -44,6 +46,11 @@ describe('useTypingAnimation', () => {
         jest.advanceTimersByTime(40);
       });
       expect(result.current.displayedText).toBe('Hello world test');
+
+      // Need one more tick to clear the interval and set isAnimating to false
+      act(() => {
+        jest.advanceTimersByTime(40);
+      });
       expect(result.current.isAnimating).toBe(false);
       expect(result.current.isComplete).toBe(true);
     });
@@ -267,7 +274,9 @@ describe('useQuoteAnimation', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
     jest.useRealTimers();
   });
 
