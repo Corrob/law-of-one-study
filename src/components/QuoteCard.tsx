@@ -53,90 +53,80 @@ function splitIntoSentences(text: string): string[] {
   return sentences;
 }
 
-// Find paragraph boundaries and expand sentence range to include full paragraphs
-function expandToParagraphBoundaries(text: string, sentenceStart: number, sentenceEnd: number): { start: number; end: number } {
-  // Normalize text to add spaces after periods (same as splitIntoSentences)
+// Paragraph data structure with sentence range
+interface Paragraph {
+  type: 'questioner' | 'ra' | 'text';
+  content: string;
+  sentenceStart: number; // 1-indexed
+  sentenceEnd: number; // 1-indexed
+}
+
+// Parse Ra material text into paragraphs with sentence ranges
+function parseIntoParagraphs(text: string): Paragraph[] {
+  // Normalize text to add spaces after periods
   const normalizedText = text.replace(/\.(?=[A-Z])/g, '. ');
-  const sentences = splitIntoSentences(text);
+  const allSentences = splitIntoSentences(text);
 
-  // Find paragraph delimiters by detecting:
-  // 1. Speaker changes ("Questioner:" and "Ra:")
-  // 2. Paragraph breaks within speaker sections (double newlines or ". " followed by capital)
-  const paragraphDelimiters: number[] = [0]; // Start of text
+  // Split by speaker and paragraph breaks
+  // First, split by speaker changes (Questioner: and Ra:)
+  const parts = normalizedText.split(/(?=\s(?:Questioner:|Ra:))/);
 
-  // Find all occurrences of "Questioner:" and "Ra:" (after the first character)
-  const speakerPattern = /\s(Questioner:|Ra:)/g;
-  let match;
-  while ((match = speakerPattern.exec(normalizedText)) !== null) {
-    // Add position right before the speaker marker (after the space)
-    paragraphDelimiters.push(match.index + 1);
-  }
+  const paragraphs: Paragraph[] = [];
+  let sentenceIndex = 0; // Track which sentence we're at (0-indexed)
 
-  // Find paragraph breaks within speaker sections
-  // After normalization, paragraph breaks appear as ". " followed by uppercase
-  // We look for the position right after the period and space
-  const paragraphBreakPattern = /\.\s+(?=[A-Z])/g;
-  while ((match = paragraphBreakPattern.exec(normalizedText)) !== null) {
-    // Add position right after the ". " (start of new paragraph)
-    paragraphDelimiters.push(match.index + match[0].length);
-  }
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
 
-  paragraphDelimiters.push(normalizedText.length); // End of text
+    // Determine speaker type
+    let type: 'questioner' | 'ra' | 'text' = 'text';
+    let content = trimmed;
 
-  // Sort delimiters (should already be sorted, but just to be safe)
-  paragraphDelimiters.sort((a, b) => a - b);
+    if (trimmed.startsWith('Questioner:')) {
+      type = 'questioner';
+      content = trimmed.substring('Questioner:'.length).trim();
+    } else if (trimmed.startsWith('Ra:')) {
+      type = 'ra';
+      content = trimmed.substring('Ra:'.length).trim();
+    }
 
-  // Map sentences to character positions in the normalized text
-  const sentencePositions: { start: number; end: number }[] = [];
-  let searchPos = 0;
-  for (const sentence of sentences) {
-    const start = normalizedText.indexOf(sentence, searchPos);
-    if (start !== -1) {
-      sentencePositions.push({ start, end: start + sentence.length });
-      searchPos = start + sentence.length;
+    // Split this speaker's content by paragraph breaks (". " followed by uppercase)
+    const subParagraphs = content.split(/\.(?=\s+[A-Z])/);
+
+    for (let i = 0; i < subParagraphs.length; i++) {
+      let paragraphText = subParagraphs[i].trim();
+
+      // Re-add the period that was removed by split (except for last subparagraph)
+      if (i < subParagraphs.length - 1) {
+        paragraphText += '.';
+      }
+
+      if (!paragraphText) continue;
+
+      // Count sentences in this paragraph
+      const paragraphSentences = splitIntoSentences(paragraphText);
+      const sentenceStart = sentenceIndex + 1; // Convert to 1-indexed
+      sentenceIndex += paragraphSentences.length;
+      const sentenceEnd = sentenceIndex; // Already 1-indexed
+
+      paragraphs.push({
+        type,
+        content: paragraphText,
+        sentenceStart,
+        sentenceEnd
+      });
     }
   }
 
-  // Find which paragraph contains the start sentence
-  const startSentencePos = sentencePositions[sentenceStart - 1]?.start ?? 0;
-  const endSentencePos = sentencePositions[Math.min(sentenceEnd - 1, sentences.length - 1)]?.end ?? text.length;
+  return paragraphs;
+}
 
-  // Find paragraph containing start sentence
-  let paragraphStart = 0;
-  for (let i = paragraphDelimiters.length - 1; i >= 0; i--) {
-    if (paragraphDelimiters[i] <= startSentencePos) {
-      paragraphStart = paragraphDelimiters[i];
-      break;
-    }
-  }
-
-  // Find paragraph containing end sentence
-  let paragraphEnd = text.length;
-  for (let i = 0; i < paragraphDelimiters.length; i++) {
-    if (paragraphDelimiters[i] >= endSentencePos) {
-      paragraphEnd = paragraphDelimiters[i];
-      break;
-    }
-  }
-
-  // Convert back to sentence indices
-  let newStart = 1;
-  for (let i = 0; i < sentencePositions.length; i++) {
-    if (sentencePositions[i].start >= paragraphStart) {
-      newStart = i + 1;
-      break;
-    }
-  }
-
-  let newEnd = sentences.length;
-  for (let i = sentencePositions.length - 1; i >= 0; i--) {
-    if (sentencePositions[i].end <= paragraphEnd) {
-      newEnd = i + 1;
-      break;
-    }
-  }
-
-  return { start: newStart, end: newEnd };
+// Filter paragraphs to those that intersect with the requested sentence range
+function filterParagraphsByRange(paragraphs: Paragraph[], sentenceStart: number, sentenceEnd: number): Paragraph[] {
+  return paragraphs.filter(p => {
+    // Check if paragraph's sentence range intersects with requested range
+    return p.sentenceEnd >= sentenceStart && p.sentenceStart <= sentenceEnd;
+  });
 }
 
 // Extract just the session.question from reference like "Ra 49.8"
@@ -146,9 +136,6 @@ function getShortReference(reference: string): string {
 }
 
 export default function QuoteCard({ quote }: QuoteCardProps) {
-  // Apply sentence range if specified
-  let displayText = quote.text;
-
   console.log('[QuoteCard] Received quote:', {
     reference: quote.reference,
     sentenceStart: quote.sentenceStart,
@@ -156,75 +143,36 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
     fullTextLength: quote.text.length
   });
 
-  if (quote.sentenceStart !== undefined && quote.sentenceEnd !== undefined) {
-    const sentences = splitIntoSentences(quote.text);
-    console.log('[QuoteCard] Total sentences:', sentences.length);
+  // Determine if we're showing a subset or full quote
+  const isSubset = quote.sentenceStart !== undefined && quote.sentenceEnd !== undefined;
+
+  let paragraphs: Paragraph[];
+  let hasTextBefore = false;
+  let hasTextAfter = false;
+
+  if (isSubset) {
+    // Parse text into paragraphs with sentence ranges
+    const allParagraphs = parseIntoParagraphs(quote.text);
+    console.log('[QuoteCard] Total paragraphs:', allParagraphs.length);
     console.log('[QuoteCard] Requested sentence range:', quote.sentenceStart, 'to', quote.sentenceEnd);
 
-    // Expand to paragraph boundaries
-    const expanded = expandToParagraphBoundaries(quote.text, quote.sentenceStart, quote.sentenceEnd);
-    console.log('[QuoteCard] Expanded to paragraph boundaries:', expanded.start, 'to', expanded.end);
+    // Filter to paragraphs that intersect with the requested range
+    paragraphs = filterParagraphsByRange(allParagraphs, quote.sentenceStart!, quote.sentenceEnd!);
+    console.log('[QuoteCard] Selected paragraphs:', paragraphs.length);
 
-    // Convert from 1-indexed to 0-indexed and extract range
-    const start = Math.max(0, expanded.start - 1);
-    const end = Math.min(sentences.length, expanded.end);
-    const selectedSentences = sentences.slice(start, end);
-
-    console.log('[QuoteCard] Selected sentences count:', selectedSentences.length);
-    console.log('[QuoteCard] First selected:', selectedSentences[0]?.substring(0, 50));
-    console.log('[QuoteCard] Last selected:', selectedSentences[selectedSentences.length - 1]?.substring(0, 50));
-
-    const hasTextBefore = expanded.start > 1;
-    const hasTextAfter = expanded.end < sentences.length;
-
-    // Preserve paragraph structure when joining sentences
-    // Detect which sentences start a new paragraph in the original text
-    const normalizedText = quote.text.replace(/\.(?=[A-Z])/g, '. ');
-    const sentencePositions: { start: number; end: number }[] = [];
-    let searchPos = 0;
-    for (const sentence of sentences) {
-      const sentStart = normalizedText.indexOf(sentence, searchPos);
-      if (sentStart !== -1) {
-        sentencePositions.push({ start: sentStart, end: sentStart + sentence.length });
-        searchPos = sentStart + sentence.length;
-      }
+    if (paragraphs.length > 0) {
+      // Check if there's text before/after the selection
+      const firstParagraph = paragraphs[0];
+      const lastParagraph = paragraphs[paragraphs.length - 1];
+      hasTextBefore = firstParagraph.sentenceStart > 1;
+      hasTextAfter = lastParagraph.sentenceEnd < allParagraphs[allParagraphs.length - 1].sentenceEnd;
     }
-
-    // Find all paragraph break positions (same pattern as paragraph delimiters)
-    const paragraphBreakPositions = new Set<number>();
-    const paragraphBreakPattern = /\.\s+(?=[A-Z])/g;
-    let match;
-    while ((match = paragraphBreakPattern.exec(normalizedText)) !== null) {
-      paragraphBreakPositions.add(match.index + match[0].length);
-    }
-
-    // Join sentences, adding double newlines before sentences that start a new paragraph
-    const excerptParts: string[] = [];
-    for (let i = 0; i < selectedSentences.length; i++) {
-      const globalIndex = start + i;
-      const sentencePos = sentencePositions[globalIndex];
-
-      // Check if this sentence starts a new paragraph
-      const startsNewParagraph = sentencePos && paragraphBreakPositions.has(sentencePos.start);
-
-      if (i > 0 && startsNewParagraph) {
-        excerptParts.push('\n\n' + selectedSentences[i]);
-      } else if (i > 0) {
-        excerptParts.push(' ' + selectedSentences[i]);
-      } else {
-        excerptParts.push(selectedSentences[i]);
-      }
-    }
-
-    const excerpt = excerptParts.join('');
-    displayText = `${hasTextBefore ? '... ' : ''}${excerpt}${hasTextAfter ? ' ...' : ''}`;
-
-    console.log('[QuoteCard] Final display text length:', displayText.length);
   } else {
+    // Use full quote - parse it for consistent rendering
     console.log('[QuoteCard] No sentence range, showing full quote');
+    paragraphs = parseIntoParagraphs(quote.text);
   }
 
-  const segments = formatRaText(displayText);
   const shortRef = getShortReference(quote.reference);
 
   return (
@@ -244,25 +192,40 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
         </a>
       </div>
 
-      {segments.map((segment, index) => (
-        <div key={index} className={segment.type === 'ra' ? 'mt-3' : ''}>
-          {/* Only show Ra label, Questioner is in header */}
-          {segment.type === 'ra' && (
-            <div className="mb-1">
-              <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide">
-                Ra
-              </span>
+      {/* Show ellipsis if text before */}
+      {hasTextBefore && (
+        <div className="text-[var(--lo1-text-light)] mb-2">...</div>
+      )}
+
+      {/* Render paragraphs */}
+      {paragraphs.map((para, index) => {
+        const isFirstOfType = index === 0 || para.type !== paragraphs[index - 1].type;
+
+        return (
+          <div key={index} className={para.type === 'ra' ? 'mt-3' : 'mt-3'}>
+            {/* Show Ra label when switching to Ra */}
+            {para.type === 'ra' && isFirstOfType && (
+              <div className="mb-1">
+                <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide">
+                  Ra
+                </span>
+              </div>
+            )}
+            <div className={`leading-relaxed ${
+              para.type === 'ra'
+                ? 'text-[var(--lo1-starlight)]'
+                : 'text-[var(--lo1-text-light)]'
+            }`}>
+              {para.content}
             </div>
-          )}
-          <div className={`whitespace-pre-line leading-relaxed ${
-            segment.type === 'ra'
-              ? 'text-[var(--lo1-starlight)]'
-              : 'text-[var(--lo1-text-light)]'
-          }`}>
-            {segment.content}
           </div>
-        </div>
-      ))}
+        );
+      })}
+
+      {/* Show ellipsis if text after */}
+      {hasTextAfter && (
+        <div className="text-[var(--lo1-text-light)] mt-2">...</div>
+      )}
     </div>
   );
 }

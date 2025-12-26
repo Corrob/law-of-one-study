@@ -56,80 +56,102 @@ function splitIntoSentences(text: string): string[] {
   return sentences;
 }
 
-// Find paragraph boundaries and expand sentence range to include full paragraphs
-function expandToParagraphBoundaries(text: string, sentenceStart: number, sentenceEnd: number): { start: number; end: number } {
-  // Normalize text to add spaces after periods (same as splitIntoSentences)
+// Paragraph data structure with sentence range
+interface Paragraph {
+  type: 'questioner' | 'ra' | 'text';
+  content: string;
+  sentenceStart: number; // 1-indexed
+  sentenceEnd: number; // 1-indexed
+}
+
+// Parse Ra material text into paragraphs with sentence ranges
+function parseIntoParagraphs(text: string): Paragraph[] {
+  // Normalize text to add spaces after periods
   const normalizedText = text.replace(/\.(?=[A-Z])/g, '. ');
-  const sentences = splitIntoSentences(text);
 
-  // Find paragraph delimiters by detecting speaker changes
-  // In Ra material, paragraphs are separated by "Questioner:" and "Ra:" markers
-  const paragraphDelimiters: number[] = [0]; // Start of text
+  // Split by speaker and paragraph breaks
+  // First, split by speaker changes (Questioner: and Ra:)
+  const parts = normalizedText.split(/(?=\s(?:Questioner:|Ra:))/);
 
-  // Find all occurrences of "Questioner:" and "Ra:" (after the first character)
-  const speakerPattern = /\s(Questioner:|Ra:)/g;
-  let match;
-  while ((match = speakerPattern.exec(normalizedText)) !== null) {
-    // Add position right before the speaker marker (after the space)
-    paragraphDelimiters.push(match.index + 1);
-  }
+  const paragraphs: Paragraph[] = [];
+  let sentenceIndex = 0; // Track which sentence we're at (0-indexed)
 
-  paragraphDelimiters.push(normalizedText.length); // End of text
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
 
-  // Sort delimiters (should already be sorted, but just to be safe)
-  paragraphDelimiters.sort((a, b) => a - b);
+    // Determine speaker type
+    let type: 'questioner' | 'ra' | 'text' = 'text';
+    let content = trimmed;
 
-  // Map sentences to character positions in the normalized text
-  const sentencePositions: { start: number; end: number }[] = [];
-  let searchPos = 0;
-  for (const sentence of sentences) {
-    const start = normalizedText.indexOf(sentence, searchPos);
-    if (start !== -1) {
-      sentencePositions.push({ start, end: start + sentence.length });
-      searchPos = start + sentence.length;
+    if (trimmed.startsWith('Questioner:')) {
+      type = 'questioner';
+      content = trimmed.substring('Questioner:'.length).trim();
+    } else if (trimmed.startsWith('Ra:')) {
+      type = 'ra';
+      content = trimmed.substring('Ra:'.length).trim();
+    }
+
+    // Split this speaker's content by paragraph breaks (". " followed by uppercase)
+    const subParagraphs = content.split(/\.(?=\s+[A-Z])/);
+
+    for (let i = 0; i < subParagraphs.length; i++) {
+      let paragraphText = subParagraphs[i].trim();
+
+      // Re-add the period that was removed by split (except for last subparagraph)
+      if (i < subParagraphs.length - 1) {
+        paragraphText += '.';
+      }
+
+      if (!paragraphText) continue;
+
+      // Count sentences in this paragraph
+      const paragraphSentences = splitIntoSentences(paragraphText);
+      const sentenceStart = sentenceIndex + 1; // Convert to 1-indexed
+      sentenceIndex += paragraphSentences.length;
+      const sentenceEnd = sentenceIndex; // Already 1-indexed
+
+      paragraphs.push({
+        type,
+        content: paragraphText,
+        sentenceStart,
+        sentenceEnd
+      });
     }
   }
 
-  // Find which paragraph contains the start sentence
-  const startSentencePos = sentencePositions[sentenceStart - 1]?.start ?? 0;
-  const endSentencePos = sentencePositions[Math.min(sentenceEnd - 1, sentences.length - 1)]?.end ?? text.length;
+  return paragraphs;
+}
 
-  // Find paragraph containing start sentence
-  let paragraphStart = 0;
-  for (let i = paragraphDelimiters.length - 1; i >= 0; i--) {
-    if (paragraphDelimiters[i] <= startSentencePos) {
-      paragraphStart = paragraphDelimiters[i];
-      break;
+// Filter paragraphs to those that intersect with the requested sentence range
+function filterParagraphsByRange(paragraphs: Paragraph[], sentenceStart: number, sentenceEnd: number): Paragraph[] {
+  return paragraphs.filter(p => {
+    // Check if paragraph's sentence range intersects with requested range
+    return p.sentenceEnd >= sentenceStart && p.sentenceStart <= sentenceEnd;
+  });
+}
+
+// Reconstruct text from paragraphs (for animation)
+function reconstructText(paragraphs: Paragraph[], hasTextBefore: boolean, hasTextAfter: boolean): string {
+  const parts: string[] = [];
+  let lastType: 'questioner' | 'ra' | 'text' | null = null;
+
+  for (const para of paragraphs) {
+    // Add speaker label if type changed
+    if (para.type !== lastType) {
+      if (para.type === 'questioner') {
+        parts.push('Questioner:');
+      } else if (para.type === 'ra') {
+        parts.push('Ra:');
+      }
+      lastType = para.type;
     }
+
+    parts.push(para.content);
   }
 
-  // Find paragraph containing end sentence
-  let paragraphEnd = text.length;
-  for (let i = 0; i < paragraphDelimiters.length; i++) {
-    if (paragraphDelimiters[i] >= endSentencePos) {
-      paragraphEnd = paragraphDelimiters[i];
-      break;
-    }
-  }
-
-  // Convert back to sentence indices
-  let newStart = 1;
-  for (let i = 0; i < sentencePositions.length; i++) {
-    if (sentencePositions[i].start >= paragraphStart) {
-      newStart = i + 1;
-      break;
-    }
-  }
-
-  let newEnd = sentences.length;
-  for (let i = sentencePositions.length - 1; i >= 0; i--) {
-    if (sentencePositions[i].end <= paragraphEnd) {
-      newEnd = i + 1;
-      break;
-    }
-  }
-
-  return { start: newStart, end: newEnd };
+  const text = parts.join(' ');
+  return `${hasTextBefore ? '... ' : ''}${text}${hasTextAfter ? ' ...' : ''}`;
 }
 
 // Extract just the session.question from reference like "Ra 49.8"
@@ -139,24 +161,19 @@ function getShortReference(reference: string): string {
 }
 
 export default function AnimatedQuoteCard({ quote, animate = true, onComplete }: AnimatedQuoteCardProps) {
-  // Apply sentence range if specified
+  // Apply sentence range if specified using paragraph-based parsing
   let fullText = quote.text;
   if (quote.sentenceStart !== undefined && quote.sentenceEnd !== undefined) {
-    const sentences = splitIntoSentences(quote.text);
+    const allParagraphs = parseIntoParagraphs(quote.text);
+    const selectedParagraphs = filterParagraphsByRange(allParagraphs, quote.sentenceStart, quote.sentenceEnd);
 
-    // Expand to paragraph boundaries
-    const expanded = expandToParagraphBoundaries(quote.text, quote.sentenceStart, quote.sentenceEnd);
+    if (selectedParagraphs.length > 0) {
+      const hasTextBefore = selectedParagraphs[0].sentenceStart > 1;
+      const hasTextAfter = selectedParagraphs[selectedParagraphs.length - 1].sentenceEnd <
+                          allParagraphs[allParagraphs.length - 1].sentenceEnd;
 
-    // Convert from 1-indexed to 0-indexed and extract range
-    const start = Math.max(0, expanded.start - 1);
-    const end = Math.min(sentences.length, expanded.end);
-    const selectedSentences = sentences.slice(start, end);
-
-    const hasTextBefore = expanded.start > 1;
-    const hasTextAfter = expanded.end < sentences.length;
-
-    const excerpt = selectedSentences.join(' ');
-    fullText = `${hasTextBefore ? '... ' : ''}${excerpt}${hasTextAfter ? ' ...' : ''}`;
+      fullText = reconstructText(selectedParagraphs, hasTextBefore, hasTextAfter);
+    }
   }
 
   const { displayedText, isComplete } = useQuoteAnimation(
