@@ -17,30 +17,30 @@ const STYLE_RULES = `STYLE:
 
 const QUOTE_FORMAT_RULES = `HOW TO INSERT QUOTES:
 - Insert quotes using: {{QUOTE:1}} or {{QUOTE:2}} (the number matches the passage provided)
-- For long quotes (10+ sentences), show only relevant sentences: {{QUOTE:1:s3:s7}} (sentences 3-7)
+- For very long quotes (15+ sentences), consider showing only relevant sentences: {{QUOTE:1:s3:s7}} (sentences 3-7)
 - The quote displays as a formatted card - NEVER write out the quote text yourself
 - Place quotes BETWEEN paragraphs, never mid-sentence
 - End your sentence with a period BEFORE the marker, start fresh AFTER
 
-SHORT QUOTE (under 8 sentences):
+SHORT TO MEDIUM QUOTE (under 12 sentences):
 "Ra describes this beautifully.
 
 {{QUOTE:1}}
 
 This illustrates the core principle."
 
-LONG QUOTE (15+ sentences) - USE SENTENCE RANGE:
-Given: [2] "..." — Ra 50.7 (20 sentences)
+VERY LONG QUOTE (20+ sentences) - CONSIDER SENTENCE RANGE:
+Given: [2] "..." — Ra 50.7 (25 sentences)
 "Ra's famous poker game metaphor explains this perfectly.
 
-{{QUOTE:2:s6:s14}}
+{{QUOTE:2:s6:s16}}
 
 This captures the essence without overwhelming the reader."
 
 WRONG:
 "As Ra says {{QUOTE:1}} which means..."
 "Ra states that '...' (1.1)"
-"{{QUOTE:1}} for a 20-sentence quote" (missing sentence range!)`;
+"{{QUOTE:1}} for a 30-sentence quote" (consider sentence range for very long quotes!)`;
 
 const QUOTE_SELECTION_RULES = `CHOOSING QUOTES:
 - Pick quotes that DIRECTLY answer the user's question
@@ -50,13 +50,14 @@ const QUOTE_SELECTION_RULES = `CHOOSING QUOTES:
 - Quality over quantity - 1 perfect quote beats 2 mediocre ones
 - AVOID REPETITION: If a quote was shown earlier in this conversation, do not use it again. Choose a fresh passage or skip including a quote if all available ones have been used recently.
 
-SENTENCE RANGES - IMPORTANT:
+SENTENCE RANGES - GUIDANCE:
 - Each quote shows its sentence count: "(20 sentences)" for example
-- If a quote has 10+ sentences, you MUST use a sentence range to show only the relevant portion
+- If a quote has 15+ sentences, consider using a sentence range to focus on the most relevant portion
 - Use {{QUOTE:N:s3:s7}} to show sentences 3-7 (sentences are numbered 1, 2, 3, etc.)
-- Example: If quote [1] has "(20 sentences)" and you only need sentences 5-12, use {{QUOTE:1:s5:s12}}
-- Shorter quotes (under 8 sentences) can use {{QUOTE:N}} without a range
+- Example: If quote [1] has "(25 sentences)" and you want to focus on sentences 5-16, use {{QUOTE:1:s5:s16}}
+- Shorter quotes (under 12 sentences) can use {{QUOTE:N}} without a range
 - The system will automatically add "..." before and after truncated quotes
+- When in doubt, err on the side of including more context rather than less
 
 SELECTING SENTENCE RANGES - BE STRATEGIC:
 Ra Material quotes follow a Questioner/Ra structure. When selecting sentence ranges:
@@ -73,7 +74,8 @@ Ra Material quotes follow a Questioner/Ra structure. When selecting sentence ran
 3. Aim for completeness of thought
    - Select enough sentences to form a complete idea or paragraph
    - Don't cut off mid-explanation
-   - Typically 3-8 sentences gives good context without overwhelming
+   - Typically 5-12 sentences provides good context and depth
+   - Prefer being more inclusive rather than overly aggressive with trimming
 
 4. Examples of GOOD selection:
    - Quote has 20 sentences: Questioner asks in s1, Ra responds in s2-20
