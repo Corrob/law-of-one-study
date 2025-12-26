@@ -312,7 +312,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         <div className={`flex-1 overflow-hidden relative z-10 ${hasConversation ? scrollShadowClasses : ''}`}>
           <div
             ref={scrollContainerRef}
-            className="h-full overflow-y-auto chat-scroll px-4 py-6"
+            className="h-full chat-scroll px-4 py-6"
           >
           <AnimatePresence mode="wait">
             {!hasConversation ? (

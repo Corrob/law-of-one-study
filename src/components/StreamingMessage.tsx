@@ -21,7 +21,10 @@ export default function StreamingMessage({
   onSearch,
 }: StreamingMessageProps) {
   return (
-    <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
+    <div
+      className="mb-6 text-[var(--lo1-text-light)] leading-relaxed"
+      style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+    >
       {/* Completed chunks - render statically with concept linking */}
       {completedChunks.map((chunk, index) => (
         <ChunkRenderer

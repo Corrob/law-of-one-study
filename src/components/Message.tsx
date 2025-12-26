@@ -25,7 +25,10 @@ export default function Message({ message, onSearch }: MessageProps) {
 
   // Assistant messages: no box, just text with concept linking
   return (
-    <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
+    <div
+      className="mb-6 text-[var(--lo1-text-light)] leading-relaxed"
+      style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+    >
       {message.segments && message.segments.length > 0 ? (
         message.segments.map((segment, index) => (
           <SegmentRenderer
