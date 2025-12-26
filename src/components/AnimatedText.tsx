@@ -49,15 +49,5 @@ export default function AnimatedText({ content, onComplete, speed = 50 }: Animat
     return () => clearInterval(interval);
   }, [content, speed]);
 
-  return (
-    <span
-      style={{
-        whiteSpace: 'pre-wrap',
-        wordWrap: 'break-word',
-        display: 'inline'
-      }}
-    >
-      {displayedText}
-    </span>
-  );
+  return <>{displayedText}</>;
 }

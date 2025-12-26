@@ -21,10 +21,7 @@ export default function StreamingMessage({
   onSearch,
 }: StreamingMessageProps) {
   return (
-    <div
-      className="mb-6 text-[var(--lo1-text-light)] leading-relaxed"
-      style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
-    >
+    <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
       {/* Completed chunks - render statically with concept linking */}
       {completedChunks.map((chunk, index) => (
         <ChunkRenderer
@@ -60,28 +57,32 @@ interface ChunkRendererProps {
 
 function ChunkRenderer({ chunk, animate, isFirst = false, onComplete, onSearch }: ChunkRendererProps) {
   if (chunk.type === 'text') {
+    // Use div instead of span for consistent block layout
+    // Add min-height to prevent layout shift during content changes
+    const wrapperClass = isFirst ? 'min-h-[1lh]' : 'mt-3 block min-h-[1lh]';
+
     if (animate) {
       // During animation, render plain text (no concept linking)
       return (
-        <span className={isFirst ? '' : 'mt-3 block'}>
+        <div className={wrapperClass}>
           <AnimatedText
             content={chunk.content}
             onComplete={onComplete!}
             speed={50}
           />
-        </span>
+        </div>
       );
     }
 
     // After completion, render with concept linking
     return (
-      <span className={isFirst ? '' : 'mt-3 block'}>
+      <div className={wrapperClass}>
         {onSearch ? (
           <LinkedText text={chunk.content} onSearch={onSearch} />
         ) : (
           chunk.content
         )}
-      </span>
+      </div>
     );
   }
 

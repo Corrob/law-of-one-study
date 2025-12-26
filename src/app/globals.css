@@ -162,11 +162,9 @@ input[type="button"] {
 .chat-scroll {
   /* Always show scrollbar to prevent layout shift when content grows */
   overflow-y: scroll;
-  /* Ensure consistent text wrapping during animations */
-  white-space: normal;
-  word-wrap: break-word;
-  /* Optimize for layout stability */
-  will-change: scroll-position;
+  /* Prevent word breaking from causing layout shifts */
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 .chat-scroll::-webkit-scrollbar {
