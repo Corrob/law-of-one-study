@@ -17,43 +17,54 @@ const cormorant = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   title: "Law of One Study Companion | AI-Powered Ra Material Explorer",
-  description: "Explore the Ra Material with an AI-powered study companion. Search 1,500+ Q&A pairs from 106 sessions. Free, open-source tool for Law of One students.",
-  keywords: ["Law of One", "Ra Material", "L/L Research", "Ra Contact", "spiritual study", "metaphysics", "channeling", "consciousness"],
+  description:
+    "Explore the Ra Material with an AI-powered study companion. Search 1,500+ Q&A pairs from 106 sessions. Free, open-source tool for Law of One students.",
+  keywords: [
+    "Law of One",
+    "Ra Material",
+    "L/L Research",
+    "Ra Contact",
+    "spiritual study",
+    "metaphysics",
+    "channeling",
+    "consciousness",
+  ],
   authors: [{ name: "Law of One Study Community" }],
-  metadataBase: new URL('https://lawofone.study'),
+  metadataBase: new URL("https://lawofone.study"),
   alternates: {
-    canonical: '/',
+    canonical: "/",
   },
   openGraph: {
     title: "Law of One Study Companion",
-    description: "AI-powered companion for exploring the Ra Material. Search 1,500+ Q&A pairs from 106 sessions.",
-    url: 'https://lawofone.study',
-    siteName: 'Law of One Study Companion',
+    description:
+      "AI-powered companion for exploring the Ra Material. Search 1,500+ Q&A pairs from 106 sessions.",
+    url: "https://lawofone.study",
+    siteName: "Law of One Study Companion",
     images: [
       {
-        url: '/og-image.png',
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: 'Law of One Study Companion - AI-powered Ra Material explorer',
+        alt: "Law of One Study Companion - AI-powered Ra Material explorer",
       },
     ],
-    locale: 'en_US',
-    type: 'website',
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: "Law of One Study Companion",
     description: "AI-powered companion for exploring the Ra Material",
-    images: ['/og-image.png'],
+    images: ["/og-image.png"],
   },
 };
 
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: 'cover',
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -62,23 +73,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: 'Law of One Study Companion',
-    description: 'AI-powered companion for exploring the Ra Material',
-    url: 'https://lawofone.study',
-    applicationCategory: 'EducationalApplication',
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Law of One Study Companion",
+    description: "AI-powered companion for exploring the Ra Material",
+    url: "https://lawofone.study",
+    applicationCategory: "EducationalApplication",
     about: {
-      '@type': 'Thing',
-      name: 'The Law of One',
-      description: 'The Ra Material - channeled teachings from the social memory complex Ra',
+      "@type": "Thing",
+      name: "The Law of One",
+      description: "The Ra Material - channeled teachings from the social memory complex Ra",
     },
     offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
     },
-    inLanguage: 'en-US',
+    inLanguage: "en-US",
   };
 
   return (
@@ -90,9 +101,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
-        <PostHogProvider>
-          {children}
-        </PostHogProvider>
+        <PostHogProvider>{children}</PostHogProvider>
       </body>
     </html>
   );

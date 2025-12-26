@@ -12,35 +12,35 @@
 
 ### Primary Colors
 
-| Name | Hex | RGB | Usage |
-|------|-----|-----|-------|
-| **Cosmic Indigo** | `#1a1f4e` | 26, 31, 78 | Primary background, header |
-| **Deep Space** | `#0f1235` | 15, 18, 53 | Darker accents, depth |
-| **Ra Gold** | `#d4a853` | 212, 168, 83 | Primary accent, CTAs, highlights |
+| Name              | Hex       | RGB          | Usage                            |
+| ----------------- | --------- | ------------ | -------------------------------- |
+| **Cosmic Indigo** | `#1a1f4e` | 26, 31, 78   | Primary background, header       |
+| **Deep Space**    | `#0f1235` | 15, 18, 53   | Darker accents, depth            |
+| **Ra Gold**       | `#d4a853` | 212, 168, 83 | Primary accent, CTAs, highlights |
 
 ### Secondary Colors
 
-| Name | Hex | RGB | Usage |
-|------|-----|-----|-------|
-| **Starlight** | `#e8e6f2` | 232, 230, 242 | Page background, light areas |
-| **Nebula** | `#6b5b95` | 107, 91, 149 | Secondary accent, hover states |
-| **Celestial Blue** | `#4a5899` | 74, 88, 153 | Links, interactive elements |
+| Name               | Hex       | RGB           | Usage                          |
+| ------------------ | --------- | ------------- | ------------------------------ |
+| **Starlight**      | `#e8e6f2` | 232, 230, 242 | Page background, light areas   |
+| **Nebula**         | `#6b5b95` | 107, 91, 149  | Secondary accent, hover states |
+| **Celestial Blue** | `#4a5899` | 74, 88, 153   | Links, interactive elements    |
 
 ### Neutral Colors
 
-| Name | Hex | RGB | Usage |
-|------|-----|-----|-------|
-| **Cosmic White** | `#f5f4f8` | 245, 244, 248 | Backgrounds, cards |
-| **Stardust** | `#9a98a9` | 154, 152, 169 | Secondary text, borders |
-| **Void** | `#2a2d3e` | 42, 45, 62 | Primary text |
+| Name             | Hex       | RGB           | Usage                   |
+| ---------------- | --------- | ------------- | ----------------------- |
+| **Cosmic White** | `#f5f4f8` | 245, 244, 248 | Backgrounds, cards      |
+| **Stardust**     | `#9a98a9` | 154, 152, 169 | Secondary text, borders |
+| **Void**         | `#2a2d3e` | 42, 45, 62    | Primary text            |
 
 ### Semantic Colors
 
-| Name | Hex | Usage |
-|------|-----|-------|
-| **Harvest Gold** | `#f0c75e` | Success states, positive |
-| **Service Orange** | `#e07b4c` | Warnings, attention |
-| **Catalyst Red** | `#c45c5c` | Errors, destructive |
+| Name               | Hex       | Usage                    |
+| ------------------ | --------- | ------------------------ |
+| **Harvest Gold**   | `#f0c75e` | Success states, positive |
+| **Service Orange** | `#e07b4c` | Warnings, attention      |
+| **Catalyst Red**   | `#c45c5c` | Errors, destructive      |
 
 ---
 
@@ -49,30 +49,33 @@
 ### Font Stack
 
 **Primary (Headings):** `Cormorant Garamond`
+
 - Elegant serif with mystical quality
 - Use weights: 400 (regular), 500 (medium), 600 (semibold)
 - Letter-spacing: 0.02em for headings
 
 **Secondary (Body):** `Inter`
+
 - Clean, highly readable sans-serif
 - Use weights: 400 (regular), 500 (medium)
 - Optimal for long-form reading
 
 **Accent (Quotes):** `Cormorant Garamond Italic`
+
 - For Ra quotes and spiritual passages
 - Creates visual distinction for source material
 
 ### Type Scale
 
-| Element | Size | Weight | Font |
-|---------|------|--------|------|
-| H1 | 2.5rem (40px) | 600 | Cormorant Garamond |
-| H2 | 2rem (32px) | 500 | Cormorant Garamond |
-| H3 | 1.5rem (24px) | 500 | Cormorant Garamond |
-| Body | 1rem (16px) | 400 | Inter |
-| Small | 0.875rem (14px) | 400 | Inter |
-| Quote | 1.25rem (20px) | 400 italic | Cormorant Garamond |
-| Caption | 0.75rem (12px) | 500 | Inter |
+| Element | Size            | Weight     | Font               |
+| ------- | --------------- | ---------- | ------------------ |
+| H1      | 2.5rem (40px)   | 600        | Cormorant Garamond |
+| H2      | 2rem (32px)     | 500        | Cormorant Garamond |
+| H3      | 1.5rem (24px)   | 500        | Cormorant Garamond |
+| Body    | 1rem (16px)     | 400        | Inter              |
+| Small   | 0.875rem (14px) | 400        | Inter              |
+| Quote   | 1.25rem (20px)  | 400 italic | Cormorant Garamond |
+| Caption | 0.75rem (12px)  | 500        | Inter              |
 
 ---
 
@@ -81,11 +84,13 @@
 ### Favicon Concept
 
 **Design:** A stylized eye within a circle, representing:
+
 - The all-seeing eye (subtle Egyptian reference to the Eye of Ra)
 - The circle of unity/oneness
 - Awareness and consciousness
 
 **Specifications:**
+
 - Simple geometric form that reads well at 16x16, 32x32, and 192x192
 - Primary: Ra Gold (`#d4a853`) eye/symbol
 - Background: Cosmic Indigo (`#1a1f4e`) or transparent
@@ -96,11 +101,13 @@
 ### Logo Mark
 
 **Primary Logo:**
+
 - Text: "Law of One Study" in Cormorant Garamond
 - Subtitle: "THE RA MATERIAL" in Inter, letterspaced
 - Icon: Stylized eye or concentric circles suggesting unity
 
 **Logo Variations:**
+
 1. Full horizontal (header)
 2. Stacked (mobile, compact)
 3. Icon only (favicon, app icon)
@@ -125,6 +132,7 @@ Citation: Inter, 0.875rem, Stardust color
 ### Buttons
 
 **Primary Button:**
+
 ```
 Background: Ra Gold (#d4a853)
 Text: Deep Space (#0f1235)
@@ -134,6 +142,7 @@ Hover: Lighten 10% (#ddb565)
 ```
 
 **Secondary Button:**
+
 ```
 Background: transparent
 Border: 1px solid Celestial Blue (#4a5899)
@@ -191,15 +200,15 @@ Logo accent: Ra Gold (#d4a853)
 
 Base unit: 4px
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| xs | 4px | Tight spacing, icon gaps |
-| sm | 8px | Component internal padding |
-| md | 16px | Standard spacing |
-| lg | 24px | Section padding |
-| xl | 32px | Major sections |
-| 2xl | 48px | Page sections |
-| 3xl | 64px | Hero areas |
+| Token | Value | Usage                      |
+| ----- | ----- | -------------------------- |
+| xs    | 4px   | Tight spacing, icon gaps   |
+| sm    | 8px   | Component internal padding |
+| md    | 16px  | Standard spacing           |
+| lg    | 24px  | Section padding            |
+| xl    | 32px  | Major sections             |
+| 2xl   | 48px  | Page sections              |
+| 3xl   | 64px  | Hero areas                 |
 
 ---
 
@@ -257,8 +266,8 @@ Base unit: 4px
   --lo1-error: #c45c5c;
 
   /* Typography */
-  --font-heading: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Inter", system-ui, sans-serif;
 
   /* Spacing */
   --space-xs: 4px;

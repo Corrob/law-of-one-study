@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import Link from 'next/link';
-import ChatInterface, { ChatInterfaceRef } from '@/components/ChatInterface';
+import { useRef } from "react";
+import Link from "next/link";
+import ChatInterface, { ChatInterfaceRef } from "@/components/ChatInterface";
 
 // Spiral/Unity icon for Law of One
 function UnityIcon({ className }: { className?: string }) {
@@ -51,9 +51,7 @@ export default function Home() {
           >
             <UnityIcon className="w-8 h-8 text-[var(--lo1-gold)] starburst" />
             <div className="text-left">
-              <h1 className="text-lg font-semibold tracking-wide">
-                Law of One Study Companion
-              </h1>
+              <h1 className="text-lg font-semibold tracking-wide">Law of One Study Companion</h1>
               <p className="text-xs text-[var(--lo1-stardust)] tracking-wider uppercase">
                 The Ra Material
               </p>

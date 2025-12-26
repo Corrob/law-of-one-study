@@ -22,16 +22,16 @@
  * }
  */
 
-import { Pinecone } from '@pinecone-database/pinecone';
-import OpenAI from 'openai';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Pinecone } from "@pinecone-database/pinecone";
+import OpenAI from "openai";
+import * as fs from "fs";
+import * as path from "path";
 
 // Load environment variables
-require('dotenv').config({ path: '.env.local' });
+require("dotenv").config({ path: ".env.local" });
 
 const BATCH_SIZE = 100; // Pinecone batch upsert limit
-const EMBEDDING_MODEL = 'text-embedding-3-small';
+const EMBEDDING_MODEL = "text-embedding-3-small";
 
 interface Paragraph {
   id: string;
@@ -49,14 +49,14 @@ interface SentencesJSON {
 }
 
 function getBookType(annotation: string): string {
-  if (annotation.startsWith('T-')) return 'text';
-  if (annotation.startsWith('W-')) return 'workbook';
-  if (annotation.startsWith('M-')) return 'manual';
-  if (annotation.startsWith('C-')) return 'clarification';
-  if (annotation.startsWith('P-')) return 'psychotherapy';
-  if (annotation.toLowerCase().includes('preface')) return 'preface';
-  if (annotation.startsWith('Suppl')) return 'supplement';
-  return 'other';
+  if (annotation.startsWith("T-")) return "text";
+  if (annotation.startsWith("W-")) return "workbook";
+  if (annotation.startsWith("M-")) return "manual";
+  if (annotation.startsWith("C-")) return "clarification";
+  if (annotation.startsWith("P-")) return "psychotherapy";
+  if (annotation.toLowerCase().includes("preface")) return "preface";
+  if (annotation.startsWith("Suppl")) return "supplement";
+  return "other";
 }
 
 function buildReference(annotation: string, paragraphNum: number): string {
@@ -73,19 +73,22 @@ function buildURL(sectionId: string, paragraphNum: number): string {
 
 function cleanText(text: string): string {
   // Remove pipe characters used for italics markers |...|
-  return text.replace(/\|/g, '');
+  return text.replace(/\|/g, "");
 }
 
 function parseACIMData(jsonPath: string): Paragraph[] {
   console.log(`Reading ACIM data from: ${jsonPath}`);
 
-  const rawData = fs.readFileSync(jsonPath, 'utf-8');
+  const rawData = fs.readFileSync(jsonPath, "utf-8");
   const data: SentencesJSON = JSON.parse(rawData);
 
   const { sentences, annotations } = data;
 
   // Group sentences by (section_id, paragraph_num)
-  const paragraphGroups = new Map<string, { sectionId: string; paraNum: number; sentences: Array<{ sentNum: number; text: string }> }>();
+  const paragraphGroups = new Map<
+    string,
+    { sectionId: string; paraNum: number; sentences: Array<{ sentNum: number; text: string }> }
+  >();
 
   for (const [key, text] of Object.entries(sentences)) {
     // Parse key format: "053#1:1" -> section=053, para=1, sent=1
@@ -120,7 +123,7 @@ function parseACIMData(jsonPath: string): Paragraph[] {
 
     // Sort sentences by sentence number and join
     sents.sort((a, b) => a.sentNum - b.sentNum);
-    const fullText = sents.map((s) => cleanText(s.text)).join(' ');
+    const fullText = sents.map((s) => cleanText(s.text)).join(" ");
 
     // Get annotation for this section
     const annotation = annotations[sectionId] || `Section ${sectionId}`;
@@ -146,16 +149,15 @@ function parseACIMData(jsonPath: string): Paragraph[] {
     return a.paragraph - b.paragraph;
   });
 
-  console.log(`Parsed ${paragraphs.length} paragraphs from ${Object.keys(annotations).length} sections`);
+  console.log(
+    `Parsed ${paragraphs.length} paragraphs from ${Object.keys(annotations).length} sections`
+  );
   console.log(`Total sentences processed: ${Object.keys(sentences).length}`);
 
   return paragraphs;
 }
 
-async function createEmbeddings(
-  openai: OpenAI,
-  texts: string[]
-): Promise<number[][]> {
+async function createEmbeddings(openai: OpenAI, texts: string[]): Promise<number[][]> {
   const response = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
     input: texts,
@@ -167,13 +169,13 @@ async function createEmbeddings(
 async function indexACIM(jsonPath: string) {
   // Validate environment
   if (!process.env.OPENAI_API_KEY) {
-    throw new Error('Missing OPENAI_API_KEY in .env.local');
+    throw new Error("Missing OPENAI_API_KEY in .env.local");
   }
   if (!process.env.PINECONE_API_KEY) {
-    throw new Error('Missing PINECONE_API_KEY in .env.local');
+    throw new Error("Missing PINECONE_API_KEY in .env.local");
   }
 
-  const indexName = process.env.PINECONE_INDEX || 'acim-content';
+  const indexName = process.env.PINECONE_INDEX || "acim-content";
 
   // Initialize clients
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -183,7 +185,7 @@ async function indexACIM(jsonPath: string) {
   const paragraphs = parseACIMData(jsonPath);
 
   // Show sample for verification
-  console.log('\nSample paragraphs:');
+  console.log("\nSample paragraphs:");
   for (const p of paragraphs.slice(0, 3)) {
     console.log(`  ${p.reference}: "${p.text.slice(0, 60)}..."`);
     console.log(`    URL: ${p.url}`);
@@ -200,17 +202,17 @@ async function indexACIM(jsonPath: string) {
     await pinecone.createIndex({
       name: indexName,
       dimension: 1536, // text-embedding-3-small dimension
-      metric: 'cosine',
+      metric: "cosine",
       spec: {
         serverless: {
-          cloud: 'aws',
-          region: 'us-east-1',
+          cloud: "aws",
+          region: "us-east-1",
         },
       },
     });
 
     // Wait for index to be ready
-    console.log('Waiting for index to be ready (60s)...');
+    console.log("Waiting for index to be ready (60s)...");
     await new Promise((resolve) => setTimeout(resolve, 60000));
   }
 
@@ -255,7 +257,7 @@ async function indexACIM(jsonPath: string) {
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
-  console.log('\n✓ Indexing complete!');
+  console.log("\n✓ Indexing complete!");
   console.log(`  Total paragraphs indexed: ${paragraphs.length}`);
   console.log(`  Index name: ${indexName}`);
 }
@@ -295,6 +297,6 @@ Expected JSON format:
 }
 
 indexACIM(path.resolve(jsonPath)).catch((error) => {
-  console.error('Indexing failed:', error);
+  console.error("Indexing failed:", error);
   process.exit(1);
 });

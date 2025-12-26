@@ -1,30 +1,30 @@
-'use client';
+"use client";
 
-import { Quote } from '@/lib/types';
-import { analytics } from '@/lib/analytics';
-import { useEffect } from 'react';
+import { Quote } from "@/lib/types";
+import { analytics } from "@/lib/analytics";
+import { useEffect } from "react";
 
 interface QuoteCardProps {
   quote: Quote;
 }
 
 // Parse Ra material text into formatted segments
-function formatRaText(text: string): { type: 'questioner' | 'ra' | 'text'; content: string }[] {
-  const segments: { type: 'questioner' | 'ra' | 'text'; content: string }[] = [];
+function formatRaText(text: string): { type: "questioner" | "ra" | "text"; content: string }[] {
+  const segments: { type: "questioner" | "ra" | "text"; content: string }[] = [];
 
   // Split by Questioner: and Ra: prefixes
   const parts = text.split(/(Questioner:|Ra:)/);
 
-  let currentType: 'questioner' | 'ra' | 'text' = 'text';
+  let currentType: "questioner" | "ra" | "text" = "text";
 
   for (const part of parts) {
     const trimmed = part.trim();
     if (!trimmed) continue;
 
-    if (trimmed === 'Questioner:') {
-      currentType = 'questioner';
-    } else if (trimmed === 'Ra:') {
-      currentType = 'ra';
+    if (trimmed === "Questioner:") {
+      currentType = "questioner";
+    } else if (trimmed === "Ra:") {
+      currentType = "ra";
     } else {
       // Backend now handles paragraph breaks, just pass through
       segments.push({ type: currentType, content: trimmed });
@@ -35,16 +35,20 @@ function formatRaText(text: string): { type: 'questioner' | 'ra' | 'text'; conte
 }
 
 // Parse ellipsis from text (added by backend for partial quotes)
-function parseEllipsis(text: string): { hasLeading: boolean; hasTrailing: boolean; content: string } {
+function parseEllipsis(text: string): {
+  hasLeading: boolean;
+  hasTrailing: boolean;
+  content: string;
+} {
   let content = text;
-  const hasLeading = text.startsWith('...\n\n') || text.startsWith('...');
-  const hasTrailing = text.endsWith('\n\n...') || text.endsWith('...');
+  const hasLeading = text.startsWith("...\n\n") || text.startsWith("...");
+  const hasTrailing = text.endsWith("\n\n...") || text.endsWith("...");
 
   if (hasLeading) {
-    content = content.replace(/^\.\.\.(\n\n)?/, '');
+    content = content.replace(/^\.\.\.(\n\n)?/, "");
   }
   if (hasTrailing) {
-    content = content.replace(/(\n\n)?\.\.\.$/,'');
+    content = content.replace(/(\n\n)?\.\.\.$/, "");
   }
 
   return { hasLeading, hasTrailing, content };
@@ -75,12 +79,12 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
       sessionNumber,
       questionNumber,
       positionInResponse: 0, // Could be enhanced to track actual position
-      sentenceRange: hasLeading || hasTrailing ? 'partial' : undefined,
+      sentenceRange: hasLeading || hasTrailing ? "partial" : undefined,
     });
   }, [sessionNumber, questionNumber, hasLeading, hasTrailing]);
 
   // Handle quote link clicks
-  const handleLinkClick = (clickType: 'session_link' | 'ellipsis') => {
+  const handleLinkClick = (clickType: "session_link" | "ellipsis") => {
     analytics.quoteLinkClicked({
       sessionNumber,
       questionNumber,
@@ -100,7 +104,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
-          onClick={() => handleLinkClick('session_link')}
+          onClick={() => handleLinkClick("session_link")}
         >
           {shortRef}
         </a>
@@ -113,27 +117,27 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2"
-          onClick={() => handleLinkClick('ellipsis')}
+          onClick={() => handleLinkClick("ellipsis")}
         >
           ...
         </a>
       )}
 
       {segments.map((segment, index) => (
-        <div key={index} className={segment.type === 'ra' ? 'mt-3' : ''}>
+        <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
           {/* Only show Ra label, Questioner is in header */}
-          {segment.type === 'ra' && (
+          {segment.type === "ra" && (
             <div className="mb-1">
               <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide">
                 Ra
               </span>
             </div>
           )}
-          <div className={`whitespace-pre-line leading-relaxed ${
-            segment.type === 'ra'
-              ? 'text-[var(--lo1-starlight)]'
-              : 'text-[var(--lo1-text-light)]'
-          }`}>
+          <div
+            className={`whitespace-pre-line leading-relaxed ${
+              segment.type === "ra" ? "text-[var(--lo1-starlight)]" : "text-[var(--lo1-text-light)]"
+            }`}
+          >
             {segment.content}
           </div>
         </div>
@@ -146,7 +150,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2"
-          onClick={() => handleLinkClick('ellipsis')}
+          onClick={() => handleLinkClick("ellipsis")}
         >
           ...
         </a>

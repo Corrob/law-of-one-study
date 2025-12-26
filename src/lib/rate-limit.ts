@@ -12,14 +12,17 @@ interface RateLimitEntry {
 const limitMap = new Map<string, RateLimitEntry>();
 
 // Cleanup old entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [key, value] of limitMap.entries()) {
-    if (value.resetAt < now) {
-      limitMap.delete(key);
+setInterval(
+  () => {
+    const now = Date.now();
+    for (const [key, value] of limitMap.entries()) {
+      if (value.resetAt < now) {
+        limitMap.delete(key);
+      }
     }
-  }
-}, 5 * 60 * 1000);
+  },
+  5 * 60 * 1000
+);
 
 export interface RateLimitConfig {
   maxRequests: number;
@@ -39,10 +42,7 @@ export interface RateLimitResult {
  * @param config - Rate limit configuration
  * @returns Rate limit result with success status and headers info
  */
-export function checkRateLimit(
-  identifier: string,
-  config: RateLimitConfig
-): RateLimitResult {
+export function checkRateLimit(identifier: string, config: RateLimitConfig): RateLimitResult {
   const now = Date.now();
   const entry = limitMap.get(identifier);
 
@@ -89,12 +89,12 @@ export function checkRateLimit(
  * Handles X-Forwarded-For and X-Real-IP headers (Vercel, Cloudflare, etc.)
  */
 export function getClientIp(request: Request): string {
-  const forwarded = request.headers.get('x-forwarded-for');
-  const realIp = request.headers.get('x-real-ip');
+  const forwarded = request.headers.get("x-forwarded-for");
+  const realIp = request.headers.get("x-real-ip");
 
   if (forwarded) {
     // X-Forwarded-For can contain multiple IPs, take the first
-    return forwarded.split(',')[0].trim();
+    return forwarded.split(",")[0].trim();
   }
 
   if (realIp) {
@@ -102,5 +102,5 @@ export function getClientIp(request: Request): string {
   }
 
   // Fallback (shouldn't happen in production on Vercel)
-  return 'unknown';
+  return "unknown";
 }

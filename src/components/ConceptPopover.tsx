@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { getConceptDefinition } from '@/data/concepts';
+import { useState, useRef, useEffect, useCallback } from "react";
+import { getConceptDefinition } from "@/data/concepts";
 
 interface ConceptPopoverProps {
   term: string;
@@ -12,7 +12,7 @@ interface ConceptPopoverProps {
 export default function ConceptPopover({ term, displayText, onSearch }: ConceptPopoverProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPinned, setIsPinned] = useState(false); // Clicked to stay open
-  const [position, setPosition] = useState<'above' | 'below'>('below');
+  const [position, setPosition] = useState<"above" | "below">("below");
   const [horizontalOffset, setHorizontalOffset] = useState(0);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -24,7 +24,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
 
   // Detect touch device on mount
   useEffect(() => {
-    setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
   }, []);
 
   const closePopover = useCallback(() => {
@@ -53,17 +53,17 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
     };
 
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         closePopover();
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscape);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscape);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [isPinned, closePopover]);
 
@@ -75,7 +75,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
       const spaceAbove = rect.top;
 
       // Vertical positioning
-      setPosition(spaceBelow < 200 && spaceAbove > spaceBelow ? 'above' : 'below');
+      setPosition(spaceBelow < 200 && spaceAbove > spaceBelow ? "above" : "below");
 
       // Horizontal positioning - prevent overflow
       // Popover is 280px wide (max-width: 90vw)
@@ -184,7 +184,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
           ref={popoverRef}
           role="dialog"
           aria-label={`Definition of ${term}`}
-          className={`concept-popover ${position === 'above' ? 'concept-popover-above' : 'concept-popover-below'}`}
+          className={`concept-popover ${position === "above" ? "concept-popover-above" : "concept-popover-below"}`}
           style={{ transform: `translateX(calc(-50% + ${horizontalOffset}px))` }}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -193,13 +193,8 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
             <div className="concept-popover-header">
               <span className="concept-popover-term">{term}</span>
             </div>
-            {definition && (
-              <p className="concept-popover-definition">{definition}</p>
-            )}
-            <button
-              onClick={handleSearch}
-              className="concept-popover-search-btn"
-            >
+            {definition && <p className="concept-popover-definition">{definition}</p>}
+            <button onClick={handleSearch} className="concept-popover-search-btn">
               Explore this concept
             </button>
           </div>

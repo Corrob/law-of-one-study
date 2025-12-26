@@ -3,7 +3,7 @@
 // Split text into sentences (handles Ra Material formatting)
 export function splitIntoSentences(text: string): string[] {
   // Fix periods without spaces first (same normalization)
-  const normalized = text.replace(/\.(?=[A-Z])/g, '. ');
+  const normalized = text.replace(/\.(?=[A-Z])/g, ". ");
 
   // Split on period followed by space or newline, question mark, or exclamation
   const sentences: string[] = [];
@@ -20,7 +20,7 @@ export function splitIntoSentences(text: string): string[] {
 
 // Paragraph data structure with sentence range
 export interface Paragraph {
-  type: 'questioner' | 'ra' | 'text';
+  type: "questioner" | "ra" | "text";
   content: string;
   sentenceStart: number; // 1-indexed
   sentenceEnd: number; // 1-indexed
@@ -40,15 +40,15 @@ export function parseIntoParagraphs(text: string): Paragraph[] {
     if (!trimmed) continue;
 
     // Determine speaker type
-    let type: 'questioner' | 'ra' | 'text' = 'text';
+    let type: "questioner" | "ra" | "text" = "text";
     let content = trimmed;
 
-    if (trimmed.startsWith('Questioner:')) {
-      type = 'questioner';
-      content = trimmed.substring('Questioner:'.length).trim();
-    } else if (trimmed.startsWith('Ra:')) {
-      type = 'ra';
-      content = trimmed.substring('Ra:'.length).trim();
+    if (trimmed.startsWith("Questioner:")) {
+      type = "questioner";
+      content = trimmed.substring("Questioner:".length).trim();
+    } else if (trimmed.startsWith("Ra:")) {
+      type = "ra";
+      content = trimmed.substring("Ra:".length).trim();
     }
 
     // Split by paragraph breaks: period followed directly by uppercase (NO space)
@@ -60,7 +60,7 @@ export function parseIntoParagraphs(text: string): Paragraph[] {
 
       // Re-add the period that was removed by split (except for last subparagraph)
       if (i < subParagraphs.length - 1) {
-        paragraphText += '.';
+        paragraphText += ".";
       }
 
       if (!paragraphText) continue;
@@ -75,7 +75,7 @@ export function parseIntoParagraphs(text: string): Paragraph[] {
         type,
         content: paragraphText,
         sentenceStart,
-        sentenceEnd
+        sentenceEnd,
       });
     }
   }
@@ -84,27 +84,35 @@ export function parseIntoParagraphs(text: string): Paragraph[] {
 }
 
 // Filter paragraphs to those that intersect with the requested sentence range
-export function filterParagraphsByRange(paragraphs: Paragraph[], sentenceStart: number, sentenceEnd: number): Paragraph[] {
-  return paragraphs.filter(p => {
+export function filterParagraphsByRange(
+  paragraphs: Paragraph[],
+  sentenceStart: number,
+  sentenceEnd: number
+): Paragraph[] {
+  return paragraphs.filter((p) => {
     // Check if paragraph's sentence range intersects with requested range
     return p.sentenceEnd >= sentenceStart && p.sentenceStart <= sentenceEnd;
   });
 }
 
 // Reconstruct text from paragraphs
-export function reconstructTextFromParagraphs(paragraphs: Paragraph[], hasTextBefore: boolean, hasTextAfter: boolean): string {
+export function reconstructTextFromParagraphs(
+  paragraphs: Paragraph[],
+  hasTextBefore: boolean,
+  hasTextAfter: boolean
+): string {
   const parts: string[] = [];
-  let lastType: 'questioner' | 'ra' | 'text' | null = null;
+  let lastType: "questioner" | "ra" | "text" | null = null;
 
   for (let i = 0; i < paragraphs.length; i++) {
     const para = paragraphs[i];
 
     // Add speaker label if type changed
     if (para.type !== lastType) {
-      if (para.type === 'questioner') {
-        parts.push('Questioner:');
-      } else if (para.type === 'ra') {
-        parts.push('Ra:');
+      if (para.type === "questioner") {
+        parts.push("Questioner:");
+      } else if (para.type === "ra") {
+        parts.push("Ra:");
       }
       lastType = para.type;
     }
@@ -116,15 +124,15 @@ export function reconstructTextFromParagraphs(paragraphs: Paragraph[], hasTextBe
     // - Not the last paragraph AND
     // - Next paragraph is same speaker (different speakers already get separated by labels)
     if (i < paragraphs.length - 1 && paragraphs[i + 1].type === para.type) {
-      parts.push('\n\n');
+      parts.push("\n\n");
     }
   }
 
-  const text = parts.join(' ');
+  const text = parts.join(" ");
 
   // Add ellipsis as separate paragraphs
-  const prefix = hasTextBefore ? '...\n\n' : '';
-  const suffix = hasTextAfter ? '\n\n...' : '';
+  const prefix = hasTextBefore ? "...\n\n" : "";
+  const suffix = hasTextAfter ? "\n\n..." : "";
 
   return `${prefix}${text}${suffix}`;
 }
@@ -137,7 +145,11 @@ export function formatWholeQuote(text: string): string {
 }
 
 // Apply sentence range to quote text (main function to use)
-export function applySentenceRangeToQuote(text: string, sentenceStart: number, sentenceEnd: number): string {
+export function applySentenceRangeToQuote(
+  text: string,
+  sentenceStart: number,
+  sentenceEnd: number
+): string {
   const allParagraphs = parseIntoParagraphs(text);
   const selectedParagraphs = filterParagraphsByRange(allParagraphs, sentenceStart, sentenceEnd);
 
@@ -146,8 +158,9 @@ export function applySentenceRangeToQuote(text: string, sentenceStart: number, s
   }
 
   const hasTextBefore = selectedParagraphs[0].sentenceStart > 1;
-  const hasTextAfter = selectedParagraphs[selectedParagraphs.length - 1].sentenceEnd <
-                      allParagraphs[allParagraphs.length - 1].sentenceEnd;
+  const hasTextAfter =
+    selectedParagraphs[selectedParagraphs.length - 1].sentenceEnd <
+    allParagraphs[allParagraphs.length - 1].sentenceEnd;
 
   return reconstructTextFromParagraphs(selectedParagraphs, hasTextBefore, hasTextAfter);
 }

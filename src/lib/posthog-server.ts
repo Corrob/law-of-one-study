@@ -1,20 +1,20 @@
-import { PostHog } from 'posthog-node'
+import { PostHog } from "posthog-node";
 
-let posthogClient: PostHog | null = null
+let posthogClient: PostHog | null = null;
 
 export function getPostHogClient() {
   if (!posthogClient) {
-    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY
-    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST
+    const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 
     if (key && host) {
       posthogClient = new PostHog(key, {
         host: host,
-      })
+      });
     }
   }
 
-  return posthogClient
+  return posthogClient;
 }
 
 /**
@@ -23,7 +23,7 @@ export function getPostHogClient() {
 export function trackLLMGeneration({
   distinctId,
   model,
-  provider = 'openai',
+  provider = "openai",
   input,
   output,
   promptTokens,
@@ -33,24 +33,24 @@ export function trackLLMGeneration({
   latencyMs,
   metadata = {},
 }: {
-  distinctId: string
-  model: string
-  provider?: string
-  input?: string
-  output?: string
-  promptTokens?: number
-  completionTokens?: number
-  totalTokens?: number
-  cost?: number
-  latencyMs?: number
-  metadata?: Record<string, any>
+  distinctId: string;
+  model: string;
+  provider?: string;
+  input?: string;
+  output?: string;
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+  cost?: number;
+  latencyMs?: number;
+  metadata?: Record<string, unknown>;
 }) {
-  const client = getPostHogClient()
-  if (!client) return
+  const client = getPostHogClient();
+  if (!client) return;
 
   client.capture({
     distinctId,
-    event: 'llm_generation',
+    event: "llm_generation",
     properties: {
       $ai_model: model,
       $ai_provider: provider,
@@ -63,7 +63,7 @@ export function trackLLMGeneration({
       $ai_latency_ms: latencyMs,
       ...metadata,
     },
-  })
+  });
 }
 
 /**
@@ -74,26 +74,26 @@ export function trackEvent({
   event,
   properties = {},
 }: {
-  distinctId: string
-  event: string
-  properties?: Record<string, any>
+  distinctId: string;
+  event: string;
+  properties?: Record<string, unknown>;
 }) {
-  const client = getPostHogClient()
-  if (!client) return
+  const client = getPostHogClient();
+  if (!client) return;
 
   client.capture({
     distinctId,
     event,
     properties,
-  })
+  });
 }
 
 /**
  * Flush all pending events (important for serverless)
  */
 export async function flushPostHog() {
-  const client = getPostHogClient()
+  const client = getPostHogClient();
   if (client) {
-    await client.shutdown()
+    await client.shutdown();
   }
 }

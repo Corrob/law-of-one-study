@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface UseTypingAnimationOptions {
   speed?: number; // ms per word (Claude-like is ~40ms)
@@ -8,12 +8,9 @@ interface UseTypingAnimationOptions {
 }
 
 // Hook for animating text word-by-word
-export function useTypingAnimation(
-  targetText: string,
-  options: UseTypingAnimationOptions = {}
-) {
+export function useTypingAnimation(targetText: string, options: UseTypingAnimationOptions = {}) {
   const { speed = 40, onComplete } = options;
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const [isAnimating, setIsAnimating] = useState(false);
   const wordsRef = useRef<string[]>([]);
   const indexRef = useRef(0);
@@ -27,7 +24,7 @@ export function useTypingAnimation(
 
   useEffect(() => {
     if (!targetText) {
-      setDisplayedText('');
+      setDisplayedText("");
       return;
     }
 
@@ -44,7 +41,7 @@ export function useTypingAnimation(
         intervalRef.current = setInterval(() => {
           if (indexRef.current < wordsRef.current.length) {
             indexRef.current++;
-            setDisplayedText(wordsRef.current.slice(0, indexRef.current).join(''));
+            setDisplayedText(wordsRef.current.slice(0, indexRef.current).join(""));
           } else {
             // Caught up with available words
             if (intervalRef.current) {
@@ -73,7 +70,7 @@ export function useTypingAnimation(
     }
     wordsRef.current = [];
     indexRef.current = 0;
-    setDisplayedText('');
+    setDisplayedText("");
     setIsAnimating(false);
   }, []);
 
@@ -104,7 +101,7 @@ export function useQuoteAnimation(
   options: { speed?: number; startDelay?: number; onComplete?: () => void } = {}
 ) {
   const { speed = 50, startDelay = 0, onComplete } = options;
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const [isComplete, setIsComplete] = useState(false);
   const onCompleteRef = useRef(onComplete);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -127,12 +124,12 @@ export function useQuoteAnimation(
     }
 
     if (!text) {
-      setDisplayedText('');
+      setDisplayedText("");
       setIsComplete(false);
       return;
     }
 
-    setDisplayedText('');
+    setDisplayedText("");
     setIsComplete(false);
 
     // Split into words (same as text animation)
@@ -143,7 +140,7 @@ export function useQuoteAnimation(
       intervalRef.current = setInterval(() => {
         if (index < words.length) {
           index++;
-          setDisplayedText(words.slice(0, index).join(''));
+          setDisplayedText(words.slice(0, index).join(""));
         } else {
           if (intervalRef.current) {
             clearInterval(intervalRef.current);

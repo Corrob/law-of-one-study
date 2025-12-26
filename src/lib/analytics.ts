@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import posthog from 'posthog-js'
+import posthog from "posthog-js";
 
 /**
  * Client-side analytics tracking helper
@@ -11,13 +11,13 @@ export const analytics = {
    * Track when a user submits a question
    */
   questionSubmitted: (properties: {
-    messageLength: number
-    containsQuotedText: boolean
-    isFollowUp: boolean
-    conversationDepth: number
+    messageLength: number;
+    containsQuotedText: boolean;
+    isFollowUp: boolean;
+    conversationDepth: number;
   }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('question_submitted', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("question_submitted", properties);
     }
   },
 
@@ -25,13 +25,13 @@ export const analytics = {
    * Track when a response is complete
    */
   responseComplete: (properties: {
-    responseTimeMs: number
-    quoteCount: number
-    messageLength: number
-    isQuoteSearch: boolean
+    responseTimeMs: number;
+    quoteCount: number;
+    messageLength: number;
+    isQuoteSearch: boolean;
   }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('response_complete', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("response_complete", properties);
     }
   },
 
@@ -39,8 +39,8 @@ export const analytics = {
    * Track when streaming starts
    */
   streamingStarted: (properties?: { isQuoteSearch: boolean }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('streaming_started', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("streaming_started", properties);
     }
   },
 
@@ -48,13 +48,13 @@ export const analytics = {
    * Track when a quote is displayed
    */
   quoteDisplayed: (properties: {
-    sessionNumber: number
-    questionNumber: number
-    positionInResponse: number
-    sentenceRange?: string
+    sessionNumber: number;
+    questionNumber: number;
+    positionInResponse: number;
+    sentenceRange?: string;
   }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('quote_displayed', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("quote_displayed", properties);
     }
   },
 
@@ -62,12 +62,12 @@ export const analytics = {
    * Track when a quote link is clicked
    */
   quoteLinkClicked: (properties: {
-    sessionNumber: number
-    questionNumber: number
-    clickType: 'session_link' | 'ellipsis'
+    sessionNumber: number;
+    questionNumber: number;
+    clickType: "session_link" | "ellipsis";
   }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('quote_link_clicked', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("quote_link_clicked", properties);
     }
   },
 
@@ -75,20 +75,20 @@ export const analytics = {
    * Track when a concept is interacted with
    */
   conceptHovered: (properties: { term: string }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('concept_hovered', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("concept_hovered", properties);
     }
   },
 
   conceptClicked: (properties: { term: string }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('concept_clicked', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("concept_clicked", properties);
     }
   },
 
   conceptExplored: (properties: { term: string }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('concept_explored', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("concept_explored", properties);
     }
   },
 
@@ -96,30 +96,27 @@ export const analytics = {
    * Track errors
    */
   error: (properties: {
-    errorType: 'rate_limit' | 'validation' | 'api_error' | 'streaming_error'
-    errorMessage?: string
-    context?: Record<string, any>
+    errorType: "rate_limit" | "validation" | "api_error" | "streaming_error";
+    errorMessage?: string;
+    context?: Record<string, unknown>;
   }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('error_occurred', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("error_occurred", properties);
     }
   },
 
   /**
    * Track welcome screen interactions
    */
-  welcomeScreenViewed: (properties?: {
-    randomQuoteIndex: number
-    starterCount: number
-  }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('welcome_screen_viewed', properties)
+  welcomeScreenViewed: (properties?: { randomQuoteIndex: number; starterCount: number }) => {
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("welcome_screen_viewed", properties);
     }
   },
 
   conversationStarterClicked: (properties: { starterText: string; starterIndex: number }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('conversation_starter_clicked', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("conversation_starter_clicked", properties);
     }
   },
 
@@ -127,12 +124,12 @@ export const analytics = {
    * Track performance metrics
    */
   performance: (properties: {
-    metric: 'response_time' | 'animation_duration' | 'time_to_first_chunk'
-    valueMs: number
-    context?: Record<string, any>
+    metric: "response_time" | "animation_duration" | "time_to_first_chunk";
+    valueMs: number;
+    context?: Record<string, unknown>;
   }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('performance_metric', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("performance_metric", properties);
     }
   },
 
@@ -140,12 +137,12 @@ export const analytics = {
    * Track animation completion
    */
   animationComplete: (properties: {
-    animationType: 'text' | 'quote'
-    durationMs: number
-    chunkCount: number
+    animationType: "text" | "quote";
+    durationMs: number;
+    chunkCount: number;
   }) => {
-    if (typeof window !== 'undefined' && posthog) {
-      posthog.capture('animation_complete', properties)
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("animation_complete", properties);
     }
   },
-}
+};

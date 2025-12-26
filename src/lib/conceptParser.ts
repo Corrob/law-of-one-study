@@ -1,10 +1,10 @@
 // Parser utility to detect and mark Law of One concepts in text
 
-import { buildConceptRegex, getCanonicalTerm } from '@/data/concepts';
+import { buildConceptRegex, getCanonicalTerm } from "@/data/concepts";
 
 export type ParsedSegment =
-  | { type: 'text'; content: string }
-  | { type: 'concept'; displayText: string; searchTerm: string };
+  | { type: "text"; content: string }
+  | { type: "concept"; displayText: string; searchTerm: string };
 
 /**
  * Parse text and identify Law of One concepts for linking
@@ -24,14 +24,14 @@ export function parseConceptsInText(text: string): ParsedSegment[] {
     // Add text before match
     if (match.index > lastIndex) {
       segments.push({
-        type: 'text',
+        type: "text",
         content: text.slice(lastIndex, match.index),
       });
     }
 
     // Add concept link
     segments.push({
-      type: 'concept',
+      type: "concept",
       displayText: match[0],
       searchTerm: getCanonicalTerm(match[0]),
     });
@@ -42,14 +42,14 @@ export function parseConceptsInText(text: string): ParsedSegment[] {
   // Add remaining text after last match
   if (lastIndex < text.length) {
     segments.push({
-      type: 'text',
+      type: "text",
       content: text.slice(lastIndex),
     });
   }
 
   // If no matches found, return original text as single segment
   if (segments.length === 0 && text.length > 0) {
-    segments.push({ type: 'text', content: text });
+    segments.push({ type: "text", content: text });
   }
 
   return segments;

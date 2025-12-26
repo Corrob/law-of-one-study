@@ -1,12 +1,12 @@
-import { Pinecone } from '@pinecone-database/pinecone';
-import { PineconeMetadata } from './types';
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeMetadata } from "./types";
 
 let pineconeClient: Pinecone | null = null;
 
 function getPineconeClient(): Pinecone {
   if (!pineconeClient) {
     if (!process.env.PINECONE_API_KEY) {
-      throw new Error('Missing PINECONE_API_KEY environment variable');
+      throw new Error("Missing PINECONE_API_KEY environment variable");
     }
     pineconeClient = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY,
@@ -15,7 +15,7 @@ function getPineconeClient(): Pinecone {
   return pineconeClient;
 }
 
-const INDEX_NAME = process.env.PINECONE_INDEX || 'law-of-one';
+const INDEX_NAME = process.env.PINECONE_INDEX || "law-of-one";
 
 export async function searchRaMaterial(
   embedding: number[],
@@ -30,16 +30,18 @@ export async function searchRaMaterial(
     includeMetadata: true,
   });
 
-  return results.matches
-    ?.filter((match) => match.metadata)
-    .map((match) => {
-      const metadata = match.metadata as unknown as PineconeMetadata;
-      // Ensure URL is correct format
-      if (metadata.session && metadata.question !== undefined) {
-        metadata.url = `https://lawofone.info/s/${metadata.session}#${metadata.question}`;
-      }
-      return metadata;
-    }) || [];
+  return (
+    results.matches
+      ?.filter((match) => match.metadata)
+      .map((match) => {
+        const metadata = match.metadata as unknown as PineconeMetadata;
+        // Ensure URL is correct format
+        if (metadata.session && metadata.question !== undefined) {
+          metadata.url = `https://lawofone.info/s/${metadata.session}#${metadata.question}`;
+        }
+        return metadata;
+      }) || []
+  );
 }
 
 export { INDEX_NAME };

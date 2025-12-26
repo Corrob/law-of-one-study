@@ -1,14 +1,19 @@
-import { NextRequest } from 'next/server';
-import { openai, createEmbedding } from '@/lib/openai';
-import { searchRaMaterial } from '@/lib/pinecone';
-import { INITIAL_RESPONSE_PROMPT, CONTINUATION_PROMPT, QUOTE_SEARCH_PROMPT, buildContextFromQuotes } from '@/lib/prompts';
-import { Quote } from '@/lib/types';
-import { applySentenceRangeToQuote, formatWholeQuote } from '@/lib/quote-utils';
-import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
-import { trackLLMGeneration } from '@/lib/posthog-server';
+import { NextRequest } from "next/server";
+import { openai, createEmbedding } from "@/lib/openai";
+import { searchRaMaterial } from "@/lib/pinecone";
+import {
+  INITIAL_RESPONSE_PROMPT,
+  CONTINUATION_PROMPT,
+  QUOTE_SEARCH_PROMPT,
+  buildContextFromQuotes,
+} from "@/lib/prompts";
+import { Quote } from "@/lib/types";
+import { applySentenceRangeToQuote, formatWholeQuote } from "@/lib/quote-utils";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { trackLLMGeneration } from "@/lib/posthog-server";
 
 interface ChatMessage {
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 }
 
@@ -19,7 +24,7 @@ interface ChatRequest {
 
 // Check if string could be the start of a {{QUOTE:N}} or {{QUOTE:N:s2:s5}} marker
 function couldBePartialMarker(s: string): boolean {
-  const prefixes = ['{', '{{', '{{Q', '{{QU', '{{QUO', '{{QUOT', '{{QUOTE', '{{QUOTE:'];
+  const prefixes = ["{", "{{", "{{Q", "{{QU", "{{QUO", "{{QUOT", "{{QUOTE", "{{QUOTE:"];
   if (prefixes.includes(s)) return true;
   if (/^\{\{QUOTE:\d+$/.test(s)) return true;
   if (/^\{\{QUOTE:\d+\}$/.test(s)) return true;
@@ -38,7 +43,7 @@ function calculateCost(model: string, promptTokens: number, completionTokens: nu
   // GPT-5-mini pricing (as of Jan 2025)
   // Input: $0.075 per 1M tokens, Output: $0.30 per 1M tokens
   const inputCostPer1M = 0.075;
-  const outputCostPer1M = 0.30;
+  const outputCostPer1M = 0.3;
 
   const inputCost = (promptTokens / 1_000_000) * inputCostPer1M;
   const outputCost = (completionTokens / 1_000_000) * outputCostPer1M;
@@ -80,18 +85,18 @@ export async function POST(request: NextRequest) {
     if (!rateLimitResult.success) {
       return new Response(
         JSON.stringify({
-          error: 'Too many requests. Please wait before trying again.',
-          retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000)
+          error: "Too many requests. Please wait before trying again.",
+          retryAfter: Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000),
         }),
         {
           status: 429,
           headers: {
-            'Content-Type': 'application/json',
-            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
-            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
-            'X-RateLimit-Reset': new Date(rateLimitResult.resetAt).toISOString(),
-            'Retry-After': Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
-          }
+            "Content-Type": "application/json",
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": new Date(rateLimitResult.resetAt).toISOString(),
+            "Retry-After": Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000).toString(),
+          },
         }
       );
     }
@@ -100,67 +105,67 @@ export async function POST(request: NextRequest) {
     const { message, history } = body;
 
     // Input validation - message
-    if (!message || typeof message !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Message is required and must be a string' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+    if (!message || typeof message !== "string") {
+      return new Response(JSON.stringify({ error: "Message is required and must be a string" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     if (message.length === 0) {
-      return new Response(
-        JSON.stringify({ error: 'Message cannot be empty' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: "Message cannot be empty" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     if (message.length > 5000) {
-      return new Response(
-        JSON.stringify({ error: 'Message too long. Maximum 5000 characters.' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: "Message too long. Maximum 5000 characters." }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Input validation - history
     if (!Array.isArray(history)) {
-      return new Response(
-        JSON.stringify({ error: 'History must be an array' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: "History must be an array" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     if (history.length > 20) {
-      return new Response(
-        JSON.stringify({ error: 'History too long. Maximum 20 messages.' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return new Response(JSON.stringify({ error: "History too long. Maximum 20 messages." }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     // Validate history structure
     for (const msg of history) {
-      if (!msg || typeof msg !== 'object') {
-        return new Response(
-          JSON.stringify({ error: 'Invalid history format' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+      if (!msg || typeof msg !== "object") {
+        return new Response(JSON.stringify({ error: "Invalid history format" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
       }
-      if (!msg.role || (msg.role !== 'user' && msg.role !== 'assistant')) {
-        return new Response(
-          JSON.stringify({ error: 'Invalid message role in history' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+      if (!msg.role || (msg.role !== "user" && msg.role !== "assistant")) {
+        return new Response(JSON.stringify({ error: "Invalid message role in history" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
       }
-      if (!msg.content || typeof msg.content !== 'string') {
-        return new Response(
-          JSON.stringify({ error: 'Invalid message content in history' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+      if (!msg.content || typeof msg.content !== "string") {
+        return new Response(JSON.stringify({ error: "Invalid message content in history" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
       }
       if (msg.content.length > 10000) {
-        return new Response(
-          JSON.stringify({ error: 'Message in history too long' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return new Response(JSON.stringify({ error: "Message in history too long" }), {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        });
       }
     }
 
@@ -192,32 +197,37 @@ export async function POST(request: NextRequest) {
             }));
 
             // Send quotes metadata
-            send('meta', { quotes: passages });
+            send("meta", { quotes: passages });
 
             const quotesContext = buildContextFromQuotes(passages);
 
             // Generate full response with quotes (streaming)
             const quoteSearchStartTime = Date.now();
             const response = await openai.chat.completions.create({
-              model: 'gpt-5-mini',
+              model: "gpt-5-mini",
               messages: [
-                { role: 'system', content: QUOTE_SEARCH_PROMPT },
+                { role: "system", content: QUOTE_SEARCH_PROMPT },
                 ...recentHistory.map((m) => ({
-                  role: m.role as 'user' | 'assistant',
+                  role: m.role as "user" | "assistant",
                   content: m.content,
                 })),
-                { role: 'user', content: `${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}\n\nRespond to the user's question, including the most relevant quote(s) using {{QUOTE:N}} format.` },
+                {
+                  role: "user",
+                  content: `${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}\n\nRespond to the user's question, including the most relevant quote(s) using {{QUOTE:N}} format.`,
+                },
               ],
-              reasoning_effort: 'low',
+              reasoning_effort: "low",
               stream: true,
               stream_options: { include_usage: true },
             });
 
-            let buffer = '';
-            let accumulatedText = '';
-            let fullOutput = '';
+            let buffer = "";
+            let accumulatedText = "";
+            let fullOutput = "";
 
-            let usageData: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | undefined;
+            let usageData:
+              | { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }
+              | undefined;
 
             for await (const chunk of response) {
               // Capture usage data from final chunk
@@ -225,7 +235,7 @@ export async function POST(request: NextRequest) {
                 usageData = chunk.usage;
               }
 
-              const content = chunk.choices[0]?.delta?.content || '';
+              const content = chunk.choices[0]?.delta?.content || "";
               if (content) {
                 fullOutput += content;
                 buffer += content;
@@ -247,7 +257,7 @@ export async function POST(request: NextRequest) {
                       buffer = buffer.slice(partialStart);
                     } else {
                       accumulatedText += buffer;
-                      buffer = '';
+                      buffer = "";
                     }
                     break;
                   }
@@ -256,8 +266,8 @@ export async function POST(request: NextRequest) {
                   accumulatedText += textBefore;
 
                   if (accumulatedText.trim()) {
-                    send('chunk', { type: 'text', content: accumulatedText });
-                    accumulatedText = '';
+                    send("chunk", { type: "text", content: accumulatedText });
+                    accumulatedText = "";
                   }
 
                   // Parse quote marker and apply sentence range filtering on backend
@@ -272,19 +282,26 @@ export async function POST(request: NextRequest) {
                       const sentenceStart = parseInt(markerMatch[2], 10);
                       const sentenceEnd = parseInt(markerMatch[3], 10);
                       quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
-                      console.log('[API] Applied sentence range', sentenceStart, '-', sentenceEnd, 'to quote', quoteIndex);
+                      console.log(
+                        "[API] Applied sentence range",
+                        sentenceStart,
+                        "-",
+                        sentenceEnd,
+                        "to quote",
+                        quoteIndex
+                      );
                     } else {
                       // Format whole quote with paragraph breaks
                       quoteText = formatWholeQuote(quote.text);
-                      console.log('[API] Formatted whole quote', quoteIndex);
+                      console.log("[API] Formatted whole quote", quoteIndex);
                     }
 
-                    console.log('[API] Matched marker:', markerMatch[0]);
-                    send('chunk', {
-                      type: 'quote',
+                    console.log("[API] Matched marker:", markerMatch[0]);
+                    send("chunk", {
+                      type: "quote",
                       text: quoteText,
                       reference: quote.reference,
-                      url: quote.url
+                      url: quote.url,
                     });
                   }
 
@@ -295,17 +312,21 @@ export async function POST(request: NextRequest) {
 
             accumulatedText += buffer;
             if (accumulatedText.trim()) {
-              send('chunk', { type: 'text', content: accumulatedText });
+              send("chunk", { type: "text", content: accumulatedText });
             }
 
             // Track LLM generation for quote search
             if (usageData) {
               const latencyMs = Date.now() - quoteSearchStartTime;
-              const cost = calculateCost('gpt-5-mini', usageData.prompt_tokens || 0, usageData.completion_tokens || 0);
+              const cost = calculateCost(
+                "gpt-5-mini",
+                usageData.prompt_tokens || 0,
+                usageData.completion_tokens || 0
+              );
               trackLLMGeneration({
                 distinctId: clientIp,
-                model: 'gpt-5-mini',
-                provider: 'openai',
+                model: "gpt-5-mini",
+                provider: "openai",
                 input: message.substring(0, 500), // Truncate for privacy
                 output: fullOutput.substring(0, 500),
                 promptTokens: usageData.prompt_tokens,
@@ -314,7 +335,7 @@ export async function POST(request: NextRequest) {
                 cost,
                 latencyMs,
                 metadata: {
-                  mode: 'quote_search',
+                  mode: "quote_search",
                   numPassages: passages.length,
                 },
               });
@@ -325,28 +346,32 @@ export async function POST(request: NextRequest) {
             // Phase 1: Get initial paragraph (no quotes)
             const phase1StartTime = Date.now();
             const initialCompletion = await openai.chat.completions.create({
-              model: 'gpt-5-mini',
+              model: "gpt-5-mini",
               messages: [
-                { role: 'system', content: INITIAL_RESPONSE_PROMPT },
+                { role: "system", content: INITIAL_RESPONSE_PROMPT },
                 ...recentHistory.map((m) => ({
-                  role: m.role as 'user' | 'assistant',
+                  role: m.role as "user" | "assistant",
                   content: m.content,
                 })),
-                { role: 'user', content: message },
+                { role: "user", content: message },
               ],
-              reasoning_effort: 'low',
+              reasoning_effort: "low",
             });
-            const initialResponse = initialCompletion.choices[0]?.message?.content || '';
+            const initialResponse = initialCompletion.choices[0]?.message?.content || "";
             const phase1Usage = initialCompletion.usage;
 
             // Track Phase 1 LLM generation
             if (phase1Usage) {
               const phase1LatencyMs = Date.now() - phase1StartTime;
-              const phase1Cost = calculateCost('gpt-5-mini', phase1Usage.prompt_tokens || 0, phase1Usage.completion_tokens || 0);
+              const phase1Cost = calculateCost(
+                "gpt-5-mini",
+                phase1Usage.prompt_tokens || 0,
+                phase1Usage.completion_tokens || 0
+              );
               trackLLMGeneration({
                 distinctId: clientIp,
-                model: 'gpt-5-mini',
-                provider: 'openai',
+                model: "gpt-5-mini",
+                provider: "openai",
                 input: message.substring(0, 500),
                 output: initialResponse.substring(0, 500),
                 promptTokens: phase1Usage.prompt_tokens,
@@ -355,14 +380,14 @@ export async function POST(request: NextRequest) {
                 cost: phase1Cost,
                 latencyMs: phase1LatencyMs,
                 metadata: {
-                  mode: 'standard',
+                  mode: "standard",
                   phase: 1,
                 },
               });
             }
 
             // IMMEDIATELY send initial response - animation starts while we search!
-            send('chunk', { type: 'text', content: initialResponse });
+            send("chunk", { type: "text", content: initialResponse });
 
             // Phase 2: Search using AI's understanding (while user watches animation)
             const embedding = await createEmbedding(initialResponse);
@@ -375,40 +400,45 @@ export async function POST(request: NextRequest) {
             }));
 
             // Send quotes metadata
-            send('meta', { quotes: passages });
+            send("meta", { quotes: passages });
 
             const quotesContext = buildContextFromQuotes(passages);
 
             // Phase 3: Continue response with quotes (streaming)
             const phase3StartTime = Date.now();
             const continuation = await openai.chat.completions.create({
-              model: 'gpt-5-mini',
+              model: "gpt-5-mini",
               messages: [
-                { role: 'system', content: CONTINUATION_PROMPT },
+                { role: "system", content: CONTINUATION_PROMPT },
                 ...recentHistory.map((m) => ({
-                  role: m.role as 'user' | 'assistant',
+                  role: m.role as "user" | "assistant",
                   content: m.content,
                 })),
-                { role: 'user', content: message },
-                { role: 'assistant', content: initialResponse },
-                { role: 'user', content: `Here are relevant Ra passages:\n\n${quotesContext}\n\nContinue your response, weaving in 1-2 quotes using {{QUOTE:N}} format.` },
+                { role: "user", content: message },
+                { role: "assistant", content: initialResponse },
+                {
+                  role: "user",
+                  content: `Here are relevant Ra passages:\n\n${quotesContext}\n\nContinue your response, weaving in 1-2 quotes using {{QUOTE:N}} format.`,
+                },
               ],
-              reasoning_effort: 'low',
+              reasoning_effort: "low",
               stream: true,
               stream_options: { include_usage: true },
             });
 
-            let buffer = '';
-            let accumulatedText = '';
-            let phase3Output = '';
-            let phase3Usage: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | undefined;
+            let buffer = "";
+            let accumulatedText = "";
+            let phase3Output = "";
+            let phase3Usage:
+              | { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }
+              | undefined;
 
             for await (const chunk of continuation) {
               // Capture usage data from final chunk
               if (chunk.usage) {
                 phase3Usage = chunk.usage;
               }
-              const content = chunk.choices[0]?.delta?.content || '';
+              const content = chunk.choices[0]?.delta?.content || "";
               if (content) {
                 phase3Output += content;
                 buffer += content;
@@ -434,7 +464,7 @@ export async function POST(request: NextRequest) {
                     } else {
                       // No partial marker - add all to accumulated
                       accumulatedText += buffer;
-                      buffer = '';
+                      buffer = "";
                     }
                     break;
                   }
@@ -446,8 +476,8 @@ export async function POST(request: NextRequest) {
 
                   // Emit accumulated text as one complete chunk
                   if (accumulatedText.trim()) {
-                    send('chunk', { type: 'text', content: accumulatedText });
-                    accumulatedText = '';
+                    send("chunk", { type: "text", content: accumulatedText });
+                    accumulatedText = "";
                   }
 
                   // Parse quote marker and apply sentence range filtering on backend
@@ -462,19 +492,26 @@ export async function POST(request: NextRequest) {
                       const sentenceStart = parseInt(markerMatch[2], 10);
                       const sentenceEnd = parseInt(markerMatch[3], 10);
                       quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
-                      console.log('[API] Applied sentence range', sentenceStart, '-', sentenceEnd, 'to quote', quoteIndex);
+                      console.log(
+                        "[API] Applied sentence range",
+                        sentenceStart,
+                        "-",
+                        sentenceEnd,
+                        "to quote",
+                        quoteIndex
+                      );
                     } else {
                       // Format whole quote with paragraph breaks
                       quoteText = formatWholeQuote(quote.text);
-                      console.log('[API] Formatted whole quote', quoteIndex);
+                      console.log("[API] Formatted whole quote", quoteIndex);
                     }
 
-                    console.log('[API] Matched marker:', markerMatch[0]);
-                    send('chunk', {
-                      type: 'quote',
+                    console.log("[API] Matched marker:", markerMatch[0]);
+                    send("chunk", {
+                      type: "quote",
                       text: quoteText,
                       reference: quote.reference,
-                      url: quote.url
+                      url: quote.url,
                     });
                   }
 
@@ -487,17 +524,21 @@ export async function POST(request: NextRequest) {
             // Flush any remaining text
             accumulatedText += buffer;
             if (accumulatedText.trim()) {
-              send('chunk', { type: 'text', content: accumulatedText });
+              send("chunk", { type: "text", content: accumulatedText });
             }
 
             // Track Phase 3 LLM generation
             if (phase3Usage) {
               const phase3LatencyMs = Date.now() - phase3StartTime;
-              const phase3Cost = calculateCost('gpt-5-mini', phase3Usage.prompt_tokens || 0, phase3Usage.completion_tokens || 0);
+              const phase3Cost = calculateCost(
+                "gpt-5-mini",
+                phase3Usage.prompt_tokens || 0,
+                phase3Usage.completion_tokens || 0
+              );
               trackLLMGeneration({
                 distinctId: clientIp,
-                model: 'gpt-5-mini',
-                provider: 'openai',
+                model: "gpt-5-mini",
+                provider: "openai",
                 input: `${message} + ${initialResponse.substring(0, 200)}...`, // Context
                 output: phase3Output.substring(0, 500),
                 promptTokens: phase3Usage.prompt_tokens,
@@ -506,7 +547,7 @@ export async function POST(request: NextRequest) {
                 cost: phase3Cost,
                 latencyMs: phase3LatencyMs,
                 metadata: {
-                  mode: 'standard',
+                  mode: "standard",
                   phase: 3,
                   numPassages: passages.length,
                 },
@@ -514,10 +555,10 @@ export async function POST(request: NextRequest) {
             }
           }
 
-          send('done', {});
+          send("done", {});
         } catch (error) {
-          console.error('Streaming error:', error);
-          send('error', { message: 'Failed to generate response' });
+          console.error("Streaming error:", error);
+          send("error", { message: "Failed to generate response" });
         } finally {
           controller.close();
         }
@@ -526,16 +567,16 @@ export async function POST(request: NextRequest) {
 
     return new Response(stream, {
       headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
       },
     });
   } catch (error) {
-    console.error('Chat API error:', error);
-    return new Response(
-      JSON.stringify({ error: 'Failed to process request' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    console.error("Chat API error:", error);
+    return new Response(JSON.stringify({ error: "Failed to process request" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
