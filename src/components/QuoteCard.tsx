@@ -1,6 +1,8 @@
 'use client';
 
 import { Quote } from '@/lib/types';
+import { analytics } from '@/lib/analytics';
+import { useEffect } from 'react';
 
 interface QuoteCardProps {
   quote: Quote;
@@ -62,6 +64,30 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
   const segments = formatRaText(content);
   const shortRef = getShortReference(quote.reference);
 
+  // Extract session and question numbers for tracking
+  const match = quote.reference.match(/(\d+)\.(\d+)/);
+  const sessionNumber = match ? parseInt(match[1]) : 0;
+  const questionNumber = match ? parseInt(match[2]) : 0;
+
+  // Track quote display on mount
+  useEffect(() => {
+    analytics.quoteDisplayed({
+      sessionNumber,
+      questionNumber,
+      positionInResponse: 0, // Could be enhanced to track actual position
+      sentenceRange: hasLeading || hasTrailing ? 'partial' : undefined,
+    });
+  }, [sessionNumber, questionNumber, hasLeading, hasTrailing]);
+
+  // Handle quote link clicks
+  const handleLinkClick = (clickType: 'session_link' | 'ellipsis') => {
+    analytics.quoteLinkClicked({
+      sessionNumber,
+      questionNumber,
+      clickType,
+    });
+  };
+
   return (
     <div className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg">
       {/* Header with reference number */}
@@ -74,6 +100,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
+          onClick={() => handleLinkClick('session_link')}
         >
           {shortRef}
         </a>
@@ -86,6 +113,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2"
+          onClick={() => handleLinkClick('ellipsis')}
         >
           ...
         </a>
@@ -118,6 +146,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2"
+          onClick={() => handleLinkClick('ellipsis')}
         >
           ...
         </a>
