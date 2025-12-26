@@ -59,8 +59,9 @@ function expandToParagraphBoundaries(text: string, sentenceStart: number, senten
   const normalizedText = text.replace(/\.(?=[A-Z])/g, '. ');
   const sentences = splitIntoSentences(text);
 
-  // Find paragraph delimiters by detecting speaker changes
-  // In Ra material, paragraphs are separated by "Questioner:" and "Ra:" markers
+  // Find paragraph delimiters by detecting:
+  // 1. Speaker changes ("Questioner:" and "Ra:")
+  // 2. Paragraph breaks within speaker sections (double newlines or ". " followed by capital)
   const paragraphDelimiters: number[] = [0]; // Start of text
 
   // Find all occurrences of "Questioner:" and "Ra:" (after the first character)
@@ -69,6 +70,15 @@ function expandToParagraphBoundaries(text: string, sentenceStart: number, senten
   while ((match = speakerPattern.exec(normalizedText)) !== null) {
     // Add position right before the speaker marker (after the space)
     paragraphDelimiters.push(match.index + 1);
+  }
+
+  // Find paragraph breaks within speaker sections
+  // After normalization, paragraph breaks appear as ". " followed by uppercase
+  // We look for the position right after the period and space
+  const paragraphBreakPattern = /\.\s+(?=[A-Z])/g;
+  while ((match = paragraphBreakPattern.exec(normalizedText)) !== null) {
+    // Add position right after the ". " (start of new paragraph)
+    paragraphDelimiters.push(match.index + match[0].length);
   }
 
   paragraphDelimiters.push(normalizedText.length); // End of text
@@ -167,7 +177,45 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
     const hasTextBefore = expanded.start > 1;
     const hasTextAfter = expanded.end < sentences.length;
 
-    const excerpt = selectedSentences.join(' ');
+    // Preserve paragraph structure when joining sentences
+    // Detect which sentences start a new paragraph in the original text
+    const sentencePositions: { start: number; end: number }[] = [];
+    let searchPos = 0;
+    for (const sentence of sentences) {
+      const sentStart = normalizedText.indexOf(sentence, searchPos);
+      if (sentStart !== -1) {
+        sentencePositions.push({ start: sentStart, end: sentStart + sentence.length });
+        searchPos = sentStart + sentence.length;
+      }
+    }
+
+    // Find all paragraph break positions (same pattern as paragraph delimiters)
+    const paragraphBreakPositions = new Set<number>();
+    const paragraphBreakPattern = /\.\s+(?=[A-Z])/g;
+    let match;
+    while ((match = paragraphBreakPattern.exec(normalizedText)) !== null) {
+      paragraphBreakPositions.add(match.index + match[0].length);
+    }
+
+    // Join sentences, adding double newlines before sentences that start a new paragraph
+    const excerptParts: string[] = [];
+    for (let i = 0; i < selectedSentences.length; i++) {
+      const globalIndex = start + i;
+      const sentencePos = sentencePositions[globalIndex];
+
+      // Check if this sentence starts a new paragraph
+      const startsNewParagraph = sentencePos && paragraphBreakPositions.has(sentencePos.start);
+
+      if (i > 0 && startsNewParagraph) {
+        excerptParts.push('\n\n' + selectedSentences[i]);
+      } else if (i > 0) {
+        excerptParts.push(' ' + selectedSentences[i]);
+      } else {
+        excerptParts.push(selectedSentences[i]);
+      }
+    }
+
+    const excerpt = excerptParts.join('');
     displayText = `${hasTextBefore ? '... ' : ''}${excerpt}${hasTextAfter ? ' ...' : ''}`;
 
     console.log('[QuoteCard] Final display text length:', displayText.length);
