@@ -10,6 +10,9 @@ import WelcomeScreen from './WelcomeScreen';
 import { useAnimationQueue } from '@/hooks/useAnimationQueue';
 import { getPlaceholder, defaultPlaceholder } from '@/data/placeholders';
 
+// Maximum number of messages to keep in memory (prevents unbounded growth)
+const MAX_CONVERSATION_HISTORY = 30;
+
 export interface ChatInterfaceRef {
   reset: () => void;
 }
@@ -122,7 +125,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessages((prev) => {
+      const updated = [...prev, userMessage];
+      // Limit conversation history to prevent unbounded memory growth
+      if (updated.length > MAX_CONVERSATION_HISTORY) {
+        return updated.slice(-MAX_CONVERSATION_HISTORY);
+      }
+      return updated;
+    });
     setIsStreaming(true);
     setStreamDone(false);
     setStreamingQuotes([]);
@@ -142,7 +152,21 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       });
 
       if (!response.ok) {
-        throw new Error('Failed to get response');
+        // Parse error response for user-friendly messages
+        let errorMessage = 'Failed to get response';
+        try {
+          const errorData = await response.json();
+          if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+          // Special handling for rate limiting
+          if (response.status === 429 && errorData.retryAfter) {
+            errorMessage = `${errorData.error} Please wait ${errorData.retryAfter} seconds.`;
+          }
+        } catch {
+          // If JSON parsing fails, use generic message
+        }
+        throw new Error(errorMessage);
       }
 
       const reader = response.body?.getReader();
@@ -201,10 +225,23 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       }
     } catch (error) {
       console.error('Chat error:', error);
+
+      // Extract error message - show specific validation errors to user
+      let errorText = 'I apologize, but I encountered an error. Please try again.';
+      if (error instanceof Error && error.message) {
+        // Show validation errors and rate limit errors directly to user
+        if (error.message.includes('Maximum') ||
+            error.message.includes('too long') ||
+            error.message.includes('Too many requests') ||
+            error.message.includes('required')) {
+          errorText = error.message;
+        }
+      }
+
       const errorMessage: MessageType = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: 'I apologize, but I encountered an error. Please try again.',
+        content: errorText,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -238,10 +275,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       };
 
       setMessages((prev) => {
-        const newMessages = [...prev, assistantMessage];
+        const updated = [...prev, assistantMessage];
+        // Limit conversation history to prevent unbounded memory growth
+        const limited = updated.length > MAX_CONVERSATION_HISTORY
+          ? updated.slice(-MAX_CONVERSATION_HISTORY)
+          : updated;
         // Update placeholder for next message
-        setPlaceholder(getPlaceholder(newMessages.length));
-        return newMessages;
+        setPlaceholder(getPlaceholder(limited.length));
+        return limited;
       });
       resetQueue();
       setStreamingQuotes([]);
