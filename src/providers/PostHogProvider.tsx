@@ -1,44 +1,44 @@
-'use client'
+"use client";
 
-import posthog from 'posthog-js'
-import { PostHogProvider as PHProvider } from 'posthog-js/react'
-import { useEffect, Suspense } from 'react'
-import { usePathname, useSearchParams } from 'next/navigation'
+import posthog from "posthog-js";
+import { PostHogProvider as PHProvider } from "posthog-js/react";
+import { useEffect, Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 
-if (typeof window !== 'undefined') {
-  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST
+if (typeof window !== "undefined") {
+  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 
   if (key && host) {
     posthog.init(key, {
       api_host: host,
-      person_profiles: 'identified_only',
+      person_profiles: "identified_only",
       capture_pageview: false, // We'll handle this manually for better control
       capture_pageleave: true,
       autocapture: false, // We want explicit tracking for better control
-    })
+    });
   }
 }
 
 function PostHogPageView() {
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     // Only track pageviews on client-side
-    if (typeof window === 'undefined') return
-    if (!pathname || !posthog) return
+    if (typeof window === "undefined") return;
+    if (!pathname || !posthog) return;
 
-    let url = window.origin + pathname
+    let url = window.origin + pathname;
     if (searchParams && searchParams.toString()) {
-      url = url + `?${searchParams.toString()}`
+      url = url + `?${searchParams.toString()}`;
     }
-    posthog.capture('$pageview', {
+    posthog.capture("$pageview", {
       $current_url: url,
-    })
-  }, [pathname, searchParams])
+    });
+  }, [pathname, searchParams]);
 
-  return null
+  return null;
 }
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
@@ -49,5 +49,5 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
       </Suspense>
       {children}
     </PHProvider>
-  )
+  );
 }

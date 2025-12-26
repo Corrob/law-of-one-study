@@ -36,6 +36,7 @@ const eslintConfig = defineConfig([
       // React specific rules
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
+      "react/no-unescaped-entities": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       "react-hooks/set-state-in-effect": "off", // Allow setState in effects for valid patterns

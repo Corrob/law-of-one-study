@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { AnimationChunk } from '@/lib/types';
-import QuoteCard from './QuoteCard';
-import AnimatedQuoteCard from './AnimatedQuoteCard';
-import AnimatedText from './AnimatedText';
-import ConceptPopover from './ConceptPopover';
-import { parseConceptsInText } from '@/lib/conceptParser';
+import { AnimationChunk } from "@/lib/types";
+import QuoteCard from "./QuoteCard";
+import AnimatedQuoteCard from "./AnimatedQuoteCard";
+import AnimatedText from "./AnimatedText";
+import ConceptPopover from "./ConceptPopover";
+import { parseConceptsInText } from "@/lib/conceptParser";
 
 interface StreamingMessageProps {
   completedChunks: AnimationChunk[];
@@ -55,21 +55,23 @@ interface ChunkRendererProps {
   onSearch?: (term: string) => void;
 }
 
-function ChunkRenderer({ chunk, animate, isFirst = false, onComplete, onSearch }: ChunkRendererProps) {
-  if (chunk.type === 'text') {
+function ChunkRenderer({
+  chunk,
+  animate,
+  isFirst = false,
+  onComplete,
+  onSearch,
+}: ChunkRendererProps) {
+  if (chunk.type === "text") {
     // Use div instead of span for consistent block layout
     // Add min-height to prevent layout shift during content changes
-    const wrapperClass = isFirst ? 'min-h-[1lh]' : 'mt-3 block min-h-[1lh]';
+    const wrapperClass = isFirst ? "min-h-[1lh]" : "mt-3 block min-h-[1lh]";
 
     if (animate) {
       // During animation, render plain text (no concept linking)
       return (
         <div className={wrapperClass}>
-          <AnimatedText
-            content={chunk.content}
-            onComplete={onComplete!}
-            speed={50}
-          />
+          <AnimatedText content={chunk.content} onComplete={onComplete!} speed={50} />
         </div>
       );
     }
@@ -77,24 +79,14 @@ function ChunkRenderer({ chunk, animate, isFirst = false, onComplete, onSearch }
     // After completion, render with concept linking
     return (
       <div className={wrapperClass}>
-        {onSearch ? (
-          <LinkedText text={chunk.content} onSearch={onSearch} />
-        ) : (
-          chunk.content
-        )}
+        {onSearch ? <LinkedText text={chunk.content} onSearch={onSearch} /> : chunk.content}
       </div>
     );
   }
 
-  if (chunk.type === 'quote') {
+  if (chunk.type === "quote") {
     if (animate) {
-      return (
-        <AnimatedQuoteCard
-          quote={chunk.quote}
-          animate={true}
-          onComplete={onComplete}
-        />
-      );
+      return <AnimatedQuoteCard quote={chunk.quote} animate={true} onComplete={onComplete} />;
     }
     return <QuoteCard quote={chunk.quote} />;
   }
@@ -113,7 +105,7 @@ function LinkedText({ text, onSearch }: LinkedTextProps) {
   return (
     <>
       {segments.map((seg, i) =>
-        seg.type === 'text' ? (
+        seg.type === "text" ? (
           <span key={i}>{seg.content}</span>
         ) : (
           <ConceptPopover

@@ -31,15 +31,15 @@ User asks a question → System returns:
 
 **Example response flow:**
 
-> *User: Why do we forget our past lives?*
+> _User: Why do we forget our past lives?_
 >
 > **[AI intro paragraph]** setting context about the veil of forgetting...
 >
-> **Ra 36.12:** "The forgetting is the veil..." *[link to lawofone.info]*
+> **Ra 36.12:** "The forgetting is the veil..." _[link to lawofone.info]_
 >
 > **[AI weaving]** connecting that to the user's question...
 >
-> **Ra 21.9:** "The purpose of incarnation..." *[link to lawofone.info]*
+> **Ra 21.9:** "The purpose of incarnation..." _[link to lawofone.info]_
 >
 > **[AI synthesis]** tying it together.
 
@@ -77,7 +77,7 @@ User asks a question → System returns:
 > **[Ra 52.7]** "The heart of the discipline of the personality..."
 > **[Ra 18.5]** "The purpose of incarnation is..."
 >
-> *[Donate to restore AI summaries →]*
+> _[Donate to restore AI summaries →]_
 
 ---
 
@@ -85,15 +85,15 @@ User asks a question → System returns:
 
 ### Stack
 
-| Component | Technology |
-|-----------|------------|
-| Frontend | Next.js (Vercel) |
-| Auth | Firebase Auth (optional for MVP) |
-| Database | Firestore |
-| Vector DB | Pinecone |
-| AI Model | GPT-5 mini |
-| Payments | Stripe Checkout |
-| Hosting | Vercel |
+| Component | Technology                       |
+| --------- | -------------------------------- |
+| Frontend  | Next.js (Vercel)                 |
+| Auth      | Firebase Auth (optional for MVP) |
+| Database  | Firestore                        |
+| Vector DB | Pinecone                         |
+| AI Model  | GPT-5 mini                       |
+| Payments  | Stripe Checkout                  |
+| Hosting   | Vercel                           |
 
 ### Data Model
 
@@ -113,11 +113,11 @@ donations/
 
 ### API Routes
 
-| Route | Purpose |
-|-------|---------|
-| `POST /api/query` | Handle user questions, decrement pool |
+| Route               | Purpose                                    |
+| ------------------- | ------------------------------------------ |
+| `POST /api/query`   | Handle user questions, decrement pool      |
 | `POST /api/webhook` | Stripe webhook, increment pool on donation |
-| `GET /api/pool` | Return current pool status |
+| `GET /api/pool`     | Return current pool status                 |
 
 ---
 
@@ -141,18 +141,18 @@ donations/
 
 ### Models & Costs
 
-| Model | Use Case | Cost/Query |
-|-------|----------|------------|
-| GPT-5 mini | All AI responses | ~$0.00263 |
-| Pinecone | Semantic search | ~$0.00001 |
+| Model      | Use Case         | Cost/Query |
+| ---------- | ---------------- | ---------- |
+| GPT-5 mini | All AI responses | ~$0.00263  |
+| Pinecone   | Semantic search  | ~$0.00001  |
 
 **Cost breakdown per AI query:**
 
-| Component | Tokens | Rate | Cost |
-|-----------|--------|------|------|
-| Input (prompt + Ra quotes) | ~2,500 | $0.25/1M | $0.000625 |
-| Output (response) | ~1,000 | $2.00/1M | $0.002 |
-| **Total** | | | **~$0.00263** |
+| Component                  | Tokens | Rate     | Cost          |
+| -------------------------- | ------ | -------- | ------------- |
+| Input (prompt + Ra quotes) | ~2,500 | $0.25/1M | $0.000625     |
+| Output (response)          | ~1,000 | $2.00/1M | $0.002        |
+| **Total**                  |        |          | **~$0.00263** |
 
 ### System Prompt Guidelines
 
@@ -176,12 +176,12 @@ donations/
 ### Conversion Rate
 
 | Amount | Queries |
-|--------|---------|
-| $1 | ~380 |
-| $5 | ~1,900 |
-| $10 | ~3,800 |
-| $25 | ~9,500 |
-| $50 | ~19,000 |
+| ------ | ------- |
+| $1     | ~380    |
+| $5     | ~1,900  |
+| $10    | ~3,800  |
+| $25    | ~9,500  |
+| $50    | ~19,000 |
 
 ### UI Display
 
@@ -210,15 +210,15 @@ Always visible on the interface:
 
 ```typescript
 // api/webhook.ts
-const QUERIES_PER_DOLLAR = 380
+const QUERIES_PER_DOLLAR = 380;
 
-if (event.type === 'checkout.session.completed') {
-  const amount = event.data.object.amount_total / 100
-  const queries = Math.floor(amount * QUERIES_PER_DOLLAR)
-  
-  await adminDb.doc('config/pool').update({
-    queriesRemaining: FieldValue.increment(queries)
-  })
+if (event.type === "checkout.session.completed") {
+  const amount = event.data.object.amount_total / 100;
+  const queries = Math.floor(amount * QUERIES_PER_DOLLAR);
+
+  await adminDb.doc("config/pool").update({
+    queriesRemaining: FieldValue.increment(queries),
+  });
 }
 ```
 
@@ -228,7 +228,7 @@ if (event.type === 'checkout.session.completed') {
 >
 > [$5] [$10] [$25] [Custom]
 >
-> *$1 ≈ 380 queries for all seekers*
+> _$1 ≈ 380 queries for all seekers_
 
 ---
 
@@ -236,20 +236,22 @@ if (event.type === 'checkout.session.completed') {
 
 ### Requirements (from llresearch.org/copyright)
 
-| Requirement | Implementation |
-|-------------|----------------|
-| Not mimicking Ra directly | ✅ AI explains, quotes are verbatim with citation |
-| Not charging for access | ✅ Free for all, donations fund capacity |
-| Proper attribution + link | ✅ Link to llresearch.org on every page |
-| Disclaimer about AI inaccuracy | ✅ Include on interface |
-| Disclaimer about supplemental use | ✅ Include on interface |
+| Requirement                       | Implementation                                    |
+| --------------------------------- | ------------------------------------------------- |
+| Not mimicking Ra directly         | ✅ AI explains, quotes are verbatim with citation |
+| Not charging for access           | ✅ Free for all, donations fund capacity          |
+| Proper attribution + link         | ✅ Link to llresearch.org on every page           |
+| Disclaimer about AI inaccuracy    | ✅ Include on interface                           |
+| Disclaimer about supplemental use | ✅ Include on interface                           |
 
 ### Required Disclaimers
 
 **AI Accuracy Disclaimer:**
+
 > "This tool uses AI which may provide inaccurate or misleading information. Always verify against the original source material."
 
 **Supplemental Study Disclaimer:**
+
 > "This chatbot is intended to supplement, not replace, direct study of the Ra Material. For primary study, visit llresearch.org and lawofone.info."
 
 ### Attribution
@@ -262,15 +264,16 @@ if (event.type === 'checkout.session.completed') {
 
 ### Phase 1: Beta (Week 1-2)
 
-| Task | Effort |
-|------|--------|
+| Task                        | Effort  |
+| --------------------------- | ------- |
 | Pinecone setup + embeddings | 4-6 hrs |
-| Basic chat UI | 4-6 hrs |
-| AI query logic | 4-6 hrs |
-| Pool tracking (Firestore) | 2-3 hrs |
-| Deploy to Vercel | 1-2 hrs |
+| Basic chat UI               | 4-6 hrs |
+| AI query logic              | 4-6 hrs |
+| Pool tracking (Firestore)   | 2-3 hrs |
+| Deploy to Vercel            | 1-2 hrs |
 
 **MVP features:**
+
 - Chat interface
 - AI + semantic search responses
 - Global pool counter (manual management)
@@ -278,12 +281,12 @@ if (event.type === 'checkout.session.completed') {
 
 ### Phase 2: Community Donations (Week 3-4)
 
-| Task | Effort |
-|------|--------|
-| Stripe account setup | 30 min |
+| Task                 | Effort  |
+| -------------------- | ------- |
+| Stripe account setup | 30 min  |
 | Checkout integration | 1-2 hrs |
-| Webhook endpoint | 2-3 hrs |
-| Donation UI | 2-3 hrs |
+| Webhook endpoint     | 2-3 hrs |
+| Donation UI          | 2-3 hrs |
 
 ### Phase 3: Polish (Week 5+)
 
@@ -298,13 +301,13 @@ if (event.type === 'checkout.session.completed') {
 
 ### Track During Beta
 
-| Metric | Purpose |
-|--------|---------|
-| Total queries | Overall usage |
-| Queries per user (IP-based) | Abuse detection |
-| Average tokens per query | Cost validation |
-| Pool depletion rate | Sustainability |
-| Donation conversion | Community support |
+| Metric                      | Purpose           |
+| --------------------------- | ----------------- |
+| Total queries               | Overall usage     |
+| Queries per user (IP-based) | Abuse detection   |
+| Average tokens per query    | Cost validation   |
+| Pool depletion rate         | Sustainability    |
+| Donation conversion         | Community support |
 
 ### Goals
 
@@ -319,21 +322,21 @@ if (event.type === 'checkout.session.completed') {
 
 ### Your Commitment
 
-| Item | Monthly Cost |
-|------|--------------|
-| Seed funding | $50 |
-| Vercel | Free tier |
-| Firebase | Free tier |
-| Pinecone | Free tier (likely) |
-| Domain | ~$12/year |
+| Item         | Monthly Cost       |
+| ------------ | ------------------ |
+| Seed funding | $50                |
+| Vercel       | Free tier          |
+| Firebase     | Free tier          |
+| Pinecone     | Free tier (likely) |
+| Domain       | ~$12/year          |
 
 ### Sustainability Scenarios
 
-| Scenario | Monthly Queries | Cost | Funded By |
-|----------|-----------------|------|-----------|
-| Low usage | 5,000 | ~$13 | You alone |
-| Medium usage | 19,000 | ~$50 | You alone |
-| High usage | 50,000 | ~$130 | You + donations |
+| Scenario     | Monthly Queries | Cost  | Funded By       |
+| ------------ | --------------- | ----- | --------------- |
+| Low usage    | 5,000           | ~$13  | You alone       |
+| Medium usage | 19,000          | ~$50  | You alone       |
+| High usage   | 50,000          | ~$130 | You + donations |
 
 ---
 
@@ -367,13 +370,13 @@ lawofone-study/
 
 ## Future Considerations (Post-MVP)
 
-| Feature | When to Consider |
-|---------|------------------|
-| User accounts | If abuse becomes a problem |
-| Personal query limits | If pool drains too fast |
-| Subscriber tier | If L/L Research approves monetization |
-| Mobile app | If demand warrants |
-| Additional materials | Q'uo transcripts, Carla's books |
+| Feature               | When to Consider                      |
+| --------------------- | ------------------------------------- |
+| User accounts         | If abuse becomes a problem            |
+| Personal query limits | If pool drains too fast               |
+| Subscriber tier       | If L/L Research approves monetization |
+| Mobile app            | If demand warrants                    |
+| Additional materials  | Q'uo transcripts, Carla's books       |
 
 ---
 

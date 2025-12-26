@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Message as MessageType, MessageSegment } from '@/lib/types';
-import QuoteCard from './QuoteCard';
-import ConceptPopover from './ConceptPopover';
-import { parseConceptsInText } from '@/lib/conceptParser';
+import { Message as MessageType, MessageSegment } from "@/lib/types";
+import QuoteCard from "./QuoteCard";
+import ConceptPopover from "./ConceptPopover";
+import { parseConceptsInText } from "@/lib/conceptParser";
 
 interface MessageProps {
   message: MessageType;
@@ -11,7 +11,7 @@ interface MessageProps {
 }
 
 export default function Message({ message, onSearch }: MessageProps) {
-  const isUser = message.role === 'user';
+  const isUser = message.role === "user";
 
   if (isUser) {
     return (
@@ -35,12 +35,10 @@ export default function Message({ message, onSearch }: MessageProps) {
             onSearch={onSearch}
           />
         ))
+      ) : onSearch ? (
+        <LinkedText text={message.content} onSearch={onSearch} />
       ) : (
-        onSearch ? (
-          <LinkedText text={message.content} onSearch={onSearch} />
-        ) : (
-          message.content
-        )
+        message.content
       )}
     </div>
   );
@@ -53,21 +51,17 @@ interface SegmentRendererProps {
 }
 
 function SegmentRenderer({ segment, isFirst = false, onSearch }: SegmentRendererProps) {
-  if (segment.type === 'text') {
-    const wrapperClass = isFirst ? 'min-h-[1lh]' : 'mt-3 block min-h-[1lh]';
+  if (segment.type === "text") {
+    const wrapperClass = isFirst ? "min-h-[1lh]" : "mt-3 block min-h-[1lh]";
 
     return (
       <div className={wrapperClass}>
-        {onSearch ? (
-          <LinkedText text={segment.content} onSearch={onSearch} />
-        ) : (
-          segment.content
-        )}
+        {onSearch ? <LinkedText text={segment.content} onSearch={onSearch} /> : segment.content}
       </div>
     );
   }
 
-  if (segment.type === 'quote') {
+  if (segment.type === "quote") {
     return <QuoteCard quote={segment.quote} />;
   }
 
@@ -85,7 +79,7 @@ function LinkedText({ text, onSearch }: LinkedTextProps) {
   return (
     <>
       {segments.map((seg, i) =>
-        seg.type === 'text' ? (
+        seg.type === "text" ? (
           <span key={i}>{seg.content}</span>
         ) : (
           <ConceptPopover

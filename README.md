@@ -19,14 +19,14 @@ An AI-powered study companion for the Ra Material (Law of One). Ask questions, e
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Framework | [Next.js 15](https://nextjs.org/) (App Router) |
-| Styling | [Tailwind CSS](https://tailwindcss.com/) |
-| AI Model | OpenAI GPT-4 |
-| Vector Search | [Pinecone](https://www.pinecone.io/) |
-| Embeddings | OpenAI text-embedding-3-small |
-| Hosting | [Vercel](https://vercel.com/) |
+| Layer         | Technology                                     |
+| ------------- | ---------------------------------------------- |
+| Framework     | [Next.js 15](https://nextjs.org/) (App Router) |
+| Styling       | [Tailwind CSS](https://tailwindcss.com/)       |
+| AI Model      | OpenAI GPT-4                                   |
+| Vector Search | [Pinecone](https://www.pinecone.io/)           |
+| Embeddings    | OpenAI text-embedding-3-small                  |
+| Hosting       | [Vercel](https://vercel.com/)                  |
 
 ---
 
@@ -141,6 +141,7 @@ The app maintains a glossary of 80+ Law of One terms (`src/data/concepts.ts`). W
 ### Quote Cards
 
 Quotes from the Ra Material are displayed as formatted cards showing:
+
 - The questioner's question
 - Ra's response
 - Session and question number (linked to lawofone.info)
@@ -250,4 +251,4 @@ If you find this tool helpful, consider:
 
 ---
 
-*"You are every thing, every being, every emotion, every event, every situation. You are unity. You are infinity. You are love/light, light/love. You are."* — Ra, 1.7
+_"You are every thing, every being, every emotion, every event, every situation. You are unity. You are infinity. You are love/light, light/love. You are."_ — Ra, 1.7

@@ -1,15 +1,22 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef, useMemo } from 'react';
-import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
-import { Message as MessageType, MessageSegment, Quote } from '@/lib/types';
-import Message from './Message';
-import StreamingMessage from './StreamingMessage';
-import MessageInput from './MessageInput';
-import WelcomeScreen from './WelcomeScreen';
-import { useAnimationQueue } from '@/hooks/useAnimationQueue';
-import { getPlaceholder, defaultPlaceholder } from '@/data/placeholders';
-import { analytics } from '@/lib/analytics';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { Message as MessageType, MessageSegment } from "@/lib/types";
+import Message from "./Message";
+import StreamingMessage from "./StreamingMessage";
+import MessageInput from "./MessageInput";
+import WelcomeScreen from "./WelcomeScreen";
+import { useAnimationQueue } from "@/hooks/useAnimationQueue";
+import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
+import { analytics } from "@/lib/analytics";
 
 // Maximum number of messages to keep in memory (prevents unbounded growth)
 const MAX_CONVERSATION_HISTORY = 30;
@@ -26,19 +33,19 @@ interface SSEEvent {
 // Parse SSE buffer into events
 function parseSSE(buffer: string): { events: SSEEvent[]; remaining: string } {
   const events: SSEEvent[] = [];
-  const parts = buffer.split('\n\n');
+  const parts = buffer.split("\n\n");
 
   // Last part might be incomplete
-  const remaining = buffer.endsWith('\n\n') ? '' : parts.pop() || '';
+  const remaining = buffer.endsWith("\n\n") ? "" : parts.pop() || "";
 
   for (const part of parts) {
     if (!part.trim()) continue;
-    const lines = part.split('\n');
-    let type = '';
-    let data = '';
+    const lines = part.split("\n");
+    let type = "";
+    let data = "";
     for (const line of lines) {
-      if (line.startsWith('event: ')) type = line.slice(7);
-      if (line.startsWith('data: ')) data = line.slice(6);
+      if (line.startsWith("event: ")) type = line.slice(7);
+      if (line.startsWith("data: ")) data = line.slice(6);
     }
     if (type && data) {
       try {
@@ -56,7 +63,6 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
-  const [streamingQuotes, setStreamingQuotes] = useState<Quote[]>([]);
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
 
   // Randomize placeholder after hydration (client-side only)
@@ -105,16 +111,16 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    container.addEventListener('scroll', handleScroll);
+    container.addEventListener("scroll", handleScroll);
     // Initial check
     handleScroll();
 
-    return () => container.removeEventListener('scroll', handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
   // Scroll to bottom - only called when user sends a message
-  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
-    scrollAnchorRef.current?.scrollIntoView({ behavior, block: 'end' });
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+    scrollAnchorRef.current?.scrollIntoView({ behavior, block: "end" });
   }, []);
 
   const handleSend = async (content: string) => {
@@ -123,13 +129,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     // Add user message
     const userMessage: MessageType = {
       id: Date.now().toString(),
-      role: 'user',
+      role: "user",
       content,
       timestamp: new Date(),
     };
 
     // Track question submission
-    const containsQuotedText = /["'].*["']/.test(content) || content.toLowerCase().includes('quote');
+    const containsQuotedText =
+      /["'].*["']/.test(content) || content.toLowerCase().includes("quote");
     const isFollowUp = messages.length > 0;
     analytics.questionSubmitted({
       messageLength: content.length,
@@ -148,16 +155,15 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     });
     setIsStreaming(true);
     setStreamDone(false);
-    setStreamingQuotes([]);
     resetQueue();
 
     // Scroll to bottom when user sends message (moves their message to top)
-    setTimeout(() => scrollToBottom('smooth'), 50);
+    setTimeout(() => scrollToBottom("smooth"), 50);
 
     try {
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: content,
           history: messages.map((m) => ({ role: m.role, content: m.content })),
@@ -166,8 +172,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
       if (!response.ok) {
         // Parse error response for user-friendly messages
-        let errorMessage = 'Failed to get response';
-        let errorType: 'rate_limit' | 'validation' | 'api_error' = 'api_error';
+        let errorMessage = "Failed to get response";
+        let errorType: "rate_limit" | "validation" | "api_error" = "api_error";
         try {
           const errorData = await response.json();
           if (errorData.error) {
@@ -176,9 +182,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
           // Special handling for rate limiting
           if (response.status === 429 && errorData.retryAfter) {
             errorMessage = `${errorData.error} Please wait ${errorData.retryAfter} seconds.`;
-            errorType = 'rate_limit';
+            errorType = "rate_limit";
           } else if (response.status === 400) {
-            errorType = 'validation';
+            errorType = "validation";
           }
         } catch {
           // If JSON parsing fails, use generic message
@@ -198,11 +204,10 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       analytics.streamingStarted({ isQuoteSearch: containsQuotedText });
 
       const reader = response.body?.getReader();
-      if (!reader) throw new Error('No reader available');
+      if (!reader) throw new Error("No reader available");
 
       const decoder = new TextDecoder();
-      let buffer = '';
-      let quotes: Quote[] = [];
+      let buffer = "";
       let chunkIdCounter = 0;
       let quoteCount = 0;
       let responseLength = 0;
@@ -216,38 +221,48 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         buffer = remaining;
 
         for (const event of events) {
-          if (event.type === 'meta') {
-            quotes = event.data.quotes as Quote[];
-            setStreamingQuotes(quotes);
-          } else if (event.type === 'chunk') {
-            const chunkData = event.data as { type: 'text' | 'quote'; content?: string; text?: string; reference?: string; url?: string };
+          if (event.type === "meta") {
+            // Meta event received with quotes data - currently unused but may be needed in future
+          } else if (event.type === "chunk") {
+            const chunkData = event.data as {
+              type: "text" | "quote";
+              content?: string;
+              text?: string;
+              reference?: string;
+              url?: string;
+            };
             chunkIdCounter++;
 
-            if (chunkData.type === 'text' && chunkData.content) {
+            if (chunkData.type === "text" && chunkData.content) {
               responseLength += chunkData.content.length;
               addChunk({
                 id: `chunk-${chunkIdCounter}`,
-                type: 'text',
+                type: "text",
                 content: chunkData.content,
               });
-            } else if (chunkData.type === 'quote' && chunkData.text && chunkData.reference && chunkData.url) {
+            } else if (
+              chunkData.type === "quote" &&
+              chunkData.text &&
+              chunkData.reference &&
+              chunkData.url
+            ) {
               // Backend now sends fully processed quote with filtered text
-              console.log('[ChatInterface] Received quote chunk:', {
+              console.log("[ChatInterface] Received quote chunk:", {
                 reference: chunkData.reference,
-                textLength: chunkData.text.length
+                textLength: chunkData.text.length,
               });
               quoteCount++;
               addChunk({
                 id: `chunk-${chunkIdCounter}`,
-                type: 'quote',
+                type: "quote",
                 quote: {
                   text: chunkData.text,
                   reference: chunkData.reference,
-                  url: chunkData.url
-                }
+                  url: chunkData.url,
+                },
               });
             }
-          } else if (event.type === 'done') {
+          } else if (event.type === "done") {
             // Mark stream as done - message will be finalized when animation completes
             setStreamDone(true);
 
@@ -259,28 +274,31 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               messageLength: responseLength,
               isQuoteSearch: containsQuotedText,
             });
-          } else if (event.type === 'error') {
+          } else if (event.type === "error") {
             throw new Error(event.data.message as string);
           }
         }
       }
     } catch (error) {
-      console.error('Chat error:', error);
+      console.error("Chat error:", error);
 
       // Extract error message - show specific validation errors to user
-      let errorText = 'I apologize, but I encountered an error. Please try again.';
-      let errorType: 'rate_limit' | 'validation' | 'api_error' | 'streaming_error' = 'streaming_error';
+      let errorText = "I apologize, but I encountered an error. Please try again.";
+      let errorType: "rate_limit" | "validation" | "api_error" | "streaming_error" =
+        "streaming_error";
       if (error instanceof Error && error.message) {
         // Show validation errors and rate limit errors directly to user
-        if (error.message.includes('Maximum') ||
-            error.message.includes('too long') ||
-            error.message.includes('Too many requests') ||
-            error.message.includes('required')) {
+        if (
+          error.message.includes("Maximum") ||
+          error.message.includes("too long") ||
+          error.message.includes("Too many requests") ||
+          error.message.includes("required")
+        ) {
           errorText = error.message;
-          if (error.message.includes('Too many requests')) {
-            errorType = 'rate_limit';
+          if (error.message.includes("Too many requests")) {
+            errorType = "rate_limit";
           } else {
-            errorType = 'validation';
+            errorType = "validation";
           }
         }
       }
@@ -288,18 +306,17 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       // Track error if not already tracked
       analytics.error({
         errorType,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        errorMessage: error instanceof Error ? error.message : "Unknown error",
       });
 
       const errorMessage: MessageType = {
         id: (Date.now() + 1).toString(),
-        role: 'assistant',
+        role: "assistant",
         content: errorText,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
       resetQueue();
-      setStreamingQuotes([]);
       setIsStreaming(false);
     }
   };
@@ -309,20 +326,20 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     if (streamDone && isFullyComplete) {
       // Convert chunks to segments for the final message
       const segments: MessageSegment[] = allChunks.map((chunk) => {
-        if (chunk.type === 'text') {
-          return { type: 'text' as const, content: chunk.content };
+        if (chunk.type === "text") {
+          return { type: "text" as const, content: chunk.content };
         } else {
-          return { type: 'quote' as const, quote: chunk.quote };
+          return { type: "quote" as const, quote: chunk.quote };
         }
       });
 
       const assistantMessage: MessageType = {
         id: (Date.now() + 1).toString(),
-        role: 'assistant',
+        role: "assistant",
         content: segments
-          .filter((s) => s.type === 'text')
-          .map((s) => (s as { type: 'text'; content: string }).content)
-          .join(''),
+          .filter((s) => s.type === "text")
+          .map((s) => (s as { type: "text"; content: string }).content)
+          .join(""),
         segments,
         timestamp: new Date(),
       };
@@ -330,15 +347,15 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       setMessages((prev) => {
         const updated = [...prev, assistantMessage];
         // Limit conversation history to prevent unbounded memory growth
-        const limited = updated.length > MAX_CONVERSATION_HISTORY
-          ? updated.slice(-MAX_CONVERSATION_HISTORY)
-          : updated;
+        const limited =
+          updated.length > MAX_CONVERSATION_HISTORY
+            ? updated.slice(-MAX_CONVERSATION_HISTORY)
+            : updated;
         // Update placeholder for next message
         setPlaceholder(getPlaceholder(limited.length));
         return limited;
       });
       resetQueue();
-      setStreamingQuotes([]);
       setStreamDone(false);
       setIsStreaming(false);
     }
@@ -347,43 +364,39 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const handleReset = useCallback(() => {
     setMessages([]);
     resetQueue();
-    setStreamingQuotes([]);
     setStreamDone(false);
     setIsStreaming(false);
     setPlaceholder(getPlaceholder(0));
   }, [resetQueue]);
 
   // Expose reset function to parent via ref
-  useImperativeHandle(ref, () => ({
-    reset: handleReset,
-  }), [handleReset]);
+  useImperativeHandle(
+    ref,
+    () => ({
+      reset: handleReset,
+    }),
+    [handleReset]
+  );
 
   const hasConversation = messages.length > 0 || allChunks.length > 0;
   const hasStreamingContent = completedChunks.length > 0 || currentChunk !== null;
   // Show loading dots when: streaming with no content yet, OR waiting for more chunks
-  const showLoadingDots = isStreaming && (
-    !hasStreamingContent ||
-    (!isAnimating && queueLength === 0 && !streamDone)
-  );
+  const showLoadingDots =
+    isStreaming && (!hasStreamingContent || (!isAnimating && queueLength === 0 && !streamDone));
 
   // Build scroll shadow classes
   const scrollShadowClasses = [
-    'scroll-shadow-container',
-    scrollShadow.top ? 'shadow-top' : '',
-    scrollShadow.bottom ? 'shadow-bottom' : '',
-  ].filter(Boolean).join(' ');
+    "scroll-shadow-container",
+    scrollShadow.top ? "shadow-top" : "",
+    scrollShadow.bottom ? "shadow-bottom" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   // Input element with layoutId for shared element animation
   const inputElement = (
-    <motion.div
-      layoutId="chat-input"
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
-    >
-      <MessageInput
-        onSend={handleSend}
-        disabled={isStreaming}
-        placeholder={placeholder}
-      />
+    <motion.div layoutId="chat-input" transition={{ type: "spring", stiffness: 300, damping: 30 }}>
+      <MessageInput onSend={handleSend} disabled={isStreaming} placeholder={placeholder} />
     </motion.div>
   );
 
@@ -403,69 +416,65 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         </AnimatePresence>
 
         {/* Messages Area with scroll shadows */}
-        <div className={`flex-1 overflow-hidden relative z-10 ${hasConversation ? scrollShadowClasses : ''}`}>
-          <div
-            ref={scrollContainerRef}
-            className="h-full chat-scroll px-4 py-6"
-          >
-          <AnimatePresence mode="wait">
-            {!hasConversation ? (
-              <motion.div
-                key="welcome"
-                initial={{ opacity: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.3 }}
-              >
-                <WelcomeScreen
-                  onSelectStarter={handleSend}
-                  inputElement={inputElement}
-                />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="chat"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-                className="max-w-3xl mx-auto min-h-full flex flex-col"
-              >
-                {/* Messages container */}
-                <div>
-                  {messages.map((message) => (
-                    <Message key={message.id} message={message} onSearch={handleSend} />
-                  ))}
-                  {hasStreamingContent && (
-                    <StreamingMessage
-                      completedChunks={completedChunks}
-                      currentChunk={currentChunk}
-                      onChunkComplete={onChunkComplete}
-                      onSearch={handleSend}
-                    />
-                  )}
-                  {showLoadingDots && (
-                    <div className="mb-6 flex gap-1">
-                      <span
-                        className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                        style={{ animationDelay: '0ms' }}
-                      ></span>
-                      <span
-                        className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                        style={{ animationDelay: '150ms' }}
-                      ></span>
-                      <span
-                        className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                        style={{ animationDelay: '300ms' }}
-                      ></span>
-                    </div>
-                  )}
-                </div>
-                {/* Flexible spacer - fills remaining space so messages stay near top */}
-                <div className="flex-grow min-h-[200px]" />
-                {/* Scroll anchor */}
-                <div ref={scrollAnchorRef} className="h-1" />
-              </motion.div>
-            )}
-          </AnimatePresence>
+        <div
+          className={`flex-1 overflow-hidden relative z-10 ${hasConversation ? scrollShadowClasses : ""}`}
+        >
+          <div ref={scrollContainerRef} className="h-full chat-scroll px-4 py-6">
+            <AnimatePresence mode="wait">
+              {!hasConversation ? (
+                <motion.div
+                  key="welcome"
+                  initial={{ opacity: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <WelcomeScreen onSelectStarter={handleSend} inputElement={inputElement} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="chat"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="max-w-3xl mx-auto min-h-full flex flex-col"
+                >
+                  {/* Messages container */}
+                  <div>
+                    {messages.map((message) => (
+                      <Message key={message.id} message={message} onSearch={handleSend} />
+                    ))}
+                    {hasStreamingContent && (
+                      <StreamingMessage
+                        completedChunks={completedChunks}
+                        currentChunk={currentChunk}
+                        onChunkComplete={onChunkComplete}
+                        onSearch={handleSend}
+                      />
+                    )}
+                    {showLoadingDots && (
+                      <div className="mb-6 flex gap-1">
+                        <span
+                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
+                          style={{ animationDelay: "0ms" }}
+                        ></span>
+                        <span
+                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
+                          style={{ animationDelay: "150ms" }}
+                        ></span>
+                        <span
+                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
+                          style={{ animationDelay: "300ms" }}
+                        ></span>
+                      </div>
+                    )}
+                  </div>
+                  {/* Flexible spacer - fills remaining space so messages stay near top */}
+                  <div className="flex-grow min-h-[200px]" />
+                  {/* Scroll anchor */}
+                  <div ref={scrollAnchorRef} className="h-1" />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 

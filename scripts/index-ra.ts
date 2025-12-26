@@ -15,17 +15,17 @@
  * }
  */
 
-import { Pinecone } from '@pinecone-database/pinecone';
-import OpenAI from 'openai';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Pinecone } from "@pinecone-database/pinecone";
+import OpenAI from "openai";
+import * as fs from "fs";
+import * as path from "path";
 
 // Load environment variables
-require('dotenv').config({ path: '.env.local' });
+require("dotenv").config({ path: ".env.local" });
 
 const BATCH_SIZE = 100; // Pinecone batch upsert limit
-const EMBEDDING_MODEL = 'text-embedding-3-small';
-const SECTIONS_DIR = 'sections';
+const EMBEDDING_MODEL = "text-embedding-3-small";
+const SECTIONS_DIR = "sections";
 
 interface RaPassage {
   id: string;
@@ -50,12 +50,13 @@ function parseRaData(sectionsDir: string): RaPassage[] {
   const passages: RaPassage[] = [];
 
   // Get all JSON files in sections directory
-  const files = fs.readdirSync(sectionsDir)
-    .filter(f => f.endsWith('.json'))
+  const files = fs
+    .readdirSync(sectionsDir)
+    .filter((f) => f.endsWith(".json"))
     .sort((a, b) => {
       // Sort numerically by session number
-      const numA = parseInt(a.replace('.json', ''), 10);
-      const numB = parseInt(b.replace('.json', ''), 10);
+      const numA = parseInt(a.replace(".json", ""), 10);
+      const numB = parseInt(b.replace(".json", ""), 10);
       return numA - numB;
     });
 
@@ -63,12 +64,12 @@ function parseRaData(sectionsDir: string): RaPassage[] {
 
   for (const file of files) {
     const filePath = path.join(sectionsDir, file);
-    const rawData = fs.readFileSync(filePath, 'utf-8');
+    const rawData = fs.readFileSync(filePath, "utf-8");
     const sessionData: Record<string, string> = JSON.parse(rawData);
 
     for (const [key, text] of Object.entries(sessionData)) {
       // Parse key format: "1.0" -> session=1, question=0
-      const [sessionStr, questionStr] = key.split('.');
+      const [sessionStr, questionStr] = key.split(".");
       const session = parseInt(sessionStr, 10);
       const question = parseInt(questionStr, 10);
 
@@ -99,10 +100,7 @@ function parseRaData(sectionsDir: string): RaPassage[] {
   return passages;
 }
 
-async function createEmbeddings(
-  openai: OpenAI,
-  texts: string[]
-): Promise<number[][]> {
+async function createEmbeddings(openai: OpenAI, texts: string[]): Promise<number[][]> {
   const response = await openai.embeddings.create({
     model: EMBEDDING_MODEL,
     input: texts,
@@ -114,13 +112,13 @@ async function createEmbeddings(
 async function indexRaMaterial() {
   // Validate environment
   if (!process.env.OPENAI_API_KEY) {
-    throw new Error('Missing OPENAI_API_KEY in .env.local');
+    throw new Error("Missing OPENAI_API_KEY in .env.local");
   }
   if (!process.env.PINECONE_API_KEY) {
-    throw new Error('Missing PINECONE_API_KEY in .env.local');
+    throw new Error("Missing PINECONE_API_KEY in .env.local");
   }
 
-  const indexName = process.env.PINECONE_INDEX || 'law-of-one';
+  const indexName = process.env.PINECONE_INDEX || "law-of-one";
 
   // Initialize clients
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -130,7 +128,7 @@ async function indexRaMaterial() {
   const passages = parseRaData(SECTIONS_DIR);
 
   // Show sample for verification
-  console.log('\nSample passages:');
+  console.log("\nSample passages:");
   for (const p of passages.slice(0, 3)) {
     console.log(`  ${p.reference}: "${p.text.slice(0, 80)}..."`);
     console.log(`    URL: ${p.url}`);
@@ -147,17 +145,17 @@ async function indexRaMaterial() {
     await pinecone.createIndex({
       name: indexName,
       dimension: 1536, // text-embedding-3-small dimension
-      metric: 'cosine',
+      metric: "cosine",
       spec: {
         serverless: {
-          cloud: 'aws',
-          region: 'us-east-1',
+          cloud: "aws",
+          region: "us-east-1",
         },
       },
     });
 
     // Wait for index to be ready
-    console.log('Waiting for index to be ready (60s)...');
+    console.log("Waiting for index to be ready (60s)...");
     await new Promise((resolve) => setTimeout(resolve, 60000));
   }
 
@@ -201,13 +199,13 @@ async function indexRaMaterial() {
     await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
-  console.log('\n✓ Indexing complete!');
+  console.log("\n✓ Indexing complete!");
   console.log(`  Total passages indexed: ${passages.length}`);
   console.log(`  Index name: ${indexName}`);
 }
 
 // Main execution
 indexRaMaterial().catch((error) => {
-  console.error('Indexing failed:', error);
+  console.error("Indexing failed:", error);
   process.exit(1);
 });

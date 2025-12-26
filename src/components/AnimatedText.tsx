@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from "react";
 
 interface AnimatedTextProps {
   content: string;
@@ -59,7 +59,7 @@ export default function AnimatedText({ content, onComplete, speed = 50 }: Animat
           key={index}
           style={{
             opacity: index < visibleCount ? 1 : 0,
-            transition: 'opacity 150ms ease-in'
+            transition: "opacity 150ms ease-in",
           }}
         >
           {word}

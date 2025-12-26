@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { AnimationChunk } from '@/lib/types';
+import { useState, useEffect, useCallback } from "react";
+import { AnimationChunk } from "@/lib/types";
 
 interface UseAnimationQueueReturn {
   // All chunks received so far (for building final message)
@@ -56,11 +56,7 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
   }, []);
 
   // Compute all chunks for building final message
-  const allChunks = [
-    ...completedChunks,
-    ...(currentChunk ? [currentChunk] : []),
-    ...queue,
-  ];
+  const allChunks = [...completedChunks, ...(currentChunk ? [currentChunk] : []), ...queue];
 
   // Animation is truly done when queue is empty AND no current chunk
   const isFullyComplete = queue.length === 0 && currentChunk === null && completedChunks.length > 0;

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, KeyboardEvent, useRef, useEffect } from 'react';
+import { useState, KeyboardEvent, useRef, useEffect } from "react";
 
 interface MessageInputProps {
   onSend: (message: string) => void;
@@ -11,7 +11,7 @@ interface MessageInputProps {
 const MAX_MESSAGE_LENGTH = 5000;
 
 export default function MessageInput({ onSend, disabled, placeholder }: MessageInputProps) {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const characterCount = input.length;
@@ -22,12 +22,12 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
     const trimmed = input.trim();
     if (trimmed && !disabled && !isOverLimit) {
       onSend(trimmed);
-      setInput('');
+      setInput("");
     }
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -38,8 +38,8 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
     // Use setTimeout to ensure the keyboard has started to appear
     setTimeout(() => {
       textareaRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
+        behavior: "smooth",
+        block: "center",
       });
     }, 300);
   };
@@ -50,18 +50,18 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
       if (document.activeElement === textareaRef.current) {
         setTimeout(() => {
           textareaRef.current?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
+            behavior: "smooth",
+            block: "center",
           });
         }, 100);
       }
     };
 
     // Listen for viewport resize (keyboard appearance)
-    window.visualViewport?.addEventListener('resize', handleResize);
+    window.visualViewport?.addEventListener("resize", handleResize);
 
     return () => {
-      window.visualViewport?.removeEventListener('resize', handleResize);
+      window.visualViewport?.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -83,7 +83,7 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
                      bg-[var(--lo1-deep-space)]/80 text-[var(--lo1-starlight)]
                      placeholder:text-[var(--lo1-stardust)]
                      sm:rows-1"
-          style={{ minHeight: '56px', maxHeight: '120px' }}
+          style={{ minHeight: "56px", maxHeight: "120px" }}
         />
         <button
           onClick={handleSend}
@@ -108,9 +108,9 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
       {/* Character counter - only show when user is typing and near/over limit */}
       {characterCount > 0 && isNearLimit && (
         <div className="text-xs text-right px-1">
-          <span className={isOverLimit ? 'text-[var(--lo1-error)]' : 'text-[var(--lo1-stardust)]'}>
+          <span className={isOverLimit ? "text-[var(--lo1-error)]" : "text-[var(--lo1-stardust)]"}>
             {characterCount.toLocaleString()} / {MAX_MESSAGE_LENGTH.toLocaleString()} characters
-            {isOverLimit && ' (over limit)'}
+            {isOverLimit && " (over limit)"}
           </span>
         </div>
       )}

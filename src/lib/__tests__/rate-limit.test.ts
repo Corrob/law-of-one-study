@@ -1,27 +1,27 @@
-import { checkRateLimit, getClientIp } from '../rate-limit';
+import { checkRateLimit, getClientIp } from "../rate-limit";
 
-describe('rate-limit', () => {
+describe("rate-limit", () => {
   // Mock Date.now() for consistent testing
   const mockNow = 1000000;
   let dateNowSpy: jest.SpyInstance;
 
   beforeEach(() => {
     // Reset Date.now mock
-    dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(mockNow);
+    dateNowSpy = jest.spyOn(Date, "now").mockReturnValue(mockNow);
   });
 
   afterEach(() => {
     dateNowSpy.mockRestore();
   });
 
-  describe('checkRateLimit', () => {
+  describe("checkRateLimit", () => {
     const config = {
       maxRequests: 3,
       windowMs: 60000, // 1 minute
     };
 
-    it('should allow first request', () => {
-      const result = checkRateLimit('test-ip', config);
+    it("should allow first request", () => {
+      const result = checkRateLimit("test-ip", config);
 
       expect(result.success).toBe(true);
       expect(result.limit).toBe(3);
@@ -29,8 +29,8 @@ describe('rate-limit', () => {
       expect(result.resetAt).toBe(mockNow + config.windowMs);
     });
 
-    it('should allow multiple requests within limit', () => {
-      const ip = 'test-ip-2';
+    it("should allow multiple requests within limit", () => {
+      const ip = "test-ip-2";
 
       const result1 = checkRateLimit(ip, config);
       expect(result1.success).toBe(true);
@@ -45,8 +45,8 @@ describe('rate-limit', () => {
       expect(result3.remaining).toBe(0);
     });
 
-    it('should block requests exceeding limit', () => {
-      const ip = 'test-ip-3';
+    it("should block requests exceeding limit", () => {
+      const ip = "test-ip-3";
 
       // Use up the limit
       checkRateLimit(ip, config);
@@ -60,11 +60,11 @@ describe('rate-limit', () => {
       expect(result.resetAt).toBe(mockNow + config.windowMs);
     });
 
-    it('should track different IPs independently', () => {
+    it("should track different IPs independently", () => {
       const config = { maxRequests: 2, windowMs: 60000 };
 
-      const result1 = checkRateLimit('ip-1', config);
-      const result2 = checkRateLimit('ip-2', config);
+      const result1 = checkRateLimit("ip-1", config);
+      const result2 = checkRateLimit("ip-2", config);
 
       expect(result1.success).toBe(true);
       expect(result1.remaining).toBe(1);
@@ -72,8 +72,8 @@ describe('rate-limit', () => {
       expect(result2.remaining).toBe(1);
     });
 
-    it('should reset limit after window expires', () => {
-      const ip = 'test-ip-4';
+    it("should reset limit after window expires", () => {
+      const ip = "test-ip-4";
       const config = { maxRequests: 2, windowMs: 60000 };
 
       // Use up the limit
@@ -93,8 +93,8 @@ describe('rate-limit', () => {
       expect(result.remaining).toBe(1);
     });
 
-    it('should use correct reset time for all requests in same window', () => {
-      const ip = 'test-ip-5';
+    it("should use correct reset time for all requests in same window", () => {
+      const ip = "test-ip-5";
       const config = { maxRequests: 3, windowMs: 60000 };
 
       const result1 = checkRateLimit(ip, config);
@@ -110,17 +110,17 @@ describe('rate-limit', () => {
       expect(result2.resetAt).toBe(expectedResetAt);
     });
 
-    it('should handle zero max requests', () => {
+    it("should handle zero max requests", () => {
       const config = { maxRequests: 0, windowMs: 60000 };
-      const result = checkRateLimit('test-ip-6', config);
+      const result = checkRateLimit("test-ip-6", config);
 
       expect(result.success).toBe(true);
       expect(result.remaining).toBe(-1);
     });
 
-    it('should handle very short time windows', () => {
+    it("should handle very short time windows", () => {
       const config = { maxRequests: 1, windowMs: 1 };
-      const ip = 'test-ip-7';
+      const ip = "test-ip-7";
 
       const result1 = checkRateLimit(ip, config);
       expect(result1.success).toBe(true);
@@ -132,8 +132,8 @@ describe('rate-limit', () => {
       expect(result2.success).toBe(true);
     });
 
-    it('should return consistent results when checking limit multiple times without incrementing', () => {
-      const ip = 'test-ip-8';
+    it("should return consistent results when checking limit multiple times without incrementing", () => {
+      const ip = "test-ip-8";
       const config = { maxRequests: 1, windowMs: 60000 };
 
       checkRateLimit(ip, config); // Use the one allowed request
@@ -147,90 +147,90 @@ describe('rate-limit', () => {
     });
   });
 
-  describe('getClientIp', () => {
-    it('should extract IP from X-Forwarded-For header', () => {
-      const request = new Request('http://test.com', {
+  describe("getClientIp", () => {
+    it("should extract IP from X-Forwarded-For header", () => {
+      const request = new Request("http://test.com", {
         headers: {
-          'x-forwarded-for': '192.168.1.1',
+          "x-forwarded-for": "192.168.1.1",
         },
       });
 
       const ip = getClientIp(request);
-      expect(ip).toBe('192.168.1.1');
+      expect(ip).toBe("192.168.1.1");
     });
 
-    it('should take first IP from X-Forwarded-For with multiple IPs', () => {
-      const request = new Request('http://test.com', {
+    it("should take first IP from X-Forwarded-For with multiple IPs", () => {
+      const request = new Request("http://test.com", {
         headers: {
-          'x-forwarded-for': '192.168.1.1, 10.0.0.1, 172.16.0.1',
+          "x-forwarded-for": "192.168.1.1, 10.0.0.1, 172.16.0.1",
         },
       });
 
       const ip = getClientIp(request);
-      expect(ip).toBe('192.168.1.1');
+      expect(ip).toBe("192.168.1.1");
     });
 
-    it('should trim whitespace from X-Forwarded-For IP', () => {
-      const request = new Request('http://test.com', {
+    it("should trim whitespace from X-Forwarded-For IP", () => {
+      const request = new Request("http://test.com", {
         headers: {
-          'x-forwarded-for': '  192.168.1.1  ',
+          "x-forwarded-for": "  192.168.1.1  ",
         },
       });
 
       const ip = getClientIp(request);
-      expect(ip).toBe('192.168.1.1');
+      expect(ip).toBe("192.168.1.1");
     });
 
-    it('should extract IP from X-Real-IP header when X-Forwarded-For is not present', () => {
-      const request = new Request('http://test.com', {
+    it("should extract IP from X-Real-IP header when X-Forwarded-For is not present", () => {
+      const request = new Request("http://test.com", {
         headers: {
-          'x-real-ip': '10.0.0.5',
+          "x-real-ip": "10.0.0.5",
         },
       });
 
       const ip = getClientIp(request);
-      expect(ip).toBe('10.0.0.5');
+      expect(ip).toBe("10.0.0.5");
     });
 
-    it('should prefer X-Forwarded-For over X-Real-IP', () => {
-      const request = new Request('http://test.com', {
+    it("should prefer X-Forwarded-For over X-Real-IP", () => {
+      const request = new Request("http://test.com", {
         headers: {
-          'x-forwarded-for': '192.168.1.1',
-          'x-real-ip': '10.0.0.5',
+          "x-forwarded-for": "192.168.1.1",
+          "x-real-ip": "10.0.0.5",
         },
       });
 
       const ip = getClientIp(request);
-      expect(ip).toBe('192.168.1.1');
+      expect(ip).toBe("192.168.1.1");
     });
 
     it('should return "unknown" when no IP headers are present', () => {
-      const request = new Request('http://test.com');
+      const request = new Request("http://test.com");
 
       const ip = getClientIp(request);
-      expect(ip).toBe('unknown');
+      expect(ip).toBe("unknown");
     });
 
-    it('should handle IPv6 addresses', () => {
-      const request = new Request('http://test.com', {
+    it("should handle IPv6 addresses", () => {
+      const request = new Request("http://test.com", {
         headers: {
-          'x-forwarded-for': '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+          "x-forwarded-for": "2001:0db8:85a3:0000:0000:8a2e:0370:7334",
         },
       });
 
       const ip = getClientIp(request);
-      expect(ip).toBe('2001:0db8:85a3:0000:0000:8a2e:0370:7334');
+      expect(ip).toBe("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
     });
 
-    it('should handle mixed IPv4 and IPv6 in X-Forwarded-For', () => {
-      const request = new Request('http://test.com', {
+    it("should handle mixed IPv4 and IPv6 in X-Forwarded-For", () => {
+      const request = new Request("http://test.com", {
         headers: {
-          'x-forwarded-for': '2001:0db8::1, 192.168.1.1',
+          "x-forwarded-for": "2001:0db8::1, 192.168.1.1",
         },
       });
 
       const ip = getClientIp(request);
-      expect(ip).toBe('2001:0db8::1');
+      expect(ip).toBe("2001:0db8::1");
     });
   });
 });
