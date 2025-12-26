@@ -9,6 +9,7 @@ import MessageInput from './MessageInput';
 import WelcomeScreen from './WelcomeScreen';
 import { useAnimationQueue } from '@/hooks/useAnimationQueue';
 import { getPlaceholder, defaultPlaceholder } from '@/data/placeholders';
+import { analytics } from '@/lib/analytics';
 
 // Maximum number of messages to keep in memory (prevents unbounded growth)
 const MAX_CONVERSATION_HISTORY = 30;
@@ -117,6 +118,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   }, []);
 
   const handleSend = async (content: string) => {
+    const requestStartTime = Date.now();
+
     // Add user message
     const userMessage: MessageType = {
       id: Date.now().toString(),
@@ -124,6 +127,16 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       content,
       timestamp: new Date(),
     };
+
+    // Track question submission
+    const containsQuotedText = /["'].*["']/.test(content) || content.toLowerCase().includes('quote');
+    const isFollowUp = messages.length > 0;
+    analytics.questionSubmitted({
+      messageLength: content.length,
+      containsQuotedText,
+      isFollowUp,
+      conversationDepth: messages.length,
+    });
 
     setMessages((prev) => {
       const updated = [...prev, userMessage];
@@ -154,6 +167,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       if (!response.ok) {
         // Parse error response for user-friendly messages
         let errorMessage = 'Failed to get response';
+        let errorType: 'rate_limit' | 'validation' | 'api_error' = 'api_error';
         try {
           const errorData = await response.json();
           if (errorData.error) {
@@ -162,12 +176,26 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
           // Special handling for rate limiting
           if (response.status === 429 && errorData.retryAfter) {
             errorMessage = `${errorData.error} Please wait ${errorData.retryAfter} seconds.`;
+            errorType = 'rate_limit';
+          } else if (response.status === 400) {
+            errorType = 'validation';
           }
         } catch {
           // If JSON parsing fails, use generic message
         }
+
+        // Track error
+        analytics.error({
+          errorType,
+          errorMessage,
+          context: { status: response.status },
+        });
+
         throw new Error(errorMessage);
       }
+
+      // Track streaming started
+      analytics.streamingStarted({ isQuoteSearch: containsQuotedText });
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error('No reader available');
@@ -176,6 +204,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       let buffer = '';
       let quotes: Quote[] = [];
       let chunkIdCounter = 0;
+      let quoteCount = 0;
+      let responseLength = 0;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -194,6 +224,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             chunkIdCounter++;
 
             if (chunkData.type === 'text' && chunkData.content) {
+              responseLength += chunkData.content.length;
               addChunk({
                 id: `chunk-${chunkIdCounter}`,
                 type: 'text',
@@ -205,6 +236,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                 reference: chunkData.reference,
                 textLength: chunkData.text.length
               });
+              quoteCount++;
               addChunk({
                 id: `chunk-${chunkIdCounter}`,
                 type: 'quote',
@@ -218,6 +250,15 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
           } else if (event.type === 'done') {
             // Mark stream as done - message will be finalized when animation completes
             setStreamDone(true);
+
+            // Track response complete
+            const responseTimeMs = Date.now() - requestStartTime;
+            analytics.responseComplete({
+              responseTimeMs,
+              quoteCount,
+              messageLength: responseLength,
+              isQuoteSearch: containsQuotedText,
+            });
           } else if (event.type === 'error') {
             throw new Error(event.data.message as string);
           }
@@ -228,6 +269,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
       // Extract error message - show specific validation errors to user
       let errorText = 'I apologize, but I encountered an error. Please try again.';
+      let errorType: 'rate_limit' | 'validation' | 'api_error' | 'streaming_error' = 'streaming_error';
       if (error instanceof Error && error.message) {
         // Show validation errors and rate limit errors directly to user
         if (error.message.includes('Maximum') ||
@@ -235,8 +277,19 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             error.message.includes('Too many requests') ||
             error.message.includes('required')) {
           errorText = error.message;
+          if (error.message.includes('Too many requests')) {
+            errorType = 'rate_limit';
+          } else {
+            errorType = 'validation';
+          }
         }
       }
+
+      // Track error if not already tracked
+      analytics.error({
+        errorType,
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
+      });
 
       const errorMessage: MessageType = {
         id: (Date.now() + 1).toString(),

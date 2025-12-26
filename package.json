@@ -14,6 +14,8 @@
     "framer-motion": "^12.23.26",
     "next": "16.1.0",
     "openai": "^6.14.0",
+    "posthog-js": "^1.310.1",
+    "posthog-node": "^5.18.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },

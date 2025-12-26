@@ -5,6 +5,7 @@ import { INITIAL_RESPONSE_PROMPT, CONTINUATION_PROMPT, QUOTE_SEARCH_PROMPT, buil
 import { Quote } from '@/lib/types';
 import { applySentenceRangeToQuote, formatWholeQuote } from '@/lib/quote-utils';
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit';
+import { trackLLMGeneration } from '@/lib/posthog-server';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -30,6 +31,19 @@ function couldBePartialMarker(s: string): boolean {
   if (/^\{\{QUOTE:\d+:s\d+:s\d+$/.test(s)) return true;
   if (/^\{\{QUOTE:\d+:s\d+:s\d+\}$/.test(s)) return true;
   return false;
+}
+
+// Calculate OpenAI API cost based on model and token usage
+function calculateCost(model: string, promptTokens: number, completionTokens: number): number {
+  // GPT-5-mini pricing (as of Jan 2025)
+  // Input: $0.075 per 1M tokens, Output: $0.30 per 1M tokens
+  const inputCostPer1M = 0.075;
+  const outputCostPer1M = 0.30;
+
+  const inputCost = (promptTokens / 1_000_000) * inputCostPer1M;
+  const outputCost = (completionTokens / 1_000_000) * outputCostPer1M;
+
+  return inputCost + outputCost;
 }
 
 // Detect if this is a quote-search query and extract the search text
@@ -183,6 +197,7 @@ export async function POST(request: NextRequest) {
             const quotesContext = buildContextFromQuotes(passages);
 
             // Generate full response with quotes (streaming)
+            const quoteSearchStartTime = Date.now();
             const response = await openai.chat.completions.create({
               model: 'gpt-5-mini',
               messages: [
@@ -195,14 +210,24 @@ export async function POST(request: NextRequest) {
               ],
               reasoning_effort: 'low',
               stream: true,
+              stream_options: { include_usage: true },
             });
 
             let buffer = '';
             let accumulatedText = '';
+            let fullOutput = '';
+
+            let usageData: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | undefined;
 
             for await (const chunk of response) {
+              // Capture usage data from final chunk
+              if (chunk.usage) {
+                usageData = chunk.usage;
+              }
+
               const content = chunk.choices[0]?.delta?.content || '';
               if (content) {
+                fullOutput += content;
                 buffer += content;
 
                 // Process buffer for complete markers
@@ -272,10 +297,33 @@ export async function POST(request: NextRequest) {
             if (accumulatedText.trim()) {
               send('chunk', { type: 'text', content: accumulatedText });
             }
+
+            // Track LLM generation for quote search
+            if (usageData) {
+              const latencyMs = Date.now() - quoteSearchStartTime;
+              const cost = calculateCost('gpt-5-mini', usageData.prompt_tokens || 0, usageData.completion_tokens || 0);
+              trackLLMGeneration({
+                distinctId: clientIp,
+                model: 'gpt-5-mini',
+                provider: 'openai',
+                input: message.substring(0, 500), // Truncate for privacy
+                output: fullOutput.substring(0, 500),
+                promptTokens: usageData.prompt_tokens,
+                completionTokens: usageData.completion_tokens,
+                totalTokens: usageData.total_tokens,
+                cost,
+                latencyMs,
+                metadata: {
+                  mode: 'quote_search',
+                  numPassages: passages.length,
+                },
+              });
+            }
           } else {
             // Standard mode: Phase 1 -> Search -> Phase 3
 
             // Phase 1: Get initial paragraph (no quotes)
+            const phase1StartTime = Date.now();
             const initialCompletion = await openai.chat.completions.create({
               model: 'gpt-5-mini',
               messages: [
@@ -289,6 +337,29 @@ export async function POST(request: NextRequest) {
               reasoning_effort: 'low',
             });
             const initialResponse = initialCompletion.choices[0]?.message?.content || '';
+            const phase1Usage = initialCompletion.usage;
+
+            // Track Phase 1 LLM generation
+            if (phase1Usage) {
+              const phase1LatencyMs = Date.now() - phase1StartTime;
+              const phase1Cost = calculateCost('gpt-5-mini', phase1Usage.prompt_tokens || 0, phase1Usage.completion_tokens || 0);
+              trackLLMGeneration({
+                distinctId: clientIp,
+                model: 'gpt-5-mini',
+                provider: 'openai',
+                input: message.substring(0, 500),
+                output: initialResponse.substring(0, 500),
+                promptTokens: phase1Usage.prompt_tokens,
+                completionTokens: phase1Usage.completion_tokens,
+                totalTokens: phase1Usage.total_tokens,
+                cost: phase1Cost,
+                latencyMs: phase1LatencyMs,
+                metadata: {
+                  mode: 'standard',
+                  phase: 1,
+                },
+              });
+            }
 
             // IMMEDIATELY send initial response - animation starts while we search!
             send('chunk', { type: 'text', content: initialResponse });
@@ -309,6 +380,7 @@ export async function POST(request: NextRequest) {
             const quotesContext = buildContextFromQuotes(passages);
 
             // Phase 3: Continue response with quotes (streaming)
+            const phase3StartTime = Date.now();
             const continuation = await openai.chat.completions.create({
               model: 'gpt-5-mini',
               messages: [
@@ -323,14 +395,22 @@ export async function POST(request: NextRequest) {
               ],
               reasoning_effort: 'low',
               stream: true,
+              stream_options: { include_usage: true },
             });
 
             let buffer = '';
             let accumulatedText = '';
+            let phase3Output = '';
+            let phase3Usage: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | undefined;
 
             for await (const chunk of continuation) {
+              // Capture usage data from final chunk
+              if (chunk.usage) {
+                phase3Usage = chunk.usage;
+              }
               const content = chunk.choices[0]?.delta?.content || '';
               if (content) {
+                phase3Output += content;
                 buffer += content;
 
                 // Process buffer for complete markers
@@ -408,6 +488,29 @@ export async function POST(request: NextRequest) {
             accumulatedText += buffer;
             if (accumulatedText.trim()) {
               send('chunk', { type: 'text', content: accumulatedText });
+            }
+
+            // Track Phase 3 LLM generation
+            if (phase3Usage) {
+              const phase3LatencyMs = Date.now() - phase3StartTime;
+              const phase3Cost = calculateCost('gpt-5-mini', phase3Usage.prompt_tokens || 0, phase3Usage.completion_tokens || 0);
+              trackLLMGeneration({
+                distinctId: clientIp,
+                model: 'gpt-5-mini',
+                provider: 'openai',
+                input: `${message} + ${initialResponse.substring(0, 200)}...`, // Context
+                output: phase3Output.substring(0, 500),
+                promptTokens: phase3Usage.prompt_tokens,
+                completionTokens: phase3Usage.completion_tokens,
+                totalTokens: phase3Usage.total_tokens,
+                cost: phase3Cost,
+                latencyMs: phase3LatencyMs,
+                metadata: {
+                  mode: 'standard',
+                  phase: 3,
+                  numPassages: passages.length,
+                },
+              });
             }
           }
 

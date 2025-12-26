@@ -2,6 +2,8 @@
 
 import { Quote } from '@/lib/types';
 import { useQuoteAnimation } from '@/hooks/useTypingAnimation';
+import { analytics } from '@/lib/analytics';
+import { useEffect } from 'react';
 
 interface AnimatedQuoteCardProps {
   quote: Quote;
@@ -73,6 +75,30 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
   // Format the text being displayed (works for both partial and complete text)
   const segments = formatRaText(textToShow);
 
+  // Extract session and question numbers for tracking
+  const match = quote.reference.match(/(\d+)\.(\d+)/);
+  const sessionNumber = match ? parseInt(match[1]) : 0;
+  const questionNumber = match ? parseInt(match[2]) : 0;
+
+  // Track quote display on mount
+  useEffect(() => {
+    analytics.quoteDisplayed({
+      sessionNumber,
+      questionNumber,
+      positionInResponse: 0,
+      sentenceRange: hasLeading || hasTrailing ? 'partial' : undefined,
+    });
+  }, [sessionNumber, questionNumber, hasLeading, hasTrailing]);
+
+  // Handle quote link clicks
+  const handleLinkClick = (clickType: 'session_link' | 'ellipsis') => {
+    analytics.quoteLinkClicked({
+      sessionNumber,
+      questionNumber,
+      clickType,
+    });
+  };
+
   return (
     <div className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg">
       {/* Header with reference number - always visible */}
@@ -85,6 +111,7 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
+          onClick={() => handleLinkClick('session_link')}
         >
           {shortRef}
         </a>
@@ -99,6 +126,7 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
             target="_blank"
             rel="noopener noreferrer"
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2"
+            onClick={() => handleLinkClick('ellipsis')}
           >
             ...
           </a>
@@ -131,6 +159,7 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
             target="_blank"
             rel="noopener noreferrer"
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2"
+            onClick={() => handleLinkClick('ellipsis')}
           >
             ...
           </a>
