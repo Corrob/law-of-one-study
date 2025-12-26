@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { PostHogProvider } from "@/providers/PostHogProvider";
+import { SearchModeProvider } from "@/contexts/SearchModeContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -101,7 +102,9 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
-        <PostHogProvider>{children}</PostHogProvider>
+        <PostHogProvider>
+          <SearchModeProvider>{children}</SearchModeProvider>
+        </PostHogProvider>
       </body>
     </html>
   );

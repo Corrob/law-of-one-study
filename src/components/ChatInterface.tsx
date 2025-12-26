@@ -10,6 +10,7 @@ import WelcomeScreen from "./WelcomeScreen";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
 import { analytics } from "@/lib/analytics";
+import { useSearchMode } from "@/contexts/SearchModeContext";
 
 // Maximum number of messages to keep in memory (prevents unbounded growth)
 const MAX_CONVERSATION_HISTORY = 30;
@@ -57,6 +58,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+  const { mode } = useSearchMode();
 
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
@@ -160,6 +162,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         body: JSON.stringify({
           message: content,
           history: messages.map((m) => ({ role: m.role, content: m.content })),
+          searchMode: mode,
         }),
       });
 
@@ -436,13 +439,50 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                     {messages.map((message) => (
                       <Message key={message.id} message={message} onSearch={handleSend} />
                     ))}
+                    {/* Mode Indicator Badge - shown when streaming in quote search mode */}
+                    {isStreaming && mode === "quote" && !hasStreamingContent && (
+                      <div className="mb-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 w-fit">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="w-4 h-4 text-[var(--lo1-gold)]"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-sm text-[var(--lo1-gold)]">Searching quotes...</span>
+                      </div>
+                    )}
                     {hasStreamingContent && (
-                      <StreamingMessage
-                        completedChunks={completedChunks}
-                        currentChunk={currentChunk}
-                        onChunkComplete={onChunkComplete}
-                        onSearch={handleSend}
-                      />
+                      <>
+                        {mode === "quote" && (
+                          <div className="mb-3 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/20 w-fit">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="w-3.5 h-3.5 text-[var(--lo1-gold)]"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="text-xs text-[var(--lo1-stardust)]">Quote Search Results</span>
+                          </div>
+                        )}
+                        <StreamingMessage
+                          completedChunks={completedChunks}
+                          currentChunk={currentChunk}
+                          onChunkComplete={onChunkComplete}
+                          onSearch={handleSend}
+                        />
+                      </>
                     )}
                     {showLoadingDots && (
                       <div className="mb-6 flex gap-1">

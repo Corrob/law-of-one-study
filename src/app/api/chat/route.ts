@@ -20,6 +20,7 @@ interface ChatMessage {
 interface ChatRequest {
   message: string;
   history: ChatMessage[];
+  searchMode?: "chat" | "quote";
 }
 
 // Check if string could be the start of a {{QUOTE:N}} or {{QUOTE:N:s2:s5}} marker
@@ -102,7 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: ChatRequest = await request.json();
-    const { message, history } = body;
+    const { message, history, searchMode } = body;
 
     // Input validation - message
     if (!message || typeof message !== "string") {
@@ -183,7 +184,10 @@ export async function POST(request: NextRequest) {
 
         try {
           // Check if this is a quote search (user looking for specific quote)
-          const { isQuoteSearch, searchText } = detectQuoteSearch(message);
+          // Use explicit searchMode if provided, otherwise use automatic detection
+          const isExplicitQuoteMode = searchMode === "quote";
+          const { isQuoteSearch: isAutoDetectedQuoteSearch, searchText } = detectQuoteSearch(message);
+          const isQuoteSearch = isExplicitQuoteMode || isAutoDetectedQuoteSearch;
 
           if (isQuoteSearch) {
             // Quote search mode: search first using user's text, then generate full response
