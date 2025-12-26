@@ -3,7 +3,7 @@ import { openai, createEmbedding } from '@/lib/openai';
 import { searchRaMaterial } from '@/lib/pinecone';
 import { INITIAL_RESPONSE_PROMPT, CONTINUATION_PROMPT, QUOTE_SEARCH_PROMPT, buildContextFromQuotes } from '@/lib/prompts';
 import { Quote } from '@/lib/types';
-import { applySentenceRangeToQuote } from '@/lib/quote-utils';
+import { applySentenceRangeToQuote, formatWholeQuote } from '@/lib/quote-utils';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
@@ -155,14 +155,18 @@ export async function POST(request: NextRequest) {
                   const quote = passages[quoteIndex - 1]; // Convert from 1-indexed to 0-indexed
 
                   if (quote) {
-                    let quoteText = quote.text;
+                    let quoteText: string;
 
-                    // Apply sentence range if specified
+                    // Apply sentence range if specified, otherwise format whole quote
                     if (markerMatch[2] && markerMatch[3]) {
                       const sentenceStart = parseInt(markerMatch[2], 10);
                       const sentenceEnd = parseInt(markerMatch[3], 10);
-                      quoteText = applySentenceRangeToQuote(quoteText, sentenceStart, sentenceEnd);
+                      quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
                       console.log('[API] Applied sentence range', sentenceStart, '-', sentenceEnd, 'to quote', quoteIndex);
+                    } else {
+                      // Format whole quote with paragraph breaks
+                      quoteText = formatWholeQuote(quote.text);
+                      console.log('[API] Formatted whole quote', quoteIndex);
                     }
 
                     console.log('[API] Matched marker:', markerMatch[0]);
@@ -286,14 +290,18 @@ export async function POST(request: NextRequest) {
                   const quote = passages[quoteIndex - 1]; // Convert from 1-indexed to 0-indexed
 
                   if (quote) {
-                    let quoteText = quote.text;
+                    let quoteText: string;
 
-                    // Apply sentence range if specified
+                    // Apply sentence range if specified, otherwise format whole quote
                     if (markerMatch[2] && markerMatch[3]) {
                       const sentenceStart = parseInt(markerMatch[2], 10);
                       const sentenceEnd = parseInt(markerMatch[3], 10);
-                      quoteText = applySentenceRangeToQuote(quoteText, sentenceStart, sentenceEnd);
+                      quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
                       console.log('[API] Applied sentence range', sentenceStart, '-', sentenceEnd, 'to quote', quoteIndex);
+                    } else {
+                      // Format whole quote with paragraph breaks
+                      quoteText = formatWholeQuote(quote.text);
+                      console.log('[API] Formatted whole quote', quoteIndex);
                     }
 
                     console.log('[API] Matched marker:', markerMatch[0]);

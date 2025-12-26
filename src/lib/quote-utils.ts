@@ -129,6 +129,13 @@ export function reconstructTextFromParagraphs(paragraphs: Paragraph[], hasTextBe
   return `${prefix}${text}${suffix}`;
 }
 
+// Format whole quote with paragraph breaks (no sentence range filtering)
+export function formatWholeQuote(text: string): string {
+  const allParagraphs = parseIntoParagraphs(text);
+  // No filtering - use all paragraphs, no ellipsis needed
+  return reconstructTextFromParagraphs(allParagraphs, false, false);
+}
+
 // Apply sentence range to quote text (main function to use)
 export function applySentenceRangeToQuote(text: string, sentenceStart: number, sentenceEnd: number): string {
   const allParagraphs = parseIntoParagraphs(text);
