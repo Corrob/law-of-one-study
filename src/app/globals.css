@@ -159,6 +159,14 @@ input[type="button"] {
 }
 
 /* Custom scrollbar for chat - dark theme */
+.chat-scroll {
+  /* Always show scrollbar to prevent layout shift when content grows */
+  overflow-y: scroll;
+  /* Prevent word breaking from causing layout shifts */
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
 .chat-scroll::-webkit-scrollbar {
   width: 6px;
 }

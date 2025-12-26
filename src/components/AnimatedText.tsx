@@ -9,7 +9,7 @@ interface AnimatedTextProps {
 }
 
 export default function AnimatedText({ content, onComplete, speed = 50 }: AnimatedTextProps) {
-  const [displayedText, setDisplayedText] = useState('');
+  const [visibleCount, setVisibleCount] = useState(0);
   const hasCompletedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
 
@@ -21,7 +21,7 @@ export default function AnimatedText({ content, onComplete, speed = 50 }: Animat
   useEffect(() => {
     // Reset state for new content
     hasCompletedRef.current = false;
-    setDisplayedText('');
+    setVisibleCount(0);
 
     // Split into words (keeping whitespace attached)
     const words = content.match(/\S+\s*/g) || [];
@@ -36,7 +36,7 @@ export default function AnimatedText({ content, onComplete, speed = 50 }: Animat
     const interval = setInterval(() => {
       if (index < words.length) {
         index++;
-        setDisplayedText(words.slice(0, index).join(''));
+        setVisibleCount(index);
       } else {
         clearInterval(interval);
         if (!hasCompletedRef.current) {
@@ -49,5 +49,22 @@ export default function AnimatedText({ content, onComplete, speed = 50 }: Animat
     return () => clearInterval(interval);
   }, [content, speed]);
 
-  return <>{displayedText}</>;
+  // Split content into words for rendering
+  const words = content.match(/\S+\s*/g) || [];
+
+  return (
+    <>
+      {words.map((word, index) => (
+        <span
+          key={index}
+          style={{
+            opacity: index < visibleCount ? 1 : 0,
+            transition: 'opacity 150ms ease-in'
+          }}
+        >
+          {word}
+        </span>
+      ))}
+    </>
+  );
 }

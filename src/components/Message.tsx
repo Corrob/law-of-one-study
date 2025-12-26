@@ -54,14 +54,16 @@ interface SegmentRendererProps {
 
 function SegmentRenderer({ segment, isFirst = false, onSearch }: SegmentRendererProps) {
   if (segment.type === 'text') {
+    const wrapperClass = isFirst ? 'min-h-[1lh]' : 'mt-3 block min-h-[1lh]';
+
     return (
-      <span className={isFirst ? '' : 'mt-3 block'}>
+      <div className={wrapperClass}>
         {onSearch ? (
           <LinkedText text={segment.content} onSearch={onSearch} />
         ) : (
           segment.content
         )}
-      </span>
+      </div>
     );
   }
 
