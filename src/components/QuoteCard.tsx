@@ -32,6 +32,22 @@ function formatRaText(text: string): { type: 'questioner' | 'ra' | 'text'; conte
   return segments;
 }
 
+// Parse ellipsis from text (added by backend for partial quotes)
+function parseEllipsis(text: string): { hasLeading: boolean; hasTrailing: boolean; content: string } {
+  let content = text;
+  const hasLeading = text.startsWith('...\n\n') || text.startsWith('...');
+  const hasTrailing = text.endsWith('\n\n...') || text.endsWith('...');
+
+  if (hasLeading) {
+    content = content.replace(/^\.\.\.(\n\n)?/, '');
+  }
+  if (hasTrailing) {
+    content = content.replace(/(\n\n)?\.\.\.$/,'');
+  }
+
+  return { hasLeading, hasTrailing, content };
+}
+
 // Extract just the session.question from reference like "Ra 49.8"
 function getShortReference(reference: string): string {
   const match = reference.match(/(\d+\.\d+)/);
@@ -39,9 +55,11 @@ function getShortReference(reference: string): string {
 }
 
 export default function QuoteCard({ quote }: QuoteCardProps) {
-  // Backend now handles all sentence range filtering
-  // We just display the text we receive
-  const segments = formatRaText(quote.text);
+  // Parse ellipsis from quote text
+  const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
+
+  // Format the content (without ellipsis)
+  const segments = formatRaText(content);
   const shortRef = getShortReference(quote.reference);
 
   return (
@@ -55,11 +73,23 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           href={quote.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-medium text-[var(--lo1-gold)} hover:text-[var(--lo1-gold-light)] hover:underline"
+          className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
         >
           {shortRef}
         </a>
       </div>
+
+      {/* Leading ellipsis */}
+      {hasLeading && (
+        <a
+          href={quote.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2"
+        >
+          ...
+        </a>
+      )}
 
       {segments.map((segment, index) => (
         <div key={index} className={segment.type === 'ra' ? 'mt-3' : ''}>
@@ -80,6 +110,18 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
           </div>
         </div>
       ))}
+
+      {/* Trailing ellipsis */}
+      {hasTrailing && (
+        <a
+          href={quote.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2"
+        >
+          ...
+        </a>
+      )}
     </div>
   );
 }

@@ -35,6 +35,22 @@ function formatRaText(text: string): { type: 'questioner' | 'ra' | 'text'; conte
   return segments;
 }
 
+// Parse ellipsis from text (added by backend for partial quotes)
+function parseEllipsis(text: string): { hasLeading: boolean; hasTrailing: boolean; content: string } {
+  let content = text;
+  const hasLeading = text.startsWith('...\n\n') || text.startsWith('...');
+  const hasTrailing = text.endsWith('\n\n...') || text.endsWith('...');
+
+  if (hasLeading) {
+    content = content.replace(/^\.\.\.(\n\n)?/, '');
+  }
+  if (hasTrailing) {
+    content = content.replace(/(\n\n)?\.\.\.$/,'');
+  }
+
+  return { hasLeading, hasTrailing, content };
+}
+
 // Extract just the session.question from reference like "Ra 49.8"
 function getShortReference(reference: string): string {
   const match = reference.match(/(\d+\.\d+)/);
@@ -42,16 +58,16 @@ function getShortReference(reference: string): string {
 }
 
 export default function AnimatedQuoteCard({ quote, animate = true, onComplete }: AnimatedQuoteCardProps) {
-  // Backend now handles all sentence range filtering
-  // We just display the text we receive
-  const fullText = quote.text;
+  // Parse ellipsis from full quote text
+  const { hasLeading, hasTrailing, content: fullTextWithoutEllipsis } = parseEllipsis(quote.text);
 
+  // Animate only the content (without ellipsis)
   const { displayedText, isComplete } = useQuoteAnimation(
-    animate ? fullText : '',
+    animate ? fullTextWithoutEllipsis : '',
     { speed: 50, startDelay: 0, onComplete }
   );
 
-  const textToShow = animate ? displayedText : fullText;
+  const textToShow = animate ? displayedText : fullTextWithoutEllipsis;
   const shortRef = getShortReference(quote.reference);
 
   // Format the text being displayed (works for both partial and complete text)
@@ -76,6 +92,18 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
 
       {/* Content area - maintain consistent spacing */}
       <div className="min-h-[1.5rem]">
+        {/* Leading ellipsis - always visible */}
+        {hasLeading && (
+          <a
+            href={quote.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2"
+          >
+            ...
+          </a>
+        )}
+
         {segments.map((segment, index) => (
           <div key={index} className={segment.type === 'ra' ? 'mt-3' : ''}>
             {/* Only show Ra label, Questioner is in header */}
@@ -95,6 +123,18 @@ export default function AnimatedQuoteCard({ quote, animate = true, onComplete }:
             </div>
           </div>
         ))}
+
+        {/* Trailing ellipsis - only show after animation completes */}
+        {hasTrailing && (!animate || isComplete) && (
+          <a
+            href={quote.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2"
+          >
+            ...
+          </a>
+        )}
       </div>
     </div>
   );
