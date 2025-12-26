@@ -166,7 +166,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             quotes = event.data.quotes as Quote[];
             setStreamingQuotes(quotes);
           } else if (event.type === 'chunk') {
-            const chunkData = event.data as { type: 'text' | 'quote'; content?: string; index?: number; sentenceStart?: number; sentenceEnd?: number };
+            const chunkData = event.data as { type: 'text' | 'quote'; content?: string; text?: string; reference?: string; url?: string };
             chunkIdCounter++;
 
             if (chunkData.type === 'text' && chunkData.content) {
@@ -175,29 +175,21 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                 type: 'text',
                 content: chunkData.content,
               });
-            } else if (chunkData.type === 'quote' && chunkData.index !== undefined) {
-              console.log('[ChatInterface] Received quote chunk:', chunkData);
-              const quoteIndex = chunkData.index - 1; // Convert to 0-indexed
-              if (quoteIndex >= 0 && quoteIndex < quotes.length) {
-                const quote = { ...quotes[quoteIndex] };
-                if (chunkData.sentenceStart !== undefined && chunkData.sentenceEnd !== undefined) {
-                  console.log('[ChatInterface] Adding sentence range to quote:', chunkData.sentenceStart, 'to', chunkData.sentenceEnd);
-                  quote.sentenceStart = chunkData.sentenceStart;
-                  quote.sentenceEnd = chunkData.sentenceEnd;
-                } else {
-                  console.log('[ChatInterface] No sentence range in chunk data');
+            } else if (chunkData.type === 'quote' && chunkData.text && chunkData.reference && chunkData.url) {
+              // Backend now sends fully processed quote with filtered text
+              console.log('[ChatInterface] Received quote chunk:', {
+                reference: chunkData.reference,
+                textLength: chunkData.text.length
+              });
+              addChunk({
+                id: `chunk-${chunkIdCounter}`,
+                type: 'quote',
+                quote: {
+                  text: chunkData.text,
+                  reference: chunkData.reference,
+                  url: chunkData.url
                 }
-                console.log('[ChatInterface] Final quote object:', {
-                  reference: quote.reference,
-                  sentenceStart: quote.sentenceStart,
-                  sentenceEnd: quote.sentenceEnd
-                });
-                addChunk({
-                  id: `chunk-${chunkIdCounter}`,
-                  type: 'quote',
-                  quote,
-                });
-              }
+              });
             }
           } else if (event.type === 'done') {
             // Mark stream as done - message will be finalized when animation completes
