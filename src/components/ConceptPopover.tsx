@@ -17,12 +17,18 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const preventReopenRef = useRef(false); // Prevent immediate reopen after close
 
   const definition = getConceptDefinition(term);
 
   const closePopover = useCallback(() => {
     setIsOpen(false);
     setIsPinned(false);
+    // Prevent immediate reopen from hover
+    preventReopenRef.current = true;
+    setTimeout(() => {
+      preventReopenRef.current = false;
+    }, 300);
   }, []);
 
   // Close popover when clicking outside (only if pinned)
@@ -97,6 +103,10 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   const handleMouseEnter = () => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
+    }
+    // Don't reopen if we just closed via click
+    if (preventReopenRef.current) {
+      return;
     }
     // Small delay to prevent accidental triggers
     hoverTimeoutRef.current = setTimeout(() => {
