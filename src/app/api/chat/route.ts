@@ -20,6 +20,7 @@ interface ChatMessage {
 interface ChatRequest {
   message: string;
   history: ChatMessage[];
+  searchMode?: "chat" | "quote";
 }
 
 // Check if string could be the start of a {{QUOTE:N}} or {{QUOTE:N:s2:s5}} marker
@@ -102,7 +103,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: ChatRequest = await request.json();
-    const { message, history } = body;
+    const { message, history, searchMode } = body;
 
     // Input validation - message
     if (!message || typeof message !== "string") {
@@ -183,12 +184,31 @@ export async function POST(request: NextRequest) {
 
         try {
           // Check if this is a quote search (user looking for specific quote)
-          const { isQuoteSearch, searchText } = detectQuoteSearch(message);
+          // Use explicit searchMode if provided, otherwise use automatic detection
+          const isExplicitQuoteMode = searchMode === "quote";
+          const { isQuoteSearch: isAutoDetectedQuoteSearch, searchText } = detectQuoteSearch(message);
+          const isQuoteSearch = isExplicitQuoteMode || isAutoDetectedQuoteSearch;
+
+          console.log("[API] Quote search detection:", {
+            searchMode,
+            isExplicitQuoteMode,
+            isAutoDetectedQuoteSearch,
+            isQuoteSearch,
+            message,
+            searchText,
+          });
 
           if (isQuoteSearch) {
-            // Quote search mode: search first using user's text, then generate full response
+            // Quote search mode: search first using user's text
             const embedding = await createEmbedding(searchText);
-            const searchResults = await searchRaMaterial(embedding, 5);
+            // Get more results in explicit quote mode (10 vs 5)
+            const resultCount = isExplicitQuoteMode ? 10 : 5;
+            const searchResults = await searchRaMaterial(embedding, resultCount);
+
+            console.log("[API] Search results:", {
+              resultCount,
+              foundResults: searchResults.length,
+            });
 
             const passages: Quote[] = searchResults.map((r) => ({
               text: r.text,
@@ -198,6 +218,43 @@ export async function POST(request: NextRequest) {
 
             // Send quotes metadata
             send("meta", { quotes: passages });
+
+            // EXPLICIT QUOTE MODE: Return quotes only, no AI text
+            if (isExplicitQuoteMode) {
+              console.log("[API] EXPLICIT QUOTE MODE - Sending quotes only");
+              console.log("[API] About to send", passages.length, "quote chunks");
+
+              // Stream quotes directly without AI generation
+              // Add small delays to ensure proper streaming
+              for (let i = 0; i < passages.length; i++) {
+                const quote = passages[i];
+                const formattedQuote = formatWholeQuote(quote.text);
+                console.log(`[API] Sending quote ${i + 1}/${passages.length}:`, {
+                  reference: quote.reference,
+                  textLength: formattedQuote.length,
+                });
+                send("chunk", {
+                  type: "quote",
+                  text: formattedQuote,
+                  reference: quote.reference,
+                  url: quote.url,
+                });
+                // Small delay to ensure events are properly queued
+                await new Promise((resolve) => setTimeout(resolve, 10));
+              }
+
+              // Signal completion
+              console.log("[API] All quotes sent, sending done event");
+              send("done", {});
+              console.log("[API] Done event sent, closing controller");
+              // Small delay before closing to ensure all events are flushed
+              await new Promise((resolve) => setTimeout(resolve, 50));
+              controller.close();
+              console.log("[API] Controller closed");
+              return;
+            }
+
+            console.log("[API] AUTO-DETECTED QUOTE MODE - Using AI generation");
 
             const quotesContext = buildContextFromQuotes(passages);
 

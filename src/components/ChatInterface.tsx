@@ -10,6 +10,7 @@ import WelcomeScreen from "./WelcomeScreen";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
 import { analytics } from "@/lib/analytics";
+import { useSearchMode } from "@/contexts/SearchModeContext";
 
 // Maximum number of messages to keep in memory (prevents unbounded growth)
 const MAX_CONVERSATION_HISTORY = 30;
@@ -57,6 +58,13 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+  const { mode } = useSearchMode();
+
+  // DEBUG: Temporary visible debugging
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const addDebug = (msg: string) => {
+    setDebugInfo(prev => [...prev.slice(-10), `${new Date().toLocaleTimeString()}: ${msg}`]);
+  };
 
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
@@ -160,6 +168,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         body: JSON.stringify({
           message: content,
           history: messages.map((m) => ({ role: m.role, content: m.content })),
+          searchMode: mode,
         }),
       });
 
@@ -205,17 +214,48 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       let quoteCount = 0;
       let responseLength = 0;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      // In explicit quote mode, accumulate all quotes then show at once
+      const accumulatedQuotes: MessageSegment[] = [];
+      const isQuoteOnlyMode = mode === "quote";
 
-        buffer += decoder.decode(value, { stream: true });
-        const { events, remaining } = parseSSE(buffer);
-        buffer = remaining;
+      addDebug(`Stream start: mode=${mode}, isQuoteOnlyMode=${isQuoteOnlyMode}`);
+      console.log("[ChatInterface] Starting stream processing:", {
+        mode,
+        isQuoteOnlyMode,
+      });
+
+      try {
+        while (true) {
+          addDebug(`About to read from stream...`);
+          const { done, value } = await reader.read();
+          addDebug(`Read result: done=${done}, hasValue=${!!value}, valueLength=${value?.length || 0}`);
+
+          if (done) {
+            addDebug(`Stream done - breaking`);
+            break;
+          }
+
+          if (!value) {
+            addDebug(`No value received, continuing...`);
+            continue;
+          }
+
+          const decoded = decoder.decode(value, { stream: true });
+          addDebug(`Decoded ${decoded.length} chars: ${decoded.slice(0, 50)}...`);
+          buffer += decoded;
+
+          const { events, remaining } = parseSSE(buffer);
+          buffer = remaining;
+
+          addDebug(`Parsed ${events.length} events from buffer`);
+          console.log("[ChatInterface] Received events:", events.length);
 
         for (const event of events) {
+          addDebug(`Event: ${event.type}`);
+          console.log("[ChatInterface] Processing event:", event.type, event.data);
           if (event.type === "meta") {
             // Meta event received with quotes data - currently unused but may be needed in future
+            console.log("[ChatInterface] Meta event with quotes:", event.data);
           } else if (event.type === "chunk") {
             const chunkData = event.data as {
               type: "text" | "quote";
@@ -226,13 +266,24 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             };
             chunkIdCounter++;
 
+            console.log("[ChatInterface] Chunk data:", {
+              type: chunkData.type,
+              hasContent: !!chunkData.content,
+              hasText: !!chunkData.text,
+              reference: chunkData.reference,
+            });
+
             if (chunkData.type === "text" && chunkData.content) {
               responseLength += chunkData.content.length;
-              addChunk({
-                id: `chunk-${chunkIdCounter}`,
-                type: "text",
-                content: chunkData.content,
-              });
+              if (!isQuoteOnlyMode) {
+                addChunk({
+                  id: `chunk-${chunkIdCounter}`,
+                  type: "text",
+                  content: chunkData.content,
+                });
+              } else {
+                console.log("[ChatInterface] Skipping text chunk in quote-only mode");
+              }
             } else if (
               chunkData.type === "quote" &&
               chunkData.text &&
@@ -245,20 +296,34 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                 textLength: chunkData.text.length,
               });
               quoteCount++;
-              addChunk({
-                id: `chunk-${chunkIdCounter}`,
+
+              const quoteSegment: MessageSegment = {
                 type: "quote",
                 quote: {
                   text: chunkData.text,
                   reference: chunkData.reference,
                   url: chunkData.url,
                 },
-              });
+              };
+
+              if (isQuoteOnlyMode) {
+                // Accumulate quotes for instant display
+                addDebug(`Accumulating quote ${accumulatedQuotes.length + 1}: ${chunkData.reference}`);
+                console.log("[ChatInterface] Accumulating quote for instant display");
+                accumulatedQuotes.push(quoteSegment);
+              } else {
+                // Stream with animation
+                console.log("[ChatInterface] Adding quote to animation queue");
+                addChunk({
+                  id: `chunk-${chunkIdCounter}`,
+                  type: "quote",
+                  quote: quoteSegment.quote,
+                });
+              }
             }
           } else if (event.type === "done") {
-            // Mark stream as done - message will be finalized when animation completes
-            setStreamDone(true);
-
+            addDebug(`Done event: quotes=${accumulatedQuotes.length}, isQuoteOnlyMode=${isQuoteOnlyMode}`);
+            console.log("[ChatInterface] Done event received");
             // Track response complete
             const responseTimeMs = Date.now() - requestStartTime;
             analytics.responseComplete({
@@ -267,13 +332,55 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               messageLength: responseLength,
               isQuoteSearch: containsQuotedText,
             });
+
+            // In quote-only mode, show all quotes immediately
+            if (isQuoteOnlyMode && accumulatedQuotes.length > 0) {
+              addDebug(`Creating message with ${accumulatedQuotes.length} quotes`);
+              console.log(
+                "[ChatInterface] Quote-only mode: Displaying accumulated quotes:",
+                accumulatedQuotes.length
+              );
+              const assistantMessage: MessageType = {
+                id: (Date.now() + 1).toString(),
+                role: "assistant",
+                content: "",
+                segments: accumulatedQuotes,
+                timestamp: new Date(),
+              };
+
+              setMessages((prev) => {
+                const updated = [...prev, assistantMessage];
+                const limited =
+                  updated.length > MAX_CONVERSATION_HISTORY
+                    ? updated.slice(-MAX_CONVERSATION_HISTORY)
+                    : updated;
+                setPlaceholder(getPlaceholder(limited.length));
+                return limited;
+              });
+              setIsStreaming(false);
+              addDebug(`Message displayed! Total messages: ${messages.length + 1}`);
+            } else {
+              addDebug(`Using animation mode instead`);
+              console.log("[ChatInterface] Marking stream as done for animation");
+              // Mark stream as done - message will be finalized when animation completes
+              setStreamDone(true);
+            }
           } else if (event.type === "error") {
+            console.error("[ChatInterface] Error event:", event.data);
             throw new Error(event.data.message as string);
           }
         }
+        }
+      } catch (streamError) {
+        addDebug(`Stream error: ${streamError}`);
+        console.error("[ChatInterface] Stream reading error:", streamError);
+        throw streamError;
       }
+      addDebug(`Stream loop completed`);
+      console.log("[ChatInterface] Stream processing complete");
     } catch (error) {
       console.error("Chat error:", error);
+      addDebug(`Chat error: ${error}`);
 
       // Extract error message - show specific validation errors to user
       let errorText = "I apologize, but I encountered an error. Please try again.";
@@ -389,13 +496,36 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   // Input element with layoutId for shared element animation
   const inputElement = (
     <motion.div layoutId="chat-input" transition={{ type: "spring", stiffness: 300, damping: 30 }}>
-      <MessageInput onSend={handleSend} disabled={isStreaming} placeholder={placeholder} />
+      <MessageInput
+        onSend={handleSend}
+        disabled={isStreaming}
+        placeholder={placeholder}
+        hasConversation={hasConversation}
+      />
     </motion.div>
   );
 
   return (
     <LayoutGroup>
       <div className="flex flex-col h-full relative">
+        {/* DEBUG PANEL - TEMPORARY */}
+        {debugInfo.length > 0 && (
+          <div className="fixed top-4 right-4 z-50 max-w-sm bg-black/90 text-green-400 p-4 rounded-lg text-xs font-mono max-h-96 overflow-y-auto">
+            <div className="flex justify-between items-center mb-2">
+              <strong>DEBUG LOG</strong>
+              <button
+                onClick={() => setDebugInfo([])}
+                className="text-red-400 hover:text-red-300"
+              >
+                Clear
+              </button>
+            </div>
+            {debugInfo.map((msg, i) => (
+              <div key={i} className="mb-1">{msg}</div>
+            ))}
+          </div>
+        )}
+
         {/* Starfield - only on welcome screen */}
         <AnimatePresence>
           {!hasConversation && (
@@ -436,13 +566,50 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                     {messages.map((message) => (
                       <Message key={message.id} message={message} onSearch={handleSend} />
                     ))}
+                    {/* Mode Indicator Badge - shown when streaming in quote search mode */}
+                    {isStreaming && mode === "quote" && !hasStreamingContent && (
+                      <div className="mb-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 w-fit">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          className="w-4 h-4 text-[var(--lo1-gold)]"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-sm text-[var(--lo1-gold)]">Searching quotes...</span>
+                      </div>
+                    )}
                     {hasStreamingContent && (
-                      <StreamingMessage
-                        completedChunks={completedChunks}
-                        currentChunk={currentChunk}
-                        onChunkComplete={onChunkComplete}
-                        onSearch={handleSend}
-                      />
+                      <>
+                        {mode === "quote" && (
+                          <div className="mb-3 flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/20 w-fit">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="w-3.5 h-3.5 text-[var(--lo1-gold)]"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                            <span className="text-xs text-[var(--lo1-stardust)]">Quote Search Results</span>
+                          </div>
+                        )}
+                        <StreamingMessage
+                          completedChunks={completedChunks}
+                          currentChunk={currentChunk}
+                          onChunkComplete={onChunkComplete}
+                          onSearch={handleSend}
+                        />
+                      </>
                     )}
                     {showLoadingDots && (
                       <div className="mb-6 flex gap-1">

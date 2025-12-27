@@ -2,6 +2,7 @@
 
 import { useEffect, useState, ReactNode } from "react";
 import { getRandomStarters, getRandomQuote } from "@/data/starters";
+import { useSearchMode } from "@/contexts/SearchModeContext";
 
 interface WelcomeScreenProps {
   onSelectStarter: (starter: string) => void;
@@ -11,12 +12,13 @@ interface WelcomeScreenProps {
 export default function WelcomeScreen({ onSelectStarter, inputElement }: WelcomeScreenProps) {
   const [quote, setQuote] = useState<{ text: string; reference: string; url: string } | null>(null);
   const [starters, setStarters] = useState<string[]>([]);
+  const { mode } = useSearchMode();
 
   useEffect(() => {
     // Only run on client to avoid hydration mismatch
     setQuote(getRandomQuote());
-    setStarters(getRandomStarters(3));
-  }, []);
+    setStarters(getRandomStarters(3, mode));
+  }, [mode]); // Re-shuffle starters when mode changes
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-4 py-8">
@@ -56,7 +58,7 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
       {/* Conversation Starters */}
       <div className="w-full max-w-2xl">
         <p className="text-[var(--lo1-starlight)]/70 text-sm font-medium mb-4 text-center tracking-wide animate-starter-0">
-          Or explore:
+          {mode === "quote" ? "Try searching for:" : "Or explore:"}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {starters.map((starter, index) => (
