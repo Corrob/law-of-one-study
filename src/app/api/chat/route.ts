@@ -222,10 +222,14 @@ export async function POST(request: NextRequest) {
             // EXPLICIT QUOTE MODE: Return quotes only, no AI text
             if (isExplicitQuoteMode) {
               console.log("[API] EXPLICIT QUOTE MODE - Sending quotes only");
+              console.log("[API] About to send", passages.length, "quote chunks");
+
               // Stream quotes directly without AI generation
-              for (const quote of passages) {
+              // Add small delays to ensure proper streaming
+              for (let i = 0; i < passages.length; i++) {
+                const quote = passages[i];
                 const formattedQuote = formatWholeQuote(quote.text);
-                console.log("[API] Sending quote chunk:", {
+                console.log(`[API] Sending quote ${i + 1}/${passages.length}:`, {
                   reference: quote.reference,
                   textLength: formattedQuote.length,
                 });
@@ -235,12 +239,18 @@ export async function POST(request: NextRequest) {
                   reference: quote.reference,
                   url: quote.url,
                 });
+                // Small delay to ensure events are properly queued
+                await new Promise((resolve) => setTimeout(resolve, 10));
               }
 
               // Signal completion
-              console.log("[API] Sending done event");
+              console.log("[API] All quotes sent, sending done event");
               send("done", {});
+              console.log("[API] Done event sent, closing controller");
+              // Small delay before closing to ensure all events are flushed
+              await new Promise((resolve) => setTimeout(resolve, 50));
               controller.close();
+              console.log("[API] Controller closed");
               return;
             }
 
