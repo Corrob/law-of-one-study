@@ -60,6 +60,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
   const { mode } = useSearchMode();
 
+  // DEBUG: Temporary visible debugging
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
+  const addDebug = (msg: string) => {
+    setDebugInfo(prev => [...prev.slice(-10), `${new Date().toLocaleTimeString()}: ${msg}`]);
+  };
+
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
     setPlaceholder(getPlaceholder(0));
@@ -212,6 +218,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       const accumulatedQuotes: MessageSegment[] = [];
       const isQuoteOnlyMode = mode === "quote";
 
+      addDebug(`Stream start: mode=${mode}, isQuoteOnlyMode=${isQuoteOnlyMode}`);
       console.log("[ChatInterface] Starting stream processing:", {
         mode,
         isQuoteOnlyMode,
@@ -225,9 +232,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         const { events, remaining } = parseSSE(buffer);
         buffer = remaining;
 
+        addDebug(`Received ${events.length} events`);
         console.log("[ChatInterface] Received events:", events.length);
 
         for (const event of events) {
+          addDebug(`Event: ${event.type}`);
           console.log("[ChatInterface] Processing event:", event.type, event.data);
           if (event.type === "meta") {
             // Meta event received with quotes data - currently unused but may be needed in future
@@ -284,6 +293,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
               if (isQuoteOnlyMode) {
                 // Accumulate quotes for instant display
+                addDebug(`Accumulating quote ${accumulatedQuotes.length + 1}: ${chunkData.reference}`);
                 console.log("[ChatInterface] Accumulating quote for instant display");
                 accumulatedQuotes.push(quoteSegment);
               } else {
@@ -297,6 +307,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               }
             }
           } else if (event.type === "done") {
+            addDebug(`Done event: quotes=${accumulatedQuotes.length}, isQuoteOnlyMode=${isQuoteOnlyMode}`);
             console.log("[ChatInterface] Done event received");
             // Track response complete
             const responseTimeMs = Date.now() - requestStartTime;
@@ -309,6 +320,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
             // In quote-only mode, show all quotes immediately
             if (isQuoteOnlyMode && accumulatedQuotes.length > 0) {
+              addDebug(`Creating message with ${accumulatedQuotes.length} quotes`);
               console.log(
                 "[ChatInterface] Quote-only mode: Displaying accumulated quotes:",
                 accumulatedQuotes.length
@@ -331,7 +343,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                 return limited;
               });
               setIsStreaming(false);
+              addDebug(`Message displayed! Total messages: ${messages.length + 1}`);
             } else {
+              addDebug(`Using animation mode instead`);
               console.log("[ChatInterface] Marking stream as done for animation");
               // Mark stream as done - message will be finalized when animation completes
               setStreamDone(true);
@@ -472,6 +486,24 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   return (
     <LayoutGroup>
       <div className="flex flex-col h-full relative">
+        {/* DEBUG PANEL - TEMPORARY */}
+        {debugInfo.length > 0 && (
+          <div className="fixed top-4 right-4 z-50 max-w-sm bg-black/90 text-green-400 p-4 rounded-lg text-xs font-mono max-h-96 overflow-y-auto">
+            <div className="flex justify-between items-center mb-2">
+              <strong>DEBUG LOG</strong>
+              <button
+                onClick={() => setDebugInfo([])}
+                className="text-red-400 hover:text-red-300"
+              >
+                Clear
+              </button>
+            </div>
+            {debugInfo.map((msg, i) => (
+              <div key={i} className="mb-1">{msg}</div>
+            ))}
+          </div>
+        )}
+
         {/* Starfield - only on welcome screen */}
         <AnimatePresence>
           {!hasConversation && (
