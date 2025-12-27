@@ -370,6 +370,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             throw new Error(event.data.message as string);
           }
         }
+        }
       } catch (streamError) {
         addDebug(`Stream error: ${streamError}`);
         console.error("[ChatInterface] Stream reading error:", streamError);
