@@ -224,16 +224,31 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         isQuoteOnlyMode,
       });
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      try {
+        while (true) {
+          addDebug(`About to read from stream...`);
+          const { done, value } = await reader.read();
+          addDebug(`Read result: done=${done}, hasValue=${!!value}, valueLength=${value?.length || 0}`);
 
-        buffer += decoder.decode(value, { stream: true });
-        const { events, remaining } = parseSSE(buffer);
-        buffer = remaining;
+          if (done) {
+            addDebug(`Stream done - breaking`);
+            break;
+          }
 
-        addDebug(`Received ${events.length} events`);
-        console.log("[ChatInterface] Received events:", events.length);
+          if (!value) {
+            addDebug(`No value received, continuing...`);
+            continue;
+          }
+
+          const decoded = decoder.decode(value, { stream: true });
+          addDebug(`Decoded ${decoded.length} chars: ${decoded.slice(0, 50)}...`);
+          buffer += decoded;
+
+          const { events, remaining } = parseSSE(buffer);
+          buffer = remaining;
+
+          addDebug(`Parsed ${events.length} events from buffer`);
+          console.log("[ChatInterface] Received events:", events.length);
 
         for (const event of events) {
           addDebug(`Event: ${event.type}`);
@@ -355,10 +370,16 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             throw new Error(event.data.message as string);
           }
         }
+      } catch (streamError) {
+        addDebug(`Stream error: ${streamError}`);
+        console.error("[ChatInterface] Stream reading error:", streamError);
+        throw streamError;
       }
+      addDebug(`Stream loop completed`);
       console.log("[ChatInterface] Stream processing complete");
     } catch (error) {
       console.error("Chat error:", error);
+      addDebug(`Chat error: ${error}`);
 
       // Extract error message - show specific validation errors to user
       let errorText = "I apologize, but I encountered an error. Please try again.";
