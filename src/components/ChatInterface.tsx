@@ -212,6 +212,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
       const accumulatedQuotes: MessageSegment[] = [];
       const isQuoteOnlyMode = mode === "quote";
 
+      console.log("[ChatInterface] Starting stream processing:", {
+        mode,
+        isQuoteOnlyMode,
+      });
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -220,9 +225,13 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         const { events, remaining } = parseSSE(buffer);
         buffer = remaining;
 
+        console.log("[ChatInterface] Received events:", events.length);
+
         for (const event of events) {
+          console.log("[ChatInterface] Processing event:", event.type, event.data);
           if (event.type === "meta") {
             // Meta event received with quotes data - currently unused but may be needed in future
+            console.log("[ChatInterface] Meta event with quotes:", event.data);
           } else if (event.type === "chunk") {
             const chunkData = event.data as {
               type: "text" | "quote";
@@ -233,6 +242,13 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             };
             chunkIdCounter++;
 
+            console.log("[ChatInterface] Chunk data:", {
+              type: chunkData.type,
+              hasContent: !!chunkData.content,
+              hasText: !!chunkData.text,
+              reference: chunkData.reference,
+            });
+
             if (chunkData.type === "text" && chunkData.content) {
               responseLength += chunkData.content.length;
               if (!isQuoteOnlyMode) {
@@ -241,6 +257,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                   type: "text",
                   content: chunkData.content,
                 });
+              } else {
+                console.log("[ChatInterface] Skipping text chunk in quote-only mode");
               }
             } else if (
               chunkData.type === "quote" &&
@@ -266,9 +284,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
               if (isQuoteOnlyMode) {
                 // Accumulate quotes for instant display
+                console.log("[ChatInterface] Accumulating quote for instant display");
                 accumulatedQuotes.push(quoteSegment);
               } else {
                 // Stream with animation
+                console.log("[ChatInterface] Adding quote to animation queue");
                 addChunk({
                   id: `chunk-${chunkIdCounter}`,
                   type: "quote",
@@ -277,6 +297,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               }
             }
           } else if (event.type === "done") {
+            console.log("[ChatInterface] Done event received");
             // Track response complete
             const responseTimeMs = Date.now() - requestStartTime;
             analytics.responseComplete({
@@ -288,6 +309,10 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
             // In quote-only mode, show all quotes immediately
             if (isQuoteOnlyMode && accumulatedQuotes.length > 0) {
+              console.log(
+                "[ChatInterface] Quote-only mode: Displaying accumulated quotes:",
+                accumulatedQuotes.length
+              );
               const assistantMessage: MessageType = {
                 id: (Date.now() + 1).toString(),
                 role: "assistant",
@@ -307,14 +332,17 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               });
               setIsStreaming(false);
             } else {
+              console.log("[ChatInterface] Marking stream as done for animation");
               // Mark stream as done - message will be finalized when animation completes
               setStreamDone(true);
             }
           } else if (event.type === "error") {
+            console.error("[ChatInterface] Error event:", event.data);
             throw new Error(event.data.message as string);
           }
         }
       }
+      console.log("[ChatInterface] Stream processing complete");
     } catch (error) {
       console.error("Chat error:", error);
 

@@ -189,12 +189,26 @@ export async function POST(request: NextRequest) {
           const { isQuoteSearch: isAutoDetectedQuoteSearch, searchText } = detectQuoteSearch(message);
           const isQuoteSearch = isExplicitQuoteMode || isAutoDetectedQuoteSearch;
 
+          console.log("[API] Quote search detection:", {
+            searchMode,
+            isExplicitQuoteMode,
+            isAutoDetectedQuoteSearch,
+            isQuoteSearch,
+            message,
+            searchText,
+          });
+
           if (isQuoteSearch) {
             // Quote search mode: search first using user's text
             const embedding = await createEmbedding(searchText);
             // Get more results in explicit quote mode (10 vs 5)
             const resultCount = isExplicitQuoteMode ? 10 : 5;
             const searchResults = await searchRaMaterial(embedding, resultCount);
+
+            console.log("[API] Search results:", {
+              resultCount,
+              foundResults: searchResults.length,
+            });
 
             const passages: Quote[] = searchResults.map((r) => ({
               text: r.text,
@@ -207,9 +221,14 @@ export async function POST(request: NextRequest) {
 
             // EXPLICIT QUOTE MODE: Return quotes only, no AI text
             if (isExplicitQuoteMode) {
+              console.log("[API] EXPLICIT QUOTE MODE - Sending quotes only");
               // Stream quotes directly without AI generation
               for (const quote of passages) {
                 const formattedQuote = formatWholeQuote(quote.text);
+                console.log("[API] Sending quote chunk:", {
+                  reference: quote.reference,
+                  textLength: formattedQuote.length,
+                });
                 send("chunk", {
                   type: "quote",
                   text: formattedQuote,
@@ -219,10 +238,13 @@ export async function POST(request: NextRequest) {
               }
 
               // Signal completion
+              console.log("[API] Sending done event");
               send("done", {});
               controller.close();
               return;
             }
+
+            console.log("[API] AUTO-DETECTED QUOTE MODE - Using AI generation");
 
             const quotesContext = buildContextFromQuotes(passages);
 
