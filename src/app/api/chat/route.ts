@@ -38,11 +38,11 @@ function couldBePartialMarker(s: string): boolean {
 }
 
 // Calculate OpenAI API cost based on model and token usage
-function calculateCost(model: string, promptTokens: number, completionTokens: number): number {
-  // GPT-5-mini pricing (as of Jan 2025)
-  // Input: $0.075 per 1M tokens, Output: $0.30 per 1M tokens
-  const inputCostPer1M = 0.075;
-  const outputCostPer1M = 0.3;
+function calculateCost(promptTokens: number, completionTokens: number): number {
+  // GPT-5-mini pricing (as of Dec 2025)
+  // Input: $0.25 per 1M tokens, Output: $2.00 per 1M tokens
+  const inputCostPer1M = 0.25;
+  const outputCostPer1M = 2.0;
 
   const inputCost = (promptTokens / 1_000_000) * inputCostPer1M;
   const outputCost = (completionTokens / 1_000_000) * outputCostPer1M;
@@ -294,9 +294,7 @@ export async function POST(request: NextRequest) {
           const embedding = await createEmbedding(augmentedQuery);
 
           // Step 3: Search Pinecone
-          const searchStartTime = Date.now();
           const searchResults = await searchRaMaterial(embedding, 5);
-          const searchLatencyMs = Date.now() - searchStartTime;
 
           const passages: Quote[] = searchResults.map((r) => ({
             text: r.text,
@@ -310,7 +308,6 @@ export async function POST(request: NextRequest) {
           const quotesContext = buildContextFromQuotes(passages);
 
           // Step 5: Single streaming LLM call with unified prompt
-          const responseStartTime = Date.now();
           const response = await openai.chat.completions.create({
             model: "gpt-5-mini",
             messages: [
@@ -336,14 +333,9 @@ export async function POST(request: NextRequest) {
             send
           );
 
-          // Track LLM generation
+          // Track LLM generation with PostHog
           if (usage) {
-            const responseLatencyMs = Date.now() - responseStartTime;
-            const cost = calculateCost(
-              "gpt-5-mini",
-              usage.prompt_tokens || 0,
-              usage.completion_tokens || 0
-            );
+            const responseLatencyMs = Date.now() - augmentStartTime;
             trackLLMGeneration({
               distinctId: clientIp,
               model: "gpt-5-mini",
@@ -352,15 +344,11 @@ export async function POST(request: NextRequest) {
               output: fullOutput.substring(0, 500),
               promptTokens: usage.prompt_tokens,
               completionTokens: usage.completion_tokens,
-              totalTokens: usage.total_tokens,
-              cost,
+              cost: calculateCost(usage.prompt_tokens || 0, usage.completion_tokens || 0),
               latencyMs: responseLatencyMs,
               metadata: {
-                mode: "unified",
                 intent,
                 augmentedQuery: augmentedQuery.substring(0, 200),
-                augmentLatencyMs,
-                searchLatencyMs,
                 numPassages: passages.length,
               },
             });

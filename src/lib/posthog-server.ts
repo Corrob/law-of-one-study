@@ -5,11 +5,11 @@ let posthogClient: PostHog | null = null;
 export function getPostHogClient() {
   if (!posthogClient) {
     const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-    const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 
-    if (key && host) {
+    if (key) {
       posthogClient = new PostHog(key, {
-        host: host,
+        // Server-side calls go directly to PostHog API (no proxy needed)
+        host: "https://us.i.posthog.com",
       });
     }
   }
@@ -18,29 +18,32 @@ export function getPostHogClient() {
 }
 
 /**
- * Track an LLM generation event with PostHog
+ * Track an LLM generation event with PostHog's LLM Analytics
+ * Uses $ai_generation event for PostHog's LLM Analytics dashboard
  */
 export function trackLLMGeneration({
   distinctId,
+  traceId,
   model,
   provider = "openai",
   input,
   output,
   promptTokens,
   completionTokens,
-  totalTokens,
+  _totalTokens,
   cost,
   latencyMs,
   metadata = {},
 }: {
   distinctId: string;
+  traceId?: string;
   model: string;
   provider?: string;
   input?: string;
   output?: string;
   promptTokens?: number;
   completionTokens?: number;
-  totalTokens?: number;
+  _totalTokens?: number; // Unused, but kept for API compatibility
   cost?: number;
   latencyMs?: number;
   metadata?: Record<string, unknown>;
@@ -48,19 +51,26 @@ export function trackLLMGeneration({
   const client = getPostHogClient();
   if (!client) return;
 
+  // Use $ai_generation event for PostHog LLM Analytics
   client.capture({
     distinctId,
-    event: "llm_generation",
+    event: "$ai_generation",
     properties: {
+      // Trace ID groups related generations together
+      $ai_trace_id: traceId || `trace_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
+      // Core LLM properties
       $ai_model: model,
       $ai_provider: provider,
       $ai_input: input,
       $ai_output: output,
-      $ai_prompt_tokens: promptTokens,
-      $ai_completion_tokens: completionTokens,
-      $ai_total_tokens: totalTokens,
-      $ai_cost_usd: cost,
-      $ai_latency_ms: latencyMs,
+      // Token usage
+      $ai_input_tokens: promptTokens,
+      $ai_output_tokens: completionTokens,
+      // Cost and latency
+      $ai_input_cost_usd: cost ? cost * 0.2 : undefined, // Approximate input portion
+      $ai_output_cost_usd: cost ? cost * 0.8 : undefined, // Approximate output portion
+      $ai_latency: latencyMs,
+      // Additional metadata
       ...metadata,
     },
   });
