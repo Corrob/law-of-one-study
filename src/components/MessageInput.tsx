@@ -65,9 +65,18 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
     };
   }, []);
 
+  const hasContent = input.trim().length > 0;
+  const canSend = hasContent && !disabled && !isOverLimit;
+
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex gap-3 items-end">
+      {/* Unified input container */}
+      <div
+        className="relative flex items-end rounded-2xl border border-[var(--lo1-celestial)]/30
+                   bg-[var(--lo1-deep-space)]/80
+                   focus-within:ring-2 focus-within:ring-[var(--lo1-gold)] focus-within:border-transparent
+                   transition-all duration-200"
+      >
         <textarea
           ref={textareaRef}
           value={input}
@@ -76,29 +85,32 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
           onFocus={handleFocus}
           placeholder={placeholder || "Ask about the Ra Material..."}
           disabled={disabled}
-          rows={2}
-          className="flex-1 resize-none rounded-xl border border-[var(--lo1-celestial)]/30 px-4 py-3
-                     focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:border-transparent
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     bg-[var(--lo1-deep-space)]/80 text-[var(--lo1-starlight)]
-                     placeholder:text-[var(--lo1-stardust)]
-                     sm:rows-1"
+          rows={1}
+          className="flex-1 resize-none bg-transparent px-3 sm:px-4 py-4 pr-12 sm:pr-14
+                     text-[var(--lo1-starlight)] placeholder:text-[var(--lo1-stardust)]
+                     focus:outline-none
+                     disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ minHeight: "56px", maxHeight: "120px" }}
         />
+
+        {/* Send button - positioned inside input, smaller on mobile */}
         <button
           onClick={handleSend}
-          disabled={disabled || !input.trim() || isOverLimit}
-          className="rounded-xl bg-[var(--lo1-gold)] hover:bg-[var(--lo1-gold-light)]
-                     text-[var(--lo1-deep-space)] font-medium px-5 py-3
-                     disabled:opacity-50 disabled:cursor-not-allowed
-                     hover:shadow-[0_0_20px_rgba(212,168,83,0.4)]
-                     transition-all duration-200 cursor-pointer"
+          disabled={!canSend}
+          className={`absolute right-1.5 sm:right-2 bottom-2 w-9 h-9 sm:w-10 sm:h-10 rounded-full
+                     flex items-center justify-center
+                     transition-all duration-200
+                     ${canSend
+                       ? "bg-[var(--lo1-gold)] text-[var(--lo1-deep-space)] hover:bg-[var(--lo1-gold-light)] hover:shadow-[0_0_20px_rgba(212,168,83,0.4)] cursor-pointer"
+                       : "bg-[var(--lo1-celestial)]/20 text-[var(--lo1-stardust)]/50 cursor-not-allowed"
+                     }`}
+          aria-label="Send message"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-5 h-5"
+            className="w-4 h-4 sm:w-5 sm:h-5"
           >
             <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
           </svg>

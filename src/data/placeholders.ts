@@ -1,22 +1,23 @@
 // Dynamic placeholder messages for the input field
 
 // Initial placeholders (before any conversation)
+// Keep under ~28 chars to fit mobile screens
 export const initialPlaceholders = [
   "Seek and you shall find...",
   "What mystery calls to you?",
-  "Ask what your heart wishes to know...",
-  "Begin your journey into the Law of One...",
+  "What do you wish to know?",
+  "Begin your journey...",
 ];
 
 // Follow-up placeholders (during conversation)
+// Keep under ~28 chars to fit mobile screens
 export const followUpPlaceholders = [
   "Go deeper...",
-  "What else would you like to explore?",
-  "Ask a follow-up question...",
+  "What else calls to you?",
+  "Ask a follow-up...",
   "Continue your seeking...",
   "What resonates with you?",
   "Explore further...",
-  "What calls to your attention?",
 ];
 
 // Default placeholder for SSR (deterministic to avoid hydration mismatch)
