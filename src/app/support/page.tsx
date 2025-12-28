@@ -52,7 +52,7 @@ export default function SupportPage() {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm group"
+            className="flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm group rounded focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-indigo)]"
           >
             <svg
               className="w-4 h-4 group-hover:-translate-x-1 transition-transform"
@@ -127,7 +127,7 @@ export default function SupportPage() {
                 </div>
                 <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
                   Your question is converted into a mathematical representation and compared against
-                  all ~1,500 Q&A pairs from the 106 sessions.
+                  all ~1,500 Q&A pairs from the 105 sessions.
                 </p>
               </div>
 
@@ -219,7 +219,7 @@ export default function SupportPage() {
                   href="https://www.llresearch.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/20 rounded-xl hover:border-[var(--lo1-gold)]/50 hover:shadow-[0_0_20px_rgba(212,168,83,0.15)] transition-all duration-200 group"
+                  className="flex items-center gap-3 p-4 bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/20 rounded-xl hover:border-[var(--lo1-gold)]/50 hover:shadow-[0_0_20px_rgba(212,168,83,0.15)] transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"
                 >
                   <svg
                     className="w-5 h-5 text-[var(--lo1-gold)] flex-shrink-0"
@@ -261,7 +261,7 @@ export default function SupportPage() {
                   href="https://www.lawofone.info"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3 p-4 bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/20 rounded-xl hover:border-[var(--lo1-gold)]/50 hover:shadow-[0_0_20px_rgba(212,168,83,0.15)] transition-all duration-200 group"
+                  className="flex items-center gap-3 p-4 bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/20 rounded-xl hover:border-[var(--lo1-gold)]/50 hover:shadow-[0_0_20px_rgba(212,168,83,0.15)] transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"
                 >
                   <svg
                     className="w-5 h-5 text-[var(--lo1-gold)] flex-shrink-0"
@@ -385,10 +385,10 @@ export default function SupportPage() {
             </div>
           </section>
 
-          {/* About This Tool */}
+          {/* Project Details */}
           <section className="mb-16">
             <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">
-              About This Tool
+              Project Details
             </h2>
             <div className="bg-[var(--lo1-indigo)]/20 border border-[var(--lo1-celestial)]/30 rounded-2xl p-8">
               <p className="text-[var(--lo1-stardust)] leading-relaxed mb-6">
@@ -491,7 +491,7 @@ export default function SupportPage() {
                 <p className="text-sm text-[var(--lo1-stardust)]">
                   If you find this tool helpful, please consider{" "}
                   <a
-                    href="https://www.llresearch.org/support"
+                    href="https://www.llresearch.org/donate"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[var(--lo1-gold)] hover:underline font-medium"
@@ -516,7 +516,7 @@ export default function SupportPage() {
               <div className="grid sm:grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-3 p-3 bg-[var(--lo1-indigo)]/30 rounded-lg">
                   <span className="text-[var(--lo1-stardust)]">AI Model:</span>
-                  <span className="text-[var(--lo1-starlight)] font-medium">OpenAI GPT-4</span>
+                  <span className="text-[var(--lo1-starlight)] font-medium">OpenAI GPT-5-mini</span>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-[var(--lo1-indigo)]/30 rounded-lg">
                   <span className="text-[var(--lo1-stardust)]">Vector Search:</span>
@@ -530,7 +530,7 @@ export default function SupportPage() {
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-[var(--lo1-indigo)]/30 rounded-lg">
                   <span className="text-[var(--lo1-stardust)]">Framework:</span>
-                  <span className="text-[var(--lo1-starlight)] font-medium">Next.js 15</span>
+                  <span className="text-[var(--lo1-starlight)] font-medium">Next.js 16</span>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-[var(--lo1-gold)]/20">
@@ -538,7 +538,7 @@ export default function SupportPage() {
                   href="https://github.com/Corrob/law-of-one-study"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm group"
+                  className="inline-flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm group rounded focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"
                 >
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path
@@ -641,10 +641,10 @@ export default function SupportPage() {
                 have suggestions, or want to contribute:
               </p>
               <a
-                href="https://github.com/Corrob/law-of-one-study"
+                href="https://github.com/Corrob/law-of-one-study/issues/new"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--lo1-gold)]/10 border border-[var(--lo1-gold)]/30 rounded-lg text-[var(--lo1-gold)] hover:bg-[var(--lo1-gold)]/20 hover:border-[var(--lo1-gold)]/50 transition-all duration-200 group"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--lo1-gold)]/10 border border-[var(--lo1-gold)]/30 rounded-lg text-[var(--lo1-gold)] hover:bg-[var(--lo1-gold)]/20 hover:border-[var(--lo1-gold)]/50 transition-all duration-200 group focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                   <path
@@ -653,7 +653,7 @@ export default function SupportPage() {
                     clipRule="evenodd"
                   />
                 </svg>
-                Visit GitHub Repository
+                Submit Feedback on GitHub
                 <svg
                   className="w-4 h-4 group-hover:translate-x-1 transition-transform"
                   fill="none"
@@ -678,7 +678,14 @@ export default function SupportPage() {
                 "The seeking and finding of the Creator within the self and within the other-self is
                 the essence of the Law of One."
               </p>
-              <p className="text-sm text-[var(--lo1-stardust)]">— Ra, Session 76</p>
+              <a
+                href="https://www.lawofone.info/s/76#16"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors rounded focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"
+              >
+                — Ra, Session 76.16
+              </a>
             </div>
           </div>
         </article>
