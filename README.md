@@ -1,6 +1,6 @@
 # Law of One Study
 
-An AI-powered study companion for the Ra Material (Law of One). Ask questions, explore concepts, and discover relevant passages from all 106 sessions.
+An AI-powered study companion for the Ra Material (Law of One). Ask questions, explore concepts, and discover relevant passages from all 105 sessions.
 
 **Live site:** [lawofone.study](https://lawofone.study)
 
@@ -10,6 +10,8 @@ An AI-powered study companion for the Ra Material (Law of One). Ask questions, e
 
 - **Conversational AI** — Ask questions in natural language and receive thoughtful responses grounded in the Ra Material
 - **Smart Quote Integration** — Relevant passages are automatically retrieved and beautifully displayed with links to the source
+- **Intelligent Intent Detection** — Automatically adapts responses based on whether you're searching for quotes or seeking explanations
+- **Query Augmentation** — Your questions are enhanced with Ra Material terminology for better semantic search results
 - **Concept Linking** — Key terms (densities, polarity, catalyst, etc.) are subtly highlighted; hover for definitions, click to explore
 - **Streaming Responses** — Real-time word-by-word animation for a natural reading experience
 - **Dark Cosmic Theme** — Immersive UI designed for contemplative study
@@ -21,11 +23,12 @@ An AI-powered study companion for the Ra Material (Law of One). Ask questions, e
 
 | Layer         | Technology                                     |
 | ------------- | ---------------------------------------------- |
-| Framework     | [Next.js 15](https://nextjs.org/) (App Router) |
+| Framework     | [Next.js 16](https://nextjs.org/) (App Router) |
 | Styling       | [Tailwind CSS](https://tailwindcss.com/)       |
-| AI Model      | OpenAI GPT-4                                   |
+| AI Model      | OpenAI GPT-5-mini                              |
 | Vector Search | [Pinecone](https://www.pinecone.io/)           |
 | Embeddings    | OpenAI text-embedding-3-small                  |
+| Analytics     | [PostHog](https://posthog.com/)                |
 | Hosting       | [Vercel](https://vercel.com/)                  |
 
 ---
@@ -43,7 +46,7 @@ An AI-powered study companion for the Ra Material (Law of One). Ask questions, e
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/law-of-one-study.git
+git clone https://github.com/Corrob/law-of-one-study.git
 cd law-of-one-study
 
 # Install dependencies
@@ -61,6 +64,7 @@ Create a `.env.local` file with:
 OPENAI_API_KEY=your_openai_api_key
 PINECONE_API_KEY=your_pinecone_api_key
 PINECONE_INDEX=law-of-one
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key  # Optional: for analytics
 ```
 
 ### Indexing the Ra Material
@@ -71,7 +75,7 @@ Before running the app, you need to index the Ra Material into Pinecone:
 npm run index
 ```
 
-This processes all 106 sessions from the `sections/` directory and creates embeddings in your Pinecone index.
+This processes all 105 sessions from the `sections/` directory and creates embeddings in your Pinecone index.
 
 ### Running Locally
 
@@ -107,6 +111,8 @@ law-of-one-study/
 │   ├── hooks/               # Custom React hooks
 │   │   ├── useAnimationQueue.ts
 │   │   └── useTypingAnimation.ts
+│   ├── providers/           # React context providers
+│   │   └── PostHogProvider.tsx
 │   └── lib/
 │       ├── openai.ts        # OpenAI client
 │       ├── pinecone.ts      # Vector search
@@ -114,7 +120,7 @@ law-of-one-study/
 │       └── types.ts         # TypeScript types
 ├── scripts/
 │   └── index-ra.ts          # Pinecone indexing script
-├── sections/                # Ra Material source (106 JSON files)
+├── sections/                # Ra Material source (105 JSON files)
 └── public/                  # Static assets
 ```
 
@@ -122,13 +128,17 @@ law-of-one-study/
 
 ## How It Works
 
-### 3-Phase Response System
+### Unified Search-First Architecture
 
-1. **Initial Response** — AI generates a brief opening (no quotes yet) that streams immediately
-2. **Semantic Search** — While streaming, the system searches Pinecone for relevant Ra passages
-3. **Continuation** — AI weaves in 1-2 quotes with additional context
+Every message flows through a streamlined pipeline:
 
-This architecture provides instant feedback while ensuring relevant quotes are found.
+1. **Query Augmentation** — A fast LLM call analyzes your question, detects intent (quote-seeking vs. conceptual), and enhances the query with Ra Material terminology for better search results
+2. **Semantic Search** — The augmented query searches Pinecone for the most relevant Ra passages
+3. **Adaptive Response** — The AI generates a response tailored to your intent:
+   - **Quote searches** ("where does Ra talk about...") → Leads with quotes, minimal commentary
+   - **Conceptual questions** ("what is harvest?") → Leads with explanation, weaves in supporting quotes
+
+This architecture provides fast, relevant responses without requiring special syntax or keywords.
 
 ### Concept Auto-Linking
 
@@ -166,9 +176,8 @@ Edit `src/data/concepts.ts` to add new terms:
 
 AI behavior is controlled by `src/lib/prompts.ts`. Key prompts:
 
-- `INITIAL_RESPONSE_PROMPT` — First paragraph (no quotes)
-- `CONTINUATION_PROMPT` — Follow-up with quotes
-- `QUOTE_SEARCH_PROMPT` — Direct quote searches
+- `QUERY_AUGMENTATION_PROMPT` — Detects intent and enhances queries with Ra terminology
+- `UNIFIED_RESPONSE_PROMPT` — Generates adaptive responses based on detected intent
 
 ### Theming
 
@@ -247,7 +256,7 @@ If you find this tool helpful, consider:
 - Starring the repo
 - Sharing with fellow seekers
 - Contributing improvements
-- [Supporting L/L Research directly](https://www.llresearch.org/support)
+- [Supporting L/L Research directly](https://www.llresearch.org/donate)
 
 ---
 

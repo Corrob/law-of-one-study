@@ -10,10 +10,10 @@ An AI-powered RAG chatbot for the Ra Material. Community-funded, open source, fr
 
 | Component | Technology              |
 | --------- | ----------------------- |
-| Frontend  | Next.js 14 (App Router) |
-| Database  | Firestore               |
+| Frontend  | Next.js 16 (App Router) |
 | Vector DB | Pinecone                |
-| AI Model  | GPT-4o-mini             |
+| AI Model  | GPT-5-mini              |
+| Analytics | PostHog                 |
 | Hosting   | Vercel                  |
 
 ---
@@ -23,7 +23,7 @@ An AI-powered RAG chatbot for the Ra Material. Community-funded, open source, fr
 ```
 /app              # Next.js app router pages and API routes
 /components       # React components
-/lib              # Firebase, Pinecone, OpenAI helpers
+/lib              # Pinecone, OpenAI helpers
 /scripts          # Embedding generation scripts
 /sections         # Ra material source (105 JSON files)
 ```

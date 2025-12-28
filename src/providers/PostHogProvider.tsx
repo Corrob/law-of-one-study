@@ -7,15 +7,16 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 if (typeof window !== "undefined") {
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 
-  if (key && host) {
+  if (key) {
     posthog.init(key, {
-      api_host: host,
+      api_host: "/ingest", // Use reverse proxy to avoid ad blockers
+      ui_host: "https://us.posthog.com", // For session replay UI links
       person_profiles: "identified_only",
       capture_pageview: false, // We'll handle this manually for better control
       capture_pageleave: true,
       autocapture: false, // We want explicit tracking for better control
+      // Scroll depth tracking is enabled by default (disable_scroll_properties: false)
     });
   }
 }
