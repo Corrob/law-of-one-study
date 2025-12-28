@@ -2,9 +2,8 @@ import { NextRequest } from "next/server";
 import { openai, createEmbedding } from "@/lib/openai";
 import { searchRaMaterial } from "@/lib/pinecone";
 import {
-  INITIAL_RESPONSE_PROMPT,
-  CONTINUATION_PROMPT,
-  QUOTE_SEARCH_PROMPT,
+  QUERY_AUGMENTATION_PROMPT,
+  UNIFIED_RESPONSE_PROMPT,
   buildContextFromQuotes,
 } from "@/lib/prompts";
 import { Quote } from "@/lib/types";
@@ -51,26 +50,129 @@ function calculateCost(model: string, promptTokens: number, completionTokens: nu
   return inputCost + outputCost;
 }
 
-// Detect if this is a quote-search query and extract the search text
-function detectQuoteSearch(message: string): { isQuoteSearch: boolean; searchText: string } {
-  // Check for quoted text (double or single quotes)
-  const doubleQuoteMatch = message.match(/"([^"]+)"/);
-  const singleQuoteMatch = message.match(/'([^']+)'/);
+// Augment query with Ra Material terminology and detect intent
+async function augmentQuery(
+  message: string
+): Promise<{ intent: "quote-search" | "conceptual"; augmentedQuery: string }> {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-5-mini",
+      messages: [
+        { role: "system", content: QUERY_AUGMENTATION_PROMPT },
+        { role: "user", content: message },
+      ],
+      reasoning_effort: "low",
+    });
 
-  // If there's quoted text, use it for search
-  if (doubleQuoteMatch) {
-    return { isQuoteSearch: true, searchText: doubleQuoteMatch[1] };
+    const content = response.choices[0]?.message?.content || "";
+
+    // Parse JSON response
+    const parsed = JSON.parse(content);
+    return {
+      intent: parsed.intent === "quote-search" ? "quote-search" : "conceptual",
+      augmentedQuery: parsed.augmented_query || message,
+    };
+  } catch (error) {
+    console.error("[API] Query augmentation failed, using original message:", error);
+    // Fallback: use original message with "conceptual" intent
+    return { intent: "conceptual", augmentedQuery: message };
   }
-  if (singleQuoteMatch) {
-    return { isQuoteSearch: true, searchText: singleQuoteMatch[1] };
+}
+
+// Process streaming response and handle quote markers
+async function processStreamWithMarkers(
+  stream: AsyncIterable<{ choices: Array<{ delta?: { content?: string } }>; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } }>,
+  passages: Quote[],
+  send: (event: string, data: object) => void
+): Promise<{ fullOutput: string; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } }> {
+  let buffer = "";
+  let accumulatedText = "";
+  let fullOutput = "";
+  let usageData: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } | undefined;
+
+  for await (const chunk of stream) {
+    // Capture usage data from final chunk
+    if (chunk.usage) {
+      usageData = chunk.usage;
+    }
+
+    const content = chunk.choices[0]?.delta?.content || "";
+    if (content) {
+      fullOutput += content;
+      buffer += content;
+
+      // Process buffer for complete markers
+      while (true) {
+        const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/);
+        if (!markerMatch || markerMatch.index === undefined) {
+          // No complete marker found - check for partial marker
+          let partialStart = -1;
+          for (let i = Math.max(0, buffer.length - 25); i < buffer.length; i++) {
+            if (couldBePartialMarker(buffer.slice(i))) {
+              partialStart = i;
+              break;
+            }
+          }
+
+          if (partialStart >= 0) {
+            accumulatedText += buffer.slice(0, partialStart);
+            buffer = buffer.slice(partialStart);
+          } else {
+            accumulatedText += buffer;
+            buffer = "";
+          }
+          break;
+        }
+
+        // Found complete marker - text before goes to accumulated
+        const textBefore = buffer.slice(0, markerMatch.index);
+        accumulatedText += textBefore;
+
+        // Emit accumulated text as one complete chunk
+        if (accumulatedText.trim()) {
+          send("chunk", { type: "text", content: accumulatedText });
+          accumulatedText = "";
+        }
+
+        // Parse quote marker and apply sentence range filtering
+        const quoteIndex = parseInt(markerMatch[1], 10);
+        const quote = passages[quoteIndex - 1]; // Convert from 1-indexed to 0-indexed
+
+        if (quote) {
+          let quoteText: string;
+
+          // Apply sentence range if specified, otherwise format whole quote
+          if (markerMatch[2] && markerMatch[3]) {
+            const sentenceStart = parseInt(markerMatch[2], 10);
+            const sentenceEnd = parseInt(markerMatch[3], 10);
+            quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
+            console.log("[API] Applied sentence range", sentenceStart, "-", sentenceEnd, "to quote", quoteIndex);
+          } else {
+            quoteText = formatWholeQuote(quote.text);
+            console.log("[API] Formatted whole quote", quoteIndex);
+          }
+
+          console.log("[API] Matched marker:", markerMatch[0]);
+          send("chunk", {
+            type: "quote",
+            text: quoteText,
+            reference: quote.reference,
+            url: quote.url,
+          });
+        }
+
+        buffer = buffer.slice(markerMatch.index + markerMatch[0].length);
+      }
+    }
   }
 
-  // Check if message contains "quote" as a word
-  if (/\bquote\b/i.test(message)) {
-    return { isQuoteSearch: true, searchText: message };
+  // Flush any remaining text
+  accumulatedText += buffer;
+  if (accumulatedText.trim()) {
+    send("chunk", { type: "text", content: accumulatedText });
   }
 
-  return { isQuoteSearch: false, searchText: message };
+  return { fullOutput, usage: usageData };
 }
 
 export async function POST(request: NextRequest) {
@@ -182,377 +284,86 @@ export async function POST(request: NextRequest) {
         };
 
         try {
-          // Check if this is a quote search (user looking for specific quote)
-          const { isQuoteSearch, searchText } = detectQuoteSearch(message);
+          // Step 1: Augment query with Ra terminology and detect intent
+          const augmentStartTime = Date.now();
+          const { intent, augmentedQuery } = await augmentQuery(message);
+          const augmentLatencyMs = Date.now() - augmentStartTime;
+          console.log("[API] Query augmentation:", { intent, augmentedQuery, latencyMs: augmentLatencyMs });
 
-          if (isQuoteSearch) {
-            // Quote search mode: search first using user's text, then generate full response
-            const embedding = await createEmbedding(searchText);
-            const searchResults = await searchRaMaterial(embedding, 5);
+          // Step 2: Create embedding from augmented query
+          const embedding = await createEmbedding(augmentedQuery);
 
-            const passages: Quote[] = searchResults.map((r) => ({
-              text: r.text,
-              reference: r.reference,
-              url: r.url,
-            }));
+          // Step 3: Search Pinecone
+          const searchStartTime = Date.now();
+          const searchResults = await searchRaMaterial(embedding, 5);
+          const searchLatencyMs = Date.now() - searchStartTime;
 
-            // Send quotes metadata
-            send("meta", { quotes: passages });
+          const passages: Quote[] = searchResults.map((r) => ({
+            text: r.text,
+            reference: r.reference,
+            url: r.url,
+          }));
 
-            const quotesContext = buildContextFromQuotes(passages);
+          // Step 4: Send quotes metadata with intent
+          send("meta", { quotes: passages, intent });
 
-            // Generate full response with quotes (streaming)
-            const quoteSearchStartTime = Date.now();
-            const response = await openai.chat.completions.create({
+          const quotesContext = buildContextFromQuotes(passages);
+
+          // Step 5: Single streaming LLM call with unified prompt
+          const responseStartTime = Date.now();
+          const response = await openai.chat.completions.create({
+            model: "gpt-5-mini",
+            messages: [
+              { role: "system", content: UNIFIED_RESPONSE_PROMPT },
+              ...recentHistory.map((m) => ({
+                role: m.role as "user" | "assistant",
+                content: m.content,
+              })),
+              {
+                role: "user",
+                content: `[Intent: ${intent}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
+              },
+            ],
+            reasoning_effort: "low",
+            stream: true,
+            stream_options: { include_usage: true },
+          });
+
+          // Step 6: Process stream with marker handling
+          const { fullOutput, usage } = await processStreamWithMarkers(
+            response as AsyncIterable<{ choices: Array<{ delta?: { content?: string } }>; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } }>,
+            passages,
+            send
+          );
+
+          // Track LLM generation
+          if (usage) {
+            const responseLatencyMs = Date.now() - responseStartTime;
+            const cost = calculateCost(
+              "gpt-5-mini",
+              usage.prompt_tokens || 0,
+              usage.completion_tokens || 0
+            );
+            trackLLMGeneration({
+              distinctId: clientIp,
               model: "gpt-5-mini",
-              messages: [
-                { role: "system", content: QUOTE_SEARCH_PROMPT },
-                ...recentHistory.map((m) => ({
-                  role: m.role as "user" | "assistant",
-                  content: m.content,
-                })),
-                {
-                  role: "user",
-                  content: `${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}\n\nRespond to the user's question, including the most relevant quote(s) using {{QUOTE:N}} format.`,
-                },
-              ],
-              reasoning_effort: "low",
-              stream: true,
-              stream_options: { include_usage: true },
+              provider: "openai",
+              input: message.substring(0, 500),
+              output: fullOutput.substring(0, 500),
+              promptTokens: usage.prompt_tokens,
+              completionTokens: usage.completion_tokens,
+              totalTokens: usage.total_tokens,
+              cost,
+              latencyMs: responseLatencyMs,
+              metadata: {
+                mode: "unified",
+                intent,
+                augmentedQuery: augmentedQuery.substring(0, 200),
+                augmentLatencyMs,
+                searchLatencyMs,
+                numPassages: passages.length,
+              },
             });
-
-            let buffer = "";
-            let accumulatedText = "";
-            let fullOutput = "";
-
-            let usageData:
-              | { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }
-              | undefined;
-
-            for await (const chunk of response) {
-              // Capture usage data from final chunk
-              if (chunk.usage) {
-                usageData = chunk.usage;
-              }
-
-              const content = chunk.choices[0]?.delta?.content || "";
-              if (content) {
-                fullOutput += content;
-                buffer += content;
-
-                // Process buffer for complete markers
-                while (true) {
-                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/);
-                  if (!markerMatch || markerMatch.index === undefined) {
-                    let partialStart = -1;
-                    for (let i = Math.max(0, buffer.length - 25); i < buffer.length; i++) {
-                      if (couldBePartialMarker(buffer.slice(i))) {
-                        partialStart = i;
-                        break;
-                      }
-                    }
-
-                    if (partialStart >= 0) {
-                      accumulatedText += buffer.slice(0, partialStart);
-                      buffer = buffer.slice(partialStart);
-                    } else {
-                      accumulatedText += buffer;
-                      buffer = "";
-                    }
-                    break;
-                  }
-
-                  const textBefore = buffer.slice(0, markerMatch.index);
-                  accumulatedText += textBefore;
-
-                  if (accumulatedText.trim()) {
-                    send("chunk", { type: "text", content: accumulatedText });
-                    accumulatedText = "";
-                  }
-
-                  // Parse quote marker and apply sentence range filtering on backend
-                  const quoteIndex = parseInt(markerMatch[1], 10);
-                  const quote = passages[quoteIndex - 1]; // Convert from 1-indexed to 0-indexed
-
-                  if (quote) {
-                    let quoteText: string;
-
-                    // Apply sentence range if specified, otherwise format whole quote
-                    if (markerMatch[2] && markerMatch[3]) {
-                      const sentenceStart = parseInt(markerMatch[2], 10);
-                      const sentenceEnd = parseInt(markerMatch[3], 10);
-                      quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
-                      console.log(
-                        "[API] Applied sentence range",
-                        sentenceStart,
-                        "-",
-                        sentenceEnd,
-                        "to quote",
-                        quoteIndex
-                      );
-                    } else {
-                      // Format whole quote with paragraph breaks
-                      quoteText = formatWholeQuote(quote.text);
-                      console.log("[API] Formatted whole quote", quoteIndex);
-                    }
-
-                    console.log("[API] Matched marker:", markerMatch[0]);
-                    send("chunk", {
-                      type: "quote",
-                      text: quoteText,
-                      reference: quote.reference,
-                      url: quote.url,
-                    });
-                  }
-
-                  buffer = buffer.slice(markerMatch.index + markerMatch[0].length);
-                }
-              }
-            }
-
-            accumulatedText += buffer;
-            if (accumulatedText.trim()) {
-              send("chunk", { type: "text", content: accumulatedText });
-            }
-
-            // Track LLM generation for quote search
-            if (usageData) {
-              const latencyMs = Date.now() - quoteSearchStartTime;
-              const cost = calculateCost(
-                "gpt-5-mini",
-                usageData.prompt_tokens || 0,
-                usageData.completion_tokens || 0
-              );
-              trackLLMGeneration({
-                distinctId: clientIp,
-                model: "gpt-5-mini",
-                provider: "openai",
-                input: message.substring(0, 500), // Truncate for privacy
-                output: fullOutput.substring(0, 500),
-                promptTokens: usageData.prompt_tokens,
-                completionTokens: usageData.completion_tokens,
-                totalTokens: usageData.total_tokens,
-                cost,
-                latencyMs,
-                metadata: {
-                  mode: "quote_search",
-                  numPassages: passages.length,
-                },
-              });
-            }
-          } else {
-            // Standard mode: Phase 1 -> Search -> Phase 3
-
-            // Phase 1: Get initial paragraph (no quotes)
-            const phase1StartTime = Date.now();
-            const initialCompletion = await openai.chat.completions.create({
-              model: "gpt-5-mini",
-              messages: [
-                { role: "system", content: INITIAL_RESPONSE_PROMPT },
-                ...recentHistory.map((m) => ({
-                  role: m.role as "user" | "assistant",
-                  content: m.content,
-                })),
-                { role: "user", content: message },
-              ],
-              reasoning_effort: "low",
-            });
-            const initialResponse = initialCompletion.choices[0]?.message?.content || "";
-            const phase1Usage = initialCompletion.usage;
-
-            // Track Phase 1 LLM generation
-            if (phase1Usage) {
-              const phase1LatencyMs = Date.now() - phase1StartTime;
-              const phase1Cost = calculateCost(
-                "gpt-5-mini",
-                phase1Usage.prompt_tokens || 0,
-                phase1Usage.completion_tokens || 0
-              );
-              trackLLMGeneration({
-                distinctId: clientIp,
-                model: "gpt-5-mini",
-                provider: "openai",
-                input: message.substring(0, 500),
-                output: initialResponse.substring(0, 500),
-                promptTokens: phase1Usage.prompt_tokens,
-                completionTokens: phase1Usage.completion_tokens,
-                totalTokens: phase1Usage.total_tokens,
-                cost: phase1Cost,
-                latencyMs: phase1LatencyMs,
-                metadata: {
-                  mode: "standard",
-                  phase: 1,
-                },
-              });
-            }
-
-            // IMMEDIATELY send initial response - animation starts while we search!
-            send("chunk", { type: "text", content: initialResponse });
-
-            // Phase 2: Search using AI's understanding (while user watches animation)
-            const embedding = await createEmbedding(initialResponse);
-            const searchResults = await searchRaMaterial(embedding, 5);
-
-            const passages: Quote[] = searchResults.map((r) => ({
-              text: r.text,
-              reference: r.reference,
-              url: r.url,
-            }));
-
-            // Send quotes metadata
-            send("meta", { quotes: passages });
-
-            const quotesContext = buildContextFromQuotes(passages);
-
-            // Phase 3: Continue response with quotes (streaming)
-            const phase3StartTime = Date.now();
-            const continuation = await openai.chat.completions.create({
-              model: "gpt-5-mini",
-              messages: [
-                { role: "system", content: CONTINUATION_PROMPT },
-                ...recentHistory.map((m) => ({
-                  role: m.role as "user" | "assistant",
-                  content: m.content,
-                })),
-                { role: "user", content: message },
-                { role: "assistant", content: initialResponse },
-                {
-                  role: "user",
-                  content: `Here are relevant Ra passages:\n\n${quotesContext}\n\nContinue your response, weaving in 1-2 quotes using {{QUOTE:N}} format.`,
-                },
-              ],
-              reasoning_effort: "low",
-              stream: true,
-              stream_options: { include_usage: true },
-            });
-
-            let buffer = "";
-            let accumulatedText = "";
-            let phase3Output = "";
-            let phase3Usage:
-              | { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number }
-              | undefined;
-
-            for await (const chunk of continuation) {
-              // Capture usage data from final chunk
-              if (chunk.usage) {
-                phase3Usage = chunk.usage;
-              }
-              const content = chunk.choices[0]?.delta?.content || "";
-              if (content) {
-                phase3Output += content;
-                buffer += content;
-
-                // Process buffer for complete markers
-                while (true) {
-                  const markerMatch = buffer.match(/\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/);
-                  if (!markerMatch || markerMatch.index === undefined) {
-                    // No complete marker found
-                    // Check if buffer ends with partial marker
-                    let partialStart = -1;
-                    for (let i = Math.max(0, buffer.length - 25); i < buffer.length; i++) {
-                      if (couldBePartialMarker(buffer.slice(i))) {
-                        partialStart = i;
-                        break;
-                      }
-                    }
-
-                    if (partialStart >= 0) {
-                      // Add safe text to accumulated, keep potential marker in buffer
-                      accumulatedText += buffer.slice(0, partialStart);
-                      buffer = buffer.slice(partialStart);
-                    } else {
-                      // No partial marker - add all to accumulated
-                      accumulatedText += buffer;
-                      buffer = "";
-                    }
-                    break;
-                  }
-
-                  // Found complete marker
-                  // Text before marker goes to accumulated
-                  const textBefore = buffer.slice(0, markerMatch.index);
-                  accumulatedText += textBefore;
-
-                  // Emit accumulated text as one complete chunk
-                  if (accumulatedText.trim()) {
-                    send("chunk", { type: "text", content: accumulatedText });
-                    accumulatedText = "";
-                  }
-
-                  // Parse quote marker and apply sentence range filtering on backend
-                  const quoteIndex = parseInt(markerMatch[1], 10);
-                  const quote = passages[quoteIndex - 1]; // Convert from 1-indexed to 0-indexed
-
-                  if (quote) {
-                    let quoteText: string;
-
-                    // Apply sentence range if specified, otherwise format whole quote
-                    if (markerMatch[2] && markerMatch[3]) {
-                      const sentenceStart = parseInt(markerMatch[2], 10);
-                      const sentenceEnd = parseInt(markerMatch[3], 10);
-                      quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
-                      console.log(
-                        "[API] Applied sentence range",
-                        sentenceStart,
-                        "-",
-                        sentenceEnd,
-                        "to quote",
-                        quoteIndex
-                      );
-                    } else {
-                      // Format whole quote with paragraph breaks
-                      quoteText = formatWholeQuote(quote.text);
-                      console.log("[API] Formatted whole quote", quoteIndex);
-                    }
-
-                    console.log("[API] Matched marker:", markerMatch[0]);
-                    send("chunk", {
-                      type: "quote",
-                      text: quoteText,
-                      reference: quote.reference,
-                      url: quote.url,
-                    });
-                  }
-
-                  // Continue after marker
-                  buffer = buffer.slice(markerMatch.index + markerMatch[0].length);
-                }
-              }
-            }
-
-            // Flush any remaining text
-            accumulatedText += buffer;
-            if (accumulatedText.trim()) {
-              send("chunk", { type: "text", content: accumulatedText });
-            }
-
-            // Track Phase 3 LLM generation
-            if (phase3Usage) {
-              const phase3LatencyMs = Date.now() - phase3StartTime;
-              const phase3Cost = calculateCost(
-                "gpt-5-mini",
-                phase3Usage.prompt_tokens || 0,
-                phase3Usage.completion_tokens || 0
-              );
-              trackLLMGeneration({
-                distinctId: clientIp,
-                model: "gpt-5-mini",
-                provider: "openai",
-                input: `${message} + ${initialResponse.substring(0, 200)}...`, // Context
-                output: phase3Output.substring(0, 500),
-                promptTokens: phase3Usage.prompt_tokens,
-                completionTokens: phase3Usage.completion_tokens,
-                totalTokens: phase3Usage.total_tokens,
-                cost: phase3Cost,
-                latencyMs: phase3LatencyMs,
-                metadata: {
-                  mode: "standard",
-                  phase: 3,
-                  numPassages: passages.length,
-                },
-              });
-            }
           }
 
           send("done", {});

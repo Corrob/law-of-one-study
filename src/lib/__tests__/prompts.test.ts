@@ -1,6 +1,69 @@
-import { buildContextFromQuotes } from "../prompts";
+import {
+  buildContextFromQuotes,
+  QUERY_AUGMENTATION_PROMPT,
+  UNIFIED_RESPONSE_PROMPT,
+} from "../prompts";
 
 describe("prompts", () => {
+  describe("QUERY_AUGMENTATION_PROMPT", () => {
+    it("should be exported and non-empty", () => {
+      expect(QUERY_AUGMENTATION_PROMPT).toBeDefined();
+      expect(QUERY_AUGMENTATION_PROMPT.length).toBeGreaterThan(100);
+    });
+
+    it("should contain intent detection instructions", () => {
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("quote-search");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("conceptual");
+    });
+
+    it("should contain Ra Material terminology", () => {
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("catalyst");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("distortion");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("harvest");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("density");
+    });
+
+    it("should contain JSON output instructions", () => {
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("JSON");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("augmented_query");
+    });
+
+    it("should contain examples for both intents", () => {
+      expect(QUERY_AUGMENTATION_PROMPT).toContain('"intent": "conceptual"');
+      expect(QUERY_AUGMENTATION_PROMPT).toContain('"intent": "quote-search"');
+    });
+  });
+
+  describe("UNIFIED_RESPONSE_PROMPT", () => {
+    it("should be exported and non-empty", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toBeDefined();
+      expect(UNIFIED_RESPONSE_PROMPT.length).toBeGreaterThan(100);
+    });
+
+    it("should contain instructions for both intents", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("quote-search");
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("conceptual");
+    });
+
+    it("should contain quote format rules", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("{{QUOTE:");
+    });
+
+    it("should contain role preamble", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("Ra Material");
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("Law of One");
+    });
+
+    it("should contain emotional awareness guidance", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("EMOTIONAL");
+    });
+
+    it("should contain guidance for both quote-focused and explanation-focused responses", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("FOR \"quote-search\" INTENT");
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("FOR \"conceptual\" INTENT");
+    });
+  });
+
   describe("buildContextFromQuotes", () => {
     it("should format single quote correctly", () => {
       const quotes = [
