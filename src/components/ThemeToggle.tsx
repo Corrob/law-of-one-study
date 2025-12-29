@@ -20,7 +20,7 @@ export function ThemeToggle() {
     >
       <button
         onClick={() => theme !== 'dark' && toggleTheme()}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer
           ${theme === 'dark'
             ? 'bg-[var(--lo1-indigo)] text-[var(--lo1-gold)] shadow-sm'
             : 'text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)]'
@@ -46,7 +46,7 @@ export function ThemeToggle() {
       </button>
       <button
         onClick={() => theme !== 'light' && toggleTheme()}
-        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200
+        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer
           ${theme === 'light'
             ? 'bg-[var(--lo1-indigo)] text-[var(--lo1-gold)] shadow-sm'
             : 'text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)]'
