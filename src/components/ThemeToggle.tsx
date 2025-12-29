@@ -3,7 +3,13 @@
 import { useTheme } from './ThemeProvider';
 
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme, mounted } = useTheme();
+
+  if (!mounted) {
+    return (
+      <div className="rounded-lg p-2 w-9 h-9" />
+    );
+  }
 
   return (
     <button
