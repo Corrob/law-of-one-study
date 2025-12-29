@@ -2,6 +2,7 @@
 
 import { useEffect, useState, ReactNode } from "react";
 import { getRandomStarters, getRandomQuote } from "@/data/starters";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface WelcomeScreenProps {
   onSelectStarter: (starter: string) => void;
@@ -26,17 +27,13 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
           href={quote.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="animate-quote-wrapper group relative max-w-xl text-center mb-8 p-6 rounded-2xl block
-                     border border-[var(--lo1-gold)]/20 bg-[var(--lo1-indigo)]/30
-                     hover:border-[var(--lo1-gold)]/40 hover:bg-[var(--lo1-indigo)]/40
+          className="light-quote-card animate-quote-wrapper group max-w-xl text-left mb-8 p-4 rounded-lg block
+                     border-l-4 border-[var(--lo1-gold)] bg-[var(--lo1-indigo)]/60 backdrop-blur-sm
+                     shadow-lg hover:bg-[var(--lo1-indigo)]/70
                      hover:shadow-[0_0_30px_rgba(212,168,83,0.15)]
                      transition-all duration-300 cursor-pointer"
         >
-          {/* Corner flourishes */}
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[var(--lo1-gold)]/40 rounded-tl-xl transition-colors duration-300 group-hover:border-[var(--lo1-gold)]/60" />
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[var(--lo1-gold)]/40 rounded-br-xl transition-colors duration-300 group-hover:border-[var(--lo1-gold)]/60" />
-
-          <p className="animate-quote-enter font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-4">
+          <p className="animate-quote-enter font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-3">
             &ldquo;{quote.text}&rdquo;
           </p>
           <span className="animate-quote-reference inline-block text-[var(--lo1-stardust)] group-hover:text-[var(--lo1-gold)] text-sm transition-colors">
@@ -55,7 +52,7 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
 
       {/* Conversation Starters */}
       <div className="w-full max-w-2xl">
-        <p className="text-[var(--lo1-starlight)]/70 text-sm font-medium mb-4 text-center tracking-wide animate-starter-0">
+        <p className="light-explore-label text-[var(--lo1-starlight)]/70 text-sm font-medium mb-4 text-center tracking-wide animate-starter-0">
           Or explore:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -63,7 +60,7 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
             <button
               key={index}
               onClick={() => onSelectStarter(starter)}
-              className={`starter-card animate-starter-${index} p-4 rounded-2xl
+              className={`starter-card light-starter-btn animate-starter-${index} p-4 rounded-2xl
                        bg-[var(--lo1-indigo)]/60 backdrop-blur-sm
                        border border-[var(--lo1-celestial)]/40
                        shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]
@@ -90,6 +87,11 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
             Learn more
           </a>
         </p>
+      </div>
+
+      {/* Theme Toggle */}
+      <div className="mt-6 animate-starter-0">
+        <ThemeToggle />
       </div>
     </div>
   );

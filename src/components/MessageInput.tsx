@@ -72,7 +72,7 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
     <div className="flex flex-col gap-1">
       {/* Unified input container */}
       <div
-        className="relative flex items-end rounded-2xl border border-[var(--lo1-celestial)]/30
+        className="light-input relative flex items-end rounded-2xl border border-[var(--lo1-celestial)]/30
                    bg-[var(--lo1-deep-space)]/80
                    focus-within:ring-2 focus-within:ring-[var(--lo1-gold)] focus-within:border-transparent
                    transition-all duration-200"

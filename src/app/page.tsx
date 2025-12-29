@@ -43,7 +43,7 @@ export default function Home() {
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
       {/* Header */}
-      <header className="relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-4 px-6 border-b border-[var(--lo1-gold)]/20">
+      <header className="light-header relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-4 px-6 border-b border-[var(--lo1-gold)]/20">
         <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
           <button
             onClick={handleHeaderClick}
@@ -57,27 +57,29 @@ export default function Home() {
               </p>
             </div>
           </button>
-          <Link
-            href="/support"
-            className="flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded hover:bg-[var(--lo1-gold)]/10"
-            title="About this tool"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="w-5 h-5"
+          <div className="flex items-center gap-2">
+            <Link
+              href="/support"
+              className="flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded hover:bg-[var(--lo1-gold)]/10"
+              title="About this tool"
             >
-              <circle cx="12" cy="12" r="10" />
-              <path d="M12 16v-4" />
-              <path d="M12 8h.01" />
-            </svg>
-            <span className="hidden sm:inline">About</span>
-          </Link>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+              <span className="hidden sm:inline">About</span>
+            </Link>
+          </div>
         </div>
       </header>
 

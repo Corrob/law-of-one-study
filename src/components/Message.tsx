@@ -16,7 +16,7 @@ export default function Message({ message, onSearch }: MessageProps) {
   if (isUser) {
     return (
       <div className="flex justify-end mb-4">
-        <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-[#2a3366] text-white border border-[var(--lo1-celestial)]/20">
+        <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-[var(--lo1-user-message)] text-[var(--lo1-starlight)] border border-[var(--lo1-celestial)]/20">
           {message.content}
         </div>
       </div>

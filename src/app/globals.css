@@ -25,6 +25,7 @@
   /* Card backgrounds for dark theme */
   --lo1-card: rgba(26, 31, 78, 0.6);
   --lo1-card-solid: #1a1f4e;
+  --lo1-user-message: #2a3366;
 
   /* Semantic */
   --lo1-success: #f0c75e;
@@ -45,6 +46,50 @@
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-full: 9999px;
+
+  --background: var(--lo1-deep-space);
+  --foreground: var(--lo1-starlight);
+}
+
+/* Light Mode Theme */
+[data-theme="light"] {
+  /* Primary - softer, warmer palette */
+  --lo1-indigo: #f5f3ee;
+  --lo1-deep-space: #faf8f5;
+  --lo1-space: #f0ede6;
+  --lo1-gold: #b8962f;
+  --lo1-gold-light: #a07d1a;
+
+  /* Header specific - darker for contrast */
+  --lo1-header: #8b7bb5;
+  --lo1-header-text: #ffffff;
+
+  /* Secondary */
+  --lo1-starlight: #2a2d3a;
+  --lo1-nebula: #8b7bb5;
+  --lo1-celestial: #5a68b9;
+
+  /* Neutrals for light theme */
+  --lo1-white: #2a2d3a;
+  --lo1-stardust: #5a5869;
+  --lo1-void: #ebe8e1;
+  --lo1-text-light: #3a3b48;
+  --lo1-text-muted: #6b6a79;
+
+  /* Card backgrounds for light theme */
+  --lo1-card: rgba(245, 243, 238, 0.9);
+  --lo1-card-solid: #f5f3ee;
+  --lo1-user-message: #e8e4d9;
+
+  /* Starter button specific */
+  --lo1-starter-bg: #f0ede6;
+  --lo1-starter-border: #d4cfc2;
+  --lo1-starter-hover: #e8e4d9;
+
+  /* Semantic */
+  --lo1-success: #d4a83f;
+  --lo1-warning: #d06b3c;
+  --lo1-error: #b44c4c;
 
   --background: var(--lo1-deep-space);
   --foreground: var(--lo1-starlight);
@@ -128,6 +173,26 @@ input[type="button"] {
   animation: twinkle 8s ease-in-out infinite;
 }
 
+/* Light mode - subtle stars */
+[data-theme="light"] .starfield::before {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgba(139, 123, 181, 0.2), transparent),
+    radial-gradient(1px 1px at 40px 70px, rgba(90, 104, 185, 0.15), transparent),
+    radial-gradient(1px 1px at 50px 160px, rgba(139, 123, 181, 0.18), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(90, 104, 185, 0.12), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(139, 123, 181, 0.15), transparent),
+    radial-gradient(1px 1px at 160px 120px, rgba(90, 104, 185, 0.2), transparent),
+    radial-gradient(1px 1px at 200px 50px, rgba(139, 123, 181, 0.12), transparent),
+    radial-gradient(1px 1px at 220px 140px, rgba(90, 104, 185, 0.18), transparent),
+    radial-gradient(1px 1px at 260px 90px, rgba(139, 123, 181, 0.15), transparent),
+    radial-gradient(1px 1px at 300px 180px, rgba(90, 104, 185, 0.2), transparent),
+    radial-gradient(1px 1px at 340px 60px, rgba(139, 123, 181, 0.12), transparent),
+    radial-gradient(1px 1px at 380px 130px, rgba(90, 104, 185, 0.18), transparent),
+    radial-gradient(1px 1px at 420px 100px, rgba(139, 123, 181, 0.15), transparent),
+    radial-gradient(1px 1px at 460px 170px, rgba(90, 104, 185, 0.2), transparent),
+    radial-gradient(1px 1px at 500px 45px, rgba(139, 123, 181, 0.12), transparent);
+}
+
 /* Medium stars layer */
 .starfield::after {
   background-image:
@@ -141,6 +206,19 @@ input[type="button"] {
     radial-gradient(2px 2px at 400px 280px, rgba(255, 255, 255, 0.8), transparent);
   background-size: 500px 350px;
   animation: twinkle 12s ease-in-out infinite reverse;
+}
+
+/* Light mode - subtle medium stars */
+[data-theme="light"] .starfield::after {
+  background-image:
+    radial-gradient(1.5px 1.5px at 70px 50px, rgba(184, 150, 47, 0.18), transparent),
+    radial-gradient(2px 2px at 150px 150px, rgba(139, 123, 181, 0.25), transparent),
+    radial-gradient(1.5px 1.5px at 250px 100px, rgba(184, 150, 47, 0.15), transparent),
+    radial-gradient(2px 2px at 350px 200px, rgba(90, 104, 185, 0.22), transparent),
+    radial-gradient(1.5px 1.5px at 450px 75px, rgba(139, 123, 181, 0.18), transparent),
+    radial-gradient(2px 2px at 100px 250px, rgba(90, 104, 185, 0.2), transparent),
+    radial-gradient(1.5px 1.5px at 200px 300px, rgba(184, 150, 47, 0.15), transparent),
+    radial-gradient(2px 2px at 400px 280px, rgba(139, 123, 181, 0.22), transparent);
 }
 
 /* Twinkling animation */
@@ -160,6 +238,15 @@ input[type="button"] {
     radial-gradient(ellipse at 20% 20%, rgba(107, 91, 149, 0.15) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 80%, rgba(74, 88, 153, 0.1) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 50%, rgba(26, 31, 78, 0.3) 0%, transparent 70%),
+    var(--lo1-deep-space);
+}
+
+/* Light mode cosmic overlay - warm subtle gradient */
+[data-theme="light"] .cosmic-bg {
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(184, 150, 47, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(139, 123, 181, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(245, 240, 230, 0.3) 0%, transparent 70%),
     var(--lo1-deep-space);
 }
 
@@ -247,6 +334,13 @@ h6 {
   background: rgba(26, 31, 78, 0.5);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(212, 168, 83, 0.1);
+}
+
+/* Light mode glass card */
+[data-theme="light"] .glass-card {
+  background: rgba(232, 233, 245, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(184, 150, 47, 0.15);
 }
 
 /* Scroll shadow container */
@@ -529,6 +623,11 @@ h6 {
   z-index: -1;
 }
 
+/* Light mode input glow */
+[data-theme="light"] .welcome-input-glow {
+  background: radial-gradient(ellipse at center, rgba(184, 150, 47, 0.1) 0%, transparent 70%);
+}
+
 /* Input transition animation */
 .input-transitioning {
   position: fixed !important;
@@ -567,6 +666,75 @@ h6 {
   pointer-events: none;
 }
 
+/* Light mode starter card glow */
+[data-theme="light"] .starter-card::before {
+  background: linear-gradient(135deg, rgba(184, 150, 47, 0.08) 0%, transparent 50%);
+}
+
 .starter-card:hover::before {
   opacity: 1;
+}
+
+/* ============================================
+   Light Mode Specific Styles
+   ============================================ */
+
+/* Light mode header - soft lavender with dark text */
+[data-theme="light"] .light-header {
+  background: linear-gradient(135deg, #e8e4f0 0%, #ddd8eb 100%) !important;
+  border-bottom-color: rgba(139, 123, 181, 0.3) !important;
+  color: #4a4366 !important;
+}
+
+[data-theme="light"] .light-header h1 {
+  color: #4a4366 !important;
+}
+
+[data-theme="light"] .light-header p {
+  color: #6b6189 !important;
+}
+
+/* Light mode cards - add subtle shadows */
+[data-theme="light"] .light-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Light mode quote card - white background for contrast */
+[data-theme="light"] .light-quote-card {
+  background: #ffffff;
+  border: 1px solid #e0dbd0;
+  border-left: 4px solid var(--lo1-gold);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Light mode starter buttons - better contrast with shadow */
+[data-theme="light"] .light-starter-btn {
+  background: #ffffff;
+  border: 1px solid #d8d3c8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.15s ease;
+}
+
+[data-theme="light"] .light-starter-btn:hover {
+  background: #fdfcfa;
+  border-color: var(--lo1-gold);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Light mode input field */
+[data-theme="light"] .light-input {
+  background: #ffffff;
+  border: 1px solid #d4cfc2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .light-input:focus-within {
+  border-color: var(--lo1-gold);
+  box-shadow: 0 4px 16px rgba(184, 150, 47, 0.2);
+}
+
+/* Light mode "Or explore:" label - darker for better visibility */
+[data-theme="light"] .light-explore-label {
+  color: #5a5869 !important;
+  opacity: 1 !important;
 }
