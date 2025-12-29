@@ -19,15 +19,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     const savedTheme = localStorage.getItem('theme') as Theme | null;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
+    // Default to dark mode unless user has explicitly chosen light
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
-    } else if (!prefersDark) {
-      setTheme('light');
-      document.documentElement.setAttribute('data-theme', 'light');
     } else {
+      // Dark mode is the default for everyone
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   }, []);

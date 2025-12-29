@@ -53,29 +53,38 @@
 
 /* Light Mode Theme */
 [data-theme="light"] {
-  /* Primary */
-  --lo1-indigo: #e8e9f5;
-  --lo1-deep-space: #ffffff;
-  --lo1-space: #f5f6fa;
+  /* Primary - softer, warmer palette */
+  --lo1-indigo: #f5f3ee;
+  --lo1-deep-space: #faf8f5;
+  --lo1-space: #f0ede6;
   --lo1-gold: #b8962f;
   --lo1-gold-light: #a07d1a;
 
+  /* Header specific - darker for contrast */
+  --lo1-header: #8b7bb5;
+  --lo1-header-text: #ffffff;
+
   /* Secondary */
-  --lo1-starlight: #1a1f2e;
+  --lo1-starlight: #2a2d3a;
   --lo1-nebula: #8b7bb5;
   --lo1-celestial: #5a68b9;
 
   /* Neutrals for light theme */
-  --lo1-white: #1a1f2e;
-  --lo1-stardust: #6b6a79;
-  --lo1-void: #f0f1f5;
+  --lo1-white: #2a2d3a;
+  --lo1-stardust: #5a5869;
+  --lo1-void: #ebe8e1;
   --lo1-text-light: #3a3b48;
-  --lo1-text-muted: #858694;
+  --lo1-text-muted: #6b6a79;
 
   /* Card backgrounds for light theme */
-  --lo1-card: rgba(232, 233, 245, 0.8);
-  --lo1-card-solid: #e8e9f5;
-  --lo1-user-message: #d0d4f0;
+  --lo1-card: rgba(245, 243, 238, 0.9);
+  --lo1-card-solid: #f5f3ee;
+  --lo1-user-message: #e8e4d9;
+
+  /* Starter button specific */
+  --lo1-starter-bg: #f0ede6;
+  --lo1-starter-border: #d4cfc2;
+  --lo1-starter-hover: #e8e4d9;
 
   /* Semantic */
   --lo1-success: #d4a83f;
@@ -232,12 +241,12 @@ input[type="button"] {
     var(--lo1-deep-space);
 }
 
-/* Light mode cosmic overlay - subtle gradient */
+/* Light mode cosmic overlay - warm subtle gradient */
 [data-theme="light"] .cosmic-bg {
   background:
-    radial-gradient(ellipse at 20% 20%, rgba(139, 123, 181, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 80%, rgba(90, 104, 185, 0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(232, 233, 245, 0.2) 0%, transparent 70%),
+    radial-gradient(ellipse at 20% 20%, rgba(184, 150, 47, 0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(139, 123, 181, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(245, 240, 230, 0.3) 0%, transparent 70%),
     var(--lo1-deep-space);
 }
 
@@ -664,4 +673,68 @@ h6 {
 
 .starter-card:hover::before {
   opacity: 1;
+}
+
+/* ============================================
+   Light Mode Specific Styles
+   ============================================ */
+
+/* Light mode header - soft lavender with dark text */
+[data-theme="light"] .light-header {
+  background: linear-gradient(135deg, #e8e4f0 0%, #ddd8eb 100%) !important;
+  border-bottom-color: rgba(139, 123, 181, 0.3) !important;
+  color: #4a4366 !important;
+}
+
+[data-theme="light"] .light-header h1 {
+  color: #4a4366 !important;
+}
+
+[data-theme="light"] .light-header p {
+  color: #6b6189 !important;
+}
+
+/* Light mode cards - add subtle shadows */
+[data-theme="light"] .light-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* Light mode quote card - white background for contrast */
+[data-theme="light"] .light-quote-card {
+  background: #ffffff;
+  border: 1px solid #e0dbd0;
+  border-left: 4px solid var(--lo1-gold);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Light mode starter buttons - better contrast with shadow */
+[data-theme="light"] .light-starter-btn {
+  background: #ffffff;
+  border: 1px solid #d8d3c8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  transition: all 0.15s ease;
+}
+
+[data-theme="light"] .light-starter-btn:hover {
+  background: #fdfcfa;
+  border-color: var(--lo1-gold);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Light mode input field */
+[data-theme="light"] .light-input {
+  background: #ffffff;
+  border: 1px solid #d4cfc2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .light-input:focus-within {
+  border-color: var(--lo1-gold);
+  box-shadow: 0 4px 16px rgba(184, 150, 47, 0.2);
+}
+
+/* Light mode "Or explore:" label - darker for better visibility */
+[data-theme="light"] .light-explore-label {
+  color: #5a5869 !important;
+  opacity: 1 !important;
 }

@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import Link from "next/link";
 import ChatInterface, { ChatInterfaceRef } from "@/components/ChatInterface";
-import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Spiral/Unity icon for Law of One
 function UnityIcon({ className }: { className?: string }) {
@@ -44,7 +43,7 @@ export default function Home() {
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
       {/* Header */}
-      <header className="relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-4 px-6 border-b border-[var(--lo1-gold)]/20">
+      <header className="light-header relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-4 px-6 border-b border-[var(--lo1-gold)]/20">
         <div className="max-w-3xl mx-auto flex items-center justify-between gap-3">
           <button
             onClick={handleHeaderClick}
@@ -59,7 +58,6 @@ export default function Home() {
             </div>
           </button>
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             <Link
               href="/support"
               className="flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded hover:bg-[var(--lo1-gold)]/10"
