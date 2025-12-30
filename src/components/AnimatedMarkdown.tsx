@@ -110,10 +110,20 @@ function AnimatedListItem({
 }) {
   const startWordIndex = globalWordIndex;
 
-  // Count how many words are in this list item
+  // Count how many words are in this list item (excluding nested lists)
   const extractTextContent = (node: React.ReactNode): string => {
     if (typeof node === 'string') return node;
     if (Array.isArray(node)) return node.map(extractTextContent).join('');
+    // Skip nested list elements (ul, ol) - they'll be animated separately
+    if (isValidElement(node)) {
+      const element = node as React.ReactElement;
+      if (element.type === 'ul' || element.type === 'ol') {
+        return '';
+      }
+      // Recursively extract from other elements
+      const props = element.props as { children?: React.ReactNode };
+      return extractTextContent(props.children);
+    }
     return '';
   };
 
@@ -167,15 +177,22 @@ function AnimatedChildren({
     }
 
     if (Array.isArray(node)) {
-      return node.map((child, idx) => (
-        <span key={idx}>{animateNode(child)}</span>
-      ));
+      return node.map((child, idx) => {
+        const animated = animateNode(child);
+        // If the result is already a React element, don't wrap it
+        if (isValidElement(animated)) {
+          return <span key={idx}>{animated}</span>;
+        }
+        // For arrays or fragments, return as-is with key
+        return <span key={idx}>{animated}</span>;
+      });
     }
 
     // Handle React elements (like <strong>, <em>) by recursively processing their children
     if (isValidElement(node)) {
       const props = node.props as { children?: React.ReactNode };
-      return cloneElement(node, node.props as object, animateNode(props.children));
+      // Clone with only the children replaced (props are already in the node)
+      return cloneElement(node, {}, animateNode(props.children));
     }
 
     // For other node types, just return as-is
