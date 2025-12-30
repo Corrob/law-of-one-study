@@ -1,9 +1,8 @@
 "use client";
 
 import { Quote } from "@/lib/types";
-import { useQuoteAnimation } from "@/hooks/useTypingAnimation";
 import { analytics } from "@/lib/analytics";
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 
 interface AnimatedQuoteCardProps {
   quote: Quote;
@@ -68,21 +67,48 @@ export default function AnimatedQuoteCard({
   animate = true,
   onComplete,
 }: AnimatedQuoteCardProps) {
+  const [isVisible, setIsVisible] = useState(!animate);
+  const hasCompletedRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+
+  // Keep onComplete ref updated
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  // Handle fade-in animation
+  useEffect(() => {
+    if (!animate) return;
+
+    hasCompletedRef.current = false;
+    setIsVisible(false);
+
+    // Small delay before showing, then fade in
+    const showTimeout = setTimeout(() => {
+      setIsVisible(true);
+    }, 50);
+
+    // Complete after fade-in transition
+    const completeTimeout = setTimeout(() => {
+      if (!hasCompletedRef.current) {
+        hasCompletedRef.current = true;
+        onCompleteRef.current?.();
+      }
+    }, 350); // 50ms delay + 300ms fade
+
+    return () => {
+      clearTimeout(showTimeout);
+      clearTimeout(completeTimeout);
+    };
+  }, [animate, quote.text]);
+
   // Parse ellipsis from full quote text
   const { hasLeading, hasTrailing, content: fullTextWithoutEllipsis } = parseEllipsis(quote.text);
 
-  // Animate only the content (without ellipsis)
-  const { displayedText, isComplete } = useQuoteAnimation(animate ? fullTextWithoutEllipsis : "", {
-    speed: 50,
-    startDelay: 0,
-    onComplete,
-  });
-
-  const textToShow = animate ? displayedText : fullTextWithoutEllipsis;
   const shortRef = getShortReference(quote.reference);
 
-  // Format the text being displayed (works for both partial and complete text)
-  const segments = formatRaText(textToShow);
+  // Format the text being displayed
+  const segments = formatRaText(fullTextWithoutEllipsis);
 
   // Extract session and question numbers for tracking
   const match = quote.reference.match(/(\d+)\.(\d+)/);
@@ -109,8 +135,14 @@ export default function AnimatedQuoteCard({
   };
 
   return (
-    <div className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg">
-      {/* Header with reference number - always visible */}
+    <div
+      className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 300ms ease-in",
+      }}
+    >
+      {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
           Questioner
@@ -126,9 +158,9 @@ export default function AnimatedQuoteCard({
         </a>
       </div>
 
-      {/* Content area - maintain consistent spacing */}
+      {/* Content area */}
       <div className="min-h-[1.5rem]">
-        {/* Leading ellipsis - always visible */}
+        {/* Leading ellipsis */}
         {hasLeading && (
           <a
             href={quote.url}
@@ -163,8 +195,8 @@ export default function AnimatedQuoteCard({
           </div>
         ))}
 
-        {/* Trailing ellipsis - only show after animation completes */}
-        {hasTrailing && (!animate || isComplete) && (
+        {/* Trailing ellipsis */}
+        {hasTrailing && (
           <a
             href={quote.url}
             target="_blank"

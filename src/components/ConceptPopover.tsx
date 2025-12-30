@@ -16,7 +16,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   const [horizontalOffset, setHorizontalOffset] = useState(0);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLSpanElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const preventReopenRef = useRef(false); // Prevent immediate reopen after close
 
@@ -180,7 +180,7 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
       </button>
 
       {isOpen && (
-        <div
+        <span
           ref={popoverRef}
           role="dialog"
           aria-label={`Definition of ${term}`}
@@ -189,16 +189,16 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          <div className="concept-popover-content">
-            <div className="concept-popover-header">
+          <span className="concept-popover-content">
+            <span className="concept-popover-header">
               <span className="concept-popover-term">{term}</span>
-            </div>
-            {definition && <p className="concept-popover-definition">{definition}</p>}
+            </span>
+            {definition && <span className="concept-popover-definition">{definition}</span>}
             <button onClick={handleSearch} className="concept-popover-search-btn">
               Explore this concept
             </button>
-          </div>
-        </div>
+          </span>
+        </span>
       )}
     </span>
   );

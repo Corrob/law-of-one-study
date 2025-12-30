@@ -16,12 +16,12 @@ const STYLE_RULES = `STYLE:
 - Avoid em dashes (—) - use commas, periods, or separate sentences instead
 
 FORMATTING (use markdown for clarity):
-- Use **bold** to emphasize key Ra Material concepts (e.g., **catalyst**, **harvest**, **third density**)
+- Do NOT bold Ra Material terminology (catalyst, harvest, density, etc.) - these are automatically highlighted by the interface
+- Use **bold** only for key insights or important takeaways that aren't Ra-specific terms
 - Use *italics* sparingly for subtle emphasis or when distinguishing your interpretation from Ra's words
 - Use unordered lists (- item) when presenting multiple related concepts or examples
 - Use ordered lists (1. item) when describing sequential steps or hierarchies (like the seven densities)
 - Examples:
-  * "The three distortions Ra describes are: **free will**, **love**, and **light**."
   * "The seven densities represent stages of evolution: 1. Awareness 2. Growth 3. Choice..."
   * "Catalyst can appear in many forms: - Relationships - Health challenges - Unexpected loss"
 - Don't overuse formatting - only when it genuinely aids understanding`;
