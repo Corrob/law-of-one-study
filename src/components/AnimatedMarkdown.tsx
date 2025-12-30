@@ -81,12 +81,12 @@ export default function AnimatedMarkdown({ content, onComplete, speed = 50 }: An
     ),
     strong: ({ children, ...props }) => (
       <strong className="font-semibold text-[var(--lo1-starlight)]" {...props}>
-        <AnimatedChildren visibleWords={visibleWords}>{children}</AnimatedChildren>
+        {children}
       </strong>
     ),
     em: ({ children, ...props }) => (
       <em className="italic" {...props}>
-        <AnimatedChildren visibleWords={visibleWords}>{children}</AnimatedChildren>
+        {children}
       </em>
     ),
   };
@@ -170,6 +170,19 @@ function AnimatedChildren({
       return node.map((child, idx) => (
         <span key={idx}>{animateNode(child)}</span>
       ));
+    }
+
+    // Handle React elements (like <strong>, <em>) by recursively processing their children
+    if (node && typeof node === 'object' && 'props' in node) {
+      const element = node as React.ReactElement<{ children?: React.ReactNode }>;
+      const props = element.props as { children?: React.ReactNode; [key: string]: unknown };
+      return {
+        ...element,
+        props: {
+          ...props,
+          children: animateNode(props.children)
+        }
+      } as React.ReactElement;
     }
 
     // For other node types, just return as-is
