@@ -4,8 +4,7 @@ import { AnimationChunk } from "@/lib/types";
 import QuoteCard from "./QuoteCard";
 import AnimatedQuoteCard from "./AnimatedQuoteCard";
 import AnimatedText from "./AnimatedText";
-import ConceptPopover from "./ConceptPopover";
-import { parseConceptsInText } from "@/lib/conceptParser";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 interface StreamingMessageProps {
   completedChunks: AnimationChunk[];
@@ -76,10 +75,10 @@ function ChunkRenderer({
       );
     }
 
-    // After completion, render with concept linking
+    // After completion, render with concept linking and markdown
     return (
       <div className={wrapperClass}>
-        {onSearch ? <LinkedText text={chunk.content} onSearch={onSearch} /> : chunk.content}
+        <MarkdownRenderer content={chunk.content} onSearch={onSearch} />
       </div>
     );
   }
@@ -92,30 +91,4 @@ function ChunkRenderer({
   }
 
   return null;
-}
-
-interface LinkedTextProps {
-  text: string;
-  onSearch: (term: string) => void;
-}
-
-function LinkedText({ text, onSearch }: LinkedTextProps) {
-  const segments = parseConceptsInText(text);
-
-  return (
-    <>
-      {segments.map((seg, i) =>
-        seg.type === "text" ? (
-          <span key={i}>{seg.content}</span>
-        ) : (
-          <ConceptPopover
-            key={i}
-            term={seg.searchTerm}
-            displayText={seg.displayText}
-            onSearch={onSearch}
-          />
-        )
-      )}
-    </>
-  );
 }
