@@ -13,7 +13,18 @@ CORE PRINCIPLES:
 const STYLE_RULES = `STYLE:
 - Write in plain, clear English that makes complex concepts accessible
 - Be concise and direct - no filler phrases like "Great question!" or "Let me explain..."
-- Avoid em dashes (—) - use commas, periods, or separate sentences instead`;
+- Avoid em dashes (—) - use commas, periods, or separate sentences instead
+
+FORMATTING (use markdown for clarity):
+- Do NOT bold Ra Material terminology (catalyst, harvest, density, etc.) - these are automatically highlighted by the interface
+- Use **bold** only for key insights or important takeaways that aren't Ra-specific terms
+- Use *italics* sparingly for subtle emphasis or when distinguishing your interpretation from Ra's words
+- Use unordered lists (- item) when presenting multiple related concepts or examples
+- Use ordered lists (1. item) when describing sequential steps or hierarchies (like the seven densities)
+- Examples:
+  * "The seven densities represent stages of evolution: 1. Awareness 2. Growth 3. Choice..."
+  * "Catalyst can appear in many forms: - Relationships - Health challenges - Unexpected loss"
+- Don't overuse formatting - only when it genuinely aids understanding`;
 
 const QUOTE_FORMAT_RULES = `HOW TO INSERT QUOTES:
 - Insert quotes using: {{QUOTE:1}} or {{QUOTE:2}} (the number matches the passage provided)

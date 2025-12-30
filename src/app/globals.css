@@ -420,6 +420,7 @@ h6 {
 
 /* Concept popover - prevent copying and layout */
 .concept-popover {
+  display: block;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -466,6 +467,7 @@ h6 {
 }
 
 .concept-popover-content {
+  display: block;
   background: var(--lo1-indigo);
   border: 1px solid var(--lo1-gold);
   border-radius: 12px;
@@ -474,6 +476,7 @@ h6 {
 }
 
 .concept-popover-header {
+  display: block;
   margin-bottom: 8px;
 }
 
@@ -485,6 +488,7 @@ h6 {
 }
 
 .concept-popover-definition {
+  display: block;
   font-size: 13px;
   line-height: 1.5;
   color: var(--lo1-text-light);

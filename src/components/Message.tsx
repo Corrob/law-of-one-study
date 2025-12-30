@@ -2,8 +2,7 @@
 
 import { Message as MessageType, MessageSegment } from "@/lib/types";
 import QuoteCard from "./QuoteCard";
-import ConceptPopover from "./ConceptPopover";
-import { parseConceptsInText } from "@/lib/conceptParser";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 interface MessageProps {
   message: MessageType;
@@ -35,10 +34,8 @@ export default function Message({ message, onSearch }: MessageProps) {
             onSearch={onSearch}
           />
         ))
-      ) : onSearch ? (
-        <LinkedText text={message.content} onSearch={onSearch} />
       ) : (
-        message.content
+        <MarkdownRenderer content={message.content} onSearch={onSearch} />
       )}
     </div>
   );
@@ -56,7 +53,7 @@ function SegmentRenderer({ segment, isFirst = false, onSearch }: SegmentRenderer
 
     return (
       <div className={wrapperClass}>
-        {onSearch ? <LinkedText text={segment.content} onSearch={onSearch} /> : segment.content}
+        <MarkdownRenderer content={segment.content} onSearch={onSearch} />
       </div>
     );
   }
@@ -66,30 +63,4 @@ function SegmentRenderer({ segment, isFirst = false, onSearch }: SegmentRenderer
   }
 
   return null;
-}
-
-interface LinkedTextProps {
-  text: string;
-  onSearch: (term: string) => void;
-}
-
-function LinkedText({ text, onSearch }: LinkedTextProps) {
-  const segments = parseConceptsInText(text);
-
-  return (
-    <>
-      {segments.map((seg, i) =>
-        seg.type === "text" ? (
-          <span key={i}>{seg.content}</span>
-        ) : (
-          <ConceptPopover
-            key={i}
-            term={seg.searchTerm}
-            displayText={seg.displayText}
-            onSearch={onSearch}
-          />
-        )
-      )}
-    </>
-  );
 }
