@@ -1,6 +1,6 @@
 # Law of One Study
 
-An AI-powered study companion for the Ra Material (Law of One). Ask questions, explore concepts, and discover relevant passages from all 105 sessions.
+An AI-powered study companion for the Ra Material (Law of One). Ask questions, explore concepts, and discover relevant passages from all 106 sessions.
 
 **Live site:** [lawofone.study](https://lawofone.study)
 
@@ -75,7 +75,7 @@ Before running the app, you need to index the Ra Material into Pinecone:
 npm run index
 ```
 
-This processes all 105 sessions from the `sections/` directory and creates embeddings in your Pinecone index.
+This processes all 106 sessions from the `sections/` directory and creates embeddings in your Pinecone index.
 
 ### Running Locally
 
@@ -120,7 +120,7 @@ law-of-one-study/
 │       └── types.ts         # TypeScript types
 ├── scripts/
 │   └── index-ra.ts          # Pinecone indexing script
-├── sections/                # Ra Material source (105 JSON files)
+├── sections/                # Ra Material source (106 JSON files)
 └── public/                  # Static assets
 ```
 

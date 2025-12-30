@@ -25,7 +25,7 @@ An AI-powered RAG chatbot for the Ra Material. Community-funded, open source, fr
 /components       # React components
 /lib              # Pinecone, OpenAI helpers
 /scripts          # Embedding generation scripts
-/sections         # Ra material source (105 JSON files)
+/sections         # Ra material source (106 JSON files)
 ```
 
 ---
@@ -34,7 +34,7 @@ An AI-powered RAG chatbot for the Ra Material. Community-funded, open source, fr
 
 **Ra Material:** `sections/` directory
 
-- 105 JSON files (sessions 1-105)
+- 106 JSON files (sessions 1-106)
 - Format: `{ "SESSION.QUESTION": "content" }` (e.g., `"50.12": "Ra: I am Ra..."`)
 - ~1,200-1,500 Q&A pairs total
 - Links format: `https://lawofone.info/s/SESSION#QUESTION`
