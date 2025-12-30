@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, cloneElement, isValidElement } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -173,16 +173,9 @@ function AnimatedChildren({
     }
 
     // Handle React elements (like <strong>, <em>) by recursively processing their children
-    if (node && typeof node === 'object' && 'props' in node) {
-      const element = node as React.ReactElement<{ children?: React.ReactNode }>;
-      const props = element.props as { children?: React.ReactNode; [key: string]: unknown };
-      return {
-        ...element,
-        props: {
-          ...props,
-          children: animateNode(props.children)
-        }
-      } as React.ReactElement;
+    if (isValidElement(node)) {
+      const props = node.props as { children?: React.ReactNode };
+      return cloneElement(node, node.props as object, animateNode(props.children));
     }
 
     // For other node types, just return as-is
