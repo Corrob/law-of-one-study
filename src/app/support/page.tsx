@@ -127,7 +127,7 @@ export default function SupportPage() {
                 </div>
                 <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
                   Your question is converted into a mathematical representation and compared against
-                  all ~1,500 Q&A pairs from the 105 sessions.
+                  all ~1,500 Q&A pairs from the 106 sessions.
                 </p>
               </div>
 
