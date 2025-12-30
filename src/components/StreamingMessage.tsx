@@ -3,7 +3,7 @@
 import { AnimationChunk } from "@/lib/types";
 import QuoteCard from "./QuoteCard";
 import AnimatedQuoteCard from "./AnimatedQuoteCard";
-import AnimatedText from "./AnimatedText";
+import AnimatedMarkdown from "./AnimatedMarkdown";
 import MarkdownRenderer from "./MarkdownRenderer";
 
 interface StreamingMessageProps {
@@ -67,10 +67,10 @@ function ChunkRenderer({
     const wrapperClass = isFirst ? "min-h-[1lh]" : "mt-3 block min-h-[1lh]";
 
     if (animate) {
-      // During animation, render plain text (no concept linking)
+      // During animation, render markdown (no concept linking during animation)
       return (
         <div className={wrapperClass}>
-          <AnimatedText content={chunk.content} onComplete={onComplete!} speed={50} />
+          <AnimatedMarkdown content={chunk.content} onComplete={onComplete!} speed={50} />
         </div>
       );
     }
