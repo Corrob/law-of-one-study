@@ -75,9 +75,9 @@ export default function AnimatedMarkdown({ content, onComplete, speed = 50 }: An
       <ol className="list-decimal list-inside mb-3 space-y-1" {...props}>{children}</ol>
     ),
     li: ({ children, ...props }) => (
-      <li className="ml-2" {...props}>
-        <AnimatedChildren visibleWords={visibleWords}>{children}</AnimatedChildren>
-      </li>
+      <AnimatedListItem visibleWords={visibleWords} {...props}>
+        {children}
+      </AnimatedListItem>
     ),
     strong: ({ children, ...props }) => (
       <strong className="font-semibold text-[var(--lo1-starlight)]" {...props}>
@@ -95,6 +95,43 @@ export default function AnimatedMarkdown({ content, onComplete, speed = 50 }: An
     <ReactMarkdown remarkPlugins={[remarkGfm]} components={animatedComponents}>
       {content}
     </ReactMarkdown>
+  );
+}
+
+// Component for animated list items - hides bullet until first word is visible
+function AnimatedListItem({
+  children,
+  visibleWords,
+  ...props
+}: {
+  children: React.ReactNode;
+  visibleWords: number;
+  [key: string]: unknown;
+}) {
+  const startWordIndex = globalWordIndex;
+
+  // Count how many words are in this list item
+  const extractTextContent = (node: React.ReactNode): string => {
+    if (typeof node === 'string') return node;
+    if (Array.isArray(node)) return node.map(extractTextContent).join('');
+    return '';
+  };
+
+  const textContent = extractTextContent(children);
+  const words = textContent.match(/\S+\s*/g) || [];
+  const hasVisibleWords = startWordIndex < visibleWords;
+
+  return (
+    <li
+      className="ml-2"
+      style={{
+        opacity: hasVisibleWords ? 1 : 0,
+        transition: "opacity 150ms ease-in",
+      }}
+      {...props}
+    >
+      <AnimatedChildren visibleWords={visibleWords}>{children}</AnimatedChildren>
+    </li>
   );
 }
 
