@@ -25,7 +25,7 @@ export default function AnimatedMarkdown({ content, onComplete, speed = 50 }: An
 
   // Count total words in content
   const totalWords = useMemo(() => {
-    const words = content.match(/\S+\s*/g) || [];
+    const words = content.match(/\s*\S+\s*/g) || [];
     return words.length;
   }, [content]);
 
@@ -128,7 +128,7 @@ function AnimatedListItem({
   };
 
   const textContent = extractTextContent(children);
-  const words = textContent.match(/\S+\s*/g) || [];
+  const words = textContent.match(/\s*\S+\s*/g) || [];
   const hasVisibleWords = startWordIndex < visibleWords;
 
   return (
@@ -155,8 +155,8 @@ function AnimatedChildren({
 }) {
   const animateNode = (node: React.ReactNode): React.ReactNode => {
     if (typeof node === 'string') {
-      // Split text into words
-      const words = node.match(/\S+\s*/g) || [];
+      // Split text into words, preserving both leading and trailing whitespace
+      const words = node.match(/\s*\S+\s*/g) || [];
 
       return words.map((word, idx) => {
         const wordIndex = globalWordIndex++;
