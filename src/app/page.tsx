@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import ChatInterface, { ChatInterfaceRef } from "@/components/ChatInterface";
+import DebugConsole from "@/components/DebugConsole";
 
 // Spiral/Unity icon for Law of One
 function UnityIcon({ className }: { className?: string }) {
@@ -87,6 +88,9 @@ export default function Home() {
       <div className="flex-1 overflow-hidden relative z-10">
         <ChatInterface ref={chatRef} />
       </div>
+
+      {/* Debug Console - Mobile-friendly log viewer */}
+      <DebugConsole />
     </main>
   );
 }
