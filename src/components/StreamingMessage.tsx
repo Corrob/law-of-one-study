@@ -61,6 +61,14 @@ function ChunkRenderer({
   onComplete,
   onSearch,
 }: ChunkRendererProps) {
+  console.log("[ChunkRenderer] Rendering chunk:", {
+    type: chunk.type,
+    animate,
+    isFirst,
+    hasQuote: chunk.type === "quote" ? !!chunk.quote : undefined,
+    reference: chunk.type === "quote" ? chunk.quote?.reference : undefined,
+  });
+
   if (chunk.type === "text") {
     // Use div instead of span for consistent block layout
     // Add min-height to prevent layout shift during content changes
@@ -84,11 +92,17 @@ function ChunkRenderer({
   }
 
   if (chunk.type === "quote") {
+    console.log("[ChunkRenderer] Rendering quote:", {
+      animate,
+      quoteText: chunk.quote.text.substring(0, 50),
+      reference: chunk.quote.reference,
+    });
     if (animate) {
       return <AnimatedQuoteCard quote={chunk.quote} animate={true} onComplete={onComplete} />;
     }
     return <QuoteCard quote={chunk.quote} />;
   }
 
+  console.warn("[ChunkRenderer] Unknown chunk type:", chunk);
   return null;
 }
