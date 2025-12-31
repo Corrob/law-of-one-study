@@ -70,7 +70,19 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
       type: chunk.type,
       reference: chunk.type === "quote" ? chunk.quote.reference : undefined,
     });
-    setQueue((prev) => [...prev, chunk]);
+    setQueue((prev) => {
+      console.log("[useAnimationQueue] setQueue prev state:", {
+        prevLength: prev.length,
+        prevTypes: prev.map((c) => c.type),
+        adding: chunk.type,
+      });
+      const newQueue = [...prev, chunk];
+      console.log("[useAnimationQueue] setQueue new state:", {
+        newLength: newQueue.length,
+        newTypes: newQueue.map((c) => c.type),
+      });
+      return newQueue;
+    });
   }, []);
 
   const reset = useCallback(() => {
