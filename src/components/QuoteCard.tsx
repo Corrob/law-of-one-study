@@ -75,6 +75,14 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
   // Parse ellipsis from quote text
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
+  console.log("[QuoteCard] Rendering quote:", {
+    reference: quote.reference,
+    textLength: quote.text.length,
+    hasLeading,
+    hasTrailing,
+    contentLength: content.length,
+  });
+
   // State for expansion
   const [isExpanded, setIsExpanded] = useState(false);
   const [fullQuoteText, setFullQuoteText] = useState<string | null>(null);
@@ -83,6 +91,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
 
   // Format the content (without ellipsis)
   const segments = formatRaText(isExpanded && fullQuoteText ? fullQuoteText : content);
+  console.log("[QuoteCard] Formatted segments:", segments.length, segments);
   const shortRef = getShortReference(quote.reference);
 
   // Extract session and question numbers for tracking
