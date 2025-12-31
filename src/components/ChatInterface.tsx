@@ -224,6 +224,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         buffer = remaining;
 
         for (const event of events) {
+          console.log("[ChatInterface] SSE event received:", { type: event.type, dataKeys: Object.keys(event.data) });
+
           if (event.type === "meta") {
             // Meta event received with quotes data - currently unused but may be needed in future
           } else if (event.type === "chunk") {
@@ -235,6 +237,15 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               url?: string;
             };
             chunkIdCounter++;
+
+            console.log("[ChatInterface] Chunk data:", {
+              type: chunkData.type,
+              hasContent: !!chunkData.content,
+              hasText: !!chunkData.text,
+              hasReference: !!chunkData.reference,
+              hasUrl: !!chunkData.url,
+              textLength: chunkData.text?.length || chunkData.content?.length,
+            });
 
             if (chunkData.type === "text" && chunkData.content) {
               responseLength += chunkData.content.length;
@@ -264,6 +275,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                   url: chunkData.url,
                 },
               });
+            } else {
+              console.warn("[ChatInterface] Chunk ignored - conditions not met:", chunkData);
             }
           } else if (event.type === "suggestions") {
             // Handle follow-up suggestions
