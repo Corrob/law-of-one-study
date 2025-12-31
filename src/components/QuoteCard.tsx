@@ -3,7 +3,7 @@
 import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { useEffect, useState } from "react";
-import { fetchFullQuote, formatWholeQuote } from "@/lib/quote-utils";
+import { fetchFullQuote, formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
 
 interface QuoteCardProps {
   quote: Quote;
@@ -151,7 +151,9 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
   const handleCopyQuote = async () => {
     try {
       const textToCopy = isExpanded && fullQuoteText ? fullQuoteText : content;
-      await navigator.clipboard.writeText(textToCopy);
+      // Format with proper paragraph breaks between speakers
+      const formattedText = formatQuoteForCopy(textToCopy);
+      await navigator.clipboard.writeText(formattedText);
       setCopySuccess(true);
       setTimeout(() => setCopySuccess(false), 2000);
 

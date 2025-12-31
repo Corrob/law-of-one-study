@@ -187,6 +187,37 @@ export function formatWholeQuote(text: string): string {
   return reconstructTextFromParagraphs(allParagraphs, false, false);
 }
 
+// Format quote text for copying with proper paragraph breaks between speakers
+export function formatQuoteForCopy(text: string): string {
+  // Split by Questioner: and Ra: labels
+  const parts: string[] = [];
+  const segments = text.split(/(Questioner:|Ra:)/);
+
+  let currentLabel = "";
+
+  for (const segment of segments) {
+    const trimmed = segment.trim();
+    if (!trimmed) continue;
+
+    if (trimmed === "Questioner:" || trimmed === "Ra:") {
+      currentLabel = trimmed;
+    } else {
+      // Add label if we have one
+      if (currentLabel) {
+        if (parts.length > 0) {
+          parts.push("\n\n"); // Paragraph break before new speaker
+        }
+        parts.push(currentLabel);
+        currentLabel = "";
+      }
+      parts.push(" ");
+      parts.push(trimmed);
+    }
+  }
+
+  return parts.join("").trim();
+}
+
 // Apply sentence range to quote text (main function to use)
 export function applySentenceRangeToQuote(
   text: string,
