@@ -92,12 +92,14 @@ const thinkingMessages = [
 ];
 
 export default function ThinkingIndicator() {
-  const [messageIndex, setMessageIndex] = useState(0);
+  const [currentMessage, setCurrentMessage] = useState(() =>
+    thinkingMessages[Math.floor(Math.random() * thinkingMessages.length)]
+  );
 
   useEffect(() => {
-    // Rotate messages every 3.5 seconds for a more contemplative pace
+    // Pick a random message every 3.5 seconds for variety
     const interval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % thinkingMessages.length);
+      setCurrentMessage(thinkingMessages[Math.floor(Math.random() * thinkingMessages.length)]);
     }, 3500);
 
     return () => clearInterval(interval);
@@ -105,12 +107,12 @@ export default function ThinkingIndicator() {
 
   return (
     <div className="mb-6">
-      {/* Rotating Ra-themed message */}
+      {/* Random Ra-themed message */}
       <div
         className="text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500"
-        key={messageIndex}
+        key={currentMessage}
       >
-        {thinkingMessages[messageIndex]}
+        {currentMessage}
       </div>
     </div>
   );
