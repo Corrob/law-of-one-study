@@ -1,5 +1,48 @@
 // Utility functions for parsing and filtering Ra Material quotes
 
+// Fetch full quote from sections JSON files
+export async function fetchFullQuote(reference: string): Promise<string | null> {
+  // Extract session number from reference (e.g., "49.8" -> "49" or "Ra 49.8" -> "49")
+  const match = reference.match(/(\d+)\.\d+/);
+  if (!match) {
+    console.error("[fetchFullQuote] Failed to extract session number from:", reference);
+    return null;
+  }
+
+  const sessionNumber = match[1];
+
+  try {
+    console.log("[fetchFullQuote] Fetching /sections/" + sessionNumber + ".json");
+    const response = await fetch(`/sections/${sessionNumber}.json`);
+    if (!response.ok) {
+      console.error("[fetchFullQuote] HTTP error:", response.status, response.statusText);
+      return null;
+    }
+
+    const data = await response.json();
+
+    // Extract session.question from reference (e.g., "Ra 49.8" -> "49.8")
+    const refMatch = reference.match(/(\d+\.\d+)/);
+    if (!refMatch) {
+      console.error("[fetchFullQuote] Failed to extract key from:", reference);
+      return null;
+    }
+
+    const key = refMatch[1];
+    console.log("[fetchFullQuote] Looking for key:", key, "in data");
+    const fullText = data[key];
+
+    if (!fullText) {
+      console.error("[fetchFullQuote] Key not found in data. Available keys:", Object.keys(data).slice(0, 5));
+    }
+
+    return fullText || null;
+  } catch (error) {
+    console.error("[fetchFullQuote] Error fetching full quote:", error);
+    return null;
+  }
+}
+
 // Split text into sentences (handles Ra Material formatting)
 export function splitIntoSentences(text: string): string[] {
   // Fix periods without spaces first (same normalization)
@@ -144,16 +187,60 @@ export function formatWholeQuote(text: string): string {
   return reconstructTextFromParagraphs(allParagraphs, false, false);
 }
 
+// Format quote text for copying with proper paragraph breaks between speakers
+export function formatQuoteForCopy(text: string): string {
+  // Split by Questioner: and Ra: labels
+  const parts: string[] = [];
+  const segments = text.split(/(Questioner:|Ra:)/);
+
+  let currentLabel = "";
+
+  for (const segment of segments) {
+    const trimmed = segment.trim();
+    if (!trimmed) continue;
+
+    if (trimmed === "Questioner:" || trimmed === "Ra:") {
+      currentLabel = trimmed;
+    } else {
+      // Add label if we have one
+      if (currentLabel) {
+        if (parts.length > 0) {
+          parts.push("\n\n"); // Paragraph break before new speaker
+        }
+        parts.push(currentLabel);
+        currentLabel = "";
+      }
+      parts.push(" ");
+      parts.push(trimmed);
+    }
+  }
+
+  return parts.join("").trim();
+}
+
 // Apply sentence range to quote text (main function to use)
 export function applySentenceRangeToQuote(
   text: string,
   sentenceStart: number,
   sentenceEnd: number
 ): string {
+  console.log("[applySentenceRangeToQuote] Input text length:", text.length);
+  console.log("[applySentenceRangeToQuote] Sentence range:", sentenceStart, "-", sentenceEnd);
+
   const allParagraphs = parseIntoParagraphs(text);
+  console.log("[applySentenceRangeToQuote] Total paragraphs:", allParagraphs.length);
+  console.log(
+    "[applySentenceRangeToQuote] Paragraph ranges:",
+    allParagraphs.map((p) => `${p.sentenceStart}-${p.sentenceEnd}`)
+  );
+
   const selectedParagraphs = filterParagraphsByRange(allParagraphs, sentenceStart, sentenceEnd);
+  console.log("[applySentenceRangeToQuote] Selected paragraphs:", selectedParagraphs.length);
 
   if (selectedParagraphs.length === 0) {
+    console.warn(
+      "[applySentenceRangeToQuote] No paragraphs matched range, returning original text"
+    );
     return text; // Return original if no match
   }
 
@@ -162,5 +249,9 @@ export function applySentenceRangeToQuote(
     selectedParagraphs[selectedParagraphs.length - 1].sentenceEnd <
     allParagraphs[allParagraphs.length - 1].sentenceEnd;
 
-  return reconstructTextFromParagraphs(selectedParagraphs, hasTextBefore, hasTextAfter);
+  const result = reconstructTextFromParagraphs(selectedParagraphs, hasTextBefore, hasTextAfter);
+  console.log("[applySentenceRangeToQuote] Result length:", result.length);
+  console.log("[applySentenceRangeToQuote] Has ellipsis:", hasTextBefore, hasTextAfter);
+
+  return result;
 }

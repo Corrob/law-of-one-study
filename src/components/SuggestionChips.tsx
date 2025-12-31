@@ -44,7 +44,8 @@ export default function SuggestionChips({
       <p className="text-[var(--lo1-stardust)]/60 text-xs mb-3">
         Continue exploring:
       </p>
-      <div className="flex flex-wrap gap-2">
+      {/* Grid layout: 1 column on mobile, 2 columns on tablet, 3 on desktop */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
         {suggestions.map((suggestion, index) => (
           <motion.button
             key={index}
@@ -54,7 +55,7 @@ export default function SuggestionChips({
             onClick={() => handleClick(suggestion)}
             disabled={disabled}
             className={`
-              px-3 py-1.5 rounded-full text-sm
+              w-full px-4 py-2.5 rounded-lg text-sm text-left
               border border-[var(--lo1-gold)]/40
               bg-[var(--lo1-indigo)]/40 backdrop-blur-sm
               text-[var(--lo1-text-light)]
@@ -62,7 +63,7 @@ export default function SuggestionChips({
               ${
                 disabled
                   ? "opacity-50 cursor-not-allowed"
-                  : "hover:border-[var(--lo1-gold)]/70 hover:bg-[var(--lo1-indigo)]/60 hover:shadow-[0_0_12px_rgba(212,168,83,0.15)] cursor-pointer"
+                  : "hover:border-[var(--lo1-gold)]/70 hover:bg-[var(--lo1-indigo)]/60 hover:shadow-[0_0_12px_rgba(212,168,83,0.15)] cursor-pointer active:scale-[0.98]"
               }
             `}
           >

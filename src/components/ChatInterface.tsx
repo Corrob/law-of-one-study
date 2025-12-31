@@ -7,6 +7,7 @@ import Message from "./Message";
 import StreamingMessage from "./StreamingMessage";
 import MessageInput from "./MessageInput";
 import WelcomeScreen from "./WelcomeScreen";
+import ThinkingIndicator from "./ThinkingIndicator";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
 import { analytics } from "@/lib/analytics";
@@ -223,6 +224,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         buffer = remaining;
 
         for (const event of events) {
+          console.log("[ChatInterface] SSE event received:", { type: event.type, dataKeys: Object.keys(event.data) });
+
           if (event.type === "meta") {
             // Meta event received with quotes data - currently unused but may be needed in future
           } else if (event.type === "chunk") {
@@ -234,6 +237,15 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               url?: string;
             };
             chunkIdCounter++;
+
+            console.log("[ChatInterface] Chunk data:", {
+              type: chunkData.type,
+              hasContent: !!chunkData.content,
+              hasText: !!chunkData.text,
+              hasReference: !!chunkData.reference,
+              hasUrl: !!chunkData.url,
+              textLength: chunkData.text?.length || chunkData.content?.length,
+            });
 
             if (chunkData.type === "text" && chunkData.content) {
               responseLength += chunkData.content.length;
@@ -263,6 +275,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                   url: chunkData.url,
                 },
               });
+            } else {
+              console.warn("[ChatInterface] Chunk ignored - conditions not met:", chunkData);
             }
           } else if (event.type === "suggestions") {
             // Handle follow-up suggestions
@@ -472,22 +486,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                         onSearch={handleSend}
                       />
                     )}
-                    {showLoadingDots && (
-                      <div className="mb-6 flex gap-1">
-                        <span
-                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                          style={{ animationDelay: "0ms" }}
-                        ></span>
-                        <span
-                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                          style={{ animationDelay: "150ms" }}
-                        ></span>
-                        <span
-                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                          style={{ animationDelay: "300ms" }}
-                        ></span>
-                      </div>
-                    )}
+                    {showLoadingDots && <ThinkingIndicator />}
                   </div>
                   {/* Flexible spacer - fills remaining space so messages stay near top */}
                   <div className="flex-grow min-h-[200px]" />
