@@ -3,13 +3,15 @@
 import { Message as MessageType, MessageSegment } from "@/lib/types";
 import QuoteCard from "./QuoteCard";
 import MarkdownRenderer from "./MarkdownRenderer";
+import SuggestionChips from "./SuggestionChips";
 
 interface MessageProps {
   message: MessageType;
   onSearch?: (term: string) => void;
+  suggestions?: string[];
 }
 
-export default function Message({ message, onSearch }: MessageProps) {
+export default function Message({ message, onSearch, suggestions }: MessageProps) {
   const isUser = message.role === "user";
 
   if (isUser) {
@@ -36,6 +38,9 @@ export default function Message({ message, onSearch }: MessageProps) {
         ))
       ) : (
         <MarkdownRenderer content={message.content} onSearch={onSearch} />
+      )}
+      {suggestions && suggestions.length > 0 && onSearch && (
+        <SuggestionChips suggestions={suggestions} onSelect={onSearch} />
       )}
     </div>
   );

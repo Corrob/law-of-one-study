@@ -4,17 +4,13 @@ import { searchRaMaterial } from "@/lib/pinecone";
 import {
   QUERY_AUGMENTATION_PROMPT,
   UNIFIED_RESPONSE_PROMPT,
+  SUGGESTION_GENERATION_PROMPT,
   buildContextFromQuotes,
 } from "@/lib/prompts";
-import { Quote } from "@/lib/types";
+import { Quote, QueryIntent, IntentConfidence, ChatMessage } from "@/lib/types";
 import { applySentenceRangeToQuote, formatWholeQuote } from "@/lib/quote-utils";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { trackLLMGeneration } from "@/lib/posthog-server";
-
-interface ChatMessage {
-  role: "user" | "assistant";
-  content: string;
-}
 
 interface ChatRequest {
   message: string;
@@ -50,16 +46,52 @@ function calculateCost(promptTokens: number, completionTokens: number): number {
   return inputCost + outputCost;
 }
 
+// Build conversation context from history for enhanced prompt generation
+function buildConversationContext(history: ChatMessage[]): {
+  turnCount: number;
+  quotesUsed: string[];
+} {
+  // Count turns (each user message = 1 turn)
+  const turnCount = history.filter((m) => m.role === "user").length + 1;
+
+  // Collect all quotes used in conversation
+  const quotesUsed = history.flatMap((m) => m.quotesUsed || []).filter(Boolean) as string[];
+
+  return { turnCount, quotesUsed };
+}
+
+// Valid intents for query classification
+const VALID_INTENTS: QueryIntent[] = [
+  "quote-search",
+  "conceptual",
+  "practical",
+  "personal",
+  "comparative",
+  "meta",
+];
+
+// Valid confidence levels
+const VALID_CONFIDENCES: IntentConfidence[] = ["high", "medium", "low"];
+
 // Augment query with Ra Material terminology and detect intent
 async function augmentQuery(
-  message: string
-): Promise<{ intent: "quote-search" | "conceptual"; augmentedQuery: string }> {
+  message: string,
+  context?: { recentTopics?: string[]; previousIntent?: QueryIntent }
+): Promise<{ intent: QueryIntent; augmentedQuery: string; confidence: IntentConfidence }> {
   try {
+    // Build context block if conversation context is available
+    const contextBlock =
+      context?.recentTopics?.length || context?.previousIntent
+        ? `CONVERSATION CONTEXT:\n- Recent topics: ${context.recentTopics?.slice(-2).join(", ") || "none"}\n- Previous intent: ${context.previousIntent || "none"}\n\n`
+        : "";
+
+    const userContent = `${contextBlock}MESSAGE: ${message}`;
+
     const response = await openai.chat.completions.create({
       model: "gpt-5-mini",
       messages: [
         { role: "system", content: QUERY_AUGMENTATION_PROMPT },
-        { role: "user", content: message },
+        { role: "user", content: userContent },
       ],
       reasoning_effort: "low",
     });
@@ -68,15 +100,146 @@ async function augmentQuery(
 
     // Parse JSON response
     const parsed = JSON.parse(content);
+
+    // Validate intent is one of the allowed values
+    const intent: QueryIntent = VALID_INTENTS.includes(parsed.intent)
+      ? parsed.intent
+      : "conceptual";
+
+    // Validate confidence is one of the allowed values
+    const confidence: IntentConfidence = VALID_CONFIDENCES.includes(parsed.confidence)
+      ? parsed.confidence
+      : "medium";
+
     return {
-      intent: parsed.intent === "quote-search" ? "quote-search" : "conceptual",
+      intent,
       augmentedQuery: parsed.augmented_query || message,
+      confidence,
     };
   } catch (error) {
     console.error("[API] Query augmentation failed, using original message:", error);
-    // Fallback: use original message with "conceptual" intent
-    return { intent: "conceptual", augmentedQuery: message };
+    // Fallback: use original message with "conceptual" intent and low confidence
+    return { intent: "conceptual", augmentedQuery: message, confidence: "low" };
   }
+}
+
+// Generate follow-up suggestions based on conversation context
+async function generateSuggestions(
+  userMessage: string,
+  assistantResponse: string,
+  intent: QueryIntent,
+  context: { turnCount: number }
+): Promise<string[]> {
+  try {
+    // For short responses, include the whole thing; for longer ones, focus on ending
+    const responseForContext =
+      assistantResponse.length > 1200
+        ? `[Response summary - about ${Math.round(assistantResponse.length / 4)} words on the topic]\n\n...${assistantResponse.slice(-700)}`
+        : assistantResponse;
+
+    // Build rich context including intent and conversation depth
+    const depthNote =
+      context.turnCount >= 5
+        ? " (deep conversation - consider offering a breadth option)"
+        : context.turnCount >= 3
+          ? " (established conversation)"
+          : "";
+
+    const conversationContext = [
+      `DETECTED INTENT: ${intent}${intent === "personal" ? " (emotional/vulnerable - be gentle with suggestions)" : ""}`,
+      `CONVERSATION DEPTH: Turn ${context.turnCount}${depthNote}`,
+      ``,
+      `USER'S MESSAGE: ${userMessage}`,
+      ``,
+      `ASSISTANT'S RESPONSE:`,
+      responseForContext,
+    ].join("\n");
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-5-mini",
+      messages: [
+        { role: "system", content: SUGGESTION_GENERATION_PROMPT },
+        { role: "user", content: conversationContext },
+      ],
+      reasoning_effort: "low",
+    });
+
+    const content = response.choices[0]?.message?.content || "";
+    const parsed = JSON.parse(content);
+
+    // Validate suggestions
+    if (Array.isArray(parsed.suggestions)) {
+      const rawSuggestions = parsed.suggestions;
+      const validSuggestions = rawSuggestions
+        .filter((s: unknown) => typeof s === "string" && s.length > 0 && s.length <= 80)
+        .slice(0, 3);
+
+      // Log if suggestions were filtered out
+      if (rawSuggestions.length > validSuggestions.length) {
+        console.log("[API] Some suggestions filtered:", {
+          raw: rawSuggestions,
+          valid: validSuggestions,
+          filtered: rawSuggestions.filter(
+            (s: unknown) => typeof s !== "string" || (typeof s === "string" && s.length > 80)
+          ),
+        });
+      }
+
+      // If we have fewer than 3, pad with fallback suggestions based on intent
+      if (validSuggestions.length < 3) {
+        const fallbacks = getFallbackSuggestions(intent, validSuggestions);
+        const padded = [...validSuggestions, ...fallbacks].slice(0, 3);
+        console.log("[API] Padded suggestions:", { original: validSuggestions.length, padded: padded.length });
+        return padded;
+      }
+
+      return validSuggestions;
+    }
+    return getFallbackSuggestions(intent, []);
+  } catch (error) {
+    console.error("[API] Suggestion generation failed:", error);
+    return getFallbackSuggestions(intent, []);
+  }
+}
+
+// Fallback suggestions when LLM returns fewer than 3
+function getFallbackSuggestions(intent: QueryIntent, existing: string[]): string[] {
+  const fallbacksByIntent: Record<QueryIntent, string[]> = {
+    "quote-search": [
+      "Show me another passage",
+      "What else does Ra say about this?",
+      "Find a related quote",
+    ],
+    conceptual: [
+      "How does this connect to other concepts?",
+      "Can you explain further?",
+      "What are the practical implications?",
+    ],
+    practical: [
+      "What's the first step?",
+      "Are there other approaches?",
+      "How do I know if it's working?",
+    ],
+    personal: [
+      "What might help with this?",
+      "Is there more to explore here?",
+      "I'd like to discuss something else",
+    ],
+    comparative: [
+      "What are the key differences?",
+      "Are there other parallels?",
+      "How is Ra's view unique?",
+    ],
+    meta: [
+      "What topics can I explore?",
+      "Tell me about the densities",
+      "What is the Law of One?",
+    ],
+  };
+
+  const fallbacks = fallbacksByIntent[intent] || fallbacksByIntent.conceptual;
+  // Filter out any that are already in existing
+  return fallbacks.filter((f) => !existing.includes(f));
 }
 
 // Process streaming response and handle quote markers
@@ -271,8 +434,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Build conversation context (last 3 messages)
+    // Build conversation context (last 3 messages for LLM, full history for metadata)
     const recentHistory = history.slice(-3);
+    const { turnCount, quotesUsed } = buildConversationContext(history);
 
     // Create streaming response
     const stream = new ReadableStream({
@@ -286,9 +450,9 @@ export async function POST(request: NextRequest) {
         try {
           // Step 1: Augment query with Ra terminology and detect intent
           const augmentStartTime = Date.now();
-          const { intent, augmentedQuery } = await augmentQuery(message);
+          const { intent, augmentedQuery, confidence } = await augmentQuery(message);
           const augmentLatencyMs = Date.now() - augmentStartTime;
-          console.log("[API] Query augmentation:", { intent, augmentedQuery, latencyMs: augmentLatencyMs });
+          console.log("[API] Query augmentation:", { intent, confidence, augmentedQuery, turnCount, latencyMs: augmentLatencyMs });
 
           // Step 2: Create embedding from augmented query
           const embedding = await createEmbedding(augmentedQuery);
@@ -302,10 +466,16 @@ export async function POST(request: NextRequest) {
             url: r.url,
           }));
 
-          // Step 4: Send quotes metadata with intent
-          send("meta", { quotes: passages, intent });
+          // Step 4: Send quotes metadata with intent and confidence
+          send("meta", { quotes: passages, intent, confidence });
 
           const quotesContext = buildContextFromQuotes(passages);
+
+          // Build quote exclusion block if quotes were previously shown
+          const quoteExclusionBlock =
+            quotesUsed.length > 0
+              ? `\n\nQUOTES ALREADY SHOWN (do not reuse these references): ${quotesUsed.join(", ")}`
+              : "";
 
           // Step 5: Single streaming LLM call with unified prompt
           const response = await openai.chat.completions.create({
@@ -318,7 +488,7 @@ export async function POST(request: NextRequest) {
               })),
               {
                 role: "user",
-                content: `[Intent: ${intent}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
+                content: `[Intent: ${intent}] [Confidence: ${confidence}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}${quoteExclusionBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
               },
             ],
             reasoning_effort: "low",
@@ -348,10 +518,17 @@ export async function POST(request: NextRequest) {
               latencyMs: responseLatencyMs,
               metadata: {
                 intent,
+                confidence,
                 augmentedQuery: augmentedQuery.substring(0, 200),
                 numPassages: passages.length,
               },
             });
+          }
+
+          // Step 7: Generate follow-up suggestions
+          const suggestions = await generateSuggestions(message, fullOutput, intent, { turnCount });
+          if (suggestions.length > 0) {
+            send("suggestions", { items: suggestions });
           }
 
           send("done", {});

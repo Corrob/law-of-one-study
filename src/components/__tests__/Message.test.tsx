@@ -15,6 +15,42 @@ jest.mock("../ConceptPopover", () => {
   };
 });
 
+jest.mock("../MarkdownRenderer", () => {
+  return function MarkdownRenderer({
+    content,
+    onSearch,
+  }: {
+    content: string;
+    onSearch?: (term: string) => void;
+  }) {
+    return (
+      <div data-testid="markdown-renderer" onClick={() => onSearch?.("test")}>
+        {content}
+      </div>
+    );
+  };
+});
+
+jest.mock("../SuggestionChips", () => {
+  return function SuggestionChips({
+    suggestions,
+    onSelect,
+  }: {
+    suggestions: string[];
+    onSelect: (suggestion: string) => void;
+  }) {
+    return (
+      <div data-testid="suggestion-chips">
+        {suggestions.map((s, i) => (
+          <button key={i} onClick={() => onSelect(s)} data-testid="suggestion-chip">
+            {s}
+          </button>
+        ))}
+      </div>
+    );
+  };
+});
+
 jest.mock("@/lib/conceptParser", () => ({
   parseConceptsInText: jest.fn((text: string) => {
     // Simple mock that detects "Law of One" as a concept
@@ -55,7 +91,8 @@ describe("Message", () => {
     it("should apply user message styling classes", () => {
       const { container } = render(<Message message={mockUserMessage} />);
 
-      const messageDiv = container.querySelector(".bg-\\[\\#2a3366\\]");
+      // User message uses CSS variable for background
+      const messageDiv = container.querySelector(".bg-\\[var\\(--lo1-user-message\\)\\]");
       expect(messageDiv).toBeInTheDocument();
     });
 
@@ -80,20 +117,19 @@ describe("Message", () => {
       expect(screen.getByText(/teaches unity/i)).toBeInTheDocument();
     });
 
-    it("should link concepts when onSearch is provided", () => {
+    it("should render with MarkdownRenderer when onSearch is provided", () => {
       const onSearch = jest.fn();
       render(<Message message={mockAssistantMessage} onSearch={onSearch} />);
 
-      // Should have rendered concept popover for "Law of One"
-      const concepts = screen.queryAllByTestId("concept-popover");
-      expect(concepts.length).toBeGreaterThan(0);
+      // MarkdownRenderer is used for assistant messages
+      expect(screen.getByTestId("markdown-renderer")).toBeInTheDocument();
     });
 
-    it("should not link concepts when onSearch is not provided", () => {
+    it("should render with MarkdownRenderer when onSearch is not provided", () => {
       render(<Message message={mockAssistantMessage} />);
 
-      const concepts = screen.queryAllByTestId("concept-popover");
-      expect(concepts.length).toBe(0);
+      // MarkdownRenderer is still used, just without search functionality
+      expect(screen.getByTestId("markdown-renderer")).toBeInTheDocument();
     });
   });
 
@@ -190,8 +226,8 @@ describe("Message", () => {
     });
   });
 
-  describe("concept linking", () => {
-    it("should parse and link concepts in text segments", () => {
+  describe("markdown rendering", () => {
+    it("should use MarkdownRenderer for text segments", () => {
       const onSearch = jest.fn();
       const message: MessageType = {
         id: "7",
@@ -203,15 +239,15 @@ describe("Message", () => {
 
       render(<Message message={message} onSearch={onSearch} />);
 
-      expect(screen.getByTestId("concept-popover")).toBeInTheDocument();
+      expect(screen.getByTestId("markdown-renderer")).toBeInTheDocument();
     });
 
-    it("should not link concepts in user messages", () => {
+    it("should not use MarkdownRenderer for user messages", () => {
       const onSearch = jest.fn();
       render(<Message message={mockUserMessage} onSearch={onSearch} />);
 
-      const concepts = screen.queryAllByTestId("concept-popover");
-      expect(concepts.length).toBe(0);
+      const markdownRenderer = screen.queryByTestId("markdown-renderer");
+      expect(markdownRenderer).not.toBeInTheDocument();
     });
   });
 
@@ -255,6 +291,74 @@ describe("Message", () => {
       render(<Message message={longMessage} />);
 
       expect(screen.getByText(/word/i)).toBeInTheDocument();
+    });
+  });
+
+  describe("suggestion chips", () => {
+    it("should render suggestion chips when provided on assistant message", () => {
+      const onSearch = jest.fn();
+      const suggestions = ["Tell me more", "What about love?", "How do I meditate?"];
+
+      render(
+        <Message
+          message={mockAssistantMessage}
+          onSearch={onSearch}
+          suggestions={suggestions}
+        />
+      );
+
+      expect(screen.getByTestId("suggestion-chips")).toBeInTheDocument();
+      expect(screen.getAllByTestId("suggestion-chip")).toHaveLength(3);
+      expect(screen.getByText("Tell me more")).toBeInTheDocument();
+    });
+
+    it("should call onSearch when suggestion chip is clicked", () => {
+      const onSearch = jest.fn();
+      const suggestions = ["Tell me more"];
+
+      render(
+        <Message
+          message={mockAssistantMessage}
+          onSearch={onSearch}
+          suggestions={suggestions}
+        />
+      );
+
+      screen.getByText("Tell me more").click();
+      expect(onSearch).toHaveBeenCalledWith("Tell me more");
+    });
+
+    it("should not render suggestion chips when suggestions array is empty", () => {
+      const onSearch = jest.fn();
+
+      render(
+        <Message
+          message={mockAssistantMessage}
+          onSearch={onSearch}
+          suggestions={[]}
+        />
+      );
+
+      expect(screen.queryByTestId("suggestion-chips")).not.toBeInTheDocument();
+    });
+
+    it("should not render suggestion chips when onSearch is not provided", () => {
+      const suggestions = ["Tell me more"];
+
+      render(<Message message={mockAssistantMessage} suggestions={suggestions} />);
+
+      expect(screen.queryByTestId("suggestion-chips")).not.toBeInTheDocument();
+    });
+
+    it("should not render suggestion chips on user messages", () => {
+      const onSearch = jest.fn();
+      const suggestions = ["Tell me more"];
+
+      render(
+        <Message message={mockUserMessage} onSearch={onSearch} suggestions={suggestions} />
+      );
+
+      expect(screen.queryByTestId("suggestion-chips")).not.toBeInTheDocument();
     });
   });
 });

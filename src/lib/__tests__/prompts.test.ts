@@ -2,6 +2,7 @@ import {
   buildContextFromQuotes,
   QUERY_AUGMENTATION_PROMPT,
   UNIFIED_RESPONSE_PROMPT,
+  SUGGESTION_GENERATION_PROMPT,
 } from "../prompts";
 
 describe("prompts", () => {
@@ -11,9 +12,24 @@ describe("prompts", () => {
       expect(QUERY_AUGMENTATION_PROMPT.length).toBeGreaterThan(100);
     });
 
-    it("should contain intent detection instructions", () => {
+    it("should contain all intent types", () => {
       expect(QUERY_AUGMENTATION_PROMPT).toContain("quote-search");
       expect(QUERY_AUGMENTATION_PROMPT).toContain("conceptual");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("practical");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("personal");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("comparative");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("meta");
+    });
+
+    it("should contain confidence levels", () => {
+      expect(QUERY_AUGMENTATION_PROMPT).toContain('"high"');
+      expect(QUERY_AUGMENTATION_PROMPT).toContain('"medium"');
+      expect(QUERY_AUGMENTATION_PROMPT).toContain('"low"');
+    });
+
+    it("should prioritize personal intent for emotional content", () => {
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("personal");
+      expect(QUERY_AUGMENTATION_PROMPT).toContain("HIGHEST PRIORITY");
     });
 
     it("should contain Ra Material terminology", () => {
@@ -58,9 +74,59 @@ describe("prompts", () => {
       expect(UNIFIED_RESPONSE_PROMPT).toContain("EMOTIONAL");
     });
 
-    it("should contain guidance for both quote-focused and explanation-focused responses", () => {
-      expect(UNIFIED_RESPONSE_PROMPT).toContain("FOR \"quote-search\" INTENT");
-      expect(UNIFIED_RESPONSE_PROMPT).toContain("FOR \"conceptual\" INTENT");
+    it("should contain guidance for all intent types", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain('FOR "quote-search" INTENT');
+      expect(UNIFIED_RESPONSE_PROMPT).toContain('FOR "conceptual" INTENT');
+      expect(UNIFIED_RESPONSE_PROMPT).toContain('FOR "practical" INTENT');
+      expect(UNIFIED_RESPONSE_PROMPT).toContain('FOR "personal" INTENT');
+      expect(UNIFIED_RESPONSE_PROMPT).toContain('FOR "comparative" INTENT');
+      expect(UNIFIED_RESPONSE_PROMPT).toContain('FOR "meta" INTENT');
+    });
+
+    it("should contain blended intent handling", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("BLENDED INTENTS");
+    });
+
+    it("should contain intent mismatch guidance", () => {
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("INTENT MISMATCH");
+      expect(UNIFIED_RESPONSE_PROMPT).toContain("[Confidence: low]");
+    });
+  });
+
+  describe("SUGGESTION_GENERATION_PROMPT", () => {
+    it("should be exported and non-empty", () => {
+      expect(SUGGESTION_GENERATION_PROMPT).toBeDefined();
+      expect(SUGGESTION_GENERATION_PROMPT.length).toBeGreaterThan(100);
+    });
+
+    it("should request exactly 3 suggestions", () => {
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("EXACTLY 3");
+    });
+
+    it("should contain rules for suggestion generation", () => {
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("RULE 1");
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("RULE 2");
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("RULE 3");
+    });
+
+    it("should specify output format", () => {
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("suggestions");
+      expect(SUGGESTION_GENERATION_PROMPT).toContain('{ "suggestions":');
+    });
+
+    it("should contain bad patterns to avoid", () => {
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("BAD PATTERNS");
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("Tell me more");
+    });
+
+    it("should handle personal intent with care", () => {
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("personal");
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("gentle");
+    });
+
+    it("should consider conversation depth", () => {
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("CONVERSATION DEPTH");
+      expect(SUGGESTION_GENERATION_PROMPT).toContain("Turn");
     });
   });
 

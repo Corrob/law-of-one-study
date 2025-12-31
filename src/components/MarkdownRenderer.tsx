@@ -79,8 +79,9 @@ function LinkedText({ text, onSearch }: { text: string; onSearch: (term: string)
     const nextSeg = segments[i + 1];
 
     if (seg.type === "text") {
-      // Regular text segment
-      processedElements.push(<span key={i}>{seg.content}</span>);
+      // Plain text - don't wrap in span to allow natural word breaking
+      // React can handle strings in arrays directly
+      processedElements.push(seg.content);
     } else {
       // Concept - check if next segment is punctuation-only
       if (nextSeg && nextSeg.type === "text" && isPunctuationOnly(nextSeg.content)) {

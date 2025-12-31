@@ -57,6 +57,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
@@ -148,6 +149,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     });
     setIsStreaming(true);
     setStreamDone(false);
+    setSuggestions([]); // Clear previous suggestions
     resetQueue();
 
     // Scroll to bottom when user sends message (moves their message to top)
@@ -159,7 +161,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: content,
-          history: messages.map((m) => ({ role: m.role, content: m.content })),
+          history: messages.map((m) => ({
+            role: m.role,
+            content: m.content,
+            quotesUsed: m.segments
+              ?.filter((s) => s.type === "quote")
+              .map((s) => (s.type === "quote" ? s.quote.reference : null))
+              .filter(Boolean),
+          })),
         }),
       });
 
@@ -254,6 +263,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                   url: chunkData.url,
                 },
               });
+            }
+          } else if (event.type === "suggestions") {
+            // Handle follow-up suggestions
+            const suggestionsData = event.data as { items?: string[] };
+            if (Array.isArray(suggestionsData.items)) {
+              setSuggestions(suggestionsData.items);
             }
           } else if (event.type === "done") {
             // Mark stream as done - message will be finalized when animation completes
@@ -359,6 +374,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     resetQueue();
     setStreamDone(false);
     setIsStreaming(false);
+    setSuggestions([]);
     setPlaceholder(getPlaceholder(0));
   }, [resetQueue]);
 
@@ -433,9 +449,21 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                 >
                   {/* Messages container */}
                   <div>
-                    {messages.map((message) => (
-                      <Message key={message.id} message={message} onSearch={handleSend} />
-                    ))}
+                    {messages.map((message, index) => {
+                      // Show suggestions only on the last assistant message when not streaming
+                      const isLastAssistant =
+                        message.role === "assistant" &&
+                        index === messages.length - 1 &&
+                        !isStreaming;
+                      return (
+                        <Message
+                          key={message.id}
+                          message={message}
+                          onSearch={handleSend}
+                          suggestions={isLastAssistant ? suggestions : undefined}
+                        />
+                      );
+                    })}
                     {hasStreamingContent && (
                       <StreamingMessage
                         completedChunks={completedChunks}

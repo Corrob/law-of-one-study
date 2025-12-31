@@ -49,7 +49,7 @@ function parseSession106HTML(html: string): SessionData {
   let match;
   while ((match = sectionRegex.exec(html)) !== null) {
     const questionNum = `106.${match[2]}`;
-    const speaker = match[3];
+    const _speaker = match[3];
     const content = match[4];
 
     // Extract all <p> tags in this section

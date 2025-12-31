@@ -145,4 +145,22 @@ export const analytics = {
       posthog.capture("animation_complete", properties);
     }
   },
+
+  /**
+   * Track when follow-up suggestions are displayed
+   */
+  suggestionDisplayed: (properties: { count: number }) => {
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("suggestion_displayed", properties);
+    }
+  },
+
+  /**
+   * Track when a follow-up suggestion is clicked
+   */
+  suggestionClicked: (properties: { suggestion: string }) => {
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("suggestion_clicked", properties);
+    }
+  },
 };
