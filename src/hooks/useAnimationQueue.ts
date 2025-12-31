@@ -29,6 +29,15 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
   const [completedChunks, setCompletedChunks] = useState<AnimationChunk[]>([]);
   const [currentChunk, setCurrentChunk] = useState<AnimationChunk | null>(null);
 
+  // Log queue state changes
+  useEffect(() => {
+    console.log("[useAnimationQueue] Queue state:", {
+      queueLength: queue.length,
+      queueTypes: queue.map((c) => c.type),
+      currentChunkType: currentChunk?.type,
+    });
+  }, [queue, currentChunk]);
+
   // When queue has items and no current chunk, pull the next one
   useEffect(() => {
     if (!currentChunk && queue.length > 0) {
@@ -48,11 +57,13 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
       console.log("[useAnimationQueue] Chunk completed:", {
         type: currentChunk.type,
         reference: currentChunk.type === "quote" ? currentChunk.quote.reference : undefined,
+        queueLength: queue.length,
+        queueTypes: queue.map((c) => c.type),
       });
       setCompletedChunks((prev) => [...prev, currentChunk]);
       setCurrentChunk(null);
     }
-  }, [currentChunk]);
+  }, [currentChunk, queue]);
 
   const addChunk = useCallback((chunk: AnimationChunk) => {
     console.log("[useAnimationQueue] Adding chunk to queue:", {
