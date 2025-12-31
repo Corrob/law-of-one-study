@@ -41,14 +41,19 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
   // When queue has items and no current chunk, pull the next one
   useEffect(() => {
     if (!currentChunk && queue.length > 0) {
-      const [next, ...rest] = queue;
-      console.log("[useAnimationQueue] Pulling next chunk from queue:", {
-        type: next.type,
-        queueLength: queue.length,
-        reference: next.type === "quote" ? next.quote.reference : undefined,
+      // Use functional setState to ensure we work with latest queue state
+      setQueue((currentQueue) => {
+        if (currentQueue.length === 0) return currentQueue;
+        const [next, ...rest] = currentQueue;
+        console.log("[useAnimationQueue] Pulling next chunk from queue:", {
+          type: next.type,
+          queueLength: currentQueue.length,
+          remainingAfter: rest.length,
+          reference: next.type === "quote" ? next.quote.reference : undefined,
+        });
+        setCurrentChunk(next);
+        return rest;
       });
-      setCurrentChunk(next);
-      setQueue(rest);
     }
   }, [queue, currentChunk]);
 
