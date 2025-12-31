@@ -15,6 +15,11 @@ interface AnimatedQuoteCardProps {
 function formatRaText(text: string): { type: "questioner" | "ra" | "text"; content: string }[] {
   const segments: { type: "questioner" | "ra" | "text"; content: string }[] = [];
 
+  // Handle empty or undefined text
+  if (!text || !text.trim()) {
+    return [{ type: "text", content: "" }];
+  }
+
   // Split by Questioner: and Ra: prefixes
   const parts = text.split(/(Questioner:|Ra:)/);
 
@@ -32,6 +37,11 @@ function formatRaText(text: string): { type: "questioner" | "ra" | "text"; conte
       // Backend now handles paragraph breaks, just pass through
       segments.push({ type: currentType, content: trimmed });
     }
+  }
+
+  // If no segments were found, treat entire text as a single segment
+  if (segments.length === 0) {
+    segments.push({ type: "text", content: text.trim() });
   }
 
   return segments;
@@ -198,35 +208,26 @@ export default function AnimatedQuoteCard({
 
   return (
     <div
-      className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg"
+      className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg relative"
       style={{
         opacity: isVisible ? 1 : 0,
         transition: "opacity 300ms ease-in",
       }}
     >
-      {/* Header with reference number and copy button */}
+      {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
           Questioner
         </span>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleCopyQuote}
-            className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors"
-            title="Copy quote"
-          >
-            {copySuccess ? "✓ Copied" : "📋 Copy"}
-          </button>
-          <a
-            href={quote.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
-            onClick={() => handleLinkClick("session_link")}
-          >
-            {shortRef}
-          </a>
-        </div>
+        <a
+          href={quote.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
+          onClick={() => handleLinkClick("session_link")}
+        >
+          {shortRef}
+        </a>
       </div>
 
       {/* Content area */}
@@ -285,6 +286,44 @@ export default function AnimatedQuoteCard({
           </button>
         )}
       </div>
+
+      {/* Copy button - bottom right corner */}
+      <button
+        onClick={handleCopyQuote}
+        className="absolute bottom-2 right-2 p-1.5 rounded hover:bg-[var(--lo1-celestial)]/20 transition-colors group"
+        title="Copy quote"
+        aria-label="Copy quote"
+      >
+        {copySuccess ? (
+          <svg
+            className="w-3.5 h-3.5 text-[var(--lo1-gold)]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        ) : (
+          <svg
+            className="w-3.5 h-3.5 text-[var(--lo1-celestial)] group-hover:text-[var(--lo1-gold)] transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+        )}
+      </button>
     </div>
   );
 }

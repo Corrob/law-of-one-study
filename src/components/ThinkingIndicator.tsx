@@ -95,33 +95,17 @@ export default function ThinkingIndicator() {
   const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
-    // Rotate messages every 2.5 seconds
+    // Rotate messages every 3.5 seconds for a more contemplative pace
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % thinkingMessages.length);
-    }, 2500);
+    }, 3500);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="mb-6">
-      {/* Bouncing dots */}
-      <div className="flex gap-1 mb-2">
-        <span
-          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-          style={{ animationDelay: "0ms" }}
-        ></span>
-        <span
-          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-          style={{ animationDelay: "150ms" }}
-        ></span>
-        <span
-          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-          style={{ animationDelay: "300ms" }}
-        ></span>
-      </div>
-
-      {/* Rotating message */}
+      {/* Rotating Ra-themed message */}
       <div
         className="text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500"
         key={messageIndex}
