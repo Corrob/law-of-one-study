@@ -7,6 +7,7 @@ import Message from "./Message";
 import StreamingMessage from "./StreamingMessage";
 import MessageInput from "./MessageInput";
 import WelcomeScreen from "./WelcomeScreen";
+import ThinkingIndicator from "./ThinkingIndicator";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
 import { analytics } from "@/lib/analytics";
@@ -472,22 +473,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                         onSearch={handleSend}
                       />
                     )}
-                    {showLoadingDots && (
-                      <div className="mb-6 flex gap-1">
-                        <span
-                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                          style={{ animationDelay: "0ms" }}
-                        ></span>
-                        <span
-                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                          style={{ animationDelay: "150ms" }}
-                        ></span>
-                        <span
-                          className="w-2 h-2 bg-[var(--lo1-gold)] rounded-full animate-bounce"
-                          style={{ animationDelay: "300ms" }}
-                        ></span>
-                      </div>
-                    )}
+                    {showLoadingDots && <ThinkingIndicator />}
                   </div>
                   {/* Flexible spacer - fills remaining space so messages stay near top */}
                   <div className="flex-grow min-h-[200px]" />

@@ -1,5 +1,31 @@
 // Utility functions for parsing and filtering Ra Material quotes
 
+// Fetch full quote from sections JSON files
+export async function fetchFullQuote(reference: string): Promise<string | null> {
+  // Extract session number from reference (e.g., "49.8" -> "49")
+  const match = reference.match(/(\d+)\.\d+/);
+  if (!match) return null;
+
+  const sessionNumber = match[1];
+
+  try {
+    const response = await fetch(`/sections/${sessionNumber}.json`);
+    if (!response.ok) return null;
+
+    const data = await response.json();
+
+    // Extract session.question from reference (e.g., "Ra 49.8" -> "49.8")
+    const refMatch = reference.match(/(\d+\.\d+)/);
+    if (!refMatch) return null;
+
+    const key = refMatch[1];
+    return data[key] || null;
+  } catch (error) {
+    console.error("Error fetching full quote:", error);
+    return null;
+  }
+}
+
 // Split text into sentences (handles Ra Material formatting)
 export function splitIntoSentences(text: string): string[] {
   // Fix periods without spaces first (same normalization)

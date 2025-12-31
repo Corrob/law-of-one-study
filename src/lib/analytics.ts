@@ -72,6 +72,19 @@ export const analytics = {
   },
 
   /**
+   * Track when a quote is copied
+   */
+  quoteCopied: (properties: {
+    sessionNumber: number;
+    questionNumber: number;
+    isExpanded: boolean;
+  }) => {
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("quote_copied", properties);
+    }
+  },
+
+  /**
    * Track when a concept is interacted with
    */
   conceptHovered: (properties: { term: string }) => {
