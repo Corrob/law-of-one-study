@@ -224,10 +224,23 @@ export function applySentenceRangeToQuote(
   sentenceStart: number,
   sentenceEnd: number
 ): string {
+  console.log("[applySentenceRangeToQuote] Input text length:", text.length);
+  console.log("[applySentenceRangeToQuote] Sentence range:", sentenceStart, "-", sentenceEnd);
+
   const allParagraphs = parseIntoParagraphs(text);
+  console.log("[applySentenceRangeToQuote] Total paragraphs:", allParagraphs.length);
+  console.log(
+    "[applySentenceRangeToQuote] Paragraph ranges:",
+    allParagraphs.map((p) => `${p.sentenceStart}-${p.sentenceEnd}`)
+  );
+
   const selectedParagraphs = filterParagraphsByRange(allParagraphs, sentenceStart, sentenceEnd);
+  console.log("[applySentenceRangeToQuote] Selected paragraphs:", selectedParagraphs.length);
 
   if (selectedParagraphs.length === 0) {
+    console.warn(
+      "[applySentenceRangeToQuote] No paragraphs matched range, returning original text"
+    );
     return text; // Return original if no match
   }
 
@@ -236,5 +249,9 @@ export function applySentenceRangeToQuote(
     selectedParagraphs[selectedParagraphs.length - 1].sentenceEnd <
     allParagraphs[allParagraphs.length - 1].sentenceEnd;
 
-  return reconstructTextFromParagraphs(selectedParagraphs, hasTextBefore, hasTextAfter);
+  const result = reconstructTextFromParagraphs(selectedParagraphs, hasTextBefore, hasTextAfter);
+  console.log("[applySentenceRangeToQuote] Result length:", result.length);
+  console.log("[applySentenceRangeToQuote] Has ellipsis:", hasTextBefore, hasTextAfter);
+
+  return result;
 }
