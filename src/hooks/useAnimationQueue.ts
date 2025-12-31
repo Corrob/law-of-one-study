@@ -33,6 +33,11 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
   useEffect(() => {
     if (!currentChunk && queue.length > 0) {
       const [next, ...rest] = queue;
+      console.log("[useAnimationQueue] Pulling next chunk from queue:", {
+        type: next.type,
+        queueLength: queue.length,
+        reference: next.type === "quote" ? next.quote.reference : undefined,
+      });
       setCurrentChunk(next);
       setQueue(rest);
     }
@@ -40,12 +45,20 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
 
   const onChunkComplete = useCallback(() => {
     if (currentChunk) {
+      console.log("[useAnimationQueue] Chunk completed:", {
+        type: currentChunk.type,
+        reference: currentChunk.type === "quote" ? currentChunk.quote.reference : undefined,
+      });
       setCompletedChunks((prev) => [...prev, currentChunk]);
       setCurrentChunk(null);
     }
   }, [currentChunk]);
 
   const addChunk = useCallback((chunk: AnimationChunk) => {
+    console.log("[useAnimationQueue] Adding chunk to queue:", {
+      type: chunk.type,
+      reference: chunk.type === "quote" ? chunk.quote.reference : undefined,
+    });
     setQueue((prev) => [...prev, chunk]);
   }, []);
 
