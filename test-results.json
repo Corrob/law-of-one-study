@@ -1,0 +1,302 @@
+[
+  {
+    "query": "Find the quote where Ra says 'I am Ra'",
+    "category": "quote-search",
+    "expected_intent": "quote-search",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 68
+  },
+  {
+    "query": "Show me the passage about the veil of forgetting",
+    "category": "quote-search",
+    "expected_intent": "quote-search",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 4
+  },
+  {
+    "query": "Where does Ra discuss the Orion group?",
+    "category": "quote-search",
+    "expected_intent": "quote-search",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 4
+  },
+  {
+    "query": "Find Ra's description of the green ray energy center",
+    "category": "quote-search",
+    "expected_intent": "quote-search",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "Show me what Ra says about the Confederation",
+    "category": "quote-search",
+    "expected_intent": "quote-search",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "What is harvest?",
+    "category": "conceptual",
+    "expected_intent": "conceptual",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "Explain the concept of wanderers",
+    "category": "conceptual",
+    "expected_intent": "conceptual",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "What are the densities of consciousness?",
+    "category": "conceptual",
+    "expected_intent": "conceptual",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "What does Ra mean by catalyst?",
+    "category": "conceptual",
+    "expected_intent": "conceptual",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 4
+  },
+  {
+    "query": "How does polarization work in the Ra Material?",
+    "category": "conceptual",
+    "expected_intent": "conceptual",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "How do I meditate according to Ra?",
+    "category": "practical",
+    "expected_intent": "practical",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "What practices does Ra recommend for spiritual growth?",
+    "category": "practical",
+    "expected_intent": "practical",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "How can I balance my energy centers?",
+    "category": "practical",
+    "expected_intent": "practical",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "What should I do to process catalyst more effectively?",
+    "category": "practical",
+    "expected_intent": "practical",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "How do I know if I'm polarizing towards service-to-others?",
+    "category": "practical",
+    "expected_intent": "practical",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "I lost my mother recently and I'm really struggling",
+    "category": "personal",
+    "expected_intent": "personal",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "I feel like I don't belong on this planet",
+    "category": "personal",
+    "expected_intent": "personal",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "I'm scared of dying and what comes after",
+    "category": "personal",
+    "expected_intent": "personal",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "I'm really struggling with depression and can't find meaning",
+    "category": "personal",
+    "expected_intent": "personal",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "Why do I keep experiencing the same painful patterns?",
+    "category": "personal",
+    "expected_intent": "personal",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "How does Ra's teaching compare to Buddhism?",
+    "category": "comparative",
+    "expected_intent": "comparative",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "Is the Law of One similar to Advaita Vedanta?",
+    "category": "comparative",
+    "expected_intent": "comparative",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "What's the difference between Ra's harvest and Christian rapture?",
+    "category": "comparative",
+    "expected_intent": "comparative",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "How does the concept of densities relate to chakras in Hinduism?",
+    "category": "comparative",
+    "expected_intent": "comparative",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "Is Ra's teaching compatible with scientific materialism?",
+    "category": "comparative",
+    "expected_intent": "comparative",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "Hello! How does this tool work?",
+    "category": "meta",
+    "expected_intent": "meta",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 3
+  },
+  {
+    "query": "What sessions can I search?",
+    "category": "meta",
+    "expected_intent": "meta",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "Thanks for your help!",
+    "category": "meta",
+    "expected_intent": "meta",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "Can you help me understand how to use this site?",
+    "category": "meta",
+    "expected_intent": "meta",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  },
+  {
+    "query": "What topics does the Ra Material cover?",
+    "category": "meta",
+    "expected_intent": "meta",
+    "response_text": "",
+    "quotes_used": [],
+    "suggestions": [],
+    "error": "fetch failed",
+    "latency_ms": 2
+  }
+]
