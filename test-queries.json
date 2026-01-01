@@ -1,0 +1,184 @@
+{
+  "test_queries": [
+    {
+      "category": "quote-search",
+      "query": "Find the quote where Ra says 'I am Ra'",
+      "expected_intent": "quote-search",
+      "test_criteria": ["Returns actual quotes", "Brief contextual explanation", "Cites session numbers"]
+    },
+    {
+      "category": "quote-search",
+      "query": "Show me the passage about the veil of forgetting",
+      "expected_intent": "quote-search",
+      "test_criteria": ["Returns relevant veil quotes", "Minimal interpretation", "Direct presentation"]
+    },
+    {
+      "category": "quote-search",
+      "query": "Where does Ra discuss the Orion group?",
+      "expected_intent": "quote-search",
+      "test_criteria": ["Finds Orion references", "Multiple quote options if available", "Session context"]
+    },
+    {
+      "category": "quote-search",
+      "query": "Find Ra's description of the green ray energy center",
+      "expected_intent": "quote-search",
+      "test_criteria": ["Green ray/heart chakra quotes", "Clear reference markers", "Concise"]
+    },
+    {
+      "category": "quote-search",
+      "query": "Show me what Ra says about the Confederation",
+      "expected_intent": "quote-search",
+      "test_criteria": ["Confederation quotes", "No excessive interpretation", "Clear sources"]
+    },
+    {
+      "category": "conceptual",
+      "query": "What is harvest?",
+      "expected_intent": "conceptual",
+      "test_criteria": ["Clear explanation", "Supporting quotes", "Accessible language"]
+    },
+    {
+      "category": "conceptual",
+      "query": "Explain the concept of wanderers",
+      "expected_intent": "conceptual",
+      "test_criteria": ["Comprehensive explanation", "Ra quotes as support", "Relatable framing"]
+    },
+    {
+      "category": "conceptual",
+      "query": "What are the densities of consciousness?",
+      "expected_intent": "conceptual",
+      "test_criteria": ["Structured overview", "Examples or clarification", "Quotes woven in"]
+    },
+    {
+      "category": "conceptual",
+      "query": "What does Ra mean by catalyst?",
+      "expected_intent": "conceptual",
+      "test_criteria": ["Practical definition", "Examples", "Direct quotes"]
+    },
+    {
+      "category": "conceptual",
+      "query": "How does polarization work in the Ra Material?",
+      "expected_intent": "conceptual",
+      "test_criteria": ["Service-to-self vs service-to-others", "Clear framework", "Quote support"]
+    },
+    {
+      "category": "practical",
+      "query": "How do I meditate according to Ra?",
+      "expected_intent": "practical",
+      "test_criteria": ["Actionable steps", "Specific guidance", "Not just abstract philosophy"]
+    },
+    {
+      "category": "practical",
+      "query": "What practices does Ra recommend for spiritual growth?",
+      "expected_intent": "practical",
+      "test_criteria": ["Concrete recommendations", "Practical application", "Grounded in quotes"]
+    },
+    {
+      "category": "practical",
+      "query": "How can I balance my energy centers?",
+      "expected_intent": "practical",
+      "test_criteria": ["Step-by-step guidance", "Techniques mentioned", "Actionable advice"]
+    },
+    {
+      "category": "practical",
+      "query": "What should I do to process catalyst more effectively?",
+      "expected_intent": "practical",
+      "test_criteria": ["How-to approach", "Concrete methods", "Real-world application"]
+    },
+    {
+      "category": "practical",
+      "query": "How do I know if I'm polarizing towards service-to-others?",
+      "expected_intent": "practical",
+      "test_criteria": ["Observable indicators", "Self-reflection prompts", "Practical wisdom"]
+    },
+    {
+      "category": "personal",
+      "query": "I lost my mother recently and I'm really struggling",
+      "expected_intent": "personal",
+      "test_criteria": ["Empathetic opening", "Gentle wisdom", "Compassionate tone", "No clinical language"]
+    },
+    {
+      "category": "personal",
+      "query": "I feel like I don't belong on this planet",
+      "expected_intent": "personal",
+      "test_criteria": ["Validates feeling", "Mentions wanderers gently", "Warm and understanding"]
+    },
+    {
+      "category": "personal",
+      "query": "I'm scared of dying and what comes after",
+      "expected_intent": "personal",
+      "test_criteria": ["Acknowledges fear", "Offers comfort", "Ra's perspective as invitation"]
+    },
+    {
+      "category": "personal",
+      "query": "I'm really struggling with depression and can't find meaning",
+      "expected_intent": "personal",
+      "test_criteria": ["Compassionate acknowledgment", "No toxic positivity", "Gentle perspective"]
+    },
+    {
+      "category": "personal",
+      "query": "Why do I keep experiencing the same painful patterns?",
+      "expected_intent": "personal",
+      "test_criteria": ["Validates experience", "Catalyst framework gently", "Empowering not dismissive"]
+    },
+    {
+      "category": "comparative",
+      "query": "How does Ra's teaching compare to Buddhism?",
+      "expected_intent": "comparative",
+      "test_criteria": ["Genuine parallels", "Respectful to both", "Ra's unique framing"]
+    },
+    {
+      "category": "comparative",
+      "query": "Is the Law of One similar to Advaita Vedanta?",
+      "expected_intent": "comparative",
+      "test_criteria": ["Acknowledges resonance", "No superiority claims", "Specific differences"]
+    },
+    {
+      "category": "comparative",
+      "query": "What's the difference between Ra's harvest and Christian rapture?",
+      "expected_intent": "comparative",
+      "test_criteria": ["Respectful comparison", "Clear distinctions", "No judgment"]
+    },
+    {
+      "category": "comparative",
+      "query": "How does the concept of densities relate to chakras in Hinduism?",
+      "expected_intent": "comparative",
+      "test_criteria": ["Explores connections", "Both similarities and differences", "Ra-focused"]
+    },
+    {
+      "category": "comparative",
+      "query": "Is Ra's teaching compatible with scientific materialism?",
+      "expected_intent": "comparative",
+      "test_criteria": ["Thoughtful analysis", "No overclaiming", "Honest about tensions"]
+    },
+    {
+      "category": "meta",
+      "query": "Hello! How does this tool work?",
+      "expected_intent": "meta",
+      "test_criteria": ["Explains functionality", "Transparent about AI", "Invites exploration"]
+    },
+    {
+      "category": "meta",
+      "query": "What sessions can I search?",
+      "expected_intent": "meta",
+      "test_criteria": ["Lists available data", "Direct answer", "Welcoming"]
+    },
+    {
+      "category": "meta",
+      "query": "Thanks for your help!",
+      "expected_intent": "meta",
+      "test_criteria": ["Gracious response", "Invitation to continue", "Brief"]
+    },
+    {
+      "category": "meta",
+      "query": "Can you help me understand how to use this site?",
+      "expected_intent": "meta",
+      "test_criteria": ["Usage guidance", "Clear instructions", "Encouraging"]
+    },
+    {
+      "category": "meta",
+      "query": "What topics does the Ra Material cover?",
+      "expected_intent": "meta",
+      "test_criteria": ["Broad overview", "Invites specific questions", "Accessible introduction"]
+    }
+  ]
+}
