@@ -16,7 +16,7 @@
 
 ---
 
-## Current State (Q1 2026)
+## Current State
 
 ✅ **Shipped:**
 - AI-powered semantic search across all 106 sessions
@@ -26,434 +26,382 @@
 - Animated, personality-driven UI
 - Analytics and usage tracking
 - Support/About page with technical details
+- Product roadmap with community voting
 
 ---
 
-## Phase 1: Foundation & Engagement (Q1-Q2 2026)
-**Theme:** Make it sticky - give users reasons to return daily
+## Planned Features (By Priority)
 
-### 1.1 Favorite Quotes ⭐ HIGH PRIORITY
+Features are sorted by priority based on user value, implementation complexity, and community votes. Vote on features at [lawofone.study/roadmap](/roadmap).
+
+---
+
+### 1. Favorite Quotes ⭐ HIGHEST PRIORITY
 **User Value:** ⭐⭐⭐⭐⭐ | **Complexity:** Low-Medium
+
+Create a personal library of meaningful quotes that resonates with your study.
 
 **Features:**
 - One-click heart icon on any quote card
-- Works offline-first (localStorage)
-- Syncs to account when signed in
-- Collections/folders to organize favorites
-- Search within favorites
-- Export options (PDF, Markdown, email)
-- Share individual quotes or collections
+- Works offline-first (localStorage) with optional cloud sync
+- Organize favorites into collections/folders
+- Search within your saved quotes
+- Export options (PDF, Markdown, email to yourself)
+- Share individual quotes or entire collections
+- Beautiful gallery view of your collection
 
-**Why First:** Highest ROI feature. Creates personal library and gives users a reason to return. No auth required initially.
-
-**Technical Notes:**
-- Start with localStorage
-- Add optional cloud sync later
-- Use existing quote card component
+**Why This Matters:** Gives users a reason to return daily and builds a personal connection with the material. Works immediately without requiring an account.
 
 ---
 
-### 1.2 Optional User Authentication
-**User Value:** ⭐⭐⭐⭐ | **Complexity:** Medium
-
-**Features:**
-- Email + magic link (passwordless)
-- Social auth (Google, GitHub)
-- **Never required** for core features
-- Clear value prop: "Sync favorites across devices"
-- Privacy-focused: minimal data collection
-
-**Why Now:** Enables cloud sync for favorites and future personalization features
-
-**Technical Notes:**
-- Use Clerk, Auth0, or Supabase Auth
-- Keep anonymous usage fully functional
-- Progressive disclosure of auth benefits
-
----
-
-### 1.3 Daily Quote
+### 2. Daily Quote
 **User Value:** ⭐⭐⭐⭐ | **Complexity:** Low
 
+Start each day with wisdom from Ra.
+
 **Features:**
-- Beautiful daily quote from Ra Material
-- Rotates at midnight (user's timezone)
-- Share to social media (with attribution)
-- Option to email daily quote
+- Beautiful daily quote from the Ra Material
+- Rotates at midnight (your timezone)
+- Share to social media with proper attribution
+- Option to receive via email each morning
 - "Random Quote" button for on-demand inspiration
-- Add to favorites
+- One-click add to favorites
+- Historical archive of past daily quotes
 
-**Why Now:** Low effort, high engagement. Gives users a reason to visit daily.
-
-**Technical Notes:**
-- Server-side quote selection (prevents manipulation)
-- Seed with date for consistency
-- Open Graph tags for rich social sharing
+**Why This Matters:** Low effort, high engagement. Creates a daily habit and introduces new seekers to different concepts.
 
 ---
 
-### 1.4 Donation System
-**User Value:** ⭐⭐ (indirect) | **Complexity:** Low
-
-**Features:**
-- Non-intrusive donation options
-- One-time or monthly support
-- Multiple platforms: Ko-fi, Buy Me a Coffee, GitHub Sponsors
-- Transparency: show monthly costs and usage
-- No paywalls, no ads, no "premium" features
-- Simple "Support This Project" button
-
-**Why Now:** Ensures long-term sustainability without compromising values
-
-**Technical Notes:**
-- Use third-party platforms (Ko-fi recommended for simplicity)
-- Add donation link to header and support page
-- Monthly transparency update on costs
-
----
-
-### 1.5 Reading Progress Tracker
+### 3. Reading Progress Tracker
 **User Value:** ⭐⭐⭐⭐ | **Complexity:** Low-Medium
 
+Track your journey through all 106 sessions systematically.
+
 **Features:**
-- Track which sessions you've read (external reading)
-- Manual check-off system
-- Visual progress (e.g., "42/106 sessions read")
-- Recommendations: "You might enjoy Session X next"
-- Share your progress
+- Check off sessions as you read them externally
+- Visual progress indicator (e.g., "42/106 sessions completed")
+- Smart recommendations: "Based on what you've read, try Session X next"
+- Mark sessions as "want to read" or "currently reading"
+- Notes on each session
+- Share your reading progress
+- Works offline, syncs when signed in
 
-**Why Now:** Helps users systematically study the material, complements the search tool
-
-**Technical Notes:**
-- Works with localStorage (no auth required)
-- Syncs if authenticated
-- Simple checkbox UI
+**Why This Matters:** Helps users approach the material methodically rather than randomly. Especially valuable for newcomers who don't know where to start.
 
 ---
 
-## Phase 2: Deep Study Tools (Q3-Q4 2026)
-**Theme:** Transform casual users into dedicated students
+### 4. Adept Cycle Tracker
+**User Value:** ⭐⭐⭐⭐⭐ | **Complexity:** Medium
 
-### 2.1 Study Notes & Annotations ⭐ HIGH PRIORITY
+Track and understand the various cycles Ra describes to optimize your spiritual practice.
+
+**Features:**
+- Personal energy cycle tracking (moods, catalyst, insights)
+- Visualization of your patterns over time
+- Ra's teachings on cycles linked to your data
+- Daily/weekly/monthly cycle views
+- Moon phases and their significance
+- Optional: Astrological cycle integration
+- Insights: "You tend to experience catalyst on Tuesdays"
+- Journal integration for deeper reflection
+- Completely private, encrypted data
+- Export cycle data for personal analysis
+
+**Why This Matters:** Unique feature no other Ra tool offers. Helps adepts understand their personal rhythms and apply Ra's teachings about cycles practically. Combines ancient wisdom with modern data visualization.
+
+---
+
+### 5. Optional User Authentication
+**User Value:** ⭐⭐⭐⭐ | **Complexity:** Medium
+
+Sign in to sync your data across devices and unlock cloud features.
+
+**Features:**
+- Passwordless email login (magic link)
+- Social authentication (Google, GitHub)
+- **Never required** for core features
+- Clear value proposition: "Sync favorites, notes, and progress across devices"
+- Privacy-focused with minimal data collection
+- Export all your data anytime
+- Delete account and all data with one click
+
+**Why This Matters:** Enables advanced personalization while keeping the tool accessible to anonymous users. Foundation for multi-device experience.
+
+---
+
+### 6. Study Notes & Annotations
 **User Value:** ⭐⭐⭐⭐⭐ | **Complexity:** Medium-High
+
+Transform the tool from a search engine into your personal study journal.
 
 **Features:**
 - Attach personal notes to quotes, sessions, or concepts
-- Rich text / Markdown editor
-- Bi-directional linking (Zettelkasten/Roam-style)
+- Rich text and Markdown support
+- Bi-directional linking between notes (Zettelkasten/Roam-style)
 - Tag notes with concepts (chakras, densities, archetypes, etc.)
+- Graph view showing connections between your notes
 - Search across all your notes
-- AI assistance: "Summarize my notes on [concept]"
-- Export notes as one document
-- **Private by default**, optional public sharing
+- AI assistance: "Summarize my notes on the harvest"
+- Export all notes as one document
+- Private by default, optional public sharing
+- Reference quotes directly in your notes
 
-**Why This:** Transforms the tool from Q&A into a personal study journal. High engagement for serious students.
-
-**Technical Notes:**
-- Requires authentication
-- Use TipTap or similar for rich editing
-- Store as markdown with metadata
-- AI summarization via GPT-5
+**Why This Matters:** For serious students who want to build a personal knowledge base. Bi-directional linking reveals hidden connections in your understanding.
 
 ---
 
-### 2.2 Ra Journaling Helper
+### 7. Ra Journaling Helper
 **User Value:** ⭐⭐⭐⭐ | **Complexity:** Medium
 
+AI-powered journaling space for personal spiritual growth.
+
 **Features:**
-- Dedicated journaling space for personal reflections
-- AI-powered prompts based on Ra teachings
+- Dedicated private journaling interface
+- AI-generated prompts based on Ra's teachings:
   - "What catalyst did you experience today?"
   - "How can you show more compassion to yourself?"
-- Link journal entries to specific quotes
+  - "What patterns are you noticing in your reactions?"
+- Link journal entries to specific quotes or concepts
 - Calendar view of all entries
-- Completely private (never leaves user's account)
 - AI reflection assistant: analyze patterns, offer insights
-- Export journal
+- Tag entries by theme (catalyst, balancing, service, etc.)
+- Completely private and encrypted
+- Export journal as PDF or Markdown
+- Optional integration with cycle tracker
 
-**Why This:** Unique differentiator. Combines AI with personal spiritual growth in a way that respects Ra's teachings.
-
-**Technical Notes:**
-- Requires authentication
-- Keep journal data encrypted
-- AI prompts rotate based on concepts
-- Optional AI analysis of entries (with explicit consent)
+**Why This Matters:** Unique differentiator. Bridges the gap between reading Ra and applying the teachings. Private, judgment-free space for self-examination.
 
 ---
 
-### 2.3 Concept Explorer (Interactive Graph)
+### 8. Concept Explorer (Interactive Knowledge Graph)
 **User Value:** ⭐⭐⭐⭐⭐ | **Complexity:** Medium-High
 
+Visualize how concepts in the Ra Material interconnect.
+
 **Features:**
-- Visual graph of interconnected concepts from Ra Material
-- Nodes: major concepts (Love, Light, Harvest, Densities, etc.)
-- Edges: relationships between concepts
-- Click any concept → see related quotes
-- Zoom in/out, pan around
-- Search to find and highlight concepts
-- Pathway suggestions: "Exploring Chakras? Try Energy Centers next"
+- Interactive graph of interconnected concepts
+- Nodes: major concepts (Love, Light, Harvest, Densities, Chakras, etc.)
+- Edges: relationships and connections between concepts
+- Click any concept → see related quotes and explanations
+- Zoom, pan, and explore the knowledge space
+- Search to find and highlight specific concepts
+- Suggested pathways: "Learning about Chakras? Explore Energy Centers next"
+- Beautiful, cosmic-themed visualization
+- 3D view option for advanced exploration
 
-**Why This:** Makes abstract metaphysical concepts tangible and navigable. Leverages existing vector embeddings to find relationships.
-
-**Technical Notes:**
-- Use D3.js, Vis.js, or React Flow
-- Pre-compute concept relationships using embeddings
-- Server-side graph generation
-- Cache heavily
+**Why This Matters:** Makes abstract metaphysical concepts tangible and navigable. Leverages existing vector embeddings to discover non-obvious relationships. Perfect for visual learners.
 
 ---
 
-### 2.4 Study Paths (Guided Courses)
+### 9. Guided Study Paths
 **User Value:** ⭐⭐⭐⭐ | **Complexity:** Medium
 
+Curated learning journeys for different levels and interests.
+
 **Features:**
-- Curated learning paths for different topics:
-  - "Introduction to the Law of One" (for beginners)
-  - "Understanding the Densities"
-  - "Working with Archetypes"
-  - "The Harvest"
-- Step-by-step lessons with:
-  - Key quotes
-  - AI-generated explanations
+- Pre-built study paths:
+  - "Introduction to the Law of One" (beginners)
+  - "Understanding the Seven Densities"
+  - "Working with the Archetypes"
+  - "The Harvest: Preparation and Understanding"
+  - "Balancing Exercises and Techniques"
+  - "The Nature of the Mind/Body/Spirit Complex"
+- Each path includes:
+  - Sequential lessons with key quotes
+  - AI-generated explanations in plain language
   - Reflection prompts
-  - Quizzes (optional)
+  - Optional knowledge checks
+  - Estimated time commitment
 - Track progress through each path
-- Certificate of completion (optional, fun)
+- Unlock paths as you complete prerequisites
+- Community-contributed paths (moderated)
+- Shareable completion certificates
 
-**Why This:** Addresses biggest user pain point - "Where do I start?" Lowers barrier for newcomers.
-
-**Technical Notes:**
-- Content-heavy: requires curation
-- Start with 2-3 paths, expand based on demand
-- Use existing quote + AI infrastructure
-- Track progress in user profile
+**Why This Matters:** Addresses the biggest barrier for newcomers: "Where do I start?" Provides structure in an otherwise overwhelming body of material.
 
 ---
 
-### 2.5 Enhanced Search Features
+### 10. Enhanced Search Features
 **User Value:** ⭐⭐⭐ | **Complexity:** Low-Medium
 
+Power tools for advanced searchers.
+
 **Features:**
-- Search history (see past questions)
-- "Related questions" based on current query
-- Filter by session number or book
-- Advanced filters: question-only, Ra-only, specific speakers
-- Bookmark/save searches
+- Search history (see your past questions)
+- "Related questions others have asked"
+- Filter by session number, book, or speaker
+- Advanced filters: questions only, Ra only, Don only
+- Save and name searches
+- Search within specific concepts or topics
+- Boolean search operators (AND, OR, NOT)
+- Regex support for advanced users
+- Export search results
 
-**Why This:** Improves core search experience for power users
-
-**Technical Notes:**
-- Add filters to existing API
-- Store search history client-side or in account
+**Why This Matters:** Improves the core experience for power users who return frequently.
 
 ---
 
-## Phase 3: Community & Content (2027)
-**Theme:** Build a community of seekers
-
-### 3.1 Weekly Newsletter
+### 11. Weekly Newsletter
 **User Value:** ⭐⭐⭐ | **Complexity:** Medium
 
+Curated wisdom delivered to your inbox.
+
 **Features:**
-- Email signup (no account needed)
-- Weekly curated content:
-  - Quote of the week with commentary
-  - Deep dive on one concept
-  - Community insights (if discussion feature exists)
-  - New features / updates
-- Personalization based on study interests
-- Email-only option (no login required)
-- Easy unsubscribe
+- Email signup (no account required)
+- Weekly content:
+  - Quote of the week with deep-dive commentary
+  - Exploration of one key concept
+  - Study tips and tool features
+  - Community highlights (if discussion features exist)
+- Personalization based on your study interests
+- Beautiful, readable email design
+- Archive of past newsletters on the site
+- Easy one-click unsubscribe
 
-**Why Then:** Needs content pipeline and editorial workflow. Better after user base grows.
-
-**Technical Notes:**
-- Use Resend, SendGrid, or Mailchimp
-- Automate where possible
-- A/B test content formats
+**Why This Matters:** Keeps the community engaged between visits. Editorial content adds value beyond the raw tool.
 
 ---
 
-### 3.2 Onboarding Email Sequence
+### 12. Onboarding Email Sequence
 **User Value:** ⭐⭐⭐⭐ | **Complexity:** Low-Medium
 
+Welcome new users and teach them how to get the most from the tool.
+
 **Features:**
-- 7-day email sequence for new users:
-  - Day 1: Welcome, how to use the tool
-  - Day 2: "What is the Law of One?"
-  - Day 3: Key concept - Densities
-  - Day 4: Key concept - Harvest
-  - Day 5: How to study effectively
-  - Day 6: Favorite quotes feature
-  - Day 7: Join the community / feedback
-- Links to relevant tool features
-- Actionable prompts to engage with site
+- 7-day automated email course:
+  - Day 1: Welcome! How to use this tool effectively
+  - Day 2: "What is the Law of One?" (primer)
+  - Day 3: Understanding densities
+  - Day 4: The nature of the harvest
+  - Day 5: How to study the Ra Material
+  - Day 6: Using favorites and notes
+  - Day 7: Join the community & give feedback
+- Each email links to relevant tool features
+- Actionable prompts to engage with the site
+- Track open rates to improve content
+- Easy opt-out at any time
 
-**Why Then:** Builds on newsletter infrastructure
-
-**Technical Notes:**
-- Triggered by email signup or account creation
-- Easy opt-out
-- Track open rates and engagement
+**Why This Matters:** Increases retention by helping users discover features and understand the material.
 
 ---
 
-### 3.3 Community Discussion Boards
-**User Value:** ⭐⭐⭐⭐ | **Complexity:** High
-
-**Features:**
-- Discussion threads per session or concept
-- Upvote/downvote system
-- Moderation tools (community-driven)
-- Link discussions to specific quotes
-- AI moderation: flag off-topic or harmful content
-- User reputation system
-
-**Why Then:** Requires moderation resources. Better with established user base.
-
-**Technical Notes:**
-- Use Discourse, Flarum, or custom build
-- Integrate with existing auth
-- AI-powered moderation to reduce manual work
-
----
-
-### 3.4 Quizzes & Knowledge Tests
+### 13. Quizzes & Knowledge Checks
 **User Value:** ⭐⭐⭐ | **Complexity:** Medium-High
 
+Test and deepen your understanding through interactive quizzes.
+
 **Features:**
-- Topic-based quizzes (Densities, Chakras, etc.)
+- Topic-based quizzes (Densities, Chakras, Archetypes, etc.)
 - Multiple choice and open-ended questions
 - AI-generated explanations for each answer
-- Progressive difficulty
-- Leaderboard (optional, gamification)
-- Share results
+- Progressive difficulty levels
+- Track your knowledge growth over time
+- "Challenge Mode" for advanced students
+- Optional leaderboard (anonymous or named)
+- Share results with friends
+- Adaptive quizzing: focuses on areas you're weak in
 
-**Why Then:** Content-heavy. Better after study paths are established.
-
-**Technical Notes:**
-- AI-generated quiz questions from quotes
-- Store questions in database
-- Track user performance
+**Why This Matters:** Active recall strengthens learning. Gamification makes studying engaging. Reveals gaps in understanding.
 
 ---
 
-## Phase 4: Immersive Experiences (2027+)
-**Theme:** Multi-modal learning
+### 14. Guided Meditations
+**User Value:** ⭐⭐⭐⭐ | **Complexity:** Medium (content production)
 
-### 4.1 Guided Meditations
-**User Value:** ⭐⭐⭐⭐ | **Complexity:** Medium (content) + Low (tech)
+Audio meditations based on Ra's teachings.
 
 **Features:**
-- Audio meditations based on Ra concepts
-  - Chakra balancing
+- Professionally produced guided meditations:
+  - Chakra balancing (individual and full system)
   - Meeting your higher self
-  - Contemplating unity
-- Multiple lengths (5min, 15min, 30min)
-- Transcripts available
-- Background soundscapes (optional)
-- Download for offline use
-- Timer for silent meditation
+  - Contemplating unity and the One Infinite Creator
+  - Forgiveness and acceptance practices
+  - Crystallization exercises
+- Multiple lengths: 5, 15, and 30 minutes
+- Full transcripts available
+- Optional background soundscapes (binaural, nature, cosmic)
+- Download for offline listening
+- Simple meditation timer for silent practice
+- Integration with journaling feature
 
-**Why Then:** Requires audio production. Better with budget from donations.
-
-**Technical Notes:**
-- Professional voice recording or AI voice (ElevenLabs)
-- Host audio files on CDN
-- Simple audio player UI
-- Track completion (optional)
+**Why This Matters:** Moves beyond intellectual study into experiential practice. Audio content appeals to different learning styles. Can be supported by donations.
 
 ---
 
-### 4.2 Mobile Apps (iOS/Android)
-**User Value:** ⭐⭐⭐⭐ | **Complexity:** Very High
+### 15. Donation System
+**User Value:** ⭐⭐ (indirect) | **Complexity:** Low
+
+Sustain the project without compromising its values.
 
 **Features:**
-- Native mobile apps
-- Offline access to favorites and downloaded content
-- Push notifications for daily quotes
-- Mobile-optimized journaling
-- Audio meditations
+- Simple, non-intrusive donation options
+- One-time or monthly support
+- Multiple platforms: Ko-fi, Buy Me a Coffee, GitHub Sponsors
+- Full transparency: monthly costs and usage statistics published
+- **No paywalls, no ads, no premium features**
+- Optional "supporter" badge (if user wants recognition)
+- Direct link to support L/L Research as well
+- Explanation of how funds are used
 
-**Why Then:** Large development effort. Better once web app is feature-rich.
-
-**Technical Notes:**
-- React Native or Flutter
-- Share backend with web app
-- Offline-first architecture
+**Why This Matters:** Ensures long-term sustainability without betraying the open, free nature of Ra's teachings.
 
 ---
 
-### 4.3 AI Conversation Mode
-**User Value:** ⭐⭐⭐ | **Complexity:** Medium
+## Removed from Consideration
 
-**Features:**
-- Voice input/output for questions
-- Conversation mode: "Talk to Ra" (with clear disclaimers)
-- Multimodal: text + voice
-- Accessibility feature for visually impaired
+The following features have been removed as they're too complex, too long-term, or don't align with current priorities:
 
-**Why Then:** Requires voice infrastructure. Nice-to-have.
+- **Native Mobile Apps** - Better to perfect the web experience first
+- **Voice Conversation Mode** - Complex infrastructure, unclear value
+- **Discussion Boards** - Requires significant moderation resources
 
-**Technical Notes:**
-- OpenAI Whisper for speech-to-text
-- Text-to-speech for responses
-- Clear disclaimer: AI interpretation, not actual channeling
+These may be reconsidered in the future based on community demand and available resources.
 
 ---
 
 ## Feature Voting System 🗳️
-**Coming Soon!**
 
-We're building a public voting system so the community can prioritize features:
-- Upvote your most wanted features
+Help us prioritize! Visit [lawofone.study/roadmap](/roadmap) to:
+- Vote for your most wanted features
 - Submit new feature ideas
-- See what others are excited about
-- Transparent roadmap based on votes + feasibility
+- See what the community is excited about
+- View real-time priority ranking
 
-Vote at: `lawofone.study/roadmap` (coming Q1 2026)
+Your votes directly influence what we build next.
 
 ---
 
 ## How We Decide Priority
 
-**High Priority = High User Value + Medium-Low Complexity**
+**High Priority = High User Value + Reasonable Complexity + Community Interest**
 
 Factors we consider:
-1. **User Value** - How much does this help students?
-2. **Complexity** - Time and resources required
+1. **User Value** - How much does this help students of the Ra Material?
+2. **Complexity** - Time and resources required to build well
 3. **Dependencies** - What needs to exist first?
 4. **Community Votes** - What do users want most?
 5. **Mission Alignment** - Does it honor Ra's teachings?
 6. **Sustainability** - Does it help the project long-term?
+7. **Uniqueness** - Does it offer something unavailable elsewhere?
 
 ---
 
 ## How You Can Help
 
-1. **Vote on Features** - Coming soon at `/roadmap`
-2. **Contribute Code** - We're open source! See `CONTRIBUTING.md`
+1. **Vote on Features** - [lawofone.study/roadmap](/roadmap)
+2. **Contribute Code** - We're open source! See [CONTRIBUTING.md](CONTRIBUTING.md)
 3. **Share Feedback** - [Open a GitHub issue](https://github.com/Corrob/law-of-one-study/issues)
-4. **Support the Project** - Help cover costs (donation link coming soon)
+4. **Support the Project** - Help cover hosting and API costs (coming soon)
 5. **Spread the Word** - Tell other seekers about this tool
-
----
-
-## Timeline Summary
-
-| Phase | Timeframe | Focus |
-|-------|-----------|-------|
-| Phase 1 | Q1-Q2 2026 | Foundation & Engagement |
-| Phase 2 | Q3-Q4 2026 | Deep Study Tools |
-| Phase 3 | 2027 | Community & Content |
-| Phase 4 | 2027+ | Immersive Experiences |
+6. **Suggest Features** - What are we missing?
 
 ---
 
 ## Questions or Suggestions?
 
-This roadmap is a living document. We want to hear from you!
+This roadmap is a living document shaped by the community.
 
+- **Vote on Features:** [lawofone.study/roadmap](/roadmap)
 - **GitHub Discussions:** [github.com/Corrob/law-of-one-study/discussions](https://github.com/Corrob/law-of-one-study/discussions)
 - **GitHub Issues:** [github.com/Corrob/law-of-one-study/issues](https://github.com/Corrob/law-of-one-study/issues)
 

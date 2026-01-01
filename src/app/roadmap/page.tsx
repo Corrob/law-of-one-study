@@ -67,7 +67,6 @@ function FeatureCard({
     Medium: "text-yellow-400",
     "Medium-High": "text-orange-400",
     High: "text-orange-500",
-    "Very High": "text-red-400",
   };
 
   const statusInfo = {
@@ -88,19 +87,21 @@ function FeatureCard({
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
+            {/* Priority Badge */}
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--lo1-gold)]/20 text-[var(--lo1-gold)] font-bold text-sm flex-shrink-0">
+              {feature.priority}
+            </div>
             <h3 className="text-xl font-semibold text-[var(--lo1-starlight)]">{feature.title}</h3>
             <span
-              className={`text-xs px-2 py-1 rounded-full ${statusInfo[feature.status].color} bg-[var(--lo1-indigo)]/60`}
+              className={`text-xs px-2 py-1 rounded-full ${statusInfo[feature.status].color} bg-[var(--lo1-indigo)]/60 flex-shrink-0`}
             >
               {statusInfo[feature.status].label}
             </span>
           </div>
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex items-center gap-3 text-sm flex-wrap">
             <StarRating value={feature.userValue} />
             <span className="text-[var(--lo1-stardust)]">•</span>
             <span className={complexityColors[feature.complexity]}>{feature.complexity}</span>
-            <span className="text-[var(--lo1-stardust)]">•</span>
-            <span className="text-[var(--lo1-celestial)]">{feature.phase}</span>
           </div>
         </div>
 
@@ -108,7 +109,7 @@ function FeatureCard({
         <button
           onClick={onVote}
           disabled={feature.status === "shipped"}
-          className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all duration-200 ${
+          className={`flex flex-col items-center gap-1 px-4 py-2 rounded-xl transition-all duration-200 flex-shrink-0 ${
             hasVoted
               ? "bg-[var(--lo1-gold)]/20 border-2 border-[var(--lo1-gold)] text-[var(--lo1-gold)]"
               : "bg-[var(--lo1-indigo)]/60 border-2 border-[var(--lo1-celestial)]/40 text-[var(--lo1-celestial)] hover:border-[var(--lo1-gold)]/60 hover:text-[var(--lo1-gold)]"
@@ -140,9 +141,8 @@ function FeatureCard({
 export default function RoadmapPage() {
   const [features, setFeatures] = useState(roadmapFeatures);
   const [votes, setVotes] = useState<VoteData>({});
-  const [selectedPhase, setSelectedPhase] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"votes" | "value" | "phase">("votes");
+  const [sortBy, setSortBy] = useState<"priority" | "votes" | "value">("priority");
 
   // Load votes from localStorage on mount
   useEffect(() => {
@@ -150,14 +150,6 @@ export default function RoadmapPage() {
     if (storedVotes) {
       const parsedVotes: VoteData = JSON.parse(storedVotes);
       setVotes(parsedVotes);
-
-      // Update vote counts in features
-      setFeatures((prevFeatures) =>
-        prevFeatures.map((f) => ({
-          ...f,
-          votes: parsedVotes[f.id] ? f.votes + 1 : f.votes,
-        }))
-      );
     }
 
     // Load global vote counts from localStorage
@@ -212,18 +204,15 @@ export default function RoadmapPage() {
 
   // Filter and sort features
   const filteredFeatures = features
-    .filter((f) => selectedPhase === "all" || f.phase === selectedPhase)
     .filter((f) => selectedCategory === "all" || f.category === selectedCategory)
     .sort((a, b) => {
+      if (sortBy === "priority") return a.priority - b.priority; // Lower number = higher priority
       if (sortBy === "votes") return b.votes - a.votes;
       if (sortBy === "value") return b.userValue - a.userValue;
-      // phase sorting
-      const phaseOrder = { "Phase 1": 1, "Phase 2": 2, "Phase 3": 3, "Phase 4": 4 };
-      return phaseOrder[a.phase] - phaseOrder[b.phase];
+      return 0;
     });
 
-  const phases = ["all", "Phase 1", "Phase 2", "Phase 3", "Phase 4"];
-  const categories = ["all", "foundation", "study-tools", "community", "content", "immersive"];
+  const categories = ["all", "foundation", "study-tools", "content", "immersive"];
 
   return (
     <main className="min-h-dvh flex flex-col cosmic-bg relative">
@@ -275,38 +264,17 @@ export default function RoadmapPage() {
 
           {/* Filters and Sort */}
           <div className="mb-8 flex flex-wrap gap-4 items-center justify-between bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/40 rounded-2xl p-6">
-            {/* Phase Filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-[var(--lo1-stardust)] font-medium">Phase:</span>
-              <div className="flex gap-2 flex-wrap">
-                {phases.map((phase) => (
-                  <button
-                    key={phase}
-                    onClick={() => setSelectedPhase(phase)}
-                    className={`px-3 py-1 rounded-lg text-sm transition-all ${
-                      selectedPhase === phase
-                        ? "bg-[var(--lo1-gold)]/20 text-[var(--lo1-gold)] border border-[var(--lo1-gold)]"
-                        : "bg-[var(--lo1-indigo)]/60 text-[var(--lo1-celestial)] border border-[var(--lo1-celestial)]/30 hover:border-[var(--lo1-gold)]/50"
-                    }`}
-                  >
-                    {phase === "all" ? "All Phases" : phase}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             {/* Category Filter */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-[var(--lo1-stardust)] font-medium">Category:</span>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-1 rounded-lg text-sm bg-[var(--lo1-indigo)]/60 text-[var(--lo1-celestial)] border border-[var(--lo1-celestial)]/30 hover:border-[var(--lo1-gold)]/50 focus:border-[var(--lo1-gold)] focus:outline-none"
+                className="px-3 py-2 rounded-lg text-sm bg-[var(--lo1-indigo)]/60 text-[var(--lo1-celestial)] border border-[var(--lo1-celestial)]/30 hover:border-[var(--lo1-gold)]/50 focus:border-[var(--lo1-gold)] focus:outline-none"
               >
                 <option value="all">All Categories</option>
                 <option value="foundation">Foundation</option>
                 <option value="study-tools">Study Tools</option>
-                <option value="community">Community</option>
                 <option value="content">Content</option>
                 <option value="immersive">Immersive</option>
               </select>
@@ -317,12 +285,12 @@ export default function RoadmapPage() {
               <span className="text-sm text-[var(--lo1-stardust)] font-medium">Sort by:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "votes" | "value" | "phase")}
-                className="px-3 py-1 rounded-lg text-sm bg-[var(--lo1-indigo)]/60 text-[var(--lo1-celestial)] border border-[var(--lo1-celestial)]/30 hover:border-[var(--lo1-gold)]/50 focus:border-[var(--lo1-gold)] focus:outline-none"
+                onChange={(e) => setSortBy(e.target.value as "priority" | "votes" | "value")}
+                className="px-3 py-2 rounded-lg text-sm bg-[var(--lo1-indigo)]/60 text-[var(--lo1-celestial)] border border-[var(--lo1-celestial)]/30 hover:border-[var(--lo1-gold)]/50 focus:border-[var(--lo1-gold)] focus:outline-none"
               >
+                <option value="priority">Priority (Default)</option>
                 <option value="votes">Most Votes</option>
                 <option value="value">User Value</option>
-                <option value="phase">Phase</option>
               </select>
             </div>
           </div>
@@ -378,7 +346,13 @@ export default function RoadmapPage() {
           {/* Legend */}
           <div className="mt-12 p-6 bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/40 rounded-2xl">
             <h3 className="text-lg font-semibold text-[var(--lo1-starlight)] mb-4">Legend</h3>
-            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+            <div className="grid sm:grid-cols-3 gap-4 text-sm">
+              <div>
+                <p className="text-[var(--lo1-gold)] font-medium mb-2">Priority Number</p>
+                <p className="text-[var(--lo1-stardust)]">
+                  Lower numbers = higher priority. Priority 1 is the most important feature.
+                </p>
+              </div>
               <div>
                 <p className="text-[var(--lo1-gold)] font-medium mb-2">User Value (Stars)</p>
                 <p className="text-[var(--lo1-stardust)]">
