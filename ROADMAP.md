@@ -360,15 +360,15 @@ These may be reconsidered in the future based on community demand and available 
 
 ---
 
-## Feature Voting System 🗳️
+## Community Input 💬
 
-Help us prioritize! Visit [lawofone.study/roadmap](/roadmap) to:
-- Vote for your most wanted features
-- Submit new feature ideas
-- See what the community is excited about
-- View real-time priority ranking
+We want to hear from you! Help shape the future of this tool:
 
-Your votes directly influence what we build next.
+- **Feature Feedback:** Share your thoughts on these features via [GitHub Issues](https://github.com/Corrob/law-of-one-study/issues)
+- **New Ideas:** Have a feature we haven't thought of? [Open a feature request](https://github.com/Corrob/law-of-one-study/issues/new?labels=feature-request)
+- **Discussions:** Join the conversation in [GitHub Discussions](https://github.com/Corrob/law-of-one-study/discussions)
+
+Periodically, we'll gather community input through surveys shared on r/lawofone and other communities to help prioritize what to build next.
 
 ---
 
@@ -389,12 +389,11 @@ Factors we consider:
 
 ## How You Can Help
 
-1. **Vote on Features** - [lawofone.study/roadmap](/roadmap)
+1. **Share Feedback** - [Open a GitHub issue](https://github.com/Corrob/law-of-one-study/issues) or discussion
 2. **Contribute Code** - We're open source! See [CONTRIBUTING.md](CONTRIBUTING.md)
-3. **Share Feedback** - [Open a GitHub issue](https://github.com/Corrob/law-of-one-study/issues)
-4. **Support the Project** - Help cover hosting and API costs (coming soon)
-5. **Spread the Word** - Tell other seekers about this tool
-6. **Suggest Features** - What are we missing?
+3. **Support the Project** - Help cover hosting and API costs (coming soon)
+4. **Spread the Word** - Tell other seekers about this tool
+5. **Suggest Features** - What are we missing?
 
 ---
 
@@ -402,9 +401,9 @@ Factors we consider:
 
 This roadmap is a living document shaped by the community.
 
-- **Vote on Features:** [lawofone.study/roadmap](/roadmap)
 - **GitHub Discussions:** [github.com/Corrob/law-of-one-study/discussions](https://github.com/Corrob/law-of-one-study/discussions)
 - **GitHub Issues:** [github.com/Corrob/law-of-one-study/issues](https://github.com/Corrob/law-of-one-study/issues)
+- **Feature Requests:** [Submit new ideas](https://github.com/Corrob/law-of-one-study/issues/new?labels=feature-request)
 
 ---
 

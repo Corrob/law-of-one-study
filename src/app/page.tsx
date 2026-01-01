@@ -59,26 +59,6 @@ export default function Home() {
           </button>
           <div className="flex items-center gap-2">
             <Link
-              href="/roadmap"
-              className="flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded hover:bg-[var(--lo1-gold)]/10"
-              title="Feature roadmap and voting"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
-              >
-                <path d="M3 3v18h18" />
-                <path d="m19 9-5 5-4-4-3 3" />
-              </svg>
-              <span className="hidden sm:inline">Roadmap</span>
-            </Link>
-            <Link
               href="/support"
               className="flex items-center gap-2 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded hover:bg-[var(--lo1-gold)]/10"
               title="About this tool"
