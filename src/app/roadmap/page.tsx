@@ -92,16 +92,25 @@ function FeatureCard({
               {feature.priority}
             </div>
             <h3 className="text-xl font-semibold text-[var(--lo1-starlight)]">{feature.title}</h3>
-            <span
-              className={`text-xs px-2 py-1 rounded-full ${statusInfo[feature.status].color} bg-[var(--lo1-indigo)]/60 flex-shrink-0`}
-            >
-              {statusInfo[feature.status].label}
-            </span>
+            {/* Only show status badge if in-progress or shipped */}
+            {feature.status !== "planned" && (
+              <span
+                className={`text-xs px-2 py-1 rounded-full ${statusInfo[feature.status].color} bg-[var(--lo1-indigo)]/60 flex-shrink-0`}
+              >
+                {statusInfo[feature.status].label}
+              </span>
+            )}
           </div>
-          <div className="flex items-center gap-3 text-sm flex-wrap">
-            <StarRating value={feature.userValue} />
+          <div className="flex items-center gap-4 text-sm flex-wrap">
+            <div className="flex items-center gap-2">
+              <span className="text-[var(--lo1-stardust)]">User Impact:</span>
+              <StarRating value={feature.userValue} />
+            </div>
             <span className="text-[var(--lo1-stardust)]">•</span>
-            <span className={complexityColors[feature.complexity]}>{feature.complexity}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[var(--lo1-stardust)]">Dev Effort:</span>
+              <span className={complexityColors[feature.complexity]}>{feature.complexity}</span>
+            </div>
           </div>
         </div>
 
@@ -141,8 +150,6 @@ function FeatureCard({
 export default function RoadmapPage() {
   const [features, setFeatures] = useState(roadmapFeatures);
   const [votes, setVotes] = useState<VoteData>({});
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"priority" | "votes" | "value">("priority");
 
   // Load votes from localStorage on mount
   useEffect(() => {
@@ -202,17 +209,8 @@ export default function RoadmapPage() {
     localStorage.setItem("roadmap-vote-counts", JSON.stringify(updatedCounts));
   };
 
-  // Filter and sort features
-  const filteredFeatures = features
-    .filter((f) => selectedCategory === "all" || f.category === selectedCategory)
-    .sort((a, b) => {
-      if (sortBy === "priority") return a.priority - b.priority; // Lower number = higher priority
-      if (sortBy === "votes") return b.votes - a.votes;
-      if (sortBy === "value") return b.userValue - a.userValue;
-      return 0;
-    });
-
-  const categories = ["all", "foundation", "study-tools", "content", "immersive"];
+  // Always sort by priority (lower number = higher priority)
+  const sortedFeatures = [...features].sort((a, b) => a.priority - b.priority);
 
   return (
     <main className="min-h-dvh flex flex-col cosmic-bg relative">
@@ -262,43 +260,10 @@ export default function RoadmapPage() {
             </div>
           </div>
 
-          {/* Filters and Sort */}
-          <div className="mb-8 flex flex-wrap gap-4 items-center justify-between bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/40 rounded-2xl p-6">
-            {/* Category Filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-[var(--lo1-stardust)] font-medium">Category:</span>
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 rounded-lg text-sm bg-[var(--lo1-indigo)]/60 text-[var(--lo1-celestial)] border border-[var(--lo1-celestial)]/30 hover:border-[var(--lo1-gold)]/50 focus:border-[var(--lo1-gold)] focus:outline-none"
-              >
-                <option value="all">All Categories</option>
-                <option value="foundation">Foundation</option>
-                <option value="study-tools">Study Tools</option>
-                <option value="content">Content</option>
-                <option value="immersive">Immersive</option>
-              </select>
-            </div>
-
-            {/* Sort */}
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-[var(--lo1-stardust)] font-medium">Sort by:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "priority" | "votes" | "value")}
-                className="px-3 py-2 rounded-lg text-sm bg-[var(--lo1-indigo)]/60 text-[var(--lo1-celestial)] border border-[var(--lo1-celestial)]/30 hover:border-[var(--lo1-gold)]/50 focus:border-[var(--lo1-gold)] focus:outline-none"
-              >
-                <option value="priority">Priority (Default)</option>
-                <option value="votes">Most Votes</option>
-                <option value="value">User Value</option>
-              </select>
-            </div>
-          </div>
-
           {/* Features Grid */}
           <div className="grid md:grid-cols-2 gap-6 mb-12">
             <AnimatePresence mode="popLayout">
-              {filteredFeatures.map((feature) => (
+              {sortedFeatures.map((feature) => (
                 <FeatureCard
                   key={feature.id}
                   feature={feature}
@@ -345,24 +310,24 @@ export default function RoadmapPage() {
 
           {/* Legend */}
           <div className="mt-12 p-6 bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/40 rounded-2xl">
-            <h3 className="text-lg font-semibold text-[var(--lo1-starlight)] mb-4">Legend</h3>
+            <h3 className="text-lg font-semibold text-[var(--lo1-starlight)] mb-4">How to Read This</h3>
             <div className="grid sm:grid-cols-3 gap-4 text-sm">
               <div>
                 <p className="text-[var(--lo1-gold)] font-medium mb-2">Priority Number</p>
                 <p className="text-[var(--lo1-stardust)]">
-                  Lower numbers = higher priority. Priority 1 is the most important feature.
+                  Lower = higher priority. #1 is what we're building next.
                 </p>
               </div>
               <div>
-                <p className="text-[var(--lo1-gold)] font-medium mb-2">User Value (Stars)</p>
+                <p className="text-[var(--lo1-gold)] font-medium mb-2">User Impact</p>
                 <p className="text-[var(--lo1-stardust)]">
-                  How valuable this feature is to students of the Ra Material (1-5 stars)
+                  How valuable this feature is to students (⭐ to ⭐⭐⭐⭐⭐)
                 </p>
               </div>
               <div>
-                <p className="text-[var(--lo1-gold)] font-medium mb-2">Complexity</p>
+                <p className="text-[var(--lo1-gold)] font-medium mb-2">Dev Effort</p>
                 <p className="text-[var(--lo1-stardust)]">
-                  How much time and resources required to build this feature
+                  Time and complexity to build (Low to High)
                 </p>
               </div>
             </div>

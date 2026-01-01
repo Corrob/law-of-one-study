@@ -221,23 +221,24 @@ Curated learning journeys for different levels and interests.
 
 ---
 
-### 10. Enhanced Search Features
-**User Value:** ⭐⭐⭐ | **Complexity:** Low-Medium
+### 10. Semantic Search Explorer
+**User Value:** ⭐⭐⭐⭐ | **Complexity:** Low-Medium
 
-Power tools for advanced searchers.
+Pure semantic search mode showing many more results than the AI chat.
 
 **Features:**
-- Search history (see your past questions)
-- "Related questions others have asked"
-- Filter by session number, book, or speaker
-- Advanced filters: questions only, Ra only, Don only
-- Save and name searches
-- Search within specific concepts or topics
-- Boolean search operators (AND, OR, NOT)
-- Regex support for advanced users
-- Export search results
+- Semantic search across all 1,500+ Q&A pairs
+- See 20-50 results instead of just 3-5 in chat
+- Ranked by relevance using AI embeddings
+- No AI interpretation - just the raw quotes
+- Click any result to see full context
+- Filter results after searching
+- Export search results as PDF or Markdown
+- Perfect for research and deep study
+- Fast, lightweight interface
+- Search history saved locally
 
-**Why This Matters:** Improves the core experience for power users who return frequently.
+**Why This Matters:** Sometimes you want to see ALL relevant quotes, not just what the AI selected. Perfect for researchers, students writing papers, or anyone doing comprehensive study of a topic.
 
 ---
 

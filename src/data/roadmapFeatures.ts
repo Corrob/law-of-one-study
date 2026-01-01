@@ -217,28 +217,29 @@ export const roadmapFeatures: Feature[] = [
     ],
   },
 
-  // PRIORITY 10: Enhanced Search Features
+  // PRIORITY 10: Semantic Search Explorer
   {
-    id: "enhanced-search",
-    title: "Enhanced Search Features",
+    id: "semantic-search",
+    title: "Semantic Search Explorer",
     description:
-      "Power user search features: history, filters by session/book, advanced filters, and saved searches.",
+      "Pure semantic search mode showing many more results than the AI chat. See 20-50 ranked results instead of just what the AI selected.",
     category: "study-tools",
     priority: 10,
-    userValue: 3,
+    userValue: 4,
     complexity: "Low-Medium",
     status: "planned",
     votes: 0,
     features: [
-      "Search history",
-      "Related questions suggestions",
-      "Filter by session number or book",
-      "Advanced filters (Ra only, questions only)",
-      "Save and name searches",
-      "Search within specific concepts",
-      "Boolean search operators (AND, OR, NOT)",
-      "Regex support for advanced users",
-      "Export search results",
+      "Semantic search across all 1,500+ Q&A pairs",
+      "See 20-50 results instead of just 3-5 in chat",
+      "Ranked by relevance using AI embeddings",
+      "No AI interpretation - just raw quotes",
+      "Click any result to see full context",
+      "Filter results after searching",
+      "Export results as PDF or Markdown",
+      "Perfect for research and deep study",
+      "Fast, lightweight interface",
+      "Search history saved locally",
     ],
   },
 
