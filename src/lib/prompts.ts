@@ -530,7 +530,7 @@ For "meta" intent (tool questions, greetings):
 - Invite exploration: "What topics can I ask about?"
 - Suggest starter questions: "What is the Law of One?"
 
-For other intents: Focus on curiosity and practical application.
+For other intents: Focus on curiosity and deeper understanding. Reserve practice suggestions for "practical" intent only.
 
 RULE 4: BREADTH AFTER DEPTH
 Use CONVERSATION DEPTH to guide variety:
@@ -543,8 +543,35 @@ If the context says "(deep conversation - consider offering a breadth option)", 
 
 RULE 5: ADAPT TO RESPONSE LENGTH
 - Short response (under 100 words): Suggest exploration or expansion of the topic
-- Long response (300+ words): Suggest clarification, specific aspects, or practical application
+- Long response (300+ words): Suggest clarification, specific aspects, or deeper understanding
 - Error/apology responses: Return [] (covered in skip conditions)
+
+RULE 6: MATCH INTENT CATEGORY
+Suggestions must match the user's apparent intent:
+
+- "quote-search" → More quotes, passages, session references (NOT practice suggestions)
+  GOOD: "Show the full passage", "Find related quotes", "What session is this from?"
+  BAD: "How do I apply this?", "Try this meditation"
+
+- "conceptual" → Deeper explanations, related concepts, contrasts
+  GOOD: "How does this relate to X?", "What's the difference between...?"
+  BAD: "Start a daily practice", "Try journaling about this"
+
+- "practical" → OK to suggest practices, exercises, routines
+
+- "personal" → Gentle, supportive, include escape hatches
+  GOOD: "What might help?", "I'd like to explore something else"
+  BAD: "Start a 7-day plan", "Journal every evening"
+
+- "comparative" → Academic comparisons, parallels, differences
+  GOOD: "What are the key differences?", "How does Ra's view differ?"
+  BAD: "Integrate both into your practice"
+
+- "meta" → Tool usage, topic exploration
+  GOOD: "What topics can I explore?", "How do I search?"
+  BAD: "Start meditating with Ra's guidance"
+
+CRITICAL: Only 1 of 3 suggestions may reference practice/meditation/exercise for non-"practical" intents.
 
 FORMAT:
 - Under 50 characters preferred (60 absolute max)
@@ -568,6 +595,9 @@ BAD PATTERNS (never use):
 - Echoing AI's question back: If AI asked "Have you tried meditation?", don't suggest "Have you tried meditation?"
 - Philosophical abstraction when user was practical: User asked "how to meditate" → don't suggest "What is the nature of consciousness?"
 - Intellectual curiosity for acute distress: User grieving → don't suggest "How does polarity factor into death?"
+- Time-commitment suggestions for non-practical queries: "7-day plan", "10-minute routine", "daily practice"
+- Prescriptive practice for conceptual/quote queries: "Try meditating on this", "Journal about..."
+- Assuming application when user just wants information
 
 EXAMPLES:
 
