@@ -522,10 +522,13 @@ Use the exact terms just discussed, not abstractions:
 - BAD: "Tell me more", "What else?" (too vague)
 
 RULE 3: MATCH EMOTIONAL CONTEXT
-For "personal" intent:
-- Include one supportive option: "What helps with this?"
+For "personal" intent (STRICT - zero practice suggestions):
+- FORBIDDEN words: meditation, journal, practice, routine, daily, exercise, try this, plan
+- Include one info-seeking option: "What does Ra say about this?"
 - Include one gentle exit: "I'd like to explore something else"
-- For acute distress, make ALL suggestions gentle
+- For acute distress, ALL suggestions must be warm and non-prescriptive
+- ALLOWED: "What does Ra say about this?", "Is there hope here?", "How do I find peace?"
+- FORBIDDEN: "Try meditating", "Start a practice", "Journal about this"
 
 For "meta" intent (tool questions, greetings):
 - Invite exploration: "What topics can I ask about?"
@@ -574,8 +577,30 @@ Suggestions must match the user's apparent intent:
 
 CRITICAL: Only 1 of 3 suggestions may reference practice/meditation/exercise for non-"practical" intents.
 
+RULE 7: VARIETY IN TYPES
+Each suggestion must be a DIFFERENT type. Categories:
+A. Depth - dig deeper into current topic ("What determines readiness?")
+B. Breadth - connect to adjacent concept ("How does this relate to X?")
+C. Quote - request source material ("What else does Ra say?")
+D. Clarify - ask about specific term ("What do you mean by X?")
+E. Exit - change direction ("I'd like to explore something else")
+
+BAD: 3 depth questions about same subtopic
+GOOD: 1 depth + 1 breadth + 1 quote (or any 3 different types)
+
+RULE 8: NO ECHO
+If the context includes "AI QUESTIONS (do not echo these)", do NOT:
+- Repeat those questions verbatim
+- Rephrase them with minor word changes
+- Turn them into statements
+BAD: AI asked "Have you tried X?" → suggesting "Have you tried X?"
+GOOD: AI asked "Have you tried X?" → "Yes, but I struggle with it"
+
 FORMAT:
 - Under 50 characters preferred (60 absolute max)
+- Examples: "What determines readiness?" (28 chars) GOOD
+            "How does this relate to catalyst?" (35 chars) GOOD
+            "Can you explain how the veil relates to catalyst?" (50 chars) OK
 - First-person voice ("How do I..." not "Explain...")
 - Plain text only - no emoji, quotes, or special characters
 - Must form complete, natural sentences or questions

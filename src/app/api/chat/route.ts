@@ -123,6 +123,21 @@ async function augmentQuery(
   }
 }
 
+// Extract questions from AI response for echo detection
+function extractAIQuestions(response: string): string[] {
+  const sentences = response.split(/(?<=[.!?])\s+/);
+  return sentences.filter(s => s.trim().endsWith('?')).slice(-3);
+}
+
+// Detect suggestion category for variety logging
+function detectSuggestionCategory(s: string): string {
+  if (/connect|relate|compare|difference/i.test(s)) return 'breadth';
+  if (/Ra say|quote|passage|session/i.test(s)) return 'quote';
+  if (/something else|new topic|different topic/i.test(s)) return 'exit';
+  if (/mean by|clarify|what is|what are/i.test(s)) return 'clarify';
+  return 'depth';
+}
+
 // Generate follow-up suggestions based on conversation context
 async function generateSuggestions(
   userMessage: string,
@@ -145,6 +160,12 @@ async function generateSuggestions(
           ? " (established conversation)"
           : "";
 
+    // Extract AI questions for echo detection
+    const aiQuestions = extractAIQuestions(assistantResponse);
+    const aiQuestionsBlock = aiQuestions.length > 0
+      ? `\n\nAI QUESTIONS (do not echo these):\n${aiQuestions.map(q => `- "${q.trim()}"`).join('\n')}`
+      : '';
+
     const conversationContext = [
       `DETECTED INTENT: ${intent}${intent === "personal" ? " (emotional/vulnerable - be gentle with suggestions)" : ""}`,
       `CONVERSATION DEPTH: Turn ${context.turnCount}${depthNote}`,
@@ -153,6 +174,7 @@ async function generateSuggestions(
       ``,
       `ASSISTANT'S RESPONSE:`,
       responseForContext,
+      aiQuestionsBlock,
     ].join("\n");
 
     const response = await openai.chat.completions.create({
@@ -170,19 +192,45 @@ async function generateSuggestions(
     // Validate suggestions
     if (Array.isArray(parsed.suggestions)) {
       const rawSuggestions = parsed.suggestions;
-      const validSuggestions = rawSuggestions
-        .filter((s: unknown) => typeof s === "string" && s.length > 0 && s.length <= 80)
+      let validSuggestions = rawSuggestions
+        .filter((s: unknown) => typeof s === "string" && s.length > 0 && s.length <= 60)
         .slice(0, 3);
 
-      // Log if suggestions were filtered out
+      // Log if suggestions were filtered out due to length
       if (rawSuggestions.length > validSuggestions.length) {
         console.log("[API] Some suggestions filtered:", {
           raw: rawSuggestions,
           valid: validSuggestions,
           filtered: rawSuggestions.filter(
-            (s: unknown) => typeof s !== "string" || (typeof s === "string" && s.length > 80)
+            (s: unknown) => typeof s !== "string" || (typeof s === "string" && s.length > 60)
           ),
         });
+      }
+
+      // For personal intent, filter out practice-related suggestions
+      if (intent === "personal") {
+        const practicePatterns = /\b(meditat|journal|practice|routine|daily|exercise|try this)\b/i;
+        const beforeFilter = validSuggestions.length;
+        validSuggestions = validSuggestions.filter((s: string) => !practicePatterns.test(s));
+        if (validSuggestions.length < beforeFilter) {
+          console.log("[API] Filtered practice suggestions for personal intent:", {
+            before: beforeFilter,
+            after: validSuggestions.length,
+          });
+        }
+      }
+
+      // Log variety metrics for monitoring
+      if (validSuggestions.length >= 2) {
+        const categories = validSuggestions.map(detectSuggestionCategory);
+        const uniqueCategories = new Set(categories);
+        if (uniqueCategories.size < validSuggestions.length) {
+          console.log("[API] Low variety in suggestions:", {
+            suggestions: validSuggestions,
+            categories,
+            uniqueCount: uniqueCategories.size,
+          });
+        }
       }
 
       // If we have fewer than 3, pad with fallback suggestions based on intent
