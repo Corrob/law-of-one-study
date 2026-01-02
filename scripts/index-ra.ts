@@ -25,7 +25,7 @@ require("dotenv").config({ path: ".env.local" });
 
 const BATCH_SIZE = 100; // Pinecone batch upsert limit
 const EMBEDDING_MODEL = "text-embedding-3-small";
-const SECTIONS_DIR = "sections";
+const SECTIONS_DIR = "public/sections";
 
 interface RaPassage {
   id: string;
@@ -172,8 +172,10 @@ async function indexRaMaterial() {
 
     console.log(`Processing batch ${batchNum}/${totalBatches}...`);
 
-    // Create embeddings
-    const texts = batch.map((p) => p.text);
+    // Create embeddings with session/reference prefix for searchability
+    const texts = batch.map(
+      (p) => `Session ${p.session}, Reference ${p.reference}: ${p.text}`
+    );
     const embeddings = await createEmbeddings(openai, texts);
 
     // Prepare vectors for upsert
