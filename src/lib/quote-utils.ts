@@ -1,5 +1,88 @@
 // Utility functions for parsing and filtering Ra Material quotes
 
+// Result of parsing a session/question reference from user query
+export interface SessionQuestionRef {
+  session: number;
+  question?: number; // undefined means "all questions in session"
+}
+
+/**
+ * Parse session/question references from user queries.
+ * Supports patterns like:
+ * - "session 5" → { session: 5 }
+ * - "question 5.1" or "5.1" → { session: 5, question: 1 }
+ * - "Ra 5.1" → { session: 5, question: 1 }
+ * - "show me 5.1" → { session: 5, question: 1 }
+ * - "s5q1" or "s5" → { session: 5, question: 1 } or { session: 5 }
+ * - lawofone.info/s/5#1 → { session: 5, question: 1 }
+ */
+export function parseSessionQuestionReference(query: string): SessionQuestionRef | null {
+  const normalized = query.toLowerCase().trim();
+
+  // Pattern 1: URL format - lawofone.info/s/SESSION#QUESTION
+  const urlMatch = normalized.match(/lawofone\.info\/s\/(\d+)(?:#(\d+))?/);
+  if (urlMatch) {
+    return {
+      session: parseInt(urlMatch[1], 10),
+      question: urlMatch[2] ? parseInt(urlMatch[2], 10) : undefined,
+    };
+  }
+
+  // Pattern 2: Explicit "session X" or "session X question Y"
+  const sessionMatch = normalized.match(/session\s+(\d+)(?:\s+question\s+(\d+))?/);
+  if (sessionMatch) {
+    return {
+      session: parseInt(sessionMatch[1], 10),
+      question: sessionMatch[2] ? parseInt(sessionMatch[2], 10) : undefined,
+    };
+  }
+
+  // Pattern 3: "question X.Y" format
+  const questionMatch = normalized.match(/question\s+(\d+)\.(\d+)/);
+  if (questionMatch) {
+    return {
+      session: parseInt(questionMatch[1], 10),
+      question: parseInt(questionMatch[2], 10),
+    };
+  }
+
+  // Pattern 4: Shorthand "s5q1" or "s5"
+  const shorthandMatch = normalized.match(/\bs(\d+)(?:q(\d+))?\b/);
+  if (shorthandMatch) {
+    return {
+      session: parseInt(shorthandMatch[1], 10),
+      question: shorthandMatch[2] ? parseInt(shorthandMatch[2], 10) : undefined,
+    };
+  }
+
+  // Pattern 5: "Ra X.Y" or just "X.Y" (but only if it looks like a reference)
+  // Must be preceded by "ra", "show", "find", "get", "read", or start of string/whitespace
+  const raRefMatch = normalized.match(/(?:^|ra\s+|show\s+(?:me\s+)?|find\s+|get\s+|read\s+)(\d{1,3})\.(\d{1,2})\b/);
+  if (raRefMatch) {
+    const session = parseInt(raRefMatch[1], 10);
+    const question = parseInt(raRefMatch[2], 10);
+    // Validate: sessions are 1-106, questions typically 0-30ish
+    if (session >= 1 && session <= 106 && question >= 0 && question <= 50) {
+      return { session, question };
+    }
+  }
+
+  // Pattern 6: Standalone "X.Y" at word boundary when query is short/focused
+  // Only match if the query seems to be primarily about finding this reference
+  if (normalized.length < 30) {
+    const standaloneMatch = normalized.match(/\b(\d{1,3})\.(\d{1,2})\b/);
+    if (standaloneMatch) {
+      const session = parseInt(standaloneMatch[1], 10);
+      const question = parseInt(standaloneMatch[2], 10);
+      if (session >= 1 && session <= 106 && question >= 0 && question <= 50) {
+        return { session, question };
+      }
+    }
+  }
+
+  return null;
+}
+
 // Fetch full quote from sections JSON files
 export async function fetchFullQuote(reference: string): Promise<string | null> {
   // Extract session number from reference (e.g., "49.8" -> "49" or "Ra 49.8" -> "49")

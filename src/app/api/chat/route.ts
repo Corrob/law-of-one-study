@@ -8,7 +8,7 @@ import {
   buildContextFromQuotes,
 } from "@/lib/prompts";
 import { Quote, QueryIntent, IntentConfidence, ChatMessage } from "@/lib/types";
-import { applySentenceRangeToQuote, formatWholeQuote } from "@/lib/quote-utils";
+import { applySentenceRangeToQuote, formatWholeQuote, parseSessionQuestionReference } from "@/lib/quote-utils";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { trackLLMGeneration } from "@/lib/posthog-server";
 
@@ -496,17 +496,36 @@ export async function POST(request: NextRequest) {
         };
 
         try {
+          // Step 0: Check for explicit session/question reference
+          const sessionRef = parseSessionQuestionReference(message);
+          if (sessionRef) {
+            console.log("[API] Detected session/question reference:", sessionRef);
+          }
+
           // Step 1: Augment query with Ra terminology and detect intent
           const augmentStartTime = Date.now();
-          const { intent, augmentedQuery, confidence } = await augmentQuery(message);
+          let { intent, augmentedQuery, confidence } = await augmentQuery(message);
           const augmentLatencyMs = Date.now() - augmentStartTime;
-          console.log("[API] Query augmentation:", { intent, confidence, augmentedQuery, turnCount, latencyMs: augmentLatencyMs });
+
+          // If session ref detected, override to quote-search intent for better response handling
+          if (sessionRef) {
+            intent = "quote-search";
+            confidence = "high";
+            // For session-only queries, augment with session topics
+            if (sessionRef.question === undefined) {
+              augmentedQuery = `session ${sessionRef.session} Ra Material`;
+            }
+          }
+          console.log("[API] Query augmentation:", { intent, confidence, augmentedQuery, turnCount, sessionRef, latencyMs: augmentLatencyMs });
 
           // Step 2: Create embedding from augmented query
           const embedding = await createEmbedding(augmentedQuery);
 
-          // Step 3: Search Pinecone
-          const searchResults = await searchRaMaterial(embedding, 5);
+          // Step 3: Search Pinecone (with metadata filter if session ref detected)
+          const searchResults = await searchRaMaterial(embedding, {
+            topK: sessionRef ? 10 : 5, // Get more results for session lookups
+            sessionFilter: sessionRef || undefined,
+          });
 
           const passages: Quote[] = searchResults.map((r) => ({
             text: r.text,
