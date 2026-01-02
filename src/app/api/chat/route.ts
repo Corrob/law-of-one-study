@@ -206,14 +206,14 @@ async function generateSuggestions(
 function getFallbackSuggestions(intent: QueryIntent, existing: string[]): string[] {
   const fallbacksByIntent: Record<QueryIntent, string[]> = {
     "quote-search": [
-      "Show me another passage",
+      "Show me the full passage",
       "What else does Ra say about this?",
-      "Find a related quote",
+      "Which session is this from?",
     ],
     conceptual: [
       "How does this connect to other concepts?",
-      "Can you explain further?",
-      "What are the practical implications?",
+      "Can you explain this further?",
+      "What's the context for this teaching?",
     ],
     practical: [
       "What's the first step?",
@@ -221,7 +221,7 @@ function getFallbackSuggestions(intent: QueryIntent, existing: string[]): string
       "How do I know if it's working?",
     ],
     personal: [
-      "What might help with this?",
+      "What does Ra say about this?",
       "Is there more to explore here?",
       "I'd like to discuss something else",
     ],
@@ -232,8 +232,8 @@ function getFallbackSuggestions(intent: QueryIntent, existing: string[]): string
     ],
     meta: [
       "What topics can I explore?",
-      "Tell me about the densities",
       "What is the Law of One?",
+      "How do I search for quotes?",
     ],
   };
 
