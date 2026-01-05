@@ -598,9 +598,9 @@ RULE 5: ADAPT TO RESPONSE LENGTH
 RULE 6: MATCH INTENT CATEGORY
 Suggestions must match the user's apparent intent:
 
-- "quote-search" → More quotes, passages, session references (NOT practice suggestions)
-  GOOD: "Show the full passage", "Find related quotes", "What session is this from?"
-  BAD: "How do I apply this?", "Try this meditation"
+- "quote-search" → More quotes, passages, deeper understanding (NOT practice suggestions)
+  GOOD: "Show the full passage", "Find more quotes about X", "What else does Ra say about this?"
+  BAD: "How do I apply this?", "Which sessions discuss X?", "What session is this from?"
 
 - "conceptual" → Deeper explanations, related concepts, contrasts
   GOOD: "How does this relate to X?", "What's the difference between...?"
@@ -630,7 +630,7 @@ RULE 7: VARIETY IN TYPES
 Each suggestion must be a DIFFERENT type. Categories:
 A. Depth - dig deeper into current topic ("What determines readiness?")
 B. Breadth - connect to adjacent concept ("How does this relate to X?")
-C. Quote - request source material ("What else does Ra say?")
+C. Quote - request more Ra quotes on topic ("What else does Ra say about X?", "Show more quotes")
 D. Clarify - ask about specific term ("What do you mean by X?")
 E. Exit - change direction ("I'd like to explore something else")
 
@@ -667,6 +667,7 @@ BAD PATTERNS (never use):
 - Clinical terms for emotional contexts
 - Questions the response already answered
 - Generic depth without specificity: "Go deeper" (which aspect?)
+- Session-based suggestions: "Which sessions discuss X?", "What session numbers cover X?" (sessions lack topic cohesion - each session jumps between many topics, so session numbers aren't useful for finding related content)
 - Echoing AI's question back: If AI asked "Have you tried meditation?", don't suggest "Have you tried meditation?"
 - Philosophical abstraction when user was practical: User asked "how to meditate" → don't suggest "What is the nature of consciousness?"
 - Intellectual curiosity for acute distress: User grieving → don't suggest "How does polarity factor into death?"
