@@ -98,7 +98,7 @@ describe("QuoteCard", () => {
       expect(ellipses.length).toBeGreaterThanOrEqual(2);
     });
 
-    it("should make ellipsis clickable links", () => {
+    it("should make ellipsis clickable buttons to expand", () => {
       const quoteWithEllipsis: Quote = {
         ...mockQuote,
         text: "...\n\nRa: Love is unity.",
@@ -106,9 +106,8 @@ describe("QuoteCard", () => {
 
       render(<QuoteCard quote={quoteWithEllipsis} />);
 
-      const ellipsisLinks = screen.getAllByText("...").filter((el) => el.tagName === "A");
-      expect(ellipsisLinks.length).toBeGreaterThan(0);
-      expect(ellipsisLinks[0]).toHaveAttribute("href", mockQuote.url);
+      const ellipsisButtons = screen.getAllByText("...").filter((el) => el.tagName === "BUTTON");
+      expect(ellipsisButtons.length).toBeGreaterThan(0);
     });
   });
 

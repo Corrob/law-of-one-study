@@ -594,7 +594,7 @@ The 30 test queries cover:
 - **Meta (5):** "Hello! How does this work?", "What sessions can I search?", etc.
 
 Full query set saved in: `test-queries.json`
-Test execution script: `run-test-queries.js`
+Test execution script: `run-test-queries.ts`
 
 ---
 

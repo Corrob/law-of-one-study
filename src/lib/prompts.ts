@@ -697,6 +697,36 @@ CRITICAL: Return EXACTLY 3 suggestions in almost all cases. Only return [] for s
 Return ONLY: { "suggestions": ["suggestion1", "suggestion2", "suggestion3"] }`;
 
 // =============================================================================
+// FIRST MESSAGE DISCLAIMERS - Randomly selected for new conversations
+// =============================================================================
+
+export const FIRST_MESSAGE_DISCLAIMERS = [
+  "This is an AI study companion for the Ra Material—not an oracle. Take what resonates, leave what doesn't, and always trust your own discernment.",
+
+  "Welcome! I'm here to help explore the Ra Material, but I'm an AI interpretation, not Ra itself. Use your own judgment and cross-reference anything that matters to you.",
+
+  "A quick note: I search and interpret the Ra Material as an AI companion. My responses aren't infallible—your inner knowing is the final authority.",
+
+  "I'm an AI guide to the Law of One, drawing from the 106 sessions. Please hold anything I share lightly and let your own discernment lead.",
+
+  "This tool offers one lens on the Ra Material. As Ra might say, take what is useful, leave the rest, and honor your own path of seeking.",
+
+  "Welcome, seeker! I'm an AI companion for exploring Ra's words. My interpretations are offered freely—accept what serves you and release what doesn't.",
+
+  "Before we begin: I'm an AI assistant, not a channeled source. Use discernment with my responses, and always return to the original material when something resonates deeply.",
+
+  "A gentle reminder: this is an AI study tool. The real wisdom lives in your own contemplation—I'm just here to help you find relevant passages and perspectives.",
+
+  "I'm here to help you explore the Ra Material, but remember: no AI can replace your own inner guidance. Take what's helpful and trust yourself with the rest.",
+
+  "Welcome! As you explore, please remember I'm an AI interpretation. Ra encouraged seeking with discrimination—hold my responses with that same spirit of discernment.",
+
+  "I'm an AI study companion for the Law of One. I do my best, but I'm not infallible. Trust your resonance and verify what matters.",
+
+  "Hello! I search the Ra Material to help with your questions. As with any interpretation, please use your own judgment—take what serves your path and leave what doesn't.",
+];
+
+// =============================================================================
 // UTILITY FUNCTIONS
 // =============================================================================
 

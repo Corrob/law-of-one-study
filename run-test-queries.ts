@@ -123,7 +123,7 @@ async function parseSSEStream(
             }
             suggestions.push(...(data.items || []));
           }
-        } catch (e) {
+        } catch {
           // Skip parse errors
         }
       }

@@ -5,7 +5,7 @@
 export const initialPlaceholders = [
   "Seek and you shall find...",
   "What mystery calls to you?",
-  "What do you wish to know?",
+  "What are you seeking?",
   "Begin your journey...",
 ];
 

@@ -19,7 +19,7 @@ export default function DebugConsole() {
     const originalWarn = console.warn;
     const originalError = console.error;
 
-    console.log = (...args: any[]) => {
+    console.log = (...args: unknown[]) => {
       const message = args.map((arg) => (typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg))).join(" ");
       setLogs((prev) => [...prev.slice(-99), {
         timestamp: new Date().toLocaleTimeString(),
@@ -29,7 +29,7 @@ export default function DebugConsole() {
       originalLog.apply(console, args);
     };
 
-    console.warn = (...args: any[]) => {
+    console.warn = (...args: unknown[]) => {
       const message = args.map((arg) => (typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg))).join(" ");
       setLogs((prev) => [...prev.slice(-99), {
         timestamp: new Date().toLocaleTimeString(),
@@ -39,7 +39,7 @@ export default function DebugConsole() {
       originalWarn.apply(console, args);
     };
 
-    console.error = (...args: any[]) => {
+    console.error = (...args: unknown[]) => {
       const message = args.map((arg) => (typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg))).join(" ");
       setLogs((prev) => [...prev.slice(-99), {
         timestamp: new Date().toLocaleTimeString(),

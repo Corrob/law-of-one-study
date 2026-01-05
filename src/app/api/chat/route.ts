@@ -5,6 +5,7 @@ import {
   QUERY_AUGMENTATION_PROMPT,
   UNIFIED_RESPONSE_PROMPT,
   SUGGESTION_GENERATION_PROMPT,
+  FIRST_MESSAGE_DISCLAIMERS,
   buildContextFromQuotes,
 } from "@/lib/prompts";
 import { Quote, QueryIntent, IntentConfidence, ChatMessage } from "@/lib/types";
@@ -283,6 +284,11 @@ function getFallbackSuggestions(intent: QueryIntent, existing: string[]): string
       "What topics can I explore?",
       "What is the Law of One?",
       "How do I search for quotes?",
+    ],
+    "off-topic": [
+      "What is the Law of One?",
+      "Tell me about densities",
+      "What topics can I explore?",
     ],
   };
 
@@ -566,6 +572,15 @@ export async function POST(request: NextRequest) {
 
           // Step 4: Send quotes metadata with intent and confidence
           send("meta", { quotes: passages, intent, confidence });
+
+          // Send welcome disclaimer on first message only
+          if (turnCount === 1) {
+            const disclaimer =
+              FIRST_MESSAGE_DISCLAIMERS[
+                Math.floor(Math.random() * FIRST_MESSAGE_DISCLAIMERS.length)
+              ];
+            send("chunk", { type: "text", content: `*${disclaimer}*\n\n` });
+          }
 
           const quotesContext = buildContextFromQuotes(passages);
 
