@@ -149,34 +149,63 @@ export const QUERY_AUGMENTATION_PROMPT = `You optimize search queries for a Ra M
 
 Return JSON:
 {
-  "intent": "quote-search" | "conceptual" | "practical" | "personal" | "comparative" | "meta",
+  "intent": "quote-search" | "conceptual" | "practical" | "personal" | "comparative" | "meta" | "off-topic",
   "augmented_query": "optimized search string",
   "confidence": "high" | "medium" | "low"
 }
 
 INTENT DETECTION (check in order - first match wins):
 
-1. "personal" - Emotional state or vulnerability (HIGHEST PRIORITY)
+1. "personal" - Emotional state, vulnerability, OR skepticism/challenging statements (HIGHEST PRIORITY)
    Triggers: "I feel", "I'm struggling/scared/lost", "I lost someone", grief/fear/pain/frustration/loneliness
    Priority: Emotional content ALWAYS wins, even mixed with other intents
    Note: Profanity/frustration signals emotional state → personal
 
-2. "quote-search" - Explicitly wants Ra's exact words
+   SKEPTICISM (treat as personal - respond with empathy, not defense):
+   - "Ra is fake/made up" → personal (respect their skepticism)
+   - "This is just a cult" → personal (non-defensive, factual)
+   - "This sounds like nonsense/sci-fi" → personal (acknowledge concern)
+   EXCEPTION: If they ASK for reasoning, it becomes conceptual:
+   - "Ra seems fake, can you help me understand why it might not be?" → conceptual
+
+2. "off-topic" - Clearly unrelated to Ra Material, spirituality, consciousness, or this tool
+   Triggers: recipes, sports scores, celebrities, news, weather, coding help, math problems, current events
+   Examples:
+   - "chocolate cake recipe" → off-topic
+   - "Who won the Super Bowl?" → off-topic
+   - "Help me with Python code" → off-topic
+   - "What's 2+2?" → off-topic
+   - "Fix my code" → off-topic
+
+   NOT off-topic (these have spiritual angles):
+   - "What does the Bible say about angels?" → comparative (can relate to Ra)
+   - "Is reincarnation real?" → conceptual (Ra topic)
+   - "How do I find meaning?" → personal (spiritual seeking)
+
+3. "quote-search" - Explicitly wants Ra's exact words
    Triggers: "find quote", "show passage", "where does Ra say", pasted partial quote
    Note: Must explicitly request quotes - curiosity alone isn't quote-search
 
-3. "practical" - Wants actionable how-to guidance
+4. "practical" - Wants actionable how-to guidance
    Triggers: "how do I", "how can I", "what should I do", "steps to", "practice"
 
-4. "comparative" - Asks about RELATIONSHIP between Ra and other traditions
+5. "comparative" - Asks about RELATIONSHIP between Ra and other traditions
    Triggers: "How does Ra compare to...", "difference between Ra and...", "similar to Buddhism?"
    Note: Mentioning another tradition isn't enough - must ask about the relationship
 
-5. "meta" - Questions about this tool, greetings, or non-Ra topics
-   Triggers: "How does this work?", "What sessions exist?", "hello", "hi", "thanks"
+6. "meta" - Questions about this tool, greetings, OR unclear/minimal input
+   Triggers:
+   - Tool questions: "How does this work?", "What sessions exist?"
+   - Greetings: "hello", "hi", "thanks", "hey"
+   - Minimal/unclear: "?", single punctuation, gibberish (asdfghjkl, random letters)
+   - Continuations without context: "more", "more please", "continue"
+   Examples:
+   - "?" → meta (unclear, ask for clarification)
+   - "asdfghjkl" → meta (gibberish, ask what they meant)
+   - "more please" → meta (no context, ask what to expand)
    Note: Minimal augmentation - these don't need vector search
 
-6. "conceptual" - Default for general questions/explanations
+7. "conceptual" - Default for general questions/explanations about Ra Material
    Triggers: "what is", "explain", "describe", "tell me about", "why"
 
 CONFIDENCE:
@@ -215,6 +244,22 @@ EXAMPLES:
 {"message": "can you help me understand?"} → {"intent": "conceptual", "augmented_query": "understanding clarity", "confidence": "medium"}
 {"message": "what does Ra think about this?"} → {"intent": "conceptual", "augmented_query": "[use recent topics from context]", "confidence": "low"}
 {"message": "is there more to it?"} → {"intent": "conceptual", "augmented_query": "deeper meaning elaboration", "confidence": "medium"}
+
+OFF-TOPIC EXAMPLES:
+{"message": "chocolate cake recipe"} → {"intent": "off-topic", "augmented_query": "", "confidence": "high"}
+{"message": "Who won the Super Bowl?"} → {"intent": "off-topic", "augmented_query": "", "confidence": "high"}
+{"message": "Help me with my Python code"} → {"intent": "off-topic", "augmented_query": "", "confidence": "high"}
+{"message": "What's the weather like?"} → {"intent": "off-topic", "augmented_query": "", "confidence": "high"}
+
+META EDGE CASES:
+{"message": "?"} → {"intent": "meta", "augmented_query": "", "confidence": "medium"}
+{"message": "asdfghjkl"} → {"intent": "meta", "augmented_query": "", "confidence": "low"}
+{"message": "more please"} → {"intent": "meta", "augmented_query": "", "confidence": "medium"}
+
+SKEPTICISM EXAMPLES:
+{"message": "Ra is obviously fake"} → {"intent": "personal", "augmented_query": "skepticism doubt channeling authenticity free will", "confidence": "high"}
+{"message": "This is just a cult"} → {"intent": "personal", "augmented_query": "cult concerns authenticity free will discernment", "confidence": "high"}
+{"message": "Ra seems fake, help me understand why it might not be?"} → {"intent": "conceptual", "augmented_query": "channeling authenticity evidence verification", "confidence": "high"}
 
 CONVERSATION CONTEXT (when provided):
 If the message includes "CONVERSATION CONTEXT:", use it to improve follow-up handling:
@@ -574,6 +619,10 @@ Suggestions must match the user's apparent intent:
 - "meta" → Tool usage, topic exploration
   GOOD: "What topics can I explore?", "How do I search?"
   BAD: "Start meditating with Ra's guidance"
+
+- "off-topic" → Welcoming redirects to Ra Material
+  GOOD: "What is the Law of One?", "Tell me about densities", "What topics can I explore?"
+  BAD: Any follow-up on the off-topic subject
 
 CRITICAL: Only 1 of 3 suggestions may reference practice/meditation/exercise for non-"practical" intents.
 

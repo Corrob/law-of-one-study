@@ -68,6 +68,7 @@ const VALID_INTENTS: QueryIntent[] = [
   "personal",
   "comparative",
   "meta",
+  "off-topic",
 ];
 
 // Valid confidence levels
@@ -517,6 +518,36 @@ export async function POST(request: NextRequest) {
             }
           }
           console.log("[API] Query augmentation:", { intent, confidence, augmentedQuery, turnCount, sessionRef, latencyMs: augmentLatencyMs });
+
+          // Handle off-topic queries - skip search, return redirect
+          if (intent === "off-topic") {
+            // Send meta event with no quotes
+            send("meta", { quotes: [], intent, confidence });
+
+            // Stream redirect message
+            const redirectMessage = "That's outside my focus on the Ra Material, but I'd be happy to explore any Law of One topics with you. Is there something about consciousness, spiritual evolution, or Ra's teachings you're curious about?";
+
+            // Stream the message character by character for consistent UX
+            for (let i = 0; i < redirectMessage.length; i += 10) {
+              const chunk = redirectMessage.slice(i, i + 10);
+              send("chunk", { type: "text", content: chunk });
+              await new Promise((resolve) => setTimeout(resolve, 10));
+            }
+
+            // Generate welcoming suggestions for Ra topics
+            const offTopicSuggestions = [
+              "What is the Law of One?",
+              "Tell me about densities",
+              "What topics can I explore?",
+            ];
+            send("suggestions", { items: offTopicSuggestions });
+
+            send("done", {});
+            // Small delay to ensure client receives all data before connection closes
+            await new Promise((resolve) => setTimeout(resolve, 100));
+            controller.close();
+            return;
+          }
 
           // Step 2: Create embedding from augmented query
           const embedding = await createEmbedding(augmentedQuery);

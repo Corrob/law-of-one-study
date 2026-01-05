@@ -11,7 +11,8 @@ export type QueryIntent =
   | "practical"
   | "personal"
   | "comparative"
-  | "meta";
+  | "meta"
+  | "off-topic";
 
 // Confidence level for intent classification
 export type IntentConfidence = "high" | "medium" | "low";
