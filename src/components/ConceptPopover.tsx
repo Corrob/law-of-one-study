@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { getConceptDefinition } from "@/data/concepts";
+import { findConceptByTerm, findConceptById } from "@/lib/concept-graph";
+import type { GraphConcept } from "@/lib/types-graph";
 
 interface ConceptPopoverProps {
   term: string;
@@ -20,7 +21,19 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const preventReopenRef = useRef(false); // Prevent immediate reopen after close
 
-  const definition = getConceptDefinition(term);
+  // Get concept data from the knowledge graph
+  const concept = findConceptByTerm(term);
+  const definition = concept?.definition;
+
+  // Get related concept names (limit to 3 for display)
+  const relatedConcepts = concept?.relationships.related
+    ?.slice(0, 3)
+    .map(id => findConceptById(id))
+    .filter((c): c is GraphConcept => c !== undefined)
+    .map(c => c.term) || [];
+
+  // Get primary sessions (limit to 3 for display)
+  const keySessions = concept?.sessions.primary.slice(0, 3) || [];
 
   // Detect touch device on mount
   useEffect(() => {
@@ -191,9 +204,39 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
         >
           <span className="concept-popover-content">
             <span className="concept-popover-header">
-              <span className="concept-popover-term">{term}</span>
+              <span className="concept-popover-term">{concept?.term || term}</span>
+              {concept?.category && (
+                <span className="concept-popover-category">{concept.category}</span>
+              )}
             </span>
             {definition && <span className="concept-popover-definition">{definition}</span>}
+            {relatedConcepts.length > 0 && (
+              <span className="concept-popover-related">
+                <span className="concept-popover-related-label">Related:</span>
+                <span className="concept-popover-related-terms">
+                  {relatedConcepts.join(", ")}
+                </span>
+              </span>
+            )}
+            {keySessions.length > 0 && (
+              <span className="concept-popover-sessions">
+                <span className="concept-popover-sessions-label">Key sessions:</span>
+                <span className="concept-popover-sessions-list">
+                  {keySessions.map((s, i) => (
+                    <a
+                      key={s}
+                      href={`https://lawofone.info/s/${s}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="concept-popover-session-link"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {s}{i < keySessions.length - 1 ? ", " : ""}
+                    </a>
+                  ))}
+                </span>
+              </span>
+            )}
             <button onClick={handleSearch} className="concept-popover-search-btn">
               Explore this concept
             </button>

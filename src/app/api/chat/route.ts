@@ -12,6 +12,15 @@ import { Quote, QueryIntent, IntentConfidence, ChatMessage } from "@/lib/types";
 import { applySentenceRangeToQuote, formatWholeQuote, parseSessionQuestionReference } from "@/lib/quote-utils";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { trackLLMGeneration } from "@/lib/posthog-server";
+import {
+  identifyConcepts,
+  getRelatedConcepts,
+  buildSearchExpansion,
+  buildConceptContextForPrompt,
+  findConceptById,
+} from "@/lib/concept-graph";
+import { searchConcepts } from "@/lib/pinecone";
+import type { GraphConcept } from "@/lib/types-graph";
 
 interface ChatRequest {
   message: string;
@@ -509,9 +518,50 @@ export async function POST(request: NextRequest) {
             console.log("[API] Detected session/question reference:", sessionRef);
           }
 
+          // Step 0.5: HYBRID CONCEPT DETECTION
+          // A) Regex-based detection (instant, free)
+          const regexConcepts = identifyConcepts(message);
+
+          // B) Embedding-based detection (semantic, ~$0.00001)
+          const conceptEmbedding = await createEmbedding(message);
+          const conceptSearchResults = await searchConcepts(conceptEmbedding, 3);
+          const embeddingConcepts = conceptSearchResults
+            .filter((r) => r.score !== undefined && r.score > 0.3)
+            .map((r) => findConceptById(r.id))
+            .filter((c): c is GraphConcept => c !== undefined);
+
+          // C) Merge: regex concepts first (higher confidence), then embedding
+          const seenIds = new Set(regexConcepts.map((c) => c.id));
+          const detectedConcepts = [...regexConcepts];
+          for (const concept of embeddingConcepts) {
+            if (!seenIds.has(concept.id)) {
+              seenIds.add(concept.id);
+              detectedConcepts.push(concept);
+            }
+          }
+
+          // D) Get related concepts from merged set
+          const relatedConcepts = detectedConcepts.length > 0
+            ? getRelatedConcepts(detectedConcepts.map(c => c.id), 1)
+            : [];
+          const conceptSearchTerms = buildSearchExpansion(detectedConcepts);
+          const conceptContext = buildConceptContextForPrompt(detectedConcepts);
+
+          if (detectedConcepts.length > 0) {
+            console.log("[API] Regex concepts:", regexConcepts.map(c => c.term));
+            console.log("[API] Embedding concepts:", embeddingConcepts.map(c => c.term));
+            console.log("[API] Merged concepts:", detectedConcepts.map(c => c.term));
+            console.log("[API] Related concepts:", relatedConcepts.slice(0, 5).map(c => c.term));
+            console.log("[API] Search expansion terms:", conceptSearchTerms.slice(0, 10));
+          }
+
           // Step 1: Augment query with Ra terminology and detect intent
           const augmentStartTime = Date.now();
-          let { intent, augmentedQuery, confidence } = await augmentQuery(message);
+          // Include concept terms in query for better augmentation
+          const queryWithConcepts = conceptSearchTerms.length > 0
+            ? `${message} [Related concepts: ${conceptSearchTerms.slice(0, 5).join(", ")}]`
+            : message;
+          let { intent, augmentedQuery, confidence } = await augmentQuery(queryWithConcepts);
           const augmentLatencyMs = Date.now() - augmentStartTime;
 
           // If session ref detected, override to quote-search intent for better response handling
@@ -570,8 +620,18 @@ export async function POST(request: NextRequest) {
             url: r.url,
           }));
 
-          // Step 4: Send quotes metadata with intent and confidence
-          send("meta", { quotes: passages, intent, confidence });
+          // Step 4: Send quotes metadata with intent, confidence, and detected concepts
+          send("meta", {
+            quotes: passages,
+            intent,
+            confidence,
+            concepts: detectedConcepts.map(c => ({
+              id: c.id,
+              term: c.term,
+              definition: c.definition,
+              category: c.category,
+            })),
+          });
 
           // Send welcome disclaimer on first message only
           if (turnCount === 1) {
@@ -590,6 +650,11 @@ export async function POST(request: NextRequest) {
               ? `\n\nQUOTES ALREADY SHOWN (do not reuse these references): ${quotesUsed.join(", ")}`
               : "";
 
+          // Build concept context block if concepts were detected
+          const conceptContextBlock = conceptContext
+            ? `\n\n${conceptContext}`
+            : "";
+
           // Step 5: Single streaming LLM call with unified prompt
           const response = await openai.chat.completions.create({
             model: "gpt-5-mini",
@@ -601,7 +666,7 @@ export async function POST(request: NextRequest) {
               })),
               {
                 role: "user",
-                content: `[Intent: ${intent}] [Confidence: ${confidence}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}${quoteExclusionBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
+                content: `[Intent: ${intent}] [Confidence: ${confidence}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}${quoteExclusionBlock}${conceptContextBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
               },
             ],
             reasoning_effort: "low",

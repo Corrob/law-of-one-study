@@ -70,5 +70,40 @@ export async function searchRaMaterial(
   );
 }
 
+// Concept search result type
+export interface ConceptSearchResult {
+  id: string;
+  score: number | undefined;
+  term: string;
+  category: string;
+}
+
+/**
+ * Search for semantically similar concepts using embedding
+ */
+export async function searchConcepts(
+  embedding: number[],
+  topK: number = 5
+): Promise<ConceptSearchResult[]> {
+  const pinecone = getPineconeClient();
+  const index = pinecone.index(INDEX_NAME);
+  const namespace = index.namespace("concepts");
+
+  const results = await namespace.query({
+    vector: embedding,
+    topK,
+    includeMetadata: true,
+  });
+
+  return (
+    results.matches?.map((m) => ({
+      id: m.id,
+      score: m.score,
+      term: (m.metadata?.term as string) || "",
+      category: (m.metadata?.category as string) || "",
+    })) ?? []
+  );
+}
+
 export { INDEX_NAME };
 export const pinecone = { get: getPineconeClient };

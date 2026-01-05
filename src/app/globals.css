@@ -519,6 +519,60 @@ h6 {
   outline-offset: 2px;
 }
 
+.concept-popover-category {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--lo1-text-muted);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+  text-transform: capitalize;
+}
+
+.concept-popover-related {
+  display: block;
+  font-size: 12px;
+  color: var(--lo1-text-muted);
+  margin-bottom: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.concept-popover-related-label {
+  font-weight: 500;
+  color: var(--lo1-text-light);
+  margin-right: 4px;
+}
+
+.concept-popover-related-terms {
+  color: var(--lo1-gold-light);
+}
+
+.concept-popover-sessions {
+  display: block;
+  font-size: 12px;
+  color: var(--lo1-text-muted);
+  margin-bottom: 12px;
+}
+
+.concept-popover-sessions-label {
+  font-weight: 500;
+  color: var(--lo1-text-light);
+  margin-right: 4px;
+}
+
+.concept-popover-session-link {
+  color: var(--lo1-gold-light);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.concept-popover-session-link:hover {
+  color: var(--lo1-gold);
+  text-decoration: underline;
+}
+
 /* ============================================
    Welcome Screen Animations
    ============================================ */

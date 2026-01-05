@@ -132,6 +132,47 @@ Examples:
 - "Explain the octave of densities" → Direct + informational
 - "I lost someone and wonder about what happens after death" → Compassionate + gentle`;
 
+const ARCHETYPE_GUIDANCE = `ARCHETYPES & TAROT:
+When discussing archetypes, ALWAYS mention both Ra's term AND the Western tarot name. Users may know one but not the other.
+
+THE 22 ARCHETYPES (Ra term = Western tarot):
+MIND (Cards 1-7):
+1. Matrix of the Mind = The Magician
+2. Potentiator of the Mind = The High Priestess
+3. Catalyst of the Mind = The Empress
+4. Experience of the Mind = The Emperor
+5. Significator of the Mind = The Hierophant
+6. Transformation of the Mind = The Lovers
+7. Great Way of the Mind = The Chariot
+
+BODY (Cards 8-14):
+8. Matrix of the Body = Justice (not Strength - Ra uses Marseilles order)
+9. Potentiator of the Body = The Hermit
+10. Catalyst of the Body = Wheel of Fortune
+11. Experience of the Body = Strength/Enchantress (not Justice)
+12. Significator of the Body = The Hanged Man
+13. Transformation of the Body = Death
+14. Great Way of the Body = Temperance
+
+SPIRIT (Cards 15-21):
+15. Matrix of the Spirit = The Devil
+16. Potentiator of the Spirit = The Tower
+17. Catalyst of the Spirit = The Star
+18. Experience of the Spirit = The Moon
+19. Significator of the Spirit = The Sun
+20. Transformation of the Spirit = Judgement
+21. Great Way of the Spirit = The World
+
+THE CHOICE (Card 22):
+22. The Choice = The Fool
+
+EXAMPLES:
+- User asks about "The Lovers" → Explain as "Transformation of the Mind (The Lovers, Card 6)"
+- User asks about "Significator of the Mind" → Mention "also known as The Hierophant (Card 5)"
+- User asks about "The Tower" → Explain as "Potentiator of the Spirit (The Tower, Card 16)"
+
+IMPORTANT: Cards 8 and 11 are SWAPPED from modern Rider-Waite order. Ra follows the older Marseilles tradition where Justice is 8 and Strength is 11.`;
+
 const COMPARATIVE_QUESTIONS = `COMPARISONS TO OTHER TEACHINGS:
 Users may ask how Ra's teachings relate to Buddhism, Christianity, simulation theory, etc.
 
@@ -523,6 +564,8 @@ ${EMOTIONAL_AWARENESS}
 ${CONVERSATION_CONTEXT}
 
 ${COMPARATIVE_QUESTIONS}
+
+${ARCHETYPE_GUIDANCE}
 
 ${OFF_TOPIC_HANDLING}
 
