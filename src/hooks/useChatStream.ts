@@ -217,18 +217,47 @@ export function useChatStream(
                 isQuoteSearch: containsQuotedText,
               });
             } else if (event.type === "error") {
-              throw new Error(event.data.message as string);
+              const errorData = event.data as {
+                code?: string;
+                message?: string;
+                retryable?: boolean;
+              };
+              debug.log("[useChatStream] SSE error:", errorData);
+
+              // Create error with structured data for analytics
+              const error = new Error(errorData.message || "An error occurred");
+              (error as Error & { code?: string; retryable?: boolean }).code = errorData.code;
+              (error as Error & { code?: string; retryable?: boolean }).retryable = errorData.retryable;
+              throw error;
             }
           }
         }
       } catch (error) {
         console.error("Chat error:", error);
 
+        // Extract error code if present (from SSE error events)
+        const errorCode = (error as Error & { code?: string })?.code;
+        const isRetryable = (error as Error & { retryable?: boolean })?.retryable ?? true;
+
+        // Map error codes to display text and analytics type
         let errorText = "I apologize, but I encountered an error. Please try again.";
         let errorType: "rate_limit" | "validation" | "api_error" | "streaming_error" =
           "streaming_error";
 
-        if (error instanceof Error && error.message) {
+        if (errorCode) {
+          // Use the user-friendly message from the server
+          errorText = (error as Error).message;
+
+          // Map error codes to analytics types
+          if (errorCode === "RATE_LIMITED") {
+            errorType = "rate_limit";
+          } else if (errorCode === "VALIDATION_ERROR") {
+            errorType = "validation";
+          } else if (["EMBEDDING_FAILED", "SEARCH_FAILED", "STREAM_FAILED"].includes(errorCode)) {
+            errorType = "api_error";
+          }
+        } else if (error instanceof Error && error.message) {
+          // Fallback for non-coded errors (e.g., from HTTP response)
           if (
             error.message.includes("Maximum") ||
             error.message.includes("too long") ||
@@ -247,6 +276,7 @@ export function useChatStream(
         analytics.error({
           errorType,
           errorMessage: error instanceof Error ? error.message : "Unknown error",
+          context: { errorCode, isRetryable },
         });
 
         const errorMessage: MessageType = {

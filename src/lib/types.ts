@@ -61,12 +61,24 @@ export interface PineconeMetadata {
   url: string;
 }
 
+// Error codes for chat API
+export type ChatErrorCode =
+  | "AUGMENTATION_FAILED"
+  | "EMBEDDING_FAILED"
+  | "SEARCH_FAILED"
+  | "STREAM_FAILED"
+  | "QUOTE_PROCESSING_FAILED"
+  | "SUGGESTIONS_FAILED"
+  | "RATE_LIMITED"
+  | "VALIDATION_ERROR"
+  | "UNKNOWN_ERROR";
+
 // Streaming types
 export type StreamEvent =
   | { type: "meta"; quotes: Quote[] }
   | { type: "chunk"; chunkType: "text" | "quote"; content?: string; index?: number }
   | { type: "done" }
-  | { type: "error"; message: string };
+  | { type: "error"; code: ChatErrorCode; message: string; retryable: boolean };
 
 export interface SSEEvent {
   type: string;
