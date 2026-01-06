@@ -5,7 +5,6 @@ import {
   QUERY_AUGMENTATION_PROMPT,
   UNIFIED_RESPONSE_PROMPT,
   SUGGESTION_GENERATION_PROMPT,
-  FIRST_MESSAGE_DISCLAIMERS,
   buildContextFromQuotes,
 } from "@/lib/prompts";
 import { Quote, QueryIntent, IntentConfidence, ChatMessage } from "@/lib/types";
@@ -633,15 +632,6 @@ export async function POST(request: NextRequest) {
             })),
           });
 
-          // Send welcome disclaimer on first message only
-          if (turnCount === 1) {
-            const disclaimer =
-              FIRST_MESSAGE_DISCLAIMERS[
-                Math.floor(Math.random() * FIRST_MESSAGE_DISCLAIMERS.length)
-              ];
-            send("chunk", { type: "text", content: `*${disclaimer}*\n\n` });
-          }
-
           const quotesContext = buildContextFromQuotes(passages);
 
           // Build quote exclusion block if quotes were previously shown
@@ -666,7 +656,7 @@ export async function POST(request: NextRequest) {
               })),
               {
                 role: "user",
-                content: `[Intent: ${intent}] [Confidence: ${confidence}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}${quoteExclusionBlock}${conceptContextBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
+                content: `[Intent: ${intent}] [Confidence: ${confidence}] [Turn: ${turnCount}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}${quoteExclusionBlock}${conceptContextBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
               },
             ],
             reasoning_effort: "low",

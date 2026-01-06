@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
-import { findConceptByTerm, findConceptById } from "@/lib/concept-graph";
-import type { GraphConcept } from "@/lib/types-graph";
+import { useRef, useEffect, useCallback, useState } from "react";
+import { usePopoverContext } from "@/contexts/PopoverContext";
 
 interface ConceptPopoverProps {
   term: string;
@@ -11,104 +10,18 @@ interface ConceptPopoverProps {
 }
 
 export default function ConceptPopover({ term, displayText, onSearch }: ConceptPopoverProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isPinned, setIsPinned] = useState(false); // Clicked to stay open
-  const [position, setPosition] = useState<"above" | "below">("below");
-  const [horizontalOffset, setHorizontalOffset] = useState(0);
+  const popoverId = `concept-${term.toLowerCase().replace(/\s+/g, "-")}`;
+  const { openPopover, open, close, requestClose, cancelClose } = usePopoverContext();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const popoverRef = useRef<HTMLSpanElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const preventReopenRef = useRef(false); // Prevent immediate reopen after close
 
-  // Get concept data from the knowledge graph
-  const concept = findConceptByTerm(term);
-  const definition = concept?.definition;
-
-  // Get related concept names (limit to 3 for display)
-  const relatedConcepts = concept?.relationships.related
-    ?.slice(0, 3)
-    .map(id => findConceptById(id))
-    .filter((c): c is GraphConcept => c !== undefined)
-    .map(c => c.term) || [];
-
-  // Get primary sessions (limit to 3 for display)
-  const keySessions = concept?.sessions.primary.slice(0, 3) || [];
+  const isOpen = openPopover?.id === popoverId;
 
   // Detect touch device on mount
   useEffect(() => {
     setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
   }, []);
-
-  const closePopover = useCallback(() => {
-    setIsOpen(false);
-    setIsPinned(false);
-    // Prevent immediate reopen from any interaction
-    preventReopenRef.current = true;
-    setTimeout(() => {
-      preventReopenRef.current = false;
-    }, 500); // Increased to 500ms for better touch handling
-  }, []);
-
-  // Close popover when clicking outside (only if pinned)
-  useEffect(() => {
-    if (!isPinned) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        popoverRef.current &&
-        !popoverRef.current.contains(e.target as Node) &&
-        triggerRef.current &&
-        !triggerRef.current.contains(e.target as Node)
-      ) {
-        closePopover();
-      }
-    };
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        closePopover();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [isPinned, closePopover]);
-
-  // Calculate position when opening - prevent off-screen rendering
-  useEffect(() => {
-    if (isOpen && triggerRef.current && popoverRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const spaceAbove = rect.top;
-
-      // Vertical positioning
-      setPosition(spaceBelow < 200 && spaceAbove > spaceBelow ? "above" : "below");
-
-      // Horizontal positioning - prevent overflow
-      // Popover is 280px wide (max-width: 90vw)
-      const popoverWidth = Math.min(280, window.innerWidth * 0.9);
-      const triggerCenter = rect.left + rect.width / 2;
-      const popoverLeft = triggerCenter - popoverWidth / 2;
-      const popoverRight = triggerCenter + popoverWidth / 2;
-
-      let offset = 0;
-      if (popoverLeft < 10) {
-        // Too far left, shift right
-        offset = 10 - popoverLeft;
-      } else if (popoverRight > window.innerWidth - 10) {
-        // Too far right, shift left
-        offset = window.innerWidth - 10 - popoverRight;
-      }
-
-      setHorizontalOffset(offset);
-    }
-  }, [isOpen]);
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -119,62 +32,42 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
     };
   }, []);
 
-  const handleMouseEnter = () => {
-    // Disable hover on touch devices
+  const handleMouseEnter = useCallback(() => {
     if (isTouchDevice) return;
 
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
-    // Don't reopen if we just closed via click
-    if (preventReopenRef.current) {
-      return;
-    }
-    // Small delay to prevent accidental triggers
+    cancelClose(); // Cancel any pending close from leaving another trigger
     hoverTimeoutRef.current = setTimeout(() => {
-      setIsOpen(true);
+      if (triggerRef.current) {
+        open(popoverId, triggerRef.current, { term, onSearch });
+      }
     }, 200);
-  };
+  }, [isTouchDevice, open, cancelClose, popoverId, term, onSearch]);
 
-  const handleMouseLeave = () => {
-    // Disable hover on touch devices
+  const handleMouseLeave = useCallback(() => {
     if (isTouchDevice) return;
 
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
-    // Don't close if pinned
-    if (!isPinned) {
-      hoverTimeoutRef.current = setTimeout(() => {
-        setIsOpen(false);
-      }, 150);
-    }
-  };
+    // Use requestClose instead of close - allows time for mouse to move to popover
+    requestClose();
+  }, [isTouchDevice, requestClose]);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    // Don't reopen if we just closed
-    if (preventReopenRef.current) {
-      return;
+    if (triggerRef.current) {
+      if (isOpen) {
+        close();
+      } else {
+        open(popoverId, triggerRef.current, { term, onSearch });
+      }
     }
-
-    // Click pins/unpins the popover
-    if (isPinned || isOpen) {
-      closePopover();
-    } else {
-      setIsOpen(true);
-      setIsPinned(true);
-    }
-  };
-
-  const handleSearch = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    closePopover();
-    onSearch(`Please help me understand ${term}`);
-  };
+  }, [isOpen, open, close, popoverId, term, onSearch]);
 
   return (
     <span
@@ -191,58 +84,6 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
       >
         {displayText}
       </button>
-
-      {isOpen && (
-        <span
-          ref={popoverRef}
-          role="dialog"
-          aria-label={`Definition of ${term}`}
-          className={`concept-popover ${position === "above" ? "concept-popover-above" : "concept-popover-below"}`}
-          style={{ transform: `translateX(calc(-50% + ${horizontalOffset}px))` }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <span className="concept-popover-content">
-            <span className="concept-popover-header">
-              <span className="concept-popover-term">{concept?.term || term}</span>
-              {concept?.category && (
-                <span className="concept-popover-category">{concept.category}</span>
-              )}
-            </span>
-            {definition && <span className="concept-popover-definition">{definition}</span>}
-            {relatedConcepts.length > 0 && (
-              <span className="concept-popover-related">
-                <span className="concept-popover-related-label">Related:</span>
-                <span className="concept-popover-related-terms">
-                  {relatedConcepts.join(", ")}
-                </span>
-              </span>
-            )}
-            {keySessions.length > 0 && (
-              <span className="concept-popover-sessions">
-                <span className="concept-popover-sessions-label">Key sessions:</span>
-                <span className="concept-popover-sessions-list">
-                  {keySessions.map((s, i) => (
-                    <a
-                      key={s}
-                      href={`https://lawofone.info/s/${s}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="concept-popover-session-link"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {s}{i < keySessions.length - 1 ? ", " : ""}
-                    </a>
-                  ))}
-                </span>
-              </span>
-            )}
-            <button onClick={handleSearch} className="concept-popover-search-btn">
-              Explore this concept
-            </button>
-          </span>
-        </span>
-      )}
     </span>
   );
 }

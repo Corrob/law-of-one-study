@@ -4,14 +4,16 @@ import { Message as MessageType, MessageSegment } from "@/lib/types";
 import QuoteCard from "./QuoteCard";
 import MarkdownRenderer from "./MarkdownRenderer";
 import SuggestionChips from "./SuggestionChips";
+import AICompanionBadge from "./AICompanionBadge";
 
 interface MessageProps {
   message: MessageType;
   onSearch?: (term: string) => void;
   suggestions?: string[];
+  isFirstAssistant?: boolean;
 }
 
-export default function Message({ message, onSearch, suggestions }: MessageProps) {
+export default function Message({ message, onSearch, suggestions, isFirstAssistant }: MessageProps) {
   const isUser = message.role === "user";
 
   if (isUser) {
@@ -27,6 +29,7 @@ export default function Message({ message, onSearch, suggestions }: MessageProps
   // Assistant messages: no box, just text with concept linking
   return (
     <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
+      {isFirstAssistant && <AICompanionBadge />}
       {message.segments && message.segments.length > 0 ? (
         message.segments.map((segment, index) => (
           <SegmentRenderer

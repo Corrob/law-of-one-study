@@ -3,6 +3,7 @@ import { Inter, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { PostHogProvider } from "@/providers/PostHogProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { PopoverProvider } from "@/contexts/PopoverContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -118,7 +119,9 @@ export default function RootLayout({
       </head>
       <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
         <PostHogProvider>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ThemeProvider>
+            <PopoverProvider>{children}</PopoverProvider>
+          </ThemeProvider>
         </PostHogProvider>
       </body>
     </html>

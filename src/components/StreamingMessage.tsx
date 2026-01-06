@@ -5,12 +5,14 @@ import QuoteCard from "./QuoteCard";
 import AnimatedQuoteCard from "./AnimatedQuoteCard";
 import AnimatedMarkdown from "./AnimatedMarkdown";
 import MarkdownRenderer from "./MarkdownRenderer";
+import AICompanionBadge from "./AICompanionBadge";
 
 interface StreamingMessageProps {
   completedChunks: AnimationChunk[];
   currentChunk: AnimationChunk | null;
   onChunkComplete: () => void;
   onSearch?: (term: string) => void;
+  isFirstAssistant?: boolean;
 }
 
 export default function StreamingMessage({
@@ -18,9 +20,11 @@ export default function StreamingMessage({
   currentChunk,
   onChunkComplete,
   onSearch,
+  isFirstAssistant,
 }: StreamingMessageProps) {
   return (
     <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
+      {isFirstAssistant && <AICompanionBadge />}
       {/* Completed chunks - render statically with concept linking */}
       {completedChunks.map((chunk, index) => (
         <ChunkRenderer

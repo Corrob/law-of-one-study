@@ -8,6 +8,9 @@ import StreamingMessage from "./StreamingMessage";
 import MessageInput from "./MessageInput";
 import WelcomeScreen from "./WelcomeScreen";
 import ThinkingIndicator from "./ThinkingIndicator";
+import OnboardingModal from "./OnboardingModal";
+import AICompanionBadge from "./AICompanionBadge";
+import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
 import { analytics } from "@/lib/analytics";
@@ -425,6 +428,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
   return (
     <LayoutGroup>
+      <OnboardingModal />
+      <GlobalPopover />
       <div className="flex flex-col h-full relative">
         {/* Starfield - only on welcome screen */}
         <AnimatePresence>
@@ -469,12 +474,17 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                         message.role === "assistant" &&
                         index === messages.length - 1 &&
                         !isStreaming;
+                      // Show badge on first assistant message only
+                      const isFirstAssistant =
+                        message.role === "assistant" &&
+                        index === messages.findIndex((m) => m.role === "assistant");
                       return (
                         <Message
                           key={message.id}
                           message={message}
                           onSearch={handleSend}
                           suggestions={isLastAssistant ? suggestions : undefined}
+                          isFirstAssistant={isFirstAssistant}
                         />
                       );
                     })}
@@ -484,9 +494,17 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                         currentChunk={currentChunk}
                         onChunkComplete={onChunkComplete}
                         onSearch={handleSend}
+                        isFirstAssistant={!messages.some((m) => m.role === "assistant")}
                       />
                     )}
-                    {showLoadingDots && <ThinkingIndicator />}
+                    {showLoadingDots && (
+                      <div className="mb-6">
+                        {!messages.some((m) => m.role === "assistant") && !hasStreamingContent && (
+                          <AICompanionBadge />
+                        )}
+                        <ThinkingIndicator />
+                      </div>
+                    )}
                   </div>
                   {/* Flexible spacer - fills remaining space so messages stay near top */}
                   <div className="flex-grow min-h-[200px]" />

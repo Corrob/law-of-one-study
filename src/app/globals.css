@@ -418,51 +418,24 @@ h6 {
   display: inline;
 }
 
-/* Concept popover - prevent copying and layout */
+/* Concept popover - fixed positioning for reliable rendering */
 .concept-popover {
   display: block;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 50;
-  width: 280px;
+  z-index: 100;
   max-width: 90vw;
   animation: popover-fade-in 0.15s ease-out;
   user-select: none;
   -webkit-user-select: none;
 }
 
-.concept-popover-below {
-  top: calc(100% + 8px);
-}
-
-.concept-popover-above {
-  bottom: calc(100% + 8px);
-}
-
 @keyframes popover-fade-in {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(4px);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
-.concept-popover-above {
-  animation-name: popover-fade-in-above;
-}
-
-@keyframes popover-fade-in-above {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
+    transform: translateY(0);
   }
 }
 
@@ -472,7 +445,7 @@ h6 {
   border: 1px solid var(--lo1-gold);
   border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.2);
 }
 
 .concept-popover-header {
