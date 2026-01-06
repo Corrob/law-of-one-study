@@ -54,6 +54,7 @@ export default function SuggestionChips({
             transition={{ delay: 0.9 + index * 0.1, duration: 0.3 }}
             onClick={() => handleClick(suggestion)}
             disabled={disabled}
+            data-testid="suggestion-chip"
             className={`
               w-full px-4 py-2.5 rounded-lg text-sm text-left
               border border-[var(--lo1-gold)]/40

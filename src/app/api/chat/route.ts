@@ -29,25 +29,86 @@ import {
   SEARCH_CONFIG,
   calculateCost,
 } from "@/lib/config";
+import { withRetry } from "@/lib/retry";
 
 interface ChatRequest {
   message: string;
   history: ChatMessage[];
 }
 
-// Check if string could be the start of a {{QUOTE:N}} or {{QUOTE:N:s2:s5}} marker
+/**
+ * Check if a string could be the start of a quote marker that spans multiple chunks.
+ *
+ * The LLM streams text in chunks that may split a quote marker like `{{QUOTE:1}}` or
+ * `{{QUOTE:2:s3:s7}}` across multiple chunks. This function detects partial markers
+ * so we can buffer them until complete.
+ *
+ * ## Marker Formats Supported
+ *
+ * - **Simple marker:** `{{QUOTE:N}}` - Insert full quote at index N
+ * - **Range marker:** `{{QUOTE:N:sX:sY}}` - Insert sentences X through Y from quote N
+ *
+ * ## Partial Match Patterns
+ *
+ * The function checks for these progressive partial states:
+ *
+ * ```
+ * Stage 1: Static prefixes being built up
+ *   "{"           -> could become {{QUOTE:...
+ *   "{{"          -> could become {{QUOTE:...
+ *   "{{Q"         -> building "QUOTE"
+ *   "{{QU"        -> building "QUOTE"
+ *   "{{QUO"       -> building "QUOTE"
+ *   "{{QUOT"      -> building "QUOTE"
+ *   "{{QUOTE"     -> complete keyword, awaiting ":"
+ *   "{{QUOTE:"    -> awaiting quote index number
+ *
+ * Stage 2: Quote index being built (regex patterns)
+ *   "{{QUOTE:1"   -> /^\{\{QUOTE:\d+$/      (index in progress)
+ *   "{{QUOTE:12}" -> /^\{\{QUOTE:\d+\}$/    (awaiting second "}")
+ *
+ * Stage 3: Sentence range being built (for :sX:sY format)
+ *   "{{QUOTE:1:"  -> /^\{\{QUOTE:\d+:$/     (awaiting "s")
+ *   "{{QUOTE:1:s" -> /^\{\{QUOTE:\d+:s$/    (awaiting start number)
+ *   "{{QUOTE:1:s3"-> /^\{\{QUOTE:\d+:s\d+$/ (start number in progress)
+ *   "{{QUOTE:1:s3:"   -> awaiting second "s"
+ *   "{{QUOTE:1:s3:s"  -> awaiting end number
+ *   "{{QUOTE:1:s3:s7" -> /^\{\{QUOTE:\d+:s\d+:s\d+$/  (end number in progress)
+ *   "{{QUOTE:1:s3:s7}"-> /^\{\{QUOTE:\d+:s\d+:s\d+\}$/(awaiting second "}")
+ * ```
+ *
+ * @param s - The string fragment to check
+ * @returns true if this could be a partial quote marker, false otherwise
+ *
+ * @example
+ * ```ts
+ * couldBePartialMarker("{")           // true - could become {{QUOTE:...
+ * couldBePartialMarker("{{QUOTE:")    // true - awaiting index
+ * couldBePartialMarker("{{QUOTE:1")   // true - index incomplete, might have more digits
+ * couldBePartialMarker("{{QUOTE:1}}") // false - this is a COMPLETE marker
+ * couldBePartialMarker("Hello")       // false - not a marker prefix
+ * ```
+ */
 function couldBePartialMarker(s: string): boolean {
+  // Stage 1: Static prefixes - building up to "{{QUOTE:"
   const prefixes = ["{", "{{", "{{Q", "{{QU", "{{QUO", "{{QUOT", "{{QUOTE", "{{QUOTE:"];
   if (prefixes.includes(s)) return true;
+
+  // Stage 2: Quote index in progress - {{QUOTE:N (where N is one or more digits)
   if (/^\{\{QUOTE:\d+$/.test(s)) return true;
+
+  // Simple marker almost complete - {{QUOTE:N} (awaiting second "}")
   if (/^\{\{QUOTE:\d+\}$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:s$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:s\d+$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:s\d+:$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:s\d+:s$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:s\d+:s\d+$/.test(s)) return true;
-  if (/^\{\{QUOTE:\d+:s\d+:s\d+\}$/.test(s)) return true;
+
+  // Stage 3: Sentence range - for {{QUOTE:N:sX:sY}} format
+  if (/^\{\{QUOTE:\d+:$/.test(s)) return true;        // awaiting "s" for start
+  if (/^\{\{QUOTE:\d+:s$/.test(s)) return true;       // awaiting start sentence number
+  if (/^\{\{QUOTE:\d+:s\d+$/.test(s)) return true;    // start number in progress
+  if (/^\{\{QUOTE:\d+:s\d+:$/.test(s)) return true;   // awaiting "s" for end
+  if (/^\{\{QUOTE:\d+:s\d+:s$/.test(s)) return true;  // awaiting end sentence number
+  if (/^\{\{QUOTE:\d+:s\d+:s\d+$/.test(s)) return true;   // end number in progress
+  if (/^\{\{QUOTE:\d+:s\d+:s\d+\}$/.test(s)) return true; // awaiting second "}"
+
   return false;
 }
 
@@ -122,14 +183,18 @@ async function augmentQuery(
 
     const userContent = `${contextBlock}MESSAGE: ${message}`;
 
-    const response = await openai.chat.completions.create({
-      model: MODEL_CONFIG.chatModel,
-      messages: [
-        { role: "system", content: QUERY_AUGMENTATION_PROMPT },
-        { role: "user", content: userContent },
-      ],
-      reasoning_effort: MODEL_CONFIG.reasoningEffort,
-    });
+    const response = await withRetry(
+      () =>
+        openai.chat.completions.create({
+          model: MODEL_CONFIG.chatModel,
+          messages: [
+            { role: "system", content: QUERY_AUGMENTATION_PROMPT },
+            { role: "user", content: userContent },
+          ],
+          reasoning_effort: MODEL_CONFIG.reasoningEffort,
+        }),
+      { maxRetries: 2, initialDelayMs: 500 }
+    );
 
     const content = response.choices[0]?.message?.content || "";
 
@@ -212,14 +277,18 @@ async function generateSuggestions(
       aiQuestionsBlock,
     ].join("\n");
 
-    const response = await openai.chat.completions.create({
-      model: MODEL_CONFIG.chatModel,
-      messages: [
-        { role: "system", content: SUGGESTION_GENERATION_PROMPT },
-        { role: "user", content: conversationContext },
-      ],
-      reasoning_effort: MODEL_CONFIG.reasoningEffort,
-    });
+    const response = await withRetry(
+      () =>
+        openai.chat.completions.create({
+          model: MODEL_CONFIG.chatModel,
+          messages: [
+            { role: "system", content: SUGGESTION_GENERATION_PROMPT },
+            { role: "user", content: conversationContext },
+          ],
+          reasoning_effort: MODEL_CONFIG.reasoningEffort,
+        }),
+      { maxRetries: 2, initialDelayMs: 500 }
+    );
 
     const content = response.choices[0]?.message?.content || "";
     const parsed = JSON.parse(content);
@@ -331,33 +400,119 @@ function getFallbackSuggestions(intent: QueryIntent, existing: string[]): string
 }
 
 /**
- * Process a streaming LLM response, handling quote markers and sending SSE events.
+ * Process a streaming LLM response, detecting quote markers and sending SSE events.
  *
- * This function handles the complex task of:
- * 1. Buffering incoming stream chunks
- * 2. Detecting {{QUOTE:N}} and {{QUOTE:N:sX:sY}} markers in the text
- * 3. Sending text chunks and quote data as separate SSE events
- * 4. Handling partial markers that span multiple chunks
+ * This function implements a streaming state machine that handles the complex task of
+ * detecting and processing quote markers (`{{QUOTE:N}}` and `{{QUOTE:N:sX:sY}}`) that
+ * may be split across multiple stream chunks.
  *
- * Quote markers allow the LLM to reference passages by index:
- * - `{{QUOTE:1}}` - Insert full quote from passages[0]
- * - `{{QUOTE:2:s3:s7}}` - Insert sentences 3-7 from passages[1]
+ * ## Architecture Overview
+ *
+ * ```
+ *                     ┌─────────────────────────────────────────┐
+ *                     │           STREAM INPUT                  │
+ *                     │  (chunks arrive asynchronously)         │
+ *                     └─────────────────┬───────────────────────┘
+ *                                       │
+ *                                       ▼
+ *                     ┌─────────────────────────────────────────┐
+ *                     │              BUFFER                     │
+ *                     │  (accumulates incoming text)            │
+ *                     └─────────────────┬───────────────────────┘
+ *                                       │
+ *                          ┌────────────┴────────────┐
+ *                          ▼                         ▼
+ *              ┌───────────────────┐     ┌───────────────────────┐
+ *              │ COMPLETE MARKER   │     │ PARTIAL MARKER CHECK  │
+ *              │ /\{\{QUOTE:...\}\}│     │ couldBePartialMarker()│
+ *              └─────────┬─────────┘     └───────────┬───────────┘
+ *                        │                           │
+ *          ┌─────────────┴──────────┐    ┌──────────┴──────────┐
+ *          ▼                        ▼    ▼                     ▼
+ *   ┌────────────┐           ┌──────────────┐          ┌──────────────┐
+ *   │ TEXT BEFORE│           │ QUOTE DATA   │          │ KEEP IN      │
+ *   │ → accum.   │           │ → emit quote │          │ BUFFER       │
+ *   └────────────┘           └──────────────┘          │ (wait more)  │
+ *          │                        │                  └──────────────┘
+ *          ▼                        ▼
+ *   ┌─────────────────────────────────────┐
+ *   │           SSE EVENTS                │
+ *   │  - "chunk" { type: "text", ... }    │
+ *   │  - "chunk" { type: "quote", ... }   │
+ *   └─────────────────────────────────────┘
+ * ```
+ *
+ * ## Two-Buffer System
+ *
+ * The function uses two buffers to handle partial markers:
+ *
+ * 1. **buffer**: Raw incoming chunks that may contain partial markers
+ * 2. **accumulatedText**: Confirmed text safe to emit (no partial markers)
+ *
+ * ## Processing Loop State Machine
+ *
+ * ```
+ * ┌──────────────────────────────────────────────────────────────────────┐
+ * │ FOR EACH CHUNK:                                                      │
+ * │                                                                      │
+ * │  1. Append chunk.content to buffer                                   │
+ * │                                                                      │
+ * │  2. WHILE buffer not empty:                                          │
+ * │     ├── TRY: Match complete marker /\{\{QUOTE:(\d+)...\}\}/          │
+ * │     │   ├── YES: Move text-before-marker → accumulatedText           │
+ * │     │   │        Emit accumulatedText as "text" chunk                │
+ * │     │   │        Parse quote index and sentence range                │
+ * │     │   │        Emit quote as "quote" chunk                         │
+ * │     │   │        Remove marker from buffer                           │
+ * │     │   │        Continue WHILE loop                                 │
+ * │     │   │                                                            │
+ * │     │   └── NO: Check for partial marker at end of buffer            │
+ * │     │           ├── Scan last 25 chars for partial marker start      │
+ * │     │           ├── If found: Move safe text → accumulatedText       │
+ * │     │           │             Keep potential marker in buffer        │
+ * │     │           └── If not: Move all buffer → accumulatedText        │
+ * │     │                       Clear buffer                             │
+ * │     └── EXIT WHILE loop                                              │
+ * │                                                                      │
+ * │  3. After stream ends: Flush remaining buffer + accumulatedText      │
+ * └──────────────────────────────────────────────────────────────────────┘
+ * ```
+ *
+ * ## Partial Marker Detection
+ *
+ * When no complete marker is found, we must check if the buffer ends with
+ * a potential partial marker. The algorithm:
+ *
+ * 1. Scan backwards from buffer end (max 25 chars - longest possible partial)
+ * 2. For each position, check if `buffer.slice(position)` passes `couldBePartialMarker()`
+ * 3. If match found:
+ *    - Everything BEFORE that position is safe → move to accumulatedText
+ *    - Everything FROM that position stays in buffer (might complete next chunk)
+ * 4. If no match: entire buffer is safe → move all to accumulatedText
  *
  * @param stream - AsyncIterable from OpenAI streaming response
- * @param passages - Array of Ra Material quotes available for insertion
- * @param send - Function to send SSE events to the client
+ * @param passages - Array of Quote objects available for marker substitution (1-indexed in markers)
+ * @param send - Function to emit SSE events to the client
  *
- * @returns Object containing:
- *   - fullOutput: Complete text output (with markers replaced)
- *   - usage: Token usage statistics from the API
+ * @returns Object with:
+ *   - fullOutput: Complete raw text output (for logging/analytics)
+ *   - usage: Token usage statistics from final chunk
  *
  * @example
  * ```ts
- * const { fullOutput, usage } = await processStreamWithMarkers(
- *   response,
- *   passages,
- *   (event, data) => controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`))
- * );
+ * // Incoming stream chunks (split across network packets):
+ * // Chunk 1: "Ra teaches that love is {{QUOTE:"
+ * // Chunk 2: "1}} and unity pervades all."
+ *
+ * // Buffer states:
+ * // After Chunk 1: buffer="Ra teaches that love is {{QUOTE:"
+ * //                       ↑ partial marker detected, kept in buffer
+ * //                accumulatedText="Ra teaches that love is "
+ * //
+ * // After Chunk 2: buffer="{{QUOTE:1}} and unity pervades all."
+ * //                       ↑ complete marker found!
+ * //                Emit: "text" chunk, then "quote" chunk
+ * //                buffer=" and unity pervades all."
  * ```
  */
 async function processStreamWithMarkers(

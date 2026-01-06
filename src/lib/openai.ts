@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { withRetry, withCircuitBreaker } from "./retry";
 
 let openaiClient: OpenAI | null = null;
 
@@ -25,9 +26,20 @@ export const openai = {
 
 export async function createEmbedding(text: string): Promise<number[]> {
   const client = getOpenAIClient();
-  const response = await client.embeddings.create({
-    model: "text-embedding-3-small",
-    input: text,
-  });
-  return response.data[0].embedding;
+
+  return withCircuitBreaker(
+    "openai-embedding",
+    () =>
+      withRetry(
+        async () => {
+          const response = await client.embeddings.create({
+            model: "text-embedding-3-small",
+            input: text,
+          });
+          return response.data[0].embedding;
+        },
+        { maxRetries: 3, initialDelayMs: 500 }
+      ),
+    { failureThreshold: 5, resetTimeMs: 60000 }
+  );
 }

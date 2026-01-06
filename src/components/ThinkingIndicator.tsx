@@ -106,7 +106,7 @@ export default function ThinkingIndicator() {
   }, []);
 
   return (
-    <div className="mb-6">
+    <div className="mb-6" data-testid="thinking-indicator">
       {/* Random Ra-themed message */}
       <div
         className="text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500"

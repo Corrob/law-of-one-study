@@ -197,7 +197,7 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
   const showEllipsis = !isExpanded && (hasLeading || hasTrailing);
 
   return (
-    <div className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg relative">
+    <div className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg relative" data-testid="quote-card">
       {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">

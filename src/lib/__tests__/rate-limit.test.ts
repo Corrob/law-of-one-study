@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { checkRateLimit, getClientIp } from "../rate-limit";
 
 describe("rate-limit", () => {
