@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { withRetry, withCircuitBreaker } from "./retry";
+import { RETRY_CONFIG } from "./config";
 
 let openaiClient: OpenAI | null = null;
 
@@ -38,7 +39,7 @@ export async function createEmbedding(text: string): Promise<number[]> {
           });
           return response.data[0].embedding;
         },
-        { maxRetries: 3, initialDelayMs: 500 }
+        RETRY_CONFIG.embedding
       ),
     { failureThreshold: 5, resetTimeMs: 60000 }
   );

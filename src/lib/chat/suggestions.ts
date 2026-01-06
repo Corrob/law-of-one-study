@@ -6,8 +6,11 @@ import { openai } from "@/lib/openai";
 import { SUGGESTION_GENERATION_PROMPT } from "@/lib/prompts";
 import { QueryIntent } from "@/lib/types";
 import { withRetry } from "@/lib/retry";
-import { MODEL_CONFIG } from "@/lib/config";
+import { MODEL_CONFIG, RETRY_CONFIG } from "@/lib/config";
 import { debug } from "@/lib/debug";
+import { createChatError } from "@/lib/chat/errors";
+import { trackEvent } from "@/lib/posthog-server";
+import { parseSuggestionResponse } from "@/lib/schemas";
 
 /** Extract questions from AI response for echo detection */
 export function extractAIQuestions(response: string): string[] {
@@ -126,17 +129,29 @@ export async function generateSuggestions(
           ],
           reasoning_effort: MODEL_CONFIG.reasoningEffort,
         }),
-      { maxRetries: 2, initialDelayMs: 500 }
+      RETRY_CONFIG.suggestions
     );
 
     const content = response.choices[0]?.message?.content || "";
-    const parsed = JSON.parse(content);
+
+    // Parse and validate response with Zod
+    let parsed;
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      throw new Error("Invalid JSON response from suggestions");
+    }
+
+    const validated = parseSuggestionResponse(parsed);
+    if (!validated) {
+      throw new Error("Response did not match expected schema");
+    }
 
     // Validate suggestions
-    if (Array.isArray(parsed.suggestions)) {
-      const rawSuggestions = parsed.suggestions;
+    if (Array.isArray(validated.suggestions)) {
+      const rawSuggestions = validated.suggestions;
       let validSuggestions = rawSuggestions
-        .filter((s: unknown) => typeof s === "string" && s.length > 0 && s.length <= 60)
+        .filter((s) => s.length > 0 && s.length <= 60)
         .slice(0, 3);
 
       // Log if suggestions were filtered out due to length
@@ -144,9 +159,7 @@ export async function generateSuggestions(
         debug.log("[API] Some suggestions filtered:", {
           raw: rawSuggestions,
           valid: validSuggestions,
-          filtered: rawSuggestions.filter(
-            (s: unknown) => typeof s !== "string" || (typeof s === "string" && s.length > 60)
-          ),
+          filtered: rawSuggestions.filter((s) => s.length > 60),
         });
       }
 
@@ -154,7 +167,7 @@ export async function generateSuggestions(
       if (intent === "personal") {
         const practicePatterns = /\b(meditat|journal|practice|routine|daily|exercise|try this)\b/i;
         const beforeFilter = validSuggestions.length;
-        validSuggestions = validSuggestions.filter((s: string) => !practicePatterns.test(s));
+        validSuggestions = validSuggestions.filter((s) => !practicePatterns.test(s));
         if (validSuggestions.length < beforeFilter) {
           debug.log("[API] Filtered practice suggestions for personal intent:", {
             before: beforeFilter,
@@ -188,7 +201,33 @@ export async function generateSuggestions(
     }
     return getFallbackSuggestions(intent, []);
   } catch (error) {
-    console.error("[API] Suggestion generation failed:", error);
+    // Create typed error for logging
+    const chatError = createChatError(
+      "SUGGESTIONS_FAILED",
+      error instanceof Error ? error : new Error(String(error))
+    );
+
+    // Log with context
+    console.error("[API] Suggestion generation failed:", {
+      code: chatError.code,
+      message: chatError.message,
+      intent,
+      turnCount: context.turnCount,
+    });
+
+    // Track to PostHog for monitoring
+    trackEvent({
+      distinctId: "system",
+      event: "suggestions_error",
+      properties: {
+        error_code: chatError.code,
+        error_message: chatError.message,
+        intent,
+        turn_count: context.turnCount,
+      },
+    });
+
+    // Return fallback (preserve graceful degradation)
     return getFallbackSuggestions(intent, []);
   }
 }

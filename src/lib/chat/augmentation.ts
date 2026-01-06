@@ -11,7 +11,10 @@ import { openai } from "@/lib/openai";
 import { QUERY_AUGMENTATION_PROMPT } from "@/lib/prompts";
 import { QueryIntent, IntentConfidence } from "@/lib/types";
 import { withRetry } from "@/lib/retry";
-import { MODEL_CONFIG } from "@/lib/config";
+import { MODEL_CONFIG, RETRY_CONFIG } from "@/lib/config";
+import { createChatError } from "@/lib/chat/errors";
+import { trackEvent } from "@/lib/posthog-server";
+import { parseAugmentationResponse } from "@/lib/schemas";
 
 /** Valid intent types for query classification */
 export const VALID_INTENTS: QueryIntent[] = [
@@ -65,27 +68,65 @@ export async function augmentQuery(
           ],
           reasoning_effort: MODEL_CONFIG.reasoningEffort,
         }),
-      { maxRetries: 2, initialDelayMs: 500 }
+      RETRY_CONFIG.augmentation
     );
 
     const content = response.choices[0]?.message?.content || "";
-    const parsed = JSON.parse(content);
 
-    const intent: QueryIntent = VALID_INTENTS.includes(parsed.intent)
-      ? parsed.intent
+    // Parse and validate response with Zod
+    let parsed;
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      throw new Error("Invalid JSON response from augmentation");
+    }
+
+    const validated = parseAugmentationResponse(parsed);
+    if (!validated) {
+      throw new Error("Response did not match expected schema");
+    }
+
+    const intent: QueryIntent = VALID_INTENTS.includes(validated.intent as QueryIntent)
+      ? (validated.intent as QueryIntent)
       : "conceptual";
 
-    const confidence: IntentConfidence = VALID_CONFIDENCES.includes(parsed.confidence)
-      ? parsed.confidence
+    const confidence: IntentConfidence = VALID_CONFIDENCES.includes(
+      validated.confidence as IntentConfidence
+    )
+      ? (validated.confidence as IntentConfidence)
       : "medium";
 
     return {
       intent,
-      augmentedQuery: parsed.augmented_query || message,
+      augmentedQuery: validated.augmented_query || message,
       confidence,
     };
   } catch (error) {
-    console.error("[API] Query augmentation failed, using original message:", error);
+    // Create typed error for logging
+    const chatError = createChatError(
+      "AUGMENTATION_FAILED",
+      error instanceof Error ? error : new Error(String(error))
+    );
+
+    // Log with context
+    console.error("[API] Query augmentation failed:", {
+      code: chatError.code,
+      message: chatError.message,
+      originalMessage: message.substring(0, 100),
+    });
+
+    // Track to PostHog for monitoring
+    trackEvent({
+      distinctId: "system",
+      event: "augmentation_error",
+      properties: {
+        error_code: chatError.code,
+        error_message: chatError.message,
+        is_retryable: chatError.retryable,
+      },
+    });
+
+    // Return graceful fallback (preserve existing graceful degradation behavior)
     return { intent: "conceptual", augmentedQuery: message, confidence: "low" };
   }
 }

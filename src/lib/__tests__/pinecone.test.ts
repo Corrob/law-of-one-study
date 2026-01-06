@@ -163,18 +163,22 @@ describe("pinecone", () => {
       expect(results[0].url).toBe("https://lawofone.info/s/50#7");
     });
 
-    it("should filter out results without metadata", async () => {
+    it("should filter out results without valid metadata", async () => {
       mockQuery.mockResolvedValue({
         matches: [
-          { id: "1", score: 0.9, metadata: { text: "Ra" } },
-          { id: "2", score: 0.8 }, // No metadata
-          { id: "3", score: 0.7, metadata: { text: "Ra again" } },
+          { id: "1", score: 0.9, metadata: { text: "Ra", reference: "1.1", session: 1, question: 1 } }, // Valid
+          { id: "2", score: 0.8 }, // No metadata at all
+          { id: "3", score: 0.7, metadata: { text: "Ra again" } }, // Incomplete metadata
+          { id: "4", score: 0.6, metadata: { text: "Ra too", reference: "2.1", session: 2, question: 1 } }, // Valid
         ],
       });
 
       const results = await searchRaMaterial(mockEmbedding);
 
+      // Only results with valid complete metadata should be returned
       expect(results).toHaveLength(2);
+      expect(results[0].reference).toBe("1.1");
+      expect(results[1].reference).toBe("2.1");
     });
 
     it("should return empty array when no matches", async () => {

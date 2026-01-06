@@ -1,6 +1,7 @@
 "use client";
 
 import { Component, ReactNode } from "react";
+import posthog from "posthog-js";
 
 interface Props {
   children: ReactNode;
@@ -44,8 +45,16 @@ export default class ErrorBoundary extends Component<Props, State> {
     // Log error to console in development
     console.error("ErrorBoundary caught an error:", error, errorInfo);
 
-    // In production, you could send this to an error tracking service
-    // e.g., Sentry, LogRocket, etc.
+    // Track to PostHog for monitoring
+    if (typeof window !== "undefined" && posthog) {
+      posthog.capture("error_boundary_triggered", {
+        error_name: error.name,
+        error_message: error.message,
+        error_stack: error.stack?.substring(0, 1000),
+        component_stack: errorInfo.componentStack?.substring(0, 1000),
+        url: window.location.href,
+      });
+    }
   }
 
   handleReset = () => {

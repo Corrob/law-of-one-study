@@ -2,6 +2,7 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeMetadata } from "./types";
 import { SessionQuestionRef } from "./quote-utils";
 import { debug } from "@/lib/debug";
+import { parsePineconeMetadata, parseConceptMetadata } from "@/lib/schemas";
 
 let pineconeClient: Pinecone | null = null;
 
@@ -59,15 +60,22 @@ export async function searchRaMaterial(
 
   return (
     results.matches
-      ?.filter((match) => match.metadata)
-      .map((match) => {
-        const metadata = match.metadata as unknown as PineconeMetadata;
+      ?.map((match) => {
+        const metadata = parsePineconeMetadata(match.metadata);
+        if (!metadata) {
+          debug.log("[Pinecone] Invalid metadata structure, skipping:", match.id);
+          return null;
+        }
         // Ensure URL is correct format
         if (metadata.session && metadata.question !== undefined) {
-          metadata.url = `https://lawofone.info/s/${metadata.session}#${metadata.question}`;
+          return {
+            ...metadata,
+            url: `https://lawofone.info/s/${metadata.session}#${metadata.question}`,
+          };
         }
         return metadata;
-      }) || []
+      })
+      .filter((m): m is PineconeMetadata => m !== null) || []
   );
 }
 
@@ -97,12 +105,16 @@ export async function searchConcepts(
   });
 
   return (
-    results.matches?.map((m) => ({
-      id: m.id,
-      score: m.score,
-      term: (m.metadata?.term as string) || "",
-      category: (m.metadata?.category as string) || "",
-    })) ?? []
+    results.matches
+      ?.map((m) => {
+        const metadata = parseConceptMetadata(m.metadata);
+        return {
+          id: m.id,
+          score: m.score,
+          term: metadata?.term || "",
+          category: metadata?.category || "",
+        };
+      }) ?? []
   );
 }
 

@@ -18,6 +18,25 @@ if (typeof window !== "undefined") {
       autocapture: false, // We want explicit tracking for better control
       // Scroll depth tracking is enabled by default (disable_scroll_properties: false)
     });
+
+    // Global error handler for unhandled errors
+    window.addEventListener("error", (event) => {
+      posthog.capture("unhandled_error", {
+        error_message: event.message,
+        error_filename: event.filename,
+        error_lineno: event.lineno,
+        error_colno: event.colno,
+        url: window.location.href,
+      });
+    });
+
+    // Global handler for unhandled promise rejections
+    window.addEventListener("unhandledrejection", (event) => {
+      posthog.capture("unhandled_promise_rejection", {
+        reason: String(event.reason),
+        url: window.location.href,
+      });
+    });
   }
 }
 

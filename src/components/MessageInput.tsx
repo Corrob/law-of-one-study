@@ -68,6 +68,10 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
   const hasContent = input.trim().length > 0;
   const canSend = hasContent && !disabled && !isOverLimit;
 
+  // IDs for accessibility
+  const inputId = "message-input";
+  const counterId = "message-counter";
+
   return (
     <div className="flex flex-col gap-1">
       {/* Unified input container */}
@@ -78,6 +82,7 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
                    transition-all duration-200"
       >
         <textarea
+          id={inputId}
           ref={textareaRef}
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -86,6 +91,9 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
           placeholder={placeholder || "Ask about the Ra Material..."}
           disabled={disabled}
           rows={1}
+          aria-label="Message input"
+          aria-describedby={isNearLimit ? counterId : undefined}
+          aria-invalid={isOverLimit}
           className="flex-1 resize-none bg-transparent px-3 sm:px-4 py-4 pr-12 sm:pr-14
                      text-[var(--lo1-starlight)] placeholder:text-[var(--lo1-stardust)]
                      focus:outline-none
@@ -119,7 +127,13 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
 
       {/* Character counter - only show when user is typing and near/over limit */}
       {characterCount > 0 && isNearLimit && (
-        <div className="text-xs text-right px-1">
+        <div
+          id={counterId}
+          className="text-xs text-right px-1"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           <span className={isOverLimit ? "text-[var(--lo1-error)]" : "text-[var(--lo1-stardust)]"}>
             {characterCount.toLocaleString()} / {MAX_MESSAGE_LENGTH.toLocaleString()} characters
             {isOverLimit && " (over limit)"}

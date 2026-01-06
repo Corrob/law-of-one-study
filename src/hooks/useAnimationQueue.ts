@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useReducer, useCallback, useMemo, useEffect } from "react";
 import { AnimationChunk } from "@/lib/types";
 import { debug } from "@/lib/debug";
 
@@ -29,6 +29,115 @@ interface UseAnimationQueueReturn {
 }
 
 /**
+ * Animation queue state - consolidated into a single object
+ */
+interface AnimationQueueState {
+  /** Chunks waiting to be animated */
+  queue: AnimationChunk[];
+  /** Chunks that have finished animating */
+  completedChunks: AnimationChunk[];
+  /** Currently animating chunk */
+  currentChunk: AnimationChunk | null;
+}
+
+/**
+ * Action types for the animation queue reducer
+ */
+type AnimationQueueAction =
+  | { type: "ADD_CHUNK"; chunk: AnimationChunk }
+  | { type: "ADVANCE" }
+  | { type: "COMPLETE_CURRENT" }
+  | { type: "RESET" };
+
+const initialState: AnimationQueueState = {
+  queue: [],
+  completedChunks: [],
+  currentChunk: null,
+};
+
+/**
+ * Reducer for animation queue state transitions
+ */
+function animationQueueReducer(
+  state: AnimationQueueState,
+  action: AnimationQueueAction
+): AnimationQueueState {
+  switch (action.type) {
+    case "ADD_CHUNK": {
+      debug.log("[useAnimationQueue] Adding chunk:", {
+        type: action.chunk.type,
+        reference:
+          action.chunk.type === "quote" ? action.chunk.quote.reference : undefined,
+      });
+
+      // If no current chunk, immediately start animating this one
+      if (state.currentChunk === null && state.queue.length === 0) {
+        debug.log("[useAnimationQueue] Starting immediate animation");
+        return {
+          ...state,
+          currentChunk: action.chunk,
+        };
+      }
+
+      // Otherwise add to queue
+      return {
+        ...state,
+        queue: [...state.queue, action.chunk],
+      };
+    }
+
+    case "ADVANCE": {
+      // Pull next chunk from queue if available
+      if (state.queue.length === 0) {
+        return state;
+      }
+
+      const [next, ...rest] = state.queue;
+      debug.log("[useAnimationQueue] Advancing to next chunk:", {
+        type: next.type,
+        remainingAfter: rest.length,
+      });
+
+      return {
+        ...state,
+        currentChunk: next,
+        queue: rest,
+      };
+    }
+
+    case "COMPLETE_CURRENT": {
+      if (!state.currentChunk) {
+        return state;
+      }
+
+      debug.log("[useAnimationQueue] Completing chunk:", {
+        type: state.currentChunk.type,
+        reference:
+          state.currentChunk.type === "quote"
+            ? state.currentChunk.quote.reference
+            : undefined,
+      });
+
+      // Move current to completed, clear current
+      // The ADVANCE action will pull the next chunk from queue
+      return {
+        ...state,
+        completedChunks: [...state.completedChunks, state.currentChunk],
+        currentChunk: null,
+      };
+    }
+
+    case "RESET": {
+      debug.log("[useAnimationQueue] Resetting state");
+      return initialState;
+    }
+
+    default:
+      return state;
+  }
+}
+
+/**
  * Manages a queue of animation chunks for streaming message display.
  *
  * This hook implements a sequential animation system where:
@@ -42,6 +151,8 @@ interface UseAnimationQueueReturn {
  * [queue] → [currentChunk] → [completedChunks]
  *              (animating)      (static)
  * ```
+ *
+ * Uses useReducer for cleaner state transitions and to avoid race conditions.
  *
  * @returns Animation queue state and controls
  *
@@ -69,90 +180,59 @@ interface UseAnimationQueueReturn {
  * ```
  */
 export function useAnimationQueue(): UseAnimationQueueReturn {
-  const [queue, setQueue] = useState<AnimationChunk[]>([]);
-  const [completedChunks, setCompletedChunks] = useState<AnimationChunk[]>([]);
-  const [currentChunk, setCurrentChunk] = useState<AnimationChunk | null>(null);
+  const [state, dispatch] = useReducer(animationQueueReducer, initialState);
 
-  // Log queue state changes
+  // Auto-advance when current chunk is null but queue has items
   useEffect(() => {
-    debug.log("[useAnimationQueue] Queue state:", {
-      queueLength: queue.length,
-      queueTypes: queue.map((c) => c.type),
-      currentChunkType: currentChunk?.type,
+    if (state.currentChunk === null && state.queue.length > 0) {
+      dispatch({ type: "ADVANCE" });
+    }
+  }, [state.currentChunk, state.queue.length]);
+
+  // Log state changes
+  useEffect(() => {
+    debug.log("[useAnimationQueue] State:", {
+      queueLength: state.queue.length,
+      queueTypes: state.queue.map((c) => c.type),
+      currentChunkType: state.currentChunk?.type,
+      completedCount: state.completedChunks.length,
     });
-  }, [queue, currentChunk]);
-
-  // When queue has items and no current chunk, pull the next one
-  useEffect(() => {
-    if (!currentChunk && queue.length > 0) {
-      // Use functional setState to ensure we work with latest queue state
-      setQueue((currentQueue) => {
-        if (currentQueue.length === 0) return currentQueue;
-        const [next, ...rest] = currentQueue;
-        debug.log("[useAnimationQueue] Pulling next chunk from queue:", {
-          type: next.type,
-          queueLength: currentQueue.length,
-          remainingAfter: rest.length,
-          reference: next.type === "quote" ? next.quote.reference : undefined,
-        });
-        setCurrentChunk(next);
-        return rest;
-      });
-    }
-  }, [queue, currentChunk]);
-
-  const onChunkComplete = useCallback(() => {
-    if (currentChunk) {
-      debug.log("[useAnimationQueue] Chunk completed:", {
-        type: currentChunk.type,
-        reference: currentChunk.type === "quote" ? currentChunk.quote.reference : undefined,
-        queueLength: queue.length,
-        queueTypes: queue.map((c) => c.type),
-      });
-      setCompletedChunks((prev) => [...prev, currentChunk]);
-      setCurrentChunk(null);
-    }
-  }, [currentChunk, queue]);
+  }, [state.queue, state.currentChunk, state.completedChunks]);
 
   const addChunk = useCallback((chunk: AnimationChunk) => {
-    debug.log("[useAnimationQueue] Adding chunk to queue:", {
-      type: chunk.type,
-      reference: chunk.type === "quote" ? chunk.quote.reference : undefined,
-    });
-    setQueue((prev) => {
-      debug.log("[useAnimationQueue] setQueue prev state:", {
-        prevLength: prev.length,
-        prevTypes: prev.map((c) => c.type),
-        adding: chunk.type,
-      });
-      const newQueue = [...prev, chunk];
-      debug.log("[useAnimationQueue] setQueue new state:", {
-        newLength: newQueue.length,
-        newTypes: newQueue.map((c) => c.type),
-      });
-      return newQueue;
-    });
+    dispatch({ type: "ADD_CHUNK", chunk });
+  }, []);
+
+  const onChunkComplete = useCallback(() => {
+    dispatch({ type: "COMPLETE_CURRENT" });
   }, []);
 
   const reset = useCallback(() => {
-    setQueue([]);
-    setCompletedChunks([]);
-    setCurrentChunk(null);
+    dispatch({ type: "RESET" });
   }, []);
 
-  // Compute all chunks for building final message
-  const allChunks = [...completedChunks, ...(currentChunk ? [currentChunk] : []), ...queue];
+  // Derived state - memoized for performance
+  const allChunks = useMemo(
+    () => [
+      ...state.completedChunks,
+      ...(state.currentChunk ? [state.currentChunk] : []),
+      ...state.queue,
+    ],
+    [state.completedChunks, state.currentChunk, state.queue]
+  );
 
-  // Animation is truly done when queue is empty AND no current chunk
-  const isFullyComplete = queue.length === 0 && currentChunk === null && completedChunks.length > 0;
+  const isFullyComplete =
+    state.queue.length === 0 &&
+    state.currentChunk === null &&
+    state.completedChunks.length > 0;
 
   return {
     allChunks,
-    completedChunks,
-    currentChunk,
-    isAnimating: currentChunk !== null,
+    completedChunks: state.completedChunks,
+    currentChunk: state.currentChunk,
+    isAnimating: state.currentChunk !== null,
     isFullyComplete,
-    queueLength: queue.length,
+    queueLength: state.queue.length,
     onChunkComplete,
     addChunk,
     reset,

@@ -769,3 +769,20 @@ h6 {
   color: #5a5869 !important;
   opacity: 1 !important;
 }
+
+/* ============================================
+   Accessibility Utilities
+   ============================================ */
+
+/* Screen reader only - visually hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

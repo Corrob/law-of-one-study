@@ -106,6 +106,38 @@ export const QUOTE_CONFIG = {
   idealSentenceRange: { min: 5, max: 12 },
 } as const;
 
+// =============================================================================
+// RETRY CONFIGURATION
+// =============================================================================
+
+/** Retry configuration for external API calls */
+export const RETRY_CONFIG = {
+  /** OpenAI embedding calls */
+  embedding: {
+    maxRetries: 3,
+    initialDelayMs: 500,
+    timeoutMs: 15000,
+  },
+  /** Query augmentation calls */
+  augmentation: {
+    maxRetries: 2,
+    initialDelayMs: 500,
+    timeoutMs: 10000,
+  },
+  /** Suggestion generation calls */
+  suggestions: {
+    maxRetries: 2,
+    initialDelayMs: 500,
+    timeoutMs: 10000,
+  },
+  /** Chat streaming calls */
+  chat: {
+    maxRetries: 2,
+    initialDelayMs: 1000,
+    timeoutMs: 60000,
+  },
+} as const;
+
 /**
  * Calculate OpenAI API cost based on token usage.
  *

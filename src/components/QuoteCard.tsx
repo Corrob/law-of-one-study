@@ -220,6 +220,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
           onClick={handleExpandClick}
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
           disabled={isLoadingFull}
+          aria-expanded={isExpanded}
+          aria-label={isLoadingFull ? "Loading full quote" : "Show more of this quote"}
         >
           {isLoadingFull ? "Loading..." : "..."}
         </button>
@@ -251,6 +253,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
           onClick={handleExpandClick}
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
           disabled={isLoadingFull}
+          aria-expanded={isExpanded}
+          aria-label={isLoadingFull ? "Loading full quote" : "Show more of this quote"}
         >
           {isLoadingFull ? "Loading..." : "..."}
         </button>
@@ -261,6 +265,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
         <button
           onClick={handleExpandClick}
           className="block text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-3 cursor-pointer"
+          aria-expanded={isExpanded}
+          aria-label="Collapse quote"
         >
           ↑ Collapse
         </button>
@@ -270,8 +276,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
       <button
         onClick={handleCopyQuote}
         className="absolute bottom-2 right-2 p-1.5 rounded hover:bg-[var(--lo1-celestial)]/20 transition-colors group"
-        title="Copy quote"
-        aria-label="Copy quote"
+        title={copySuccess ? "Copied!" : "Copy quote"}
+        aria-label={copySuccess ? "Quote copied to clipboard" : "Copy quote to clipboard"}
       >
         {copySuccess ? (
           <svg
@@ -303,6 +309,11 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
           </svg>
         )}
       </button>
+
+      {/* Hidden live region for copy feedback */}
+      <span role="status" aria-live="polite" className="sr-only">
+        {copySuccess ? "Quote copied to clipboard" : ""}
+      </span>
     </div>
   );
 });

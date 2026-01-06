@@ -460,12 +460,21 @@ describe("/api/chat", () => {
 
   describe("Quote Marker Processing", () => {
     it("should process {{QUOTE:N}} markers", async () => {
-      // Mock response with quote marker
-      mockOpenAI.chat.completions.create.mockImplementation(() =>
-        createMockStreamWithQuotes(
-          ["Here is a quote: ", { quoteIndex: 1 }],
-          DEFAULT_USAGE
-        )
+      // Mock response with quote marker - must handle all call types
+      mockOpenAI.chat.completions.create.mockImplementation(
+        (options: { stream?: boolean; messages?: Array<{ role: string; content: string }> }) => {
+          if (options?.stream === true) {
+            return createMockStreamWithQuotes(
+              ["Here is a quote: ", { quoteIndex: 1 }],
+              DEFAULT_USAGE
+            );
+          }
+          const systemMessage = options?.messages?.[0]?.content || "";
+          if (systemMessage.includes("optimize search queries") || systemMessage.includes("vector database")) {
+            return createMockAugmentResponse("conceptual", "test query", "high");
+          }
+          return createMockSuggestionsResponse();
+        }
       );
 
       const request = createMockRequest({
@@ -484,12 +493,21 @@ describe("/api/chat", () => {
     });
 
     it("should process {{QUOTE:N:sX:sY}} markers with sentence range", async () => {
-      // Mock response with sentence range marker
-      mockOpenAI.chat.completions.create.mockImplementation(() =>
-        createMockStreamWithQuotes(
-          [{ quoteIndex: 1, sentenceStart: 1, sentenceEnd: 2 }],
-          DEFAULT_USAGE
-        )
+      // Mock response with sentence range marker - must handle all call types
+      mockOpenAI.chat.completions.create.mockImplementation(
+        (options: { stream?: boolean; messages?: Array<{ role: string; content: string }> }) => {
+          if (options?.stream === true) {
+            return createMockStreamWithQuotes(
+              [{ quoteIndex: 1, sentenceStart: 1, sentenceEnd: 2 }],
+              DEFAULT_USAGE
+            );
+          }
+          const systemMessage = options?.messages?.[0]?.content || "";
+          if (systemMessage.includes("optimize search queries") || systemMessage.includes("vector database")) {
+            return createMockAugmentResponse("conceptual", "test query", "high");
+          }
+          return createMockSuggestionsResponse();
+        }
       );
 
       const request = createMockRequest({
@@ -507,16 +525,25 @@ describe("/api/chat", () => {
     });
 
     it("should handle multiple quote markers", async () => {
-      mockOpenAI.chat.completions.create.mockImplementation(() =>
-        createMockStreamWithQuotes(
-          [
-            "First quote: ",
-            { quoteIndex: 1 },
-            " Second quote: ",
-            { quoteIndex: 2 },
-          ],
-          DEFAULT_USAGE
-        )
+      mockOpenAI.chat.completions.create.mockImplementation(
+        (options: { stream?: boolean; messages?: Array<{ role: string; content: string }> }) => {
+          if (options?.stream === true) {
+            return createMockStreamWithQuotes(
+              [
+                "First quote: ",
+                { quoteIndex: 1 },
+                " Second quote: ",
+                { quoteIndex: 2 },
+              ],
+              DEFAULT_USAGE
+            );
+          }
+          const systemMessage = options?.messages?.[0]?.content || "";
+          if (systemMessage.includes("optimize search queries") || systemMessage.includes("vector database")) {
+            return createMockAugmentResponse("conceptual", "test query", "high");
+          }
+          return createMockSuggestionsResponse();
+        }
       );
 
       const request = createMockRequest({
@@ -534,11 +561,20 @@ describe("/api/chat", () => {
     });
 
     it("should handle text before and after markers", async () => {
-      mockOpenAI.chat.completions.create.mockImplementation(() =>
-        createMockStreamWithQuotes(
-          ["Before ", { quoteIndex: 1 }, " After"],
-          DEFAULT_USAGE
-        )
+      mockOpenAI.chat.completions.create.mockImplementation(
+        (options: { stream?: boolean; messages?: Array<{ role: string; content: string }> }) => {
+          if (options?.stream === true) {
+            return createMockStreamWithQuotes(
+              ["Before ", { quoteIndex: 1 }, " After"],
+              DEFAULT_USAGE
+            );
+          }
+          const systemMessage = options?.messages?.[0]?.content || "";
+          if (systemMessage.includes("optimize search queries") || systemMessage.includes("vector database")) {
+            return createMockAugmentResponse("conceptual", "test query", "high");
+          }
+          return createMockSuggestionsResponse();
+        }
       );
 
       const request = createMockRequest({ message: "test", history: [] });

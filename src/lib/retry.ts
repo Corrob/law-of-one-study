@@ -25,6 +25,8 @@ export interface RetryConfig {
   backoffMultiplier?: number;
   /** Jitter factor 0-1 to randomize delays (default: 0.1) */
   jitter?: number;
+  /** Request timeout in milliseconds (default: 30000) */
+  timeoutMs?: number;
 }
 
 /** Default retry configuration */
@@ -34,6 +36,7 @@ export const DEFAULT_RETRY_CONFIG: Required<RetryConfig> = {
   maxDelayMs: 30000,
   backoffMultiplier: 2,
   jitter: 0.1,
+  timeoutMs: 30000,
 };
 
 /** Error class for retryable failures that exhausted all attempts */
@@ -48,6 +51,47 @@ export class RetryExhaustedError extends Error {
   }
 }
 
+/** Error class for timeout failures */
+export class TimeoutError extends Error {
+  constructor(
+    message: string,
+    public readonly timeoutMs: number
+  ) {
+    super(message);
+    this.name = "TimeoutError";
+  }
+}
+
+/**
+ * Wrap a promise with a timeout.
+ *
+ * @param promise - The promise to wrap
+ * @param timeoutMs - Timeout in milliseconds
+ * @param operationName - Name for error message context
+ * @returns Promise that rejects with TimeoutError if timeout exceeded
+ */
+export function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  operationName = "Operation"
+): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () =>
+          reject(
+            new TimeoutError(
+              `${operationName} timed out after ${timeoutMs}ms`,
+              timeoutMs
+            )
+          ),
+        timeoutMs
+      )
+    ),
+  ]);
+}
+
 /**
  * Check if an error is retryable based on status code or error type.
  *
@@ -55,6 +99,11 @@ export class RetryExhaustedError extends Error {
  * @returns true if the error is transient and worth retrying
  */
 export function isRetryableError(error: unknown): boolean {
+  // Timeout errors are retryable
+  if (error instanceof TimeoutError) {
+    return true;
+  }
+
   // Network errors (fetch failed)
   if (error instanceof TypeError && error.message.includes("fetch")) {
     return true;
@@ -139,7 +188,8 @@ export async function withRetry<T>(
 
   for (let attempt = 0; attempt <= fullConfig.maxRetries; attempt++) {
     try {
-      return await fn();
+      // Wrap each attempt with timeout
+      return await withTimeout(fn(), fullConfig.timeoutMs, "Retry operation");
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
 
