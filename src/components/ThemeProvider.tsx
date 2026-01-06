@@ -18,14 +18,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
+    try {
+      const savedTheme = localStorage.getItem('theme') as Theme | null;
 
-    // Default to dark mode unless user has explicitly chosen light
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
-    } else {
-      // Dark mode is the default for everyone
+      // Default to dark mode unless user has explicitly chosen light
+      if (savedTheme) {
+        setTheme(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        // Dark mode is the default for everyone
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    } catch {
+      // localStorage may be unavailable (private browsing, etc.)
       document.documentElement.setAttribute('data-theme', 'dark');
     }
   }, []);
@@ -33,7 +38,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggleTheme = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
+    try {
+      localStorage.setItem('theme', newTheme);
+    } catch {
+      // localStorage may be unavailable (private browsing, etc.)
+    }
     document.documentElement.setAttribute('data-theme', newTheme);
   };
 

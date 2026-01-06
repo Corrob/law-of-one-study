@@ -5,6 +5,9 @@ import {
   reconstructTextFromParagraphs,
   formatWholeQuote,
   applySentenceRangeToQuote,
+  parseSessionQuestionReference,
+  fetchFullQuote,
+  formatQuoteForCopy,
   type Paragraph,
 } from "../quote-utils";
 
@@ -340,6 +343,317 @@ describe("quote-utils", () => {
       expect(result).toContain("Ra:");
       expect(result).toContain("I am Ra.");
       expect(result).toContain("Love is unity.");
+    });
+  });
+
+  describe("parseSessionQuestionReference", () => {
+    // Pattern 1: URL format - lawofone.info/s/SESSION#QUESTION
+    it("should parse lawofone.info URL with session and question", () => {
+      expect(parseSessionQuestionReference("lawofone.info/s/50#12")).toEqual({
+        session: 50,
+        question: 12,
+      });
+    });
+
+    it("should parse lawofone.info URL with session only", () => {
+      expect(parseSessionQuestionReference("lawofone.info/s/50")).toEqual({
+        session: 50,
+        question: undefined,
+      });
+    });
+
+    it("should parse lawofone.info URL case-insensitively", () => {
+      expect(parseSessionQuestionReference("LAWOFONE.INFO/S/50#12")).toEqual({
+        session: 50,
+        question: 12,
+      });
+    });
+
+    // Pattern 2: Explicit "session X" or "session X question Y"
+    it('should parse "session 5"', () => {
+      expect(parseSessionQuestionReference("session 5")).toEqual({
+        session: 5,
+        question: undefined,
+      });
+    });
+
+    it('should parse "session 5 question 1"', () => {
+      expect(parseSessionQuestionReference("session 5 question 1")).toEqual({
+        session: 5,
+        question: 1,
+      });
+    });
+
+    it("should parse session reference case-insensitively", () => {
+      expect(parseSessionQuestionReference("SESSION 10 QUESTION 5")).toEqual({
+        session: 10,
+        question: 5,
+      });
+    });
+
+    // Pattern 3: "question X.Y" format
+    it('should parse "question 5.1"', () => {
+      expect(parseSessionQuestionReference("question 5.1")).toEqual({
+        session: 5,
+        question: 1,
+      });
+    });
+
+    it('should parse "question 50.12"', () => {
+      expect(parseSessionQuestionReference("question 50.12")).toEqual({
+        session: 50,
+        question: 12,
+      });
+    });
+
+    // Pattern 4: Shorthand "s5q1" or "s5"
+    it('should parse "s5q1"', () => {
+      expect(parseSessionQuestionReference("s5q1")).toEqual({
+        session: 5,
+        question: 1,
+      });
+    });
+
+    it('should parse "s5"', () => {
+      expect(parseSessionQuestionReference("s5")).toEqual({
+        session: 5,
+        question: undefined,
+      });
+    });
+
+    it('should parse "s50q12"', () => {
+      expect(parseSessionQuestionReference("s50q12")).toEqual({
+        session: 50,
+        question: 12,
+      });
+    });
+
+    // Pattern 5: "Ra X.Y" or command with X.Y
+    it('should parse "Ra 5.1"', () => {
+      expect(parseSessionQuestionReference("Ra 5.1")).toEqual({
+        session: 5,
+        question: 1,
+      });
+    });
+
+    it('should parse "show me 50.12"', () => {
+      expect(parseSessionQuestionReference("show me 50.12")).toEqual({
+        session: 50,
+        question: 12,
+      });
+    });
+
+    it('should parse "find 10.5"', () => {
+      expect(parseSessionQuestionReference("find 10.5")).toEqual({
+        session: 10,
+        question: 5,
+      });
+    });
+
+    it('should parse "get 1.1"', () => {
+      expect(parseSessionQuestionReference("get 1.1")).toEqual({
+        session: 1,
+        question: 1,
+      });
+    });
+
+    it('should parse "read 106.23"', () => {
+      expect(parseSessionQuestionReference("read 106.23")).toEqual({
+        session: 106,
+        question: 23,
+      });
+    });
+
+    // Pattern 6: Standalone X.Y in short queries
+    it('should parse standalone "5.1" in short query', () => {
+      expect(parseSessionQuestionReference("5.1")).toEqual({
+        session: 5,
+        question: 1,
+      });
+    });
+
+    it("should parse standalone reference with surrounding text in short query", () => {
+      expect(parseSessionQuestionReference("what is 50.12")).toEqual({
+        session: 50,
+        question: 12,
+      });
+    });
+
+    it("should not match X.Y in long queries", () => {
+      const longQuery =
+        "I have a question about something 5.1 and other things that make this query quite long";
+      expect(parseSessionQuestionReference(longQuery)).toBeNull();
+    });
+
+    // Edge cases and validation
+    it("should return null for no match", () => {
+      expect(parseSessionQuestionReference("what is love")).toBeNull();
+    });
+
+    it("should validate session range - reject session 0", () => {
+      expect(parseSessionQuestionReference("0.1")).toBeNull();
+    });
+
+    it("should validate session range - reject session > 106", () => {
+      expect(parseSessionQuestionReference("107.1")).toBeNull();
+    });
+
+    it("should validate question range - reject question > 50", () => {
+      expect(parseSessionQuestionReference("ra 50.51")).toBeNull();
+    });
+
+    it("should accept session 106 (maximum valid)", () => {
+      expect(parseSessionQuestionReference("ra 106.1")).toEqual({
+        session: 106,
+        question: 1,
+      });
+    });
+
+    it("should accept question 0 (valid in Ra material)", () => {
+      expect(parseSessionQuestionReference("ra 50.0")).toEqual({
+        session: 50,
+        question: 0,
+      });
+    });
+
+    it("should handle whitespace in query", () => {
+      expect(parseSessionQuestionReference("  session 5  ")).toEqual({
+        session: 5,
+        question: undefined,
+      });
+    });
+  });
+
+  describe("fetchFullQuote", () => {
+    const originalFetch = global.fetch;
+
+    beforeEach(() => {
+      global.fetch = jest.fn();
+    });
+
+    afterEach(() => {
+      global.fetch = originalFetch;
+    });
+
+    it("should fetch and return quote from section JSON", async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ "49.8": "I am Ra. This is the quote." }),
+      });
+
+      const result = await fetchFullQuote("49.8");
+      expect(result).toBe("I am Ra. This is the quote.");
+      expect(global.fetch).toHaveBeenCalledWith("/sections/49.json");
+    });
+
+    it('should handle "Ra 49.8" format', async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ "49.8": "Quote content" }),
+      });
+
+      const result = await fetchFullQuote("Ra 49.8");
+      expect(result).toBe("Quote content");
+      expect(global.fetch).toHaveBeenCalledWith("/sections/49.json");
+    });
+
+    it("should return null on HTTP error", async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        statusText: "Not Found",
+      });
+
+      const result = await fetchFullQuote("999.1");
+      expect(result).toBeNull();
+    });
+
+    it("should return null if key not found in data", async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ "49.1": "Different quote" }),
+      });
+
+      const result = await fetchFullQuote("49.8");
+      expect(result).toBeNull();
+    });
+
+    it("should return null for invalid reference format (no decimal)", async () => {
+      const result = await fetchFullQuote("invalid");
+      expect(result).toBeNull();
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    it("should return null on network error", async () => {
+      (global.fetch as jest.Mock).mockRejectedValueOnce(new Error("Network error"));
+
+      const result = await fetchFullQuote("49.8");
+      expect(result).toBeNull();
+    });
+
+    it("should handle references with different session numbers", async () => {
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ "1.1": "First session quote" }),
+      });
+
+      const result = await fetchFullQuote("1.1");
+      expect(result).toBe("First session quote");
+      expect(global.fetch).toHaveBeenCalledWith("/sections/1.json");
+    });
+  });
+
+  describe("formatQuoteForCopy", () => {
+    it("should format quote with single Ra speaker", () => {
+      const input = "Ra: I am Ra. This is the message.";
+      const result = formatQuoteForCopy(input);
+      expect(result).toBe("Ra: I am Ra. This is the message.");
+    });
+
+    it("should format quote with single Questioner speaker", () => {
+      const input = "Questioner: What is love?";
+      const result = formatQuoteForCopy(input);
+      expect(result).toBe("Questioner: What is love?");
+    });
+
+    it("should add paragraph breaks between different speakers", () => {
+      const input = "Questioner: What is love? Ra: I am Ra. Love is unity.";
+      const result = formatQuoteForCopy(input);
+      expect(result).toContain("Questioner: What is love?");
+      expect(result).toContain("\n\n");
+      expect(result).toContain("Ra: I am Ra. Love is unity.");
+    });
+
+    it("should handle multiple speaker transitions", () => {
+      const input =
+        "Questioner: First question. Ra: First answer. Questioner: Second question. Ra: Second answer.";
+      const result = formatQuoteForCopy(input);
+      // Should have 3 paragraph breaks (between each speaker change)
+      const breaks = (result.match(/\n\n/g) || []).length;
+      expect(breaks).toBe(3);
+    });
+
+    it("should handle text without speaker labels", () => {
+      const input = "Just some plain text without labels.";
+      const result = formatQuoteForCopy(input);
+      expect(result).toBe("Just some plain text without labels.");
+    });
+
+    it("should handle empty text", () => {
+      const result = formatQuoteForCopy("");
+      expect(result).toBe("");
+    });
+
+    it("should trim leading/trailing whitespace", () => {
+      const input = "  Ra: I am Ra.  ";
+      const result = formatQuoteForCopy(input);
+      expect(result).toBe("Ra: I am Ra.");
+    });
+
+    it("should preserve content between speaker labels", () => {
+      const input = "Ra: First part. Second part. Third part.";
+      const result = formatQuoteForCopy(input);
+      expect(result).toBe("Ra: First part. Second part. Third part.");
     });
   });
 });

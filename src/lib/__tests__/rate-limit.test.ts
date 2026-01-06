@@ -246,4 +246,162 @@ describe("rate-limit", () => {
       expect(ip).toBe("2001:0db8::1");
     });
   });
+
+  describe("checkRateLimit (Redis mode)", () => {
+    const mockNow = 1000000;
+    const config = { maxRequests: 10, windowMs: 60000 };
+    let dateNowSpy: jest.SpyInstance;
+    let mockGet: jest.Mock;
+    let mockSet: jest.Mock;
+
+    beforeEach(() => {
+      dateNowSpy = jest.spyOn(Date, "now").mockReturnValue(mockNow);
+      // Reset mocks
+      mockGet = jest.fn();
+      mockSet = jest.fn();
+    });
+
+    afterEach(() => {
+      dateNowSpy.mockRestore();
+      jest.resetModules();
+    });
+
+    const setupRedisTest = async () => {
+      // Set env vars before importing module
+      process.env.UPSTASH_REDIS_REST_URL = "https://test.upstash.io";
+      process.env.UPSTASH_REDIS_REST_TOKEN = "test-token";
+
+      // Reset modules so rate-limit re-evaluates isRedisConfigured
+      jest.resetModules();
+
+      // Re-mock with our controlled mock functions
+      jest.doMock("@upstash/redis", () => ({
+        Redis: jest.fn().mockImplementation(() => ({
+          get: mockGet,
+          set: mockSet,
+        })),
+      }));
+
+      // Import fresh module
+      const rateLimitModule = await import("../rate-limit");
+      return rateLimitModule;
+    };
+
+    const cleanupRedisTest = () => {
+      delete process.env.UPSTASH_REDIS_REST_URL;
+      delete process.env.UPSTASH_REDIS_REST_TOKEN;
+      jest.resetModules();
+    };
+
+    it("should create new entry when none exists in Redis", async () => {
+      const { checkRateLimit: checkRateLimitRedis } = await setupRedisTest();
+
+      mockGet.mockResolvedValueOnce(null);
+      mockSet.mockResolvedValueOnce("OK");
+
+      const result = await checkRateLimitRedis("redis-ip-1", config);
+
+      expect(result.success).toBe(true);
+      expect(result.remaining).toBe(9);
+      expect(result.resetAt).toBe(mockNow + config.windowMs);
+      expect(mockGet).toHaveBeenCalledWith("ratelimit:redis-ip-1");
+      expect(mockSet).toHaveBeenCalledWith(
+        "ratelimit:redis-ip-1",
+        { count: 1, resetAt: mockNow + config.windowMs },
+        { ex: 60 }
+      );
+
+      cleanupRedisTest();
+    });
+
+    it("should increment existing entry in Redis", async () => {
+      const { checkRateLimit: checkRateLimitRedis } = await setupRedisTest();
+
+      const existingEntry = { count: 5, resetAt: mockNow + 30000 };
+      mockGet.mockResolvedValueOnce(existingEntry);
+      mockSet.mockResolvedValueOnce("OK");
+
+      const result = await checkRateLimitRedis("redis-ip-2", config);
+
+      expect(result.success).toBe(true);
+      expect(result.remaining).toBe(4); // 10 - 6
+      expect(mockSet).toHaveBeenCalledWith(
+        "ratelimit:redis-ip-2",
+        { count: 6, resetAt: existingEntry.resetAt },
+        { ex: 30 } // remaining TTL
+      );
+
+      cleanupRedisTest();
+    });
+
+    it("should block when Redis limit exceeded", async () => {
+      const { checkRateLimit: checkRateLimitRedis } = await setupRedisTest();
+
+      const existingEntry = { count: 10, resetAt: mockNow + 30000 };
+      mockGet.mockResolvedValueOnce(existingEntry);
+
+      const result = await checkRateLimitRedis("redis-ip-3", config);
+
+      expect(result.success).toBe(false);
+      expect(result.remaining).toBe(0);
+      expect(result.resetAt).toBe(existingEntry.resetAt);
+      expect(mockSet).not.toHaveBeenCalled(); // Should not update when blocked
+
+      cleanupRedisTest();
+    });
+
+    it("should reset expired entry in Redis", async () => {
+      const { checkRateLimit: checkRateLimitRedis } = await setupRedisTest();
+
+      // Expired entry (resetAt in the past)
+      const expiredEntry = { count: 10, resetAt: mockNow - 1000 };
+      mockGet.mockResolvedValueOnce(expiredEntry);
+      mockSet.mockResolvedValueOnce("OK");
+
+      const result = await checkRateLimitRedis("redis-ip-4", config);
+
+      expect(result.success).toBe(true);
+      expect(result.remaining).toBe(9); // Fresh window
+      expect(mockSet).toHaveBeenCalledWith(
+        "ratelimit:redis-ip-4",
+        { count: 1, resetAt: mockNow + config.windowMs },
+        { ex: 60 }
+      );
+
+      cleanupRedisTest();
+    });
+
+    it("should allow request on Redis error (fail-open)", async () => {
+      const { checkRateLimit: checkRateLimitRedis } = await setupRedisTest();
+
+      mockGet.mockRejectedValueOnce(new Error("Redis connection failed"));
+
+      const result = await checkRateLimitRedis("redis-ip-5", config);
+
+      expect(result.success).toBe(true); // Fail-open behavior
+      expect(result.remaining).toBe(9);
+
+      cleanupRedisTest();
+    });
+
+    it("should calculate correct remaining count near limit", async () => {
+      const { checkRateLimit: checkRateLimitRedis } = await setupRedisTest();
+
+      const existingEntry = { count: 9, resetAt: mockNow + 30000 };
+      mockGet.mockResolvedValueOnce(existingEntry);
+      mockSet.mockResolvedValueOnce("OK");
+
+      const result = await checkRateLimitRedis("redis-ip-6", config);
+
+      expect(result.success).toBe(true);
+      expect(result.remaining).toBe(0); // 10 - 10
+      expect(mockSet).toHaveBeenCalledWith(
+        "ratelimit:redis-ip-6",
+        { count: 10, resetAt: existingEntry.resetAt },
+        { ex: 30 }
+      );
+
+      cleanupRedisTest();
+    });
+  });
 });
