@@ -4,27 +4,70 @@ import { useState, useEffect, useCallback } from "react";
 import { AnimationChunk } from "@/lib/types";
 import { debug } from "@/lib/debug";
 
+/**
+ * Return type for the useAnimationQueue hook
+ */
 interface UseAnimationQueueReturn {
-  // All chunks received so far (for building final message)
+  /** All chunks received so far (completed + current + queued) for building final message */
   allChunks: AnimationChunk[];
-  // Chunks that have finished animating (rendered statically)
+  /** Chunks that have finished animating and are rendered statically */
   completedChunks: AnimationChunk[];
-  // Currently animating chunk (or null if waiting for next)
+  /** Currently animating chunk, or null if waiting for next chunk */
   currentChunk: AnimationChunk | null;
-  // Is there a chunk currently animating?
+  /** Whether there is a chunk currently being animated */
   isAnimating: boolean;
-  // Is animation fully complete (queue empty, no current chunk, has completed chunks)?
+  /** Whether all animations are complete (queue empty, no current, has completed) */
   isFullyComplete: boolean;
-  // Number of chunks waiting in queue
+  /** Number of chunks waiting in the queue */
   queueLength: number;
-  // Call when current chunk animation finishes
+  /** Callback to invoke when current chunk animation finishes */
   onChunkComplete: () => void;
-  // Add new chunk from SSE stream
+  /** Add a new chunk to the animation queue */
   addChunk: (chunk: AnimationChunk) => void;
-  // Reset for new message
+  /** Reset all state for a new message */
   reset: () => void;
 }
 
+/**
+ * Manages a queue of animation chunks for streaming message display.
+ *
+ * This hook implements a sequential animation system where:
+ * 1. Chunks are added to a queue as they arrive from the SSE stream
+ * 2. One chunk animates at a time (text typing or quote reveal)
+ * 3. When animation completes, the chunk moves to "completed" and next begins
+ * 4. Completed chunks render statically while new ones animate
+ *
+ * State flow:
+ * ```
+ * [queue] → [currentChunk] → [completedChunks]
+ *              (animating)      (static)
+ * ```
+ *
+ * @returns Animation queue state and controls
+ *
+ * @example
+ * ```tsx
+ * const {
+ *   completedChunks,
+ *   currentChunk,
+ *   isFullyComplete,
+ *   onChunkComplete,
+ *   addChunk,
+ *   reset
+ * } = useAnimationQueue();
+ *
+ * // Add chunks from SSE stream
+ * addChunk({ id: "1", type: "text", content: "Hello..." });
+ *
+ * // In animation component, call when done
+ * <AnimatedText onComplete={onChunkComplete} />
+ *
+ * // Check if all animations finished
+ * if (isFullyComplete) {
+ *   finalizeMessage(allChunks);
+ * }
+ * ```
+ */
 export function useAnimationQueue(): UseAnimationQueueReturn {
   const [queue, setQueue] = useState<AnimationChunk[]>([]);
   const [completedChunks, setCompletedChunks] = useState<AnimationChunk[]>([]);

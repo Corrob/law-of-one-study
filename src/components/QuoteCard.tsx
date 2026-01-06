@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { debug } from "@/lib/debug";
@@ -10,7 +11,10 @@ interface QuoteCardProps {
   quote: Quote;
 }
 
-// Parse Ra material text into formatted segments
+/**
+ * Parse Ra material text into formatted segments for display.
+ * Splits text by "Questioner:" and "Ra:" prefixes to apply different styling.
+ */
 function formatRaText(text: string): { type: "questioner" | "ra" | "text"; content: string }[] {
   const segments: { type: "questioner" | "ra" | "text"; content: string }[] = [];
 
@@ -72,7 +76,19 @@ function getShortReference(reference: string): string {
   return match ? match[1] : reference;
 }
 
-export default function QuoteCard({ quote }: QuoteCardProps) {
+/**
+ * Displays a Ra Material quote with expandable content and copy functionality.
+ *
+ * Features:
+ * - Formats Questioner/Ra dialogue with distinct styling
+ * - Handles partial quotes with ellipsis indicators
+ * - Supports expanding to show full quote text
+ * - Copy-to-clipboard functionality
+ * - Analytics tracking for user interactions
+ *
+ * Memoized to prevent unnecessary re-renders during streaming.
+ */
+const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
   // Parse ellipsis from quote text
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
@@ -289,4 +305,6 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
       </button>
     </div>
   );
-}
+});
+
+export default QuoteCard;

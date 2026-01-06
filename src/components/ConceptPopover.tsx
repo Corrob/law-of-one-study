@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback, useState } from "react";
+import { memo, useRef, useEffect, useCallback, useState } from "react";
 import { usePopoverContext } from "@/contexts/PopoverContext";
 
 interface ConceptPopoverProps {
@@ -9,7 +9,15 @@ interface ConceptPopoverProps {
   onSearch: (query: string) => void;
 }
 
-export default function ConceptPopover({ term, displayText, onSearch }: ConceptPopoverProps) {
+/**
+ * Interactive concept link that shows a popover with definition on hover/click.
+ *
+ * Ra Material terms are automatically detected and wrapped with this component
+ * to provide contextual definitions and quick search access.
+ *
+ * Memoized to prevent re-renders during message streaming.
+ */
+const ConceptPopover = memo(function ConceptPopover({ term, displayText, onSearch }: ConceptPopoverProps) {
   const popoverId = `concept-${term.toLowerCase().replace(/\s+/g, "-")}`;
   const { openPopover, open, close, requestClose, cancelClose } = usePopoverContext();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
@@ -86,4 +94,6 @@ export default function ConceptPopover({ term, displayText, onSearch }: ConceptP
       </button>
     </span>
   );
-}
+});
+
+export default ConceptPopover;

@@ -21,6 +21,14 @@ import {
 } from "@/lib/concept-graph";
 import { searchConcepts } from "@/lib/pinecone";
 import type { GraphConcept } from "@/lib/types-graph";
+import {
+  MODEL_CONFIG,
+  RATE_LIMIT_CONFIG,
+  VALIDATION_LIMITS,
+  CONVERSATION_CONFIG,
+  SEARCH_CONFIG,
+  calculateCost,
+} from "@/lib/config";
 
 interface ChatRequest {
   message: string;
@@ -43,18 +51,6 @@ function couldBePartialMarker(s: string): boolean {
   return false;
 }
 
-// Calculate OpenAI API cost based on model and token usage
-function calculateCost(promptTokens: number, completionTokens: number): number {
-  // GPT-5-mini pricing (as of Dec 2025)
-  // Input: $0.25 per 1M tokens, Output: $2.00 per 1M tokens
-  const inputCostPer1M = 0.25;
-  const outputCostPer1M = 2.0;
-
-  const inputCost = (promptTokens / 1_000_000) * inputCostPer1M;
-  const outputCost = (completionTokens / 1_000_000) * outputCostPer1M;
-
-  return inputCost + outputCost;
-}
 
 // Build conversation context from history for enhanced prompt generation
 function buildConversationContext(history: ChatMessage[]): {
@@ -84,7 +80,35 @@ const VALID_INTENTS: QueryIntent[] = [
 // Valid confidence levels
 const VALID_CONFIDENCES: IntentConfidence[] = ["high", "medium", "low"];
 
-// Augment query with Ra Material terminology and detect intent
+/**
+ * Augment a user query with Ra Material terminology and detect intent.
+ *
+ * This function uses a fast LLM call to:
+ * 1. Classify the user's intent (quote-search, conceptual, practical, etc.)
+ * 2. Expand the query with Ra-specific terminology for better vector search
+ * 3. Assess confidence in the classification
+ *
+ * @param message - The user's raw input message
+ * @param context - Optional conversation context for better intent detection
+ * @param context.recentTopics - Topics discussed in recent messages
+ * @param context.previousIntent - The intent of the previous user message
+ *
+ * @returns Object containing:
+ *   - intent: Classified query type (quote-search, conceptual, practical, personal, comparative, meta, off-topic)
+ *   - augmentedQuery: Query expanded with Ra terminology for semantic search
+ *   - confidence: Classification confidence level (high, medium, low)
+ *
+ * @example
+ * ```ts
+ * const result = await augmentQuery("What is harvest?");
+ * // Returns:
+ * // {
+ * //   intent: "conceptual",
+ * //   augmentedQuery: "harvest fourth density graduation transition polarization",
+ * //   confidence: "high"
+ * // }
+ * ```
+ */
 async function augmentQuery(
   message: string,
   context?: { recentTopics?: string[]; previousIntent?: QueryIntent }
@@ -99,12 +123,12 @@ async function augmentQuery(
     const userContent = `${contextBlock}MESSAGE: ${message}`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-5-mini",
+      model: MODEL_CONFIG.chatModel,
       messages: [
         { role: "system", content: QUERY_AUGMENTATION_PROMPT },
         { role: "user", content: userContent },
       ],
-      reasoning_effort: "low",
+      reasoning_effort: MODEL_CONFIG.reasoningEffort,
     });
 
     const content = response.choices[0]?.message?.content || "";
@@ -189,12 +213,12 @@ async function generateSuggestions(
     ].join("\n");
 
     const response = await openai.chat.completions.create({
-      model: "gpt-5-mini",
+      model: MODEL_CONFIG.chatModel,
       messages: [
         { role: "system", content: SUGGESTION_GENERATION_PROMPT },
         { role: "user", content: conversationContext },
       ],
-      reasoning_effort: "low",
+      reasoning_effort: MODEL_CONFIG.reasoningEffort,
     });
 
     const content = response.choices[0]?.message?.content || "";
@@ -306,7 +330,36 @@ function getFallbackSuggestions(intent: QueryIntent, existing: string[]): string
   return fallbacks.filter((f) => !existing.includes(f));
 }
 
-// Process streaming response and handle quote markers
+/**
+ * Process a streaming LLM response, handling quote markers and sending SSE events.
+ *
+ * This function handles the complex task of:
+ * 1. Buffering incoming stream chunks
+ * 2. Detecting {{QUOTE:N}} and {{QUOTE:N:sX:sY}} markers in the text
+ * 3. Sending text chunks and quote data as separate SSE events
+ * 4. Handling partial markers that span multiple chunks
+ *
+ * Quote markers allow the LLM to reference passages by index:
+ * - `{{QUOTE:1}}` - Insert full quote from passages[0]
+ * - `{{QUOTE:2:s3:s7}}` - Insert sentences 3-7 from passages[1]
+ *
+ * @param stream - AsyncIterable from OpenAI streaming response
+ * @param passages - Array of Ra Material quotes available for insertion
+ * @param send - Function to send SSE events to the client
+ *
+ * @returns Object containing:
+ *   - fullOutput: Complete text output (with markers replaced)
+ *   - usage: Token usage statistics from the API
+ *
+ * @example
+ * ```ts
+ * const { fullOutput, usage } = await processStreamWithMarkers(
+ *   response,
+ *   passages,
+ *   (event, data) => controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`))
+ * );
+ * ```
+ */
 async function processStreamWithMarkers(
   stream: AsyncIterable<{ choices: Array<{ delta?: { content?: string } }>; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } }>,
   passages: Quote[],
@@ -404,12 +457,9 @@ async function processStreamWithMarkers(
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting - 10 requests per minute per IP
+    // Rate limiting
     const clientIp = getClientIp(request);
-    const rateLimitResult = checkRateLimit(clientIp, {
-      maxRequests: 10,
-      windowMs: 60 * 1000, // 1 minute
-    });
+    const rateLimitResult = checkRateLimit(clientIp, RATE_LIMIT_CONFIG);
 
     if (!rateLimitResult.success) {
       return new Response(
@@ -448,8 +498,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    if (message.length > 5000) {
-      return new Response(JSON.stringify({ error: "Message too long. Maximum 5000 characters." }), {
+    if (message.length > VALIDATION_LIMITS.maxMessageLength) {
+      return new Response(JSON.stringify({ error: `Message too long. Maximum ${VALIDATION_LIMITS.maxMessageLength} characters.` }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -463,8 +513,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    if (history.length > 20) {
-      return new Response(JSON.stringify({ error: "History too long. Maximum 20 messages." }), {
+    if (history.length > VALIDATION_LIMITS.maxHistoryLength) {
+      return new Response(JSON.stringify({ error: `History too long. Maximum ${VALIDATION_LIMITS.maxHistoryLength} messages.` }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -490,7 +540,7 @@ export async function POST(request: NextRequest) {
           headers: { "Content-Type": "application/json" },
         });
       }
-      if (msg.content.length > 10000) {
+      if (msg.content.length > VALIDATION_LIMITS.maxHistoryMessageLength) {
         return new Response(JSON.stringify({ error: "Message in history too long" }), {
           status: 400,
           headers: { "Content-Type": "application/json" },
@@ -498,8 +548,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Build conversation context (last 6 messages for LLM, full history for metadata)
-    const recentHistory = history.slice(-6);
+    // Build conversation context (recent messages for LLM, full history for metadata)
+    const recentHistory = history.slice(-CONVERSATION_CONFIG.recentHistoryCount);
     const { turnCount, quotesUsed } = buildConversationContext(history);
 
     // Create streaming response
@@ -524,9 +574,9 @@ export async function POST(request: NextRequest) {
 
           // B) Embedding-based detection (semantic, ~$0.00001)
           const conceptEmbedding = await createEmbedding(message);
-          const conceptSearchResults = await searchConcepts(conceptEmbedding, 3);
+          const conceptSearchResults = await searchConcepts(conceptEmbedding, SEARCH_CONFIG.conceptTopK);
           const embeddingConcepts = conceptSearchResults
-            .filter((r) => r.score !== undefined && r.score > 0.3)
+            .filter((r) => r.score !== undefined && r.score > SEARCH_CONFIG.conceptMinScore)
             .map((r) => findConceptById(r.id))
             .filter((c): c is GraphConcept => c !== undefined);
 
@@ -610,7 +660,7 @@ export async function POST(request: NextRequest) {
 
           // Step 3: Search Pinecone (with metadata filter if session ref detected)
           const searchResults = await searchRaMaterial(embedding, {
-            topK: sessionRef ? 10 : 5, // Get more results for session lookups
+            topK: sessionRef ? SEARCH_CONFIG.sessionRefTopK : SEARCH_CONFIG.defaultTopK,
             sessionFilter: sessionRef || undefined,
           });
 
@@ -648,7 +698,7 @@ export async function POST(request: NextRequest) {
 
           // Step 5: Single streaming LLM call with unified prompt
           const response = await openai.chat.completions.create({
-            model: "gpt-5-mini",
+            model: MODEL_CONFIG.chatModel,
             messages: [
               { role: "system", content: UNIFIED_RESPONSE_PROMPT },
               ...recentHistory.map((m) => ({
@@ -660,7 +710,7 @@ export async function POST(request: NextRequest) {
                 content: `[Intent: ${intent}] [Confidence: ${confidence}] [Turn: ${turnCount}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}${quoteExclusionBlock}${conceptContextBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
               },
             ],
-            reasoning_effort: "low",
+            reasoning_effort: MODEL_CONFIG.reasoningEffort,
             stream: true,
             stream_options: { include_usage: true },
           });
@@ -677,7 +727,7 @@ export async function POST(request: NextRequest) {
             const responseLatencyMs = Date.now() - augmentStartTime;
             trackLLMGeneration({
               distinctId: clientIp,
-              model: "gpt-5-mini",
+              model: MODEL_CONFIG.chatModel,
               provider: "openai",
               input: message.substring(0, 500),
               output: fullOutput.substring(0, 500),

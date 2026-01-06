@@ -2,72 +2,51 @@
 
 import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
-import { Message as MessageType, MessageSegment } from "@/lib/types";
-import { debug } from "@/lib/debug";
-import Message from "./Message";
-import StreamingMessage from "./StreamingMessage";
 import MessageInput from "./MessageInput";
+import MessageList from "./MessageList";
 import WelcomeScreen from "./WelcomeScreen";
-import ThinkingIndicator from "./ThinkingIndicator";
 import OnboardingModal from "./OnboardingModal";
-import AICompanionBadge from "./AICompanionBadge";
 import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
+import { useChatStream } from "@/hooks/useChatStream";
 import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
-import { analytics } from "@/lib/analytics";
-
-// Maximum number of messages to keep in memory (prevents unbounded growth)
-const MAX_CONVERSATION_HISTORY = 30;
 
 export interface ChatInterfaceRef {
   reset: () => void;
 }
 
-interface SSEEvent {
-  type: string;
-  data: Record<string, unknown>;
-}
-
-// Parse SSE buffer into events
-function parseSSE(buffer: string): { events: SSEEvent[]; remaining: string } {
-  const events: SSEEvent[] = [];
-  const parts = buffer.split("\n\n");
-
-  // Last part might be incomplete
-  const remaining = buffer.endsWith("\n\n") ? "" : parts.pop() || "";
-
-  for (const part of parts) {
-    if (!part.trim()) continue;
-    const lines = part.split("\n");
-    let type = "";
-    let data = "";
-    for (const line of lines) {
-      if (line.startsWith("event: ")) type = line.slice(7);
-      if (line.startsWith("data: ")) data = line.slice(6);
-    }
-    if (type && data) {
-      try {
-        events.push({ type, data: JSON.parse(data) });
-      } catch {
-        // Skip malformed JSON
-      }
-    }
-  }
-
-  return { events, remaining };
-}
-
+/**
+ * Main chat interface component that orchestrates the conversation UI.
+ *
+ * Responsibilities:
+ * - Layout and visual structure
+ * - Scroll management
+ * - Animation coordination between stream and display
+ * - Welcome screen / conversation mode transitions
+ *
+ * Delegates to:
+ * - useChatStream: Message state, API communication, SSE parsing
+ * - useAnimationQueue: Chunk animation sequencing
+ * - MessageList: Rendering messages and streaming content
+ */
 const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref) {
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [streamDone, setStreamDone] = useState(false);
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
     setPlaceholder(getPlaceholder(0));
   }, []);
+
+  // Chat stream management
+  const {
+    messages,
+    isStreaming,
+    streamDone,
+    suggestions,
+    sendMessage,
+    finalizeMessage,
+    reset: resetChat,
+  } = useChatStream((depth) => setPlaceholder(getPlaceholder(depth)));
 
   // Animation queue for streaming messages
   const {
@@ -111,290 +90,40 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     if (!container) return;
 
     container.addEventListener("scroll", handleScroll);
-    // Initial check
     handleScroll();
 
     return () => container.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  // Scroll to bottom - only called when user sends a message
+  // Scroll to bottom
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
     scrollAnchorRef.current?.scrollIntoView({ behavior, block: "end" });
   }, []);
 
-  const handleSend = async (content: string) => {
-    const requestStartTime = Date.now();
-
-    // Add user message
-    const userMessage: MessageType = {
-      id: Date.now().toString(),
-      role: "user",
-      content,
-      timestamp: new Date(),
-    };
-
-    // Track question submission
-    const containsQuotedText =
-      /["'].*["']/.test(content) || content.toLowerCase().includes("quote");
-    const isFollowUp = messages.length > 0;
-    analytics.questionSubmitted({
-      messageLength: content.length,
-      containsQuotedText,
-      isFollowUp,
-      conversationDepth: messages.length,
-    });
-
-    setMessages((prev) => {
-      const updated = [...prev, userMessage];
-      // Limit conversation history to prevent unbounded memory growth
-      if (updated.length > MAX_CONVERSATION_HISTORY) {
-        return updated.slice(-MAX_CONVERSATION_HISTORY);
-      }
-      return updated;
-    });
-    setIsStreaming(true);
-    setStreamDone(false);
-    setSuggestions([]); // Clear previous suggestions
-    resetQueue();
-
-    // Scroll to bottom when user sends message (moves their message to top)
-    setTimeout(() => scrollToBottom("smooth"), 50);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: content,
-          history: messages.map((m) => ({
-            role: m.role,
-            content: m.content,
-            quotesUsed: m.segments
-              ?.filter((s) => s.type === "quote")
-              .map((s) => (s.type === "quote" ? s.quote.reference : null))
-              .filter(Boolean),
-          })),
-        }),
-      });
-
-      if (!response.ok) {
-        // Parse error response for user-friendly messages
-        let errorMessage = "Failed to get response";
-        let errorType: "rate_limit" | "validation" | "api_error" = "api_error";
-        try {
-          const errorData = await response.json();
-          if (errorData.error) {
-            errorMessage = errorData.error;
-          }
-          // Special handling for rate limiting
-          if (response.status === 429 && errorData.retryAfter) {
-            errorMessage = `${errorData.error} Please wait ${errorData.retryAfter} seconds.`;
-            errorType = "rate_limit";
-          } else if (response.status === 400) {
-            errorType = "validation";
-          }
-        } catch {
-          // If JSON parsing fails, use generic message
-        }
-
-        // Track error
-        analytics.error({
-          errorType,
-          errorMessage,
-          context: { status: response.status },
-        });
-
-        throw new Error(errorMessage);
-      }
-
-      // Track streaming started
-      analytics.streamingStarted({ isQuoteSearch: containsQuotedText });
-
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error("No reader available");
-
-      const decoder = new TextDecoder();
-      let buffer = "";
-      let chunkIdCounter = 0;
-      let quoteCount = 0;
-      let responseLength = 0;
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-        const { events, remaining } = parseSSE(buffer);
-        buffer = remaining;
-
-        for (const event of events) {
-          debug.log("[ChatInterface] SSE event received:", { type: event.type, dataKeys: Object.keys(event.data) });
-
-          if (event.type === "meta") {
-            // Meta event received with quotes data - currently unused but may be needed in future
-          } else if (event.type === "chunk") {
-            const chunkData = event.data as {
-              type: "text" | "quote";
-              content?: string;
-              text?: string;
-              reference?: string;
-              url?: string;
-            };
-            chunkIdCounter++;
-
-            debug.log("[ChatInterface] Chunk data:", {
-              type: chunkData.type,
-              hasContent: !!chunkData.content,
-              hasText: !!chunkData.text,
-              hasReference: !!chunkData.reference,
-              hasUrl: !!chunkData.url,
-              textLength: chunkData.text?.length || chunkData.content?.length,
-            });
-
-            if (chunkData.type === "text" && chunkData.content) {
-              responseLength += chunkData.content.length;
-              addChunk({
-                id: `chunk-${chunkIdCounter}`,
-                type: "text",
-                content: chunkData.content,
-              });
-            } else if (
-              chunkData.type === "quote" &&
-              chunkData.text &&
-              chunkData.reference &&
-              chunkData.url
-            ) {
-              // Backend now sends fully processed quote with filtered text
-              debug.log("[ChatInterface] Received quote chunk:", {
-                reference: chunkData.reference,
-                textLength: chunkData.text.length,
-              });
-              quoteCount++;
-              addChunk({
-                id: `chunk-${chunkIdCounter}`,
-                type: "quote",
-                quote: {
-                  text: chunkData.text,
-                  reference: chunkData.reference,
-                  url: chunkData.url,
-                },
-              });
-            } else {
-              console.warn("[ChatInterface] Chunk ignored - conditions not met:", chunkData);
-            }
-          } else if (event.type === "suggestions") {
-            // Handle follow-up suggestions
-            const suggestionsData = event.data as { items?: string[] };
-            if (Array.isArray(suggestionsData.items)) {
-              setSuggestions(suggestionsData.items);
-            }
-          } else if (event.type === "done") {
-            // Mark stream as done - message will be finalized when animation completes
-            setStreamDone(true);
-
-            // Track response complete
-            const responseTimeMs = Date.now() - requestStartTime;
-            analytics.responseComplete({
-              responseTimeMs,
-              quoteCount,
-              messageLength: responseLength,
-              isQuoteSearch: containsQuotedText,
-            });
-          } else if (event.type === "error") {
-            throw new Error(event.data.message as string);
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Chat error:", error);
-
-      // Extract error message - show specific validation errors to user
-      let errorText = "I apologize, but I encountered an error. Please try again.";
-      let errorType: "rate_limit" | "validation" | "api_error" | "streaming_error" =
-        "streaming_error";
-      if (error instanceof Error && error.message) {
-        // Show validation errors and rate limit errors directly to user
-        if (
-          error.message.includes("Maximum") ||
-          error.message.includes("too long") ||
-          error.message.includes("Too many requests") ||
-          error.message.includes("required")
-        ) {
-          errorText = error.message;
-          if (error.message.includes("Too many requests")) {
-            errorType = "rate_limit";
-          } else {
-            errorType = "validation";
-          }
-        }
-      }
-
-      // Track error if not already tracked
-      analytics.error({
-        errorType,
-        errorMessage: error instanceof Error ? error.message : "Unknown error",
-      });
-
-      const errorMessage: MessageType = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: errorText,
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMessage]);
+  // Handle sending a message
+  const handleSend = useCallback(
+    async (content: string) => {
       resetQueue();
-      setIsStreaming(false);
-    }
-  };
+      setTimeout(() => scrollToBottom("smooth"), 50);
+      await sendMessage(content, addChunk);
+    },
+    [sendMessage, addChunk, resetQueue, scrollToBottom]
+  );
 
   // Finalize message when stream is done AND all animations are complete
   useEffect(() => {
     if (streamDone && isFullyComplete) {
-      // Convert chunks to segments for the final message
-      const segments: MessageSegment[] = allChunks.map((chunk) => {
-        if (chunk.type === "text") {
-          return { type: "text" as const, content: chunk.content };
-        } else {
-          return { type: "quote" as const, quote: chunk.quote };
-        }
-      });
-
-      const assistantMessage: MessageType = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: segments
-          .filter((s) => s.type === "text")
-          .map((s) => (s as { type: "text"; content: string }).content)
-          .join(""),
-        segments,
-        timestamp: new Date(),
-      };
-
-      setMessages((prev) => {
-        const updated = [...prev, assistantMessage];
-        // Limit conversation history to prevent unbounded memory growth
-        const limited =
-          updated.length > MAX_CONVERSATION_HISTORY
-            ? updated.slice(-MAX_CONVERSATION_HISTORY)
-            : updated;
-        // Update placeholder for next message
-        setPlaceholder(getPlaceholder(limited.length));
-        return limited;
-      });
+      finalizeMessage(allChunks);
       resetQueue();
-      setStreamDone(false);
-      setIsStreaming(false);
     }
-  }, [streamDone, isFullyComplete, allChunks, resetQueue]);
+  }, [streamDone, isFullyComplete, allChunks, finalizeMessage, resetQueue]);
 
+  // Reset handler
   const handleReset = useCallback(() => {
-    setMessages([]);
+    resetChat();
     resetQueue();
-    setStreamDone(false);
-    setIsStreaming(false);
-    setSuggestions([]);
     setPlaceholder(getPlaceholder(0));
-  }, [resetQueue]);
+  }, [resetChat, resetQueue]);
 
   // Expose reset function to parent via ref
   useImperativeHandle(
@@ -406,10 +135,6 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   );
 
   const hasConversation = messages.length > 0 || allChunks.length > 0;
-  const hasStreamingContent = completedChunks.length > 0 || currentChunk !== null;
-  // Show loading dots when: streaming with no content yet, OR waiting for more chunks
-  const showLoadingDots =
-    isStreaming && (!hasStreamingContent || (!isAnimating && queueLength === 0 && !streamDone));
 
   // Build scroll shadow classes
   const scrollShadowClasses = [
@@ -467,46 +192,18 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                   transition={{ duration: 0.3, delay: 0.1 }}
                   className="max-w-3xl mx-auto min-h-full flex flex-col"
                 >
-                  {/* Messages container */}
-                  <div>
-                    {messages.map((message, index) => {
-                      // Show suggestions only on the last assistant message when not streaming
-                      const isLastAssistant =
-                        message.role === "assistant" &&
-                        index === messages.length - 1 &&
-                        !isStreaming;
-                      // Show badge on first assistant message only
-                      const isFirstAssistant =
-                        message.role === "assistant" &&
-                        index === messages.findIndex((m) => m.role === "assistant");
-                      return (
-                        <Message
-                          key={message.id}
-                          message={message}
-                          onSearch={handleSend}
-                          suggestions={isLastAssistant ? suggestions : undefined}
-                          isFirstAssistant={isFirstAssistant}
-                        />
-                      );
-                    })}
-                    {hasStreamingContent && (
-                      <StreamingMessage
-                        completedChunks={completedChunks}
-                        currentChunk={currentChunk}
-                        onChunkComplete={onChunkComplete}
-                        onSearch={handleSend}
-                        isFirstAssistant={!messages.some((m) => m.role === "assistant")}
-                      />
-                    )}
-                    {showLoadingDots && (
-                      <div className="mb-6">
-                        {!messages.some((m) => m.role === "assistant") && !hasStreamingContent && (
-                          <AICompanionBadge />
-                        )}
-                        <ThinkingIndicator />
-                      </div>
-                    )}
-                  </div>
+                  <MessageList
+                    messages={messages}
+                    completedChunks={completedChunks}
+                    currentChunk={currentChunk}
+                    isStreaming={isStreaming}
+                    isAnimating={isAnimating}
+                    queueLength={queueLength}
+                    streamDone={streamDone}
+                    suggestions={suggestions}
+                    onChunkComplete={onChunkComplete}
+                    onSearch={handleSend}
+                  />
                   {/* Flexible spacer - fills remaining space so messages stay near top */}
                   <div className="flex-grow min-h-[200px]" />
                   {/* Scroll anchor */}
