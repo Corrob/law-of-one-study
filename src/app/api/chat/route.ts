@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { openai, createEmbedding } from "@/lib/openai";
 import { searchRaMaterial } from "@/lib/pinecone";
+import { debug } from "@/lib/debug";
 import {
   QUERY_AUGMENTATION_PROMPT,
   UNIFIED_RESPONSE_PROMPT,
@@ -208,7 +209,7 @@ async function generateSuggestions(
 
       // Log if suggestions were filtered out due to length
       if (rawSuggestions.length > validSuggestions.length) {
-        console.log("[API] Some suggestions filtered:", {
+        debug.log("[API] Some suggestions filtered:", {
           raw: rawSuggestions,
           valid: validSuggestions,
           filtered: rawSuggestions.filter(
@@ -223,7 +224,7 @@ async function generateSuggestions(
         const beforeFilter = validSuggestions.length;
         validSuggestions = validSuggestions.filter((s: string) => !practicePatterns.test(s));
         if (validSuggestions.length < beforeFilter) {
-          console.log("[API] Filtered practice suggestions for personal intent:", {
+          debug.log("[API] Filtered practice suggestions for personal intent:", {
             before: beforeFilter,
             after: validSuggestions.length,
           });
@@ -235,7 +236,7 @@ async function generateSuggestions(
         const categories = validSuggestions.map(detectSuggestionCategory);
         const uniqueCategories = new Set(categories);
         if (uniqueCategories.size < validSuggestions.length) {
-          console.log("[API] Low variety in suggestions:", {
+          debug.log("[API] Low variety in suggestions:", {
             suggestions: validSuggestions,
             categories,
             uniqueCount: uniqueCategories.size,
@@ -247,7 +248,7 @@ async function generateSuggestions(
       if (validSuggestions.length < 3) {
         const fallbacks = getFallbackSuggestions(intent, validSuggestions);
         const padded = [...validSuggestions, ...fallbacks].slice(0, 3);
-        console.log("[API] Padded suggestions:", { original: validSuggestions.length, padded: padded.length });
+        debug.log("[API] Padded suggestions:", { original: validSuggestions.length, padded: padded.length });
         return padded;
       }
 
@@ -372,13 +373,13 @@ async function processStreamWithMarkers(
             const sentenceStart = parseInt(markerMatch[2], 10);
             const sentenceEnd = parseInt(markerMatch[3], 10);
             quoteText = applySentenceRangeToQuote(quote.text, sentenceStart, sentenceEnd);
-            console.log("[API] Applied sentence range", sentenceStart, "-", sentenceEnd, "to quote", quoteIndex);
+            debug.log("[API] Applied sentence range", sentenceStart, "-", sentenceEnd, "to quote", quoteIndex);
           } else {
             quoteText = formatWholeQuote(quote.text);
-            console.log("[API] Formatted whole quote", quoteIndex);
+            debug.log("[API] Formatted whole quote", quoteIndex);
           }
 
-          console.log("[API] Matched marker:", markerMatch[0]);
+          debug.log("[API] Matched marker:", markerMatch[0]);
           send("chunk", {
             type: "quote",
             text: quoteText,
@@ -497,8 +498,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Build conversation context (last 3 messages for LLM, full history for metadata)
-    const recentHistory = history.slice(-3);
+    // Build conversation context (last 6 messages for LLM, full history for metadata)
+    const recentHistory = history.slice(-6);
     const { turnCount, quotesUsed } = buildConversationContext(history);
 
     // Create streaming response
@@ -514,7 +515,7 @@ export async function POST(request: NextRequest) {
           // Step 0: Check for explicit session/question reference
           const sessionRef = parseSessionQuestionReference(message);
           if (sessionRef) {
-            console.log("[API] Detected session/question reference:", sessionRef);
+            debug.log("[API] Detected session/question reference:", sessionRef);
           }
 
           // Step 0.5: HYBRID CONCEPT DETECTION
@@ -547,11 +548,11 @@ export async function POST(request: NextRequest) {
           const conceptContext = buildConceptContextForPrompt(detectedConcepts);
 
           if (detectedConcepts.length > 0) {
-            console.log("[API] Regex concepts:", regexConcepts.map(c => c.term));
-            console.log("[API] Embedding concepts:", embeddingConcepts.map(c => c.term));
-            console.log("[API] Merged concepts:", detectedConcepts.map(c => c.term));
-            console.log("[API] Related concepts:", relatedConcepts.slice(0, 5).map(c => c.term));
-            console.log("[API] Search expansion terms:", conceptSearchTerms.slice(0, 10));
+            debug.log("[API] Regex concepts:", regexConcepts.map(c => c.term));
+            debug.log("[API] Embedding concepts:", embeddingConcepts.map(c => c.term));
+            debug.log("[API] Merged concepts:", detectedConcepts.map(c => c.term));
+            debug.log("[API] Related concepts:", relatedConcepts.slice(0, 5).map(c => c.term));
+            debug.log("[API] Search expansion terms:", conceptSearchTerms.slice(0, 10));
           }
 
           // Step 1: Augment query with Ra terminology and detect intent
@@ -572,7 +573,7 @@ export async function POST(request: NextRequest) {
               augmentedQuery = `session ${sessionRef.session} Ra Material`;
             }
           }
-          console.log("[API] Query augmentation:", { intent, confidence, augmentedQuery, turnCount, sessionRef, latencyMs: augmentLatencyMs });
+          debug.log("[API] Query augmentation:", { intent, confidence, augmentedQuery, turnCount, sessionRef, latencyMs: augmentLatencyMs });
 
           // Handle off-topic queries - skip search, return redirect
           if (intent === "off-topic") {

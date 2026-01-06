@@ -1,6 +1,7 @@
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeMetadata } from "./types";
 import { SessionQuestionRef } from "./quote-utils";
+import { debug } from "@/lib/debug";
 
 let pineconeClient: Pinecone | null = null;
 
@@ -46,7 +47,7 @@ export async function searchRaMaterial(
       // Filter by session only (get multiple questions from that session)
       filter = { session: { $eq: sessionFilter.session } };
     }
-    console.log("[Pinecone] Using metadata filter:", JSON.stringify(filter));
+    debug.log("[Pinecone] Using metadata filter:", JSON.stringify(filter));
   }
 
   const results = await index.query({

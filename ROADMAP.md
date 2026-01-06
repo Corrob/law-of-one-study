@@ -121,6 +121,7 @@ Sign in to sync your data across devices and unlock cloud features.
 - Social authentication (Google, GitHub)
 - **Never required** for core features
 - Clear value proposition: "Sync favorites, notes, and progress across devices"
+- Conversation history - save and resume past chats
 - Privacy-focused with minimal data collection
 - Export all your data anytime
 - Delete account and all data with one click
@@ -345,6 +346,26 @@ Sustain the project without compromising its values.
 - Explanation of how funds are used
 
 **Why This Matters:** Ensures long-term sustainability without betraying the open, free nature of Ra's teachings.
+
+---
+
+## Technical Improvements & Chat Enhancements
+
+Lower-visibility improvements that enhance the core chat experience.
+
+---
+
+### New Chat Button
+**User Value:** ⭐⭐⭐ | **Complexity:** Very Low
+
+A simple way to start fresh.
+
+**Features:**
+- Clear "New Chat" button in the header or chat interface
+- Confirmation dialog if current conversation has messages
+- Keyboard shortcut (e.g., Cmd/Ctrl + K)
+
+**Why This Matters:** Users exploring different topics want a clean slate without refreshing the page. Simple UX expectation from other chat interfaces.
 
 ---
 

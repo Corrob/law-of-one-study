@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Message as MessageType, MessageSegment } from "@/lib/types";
+import { debug } from "@/lib/debug";
 import Message from "./Message";
 import StreamingMessage from "./StreamingMessage";
 import MessageInput from "./MessageInput";
@@ -227,7 +228,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
         buffer = remaining;
 
         for (const event of events) {
-          console.log("[ChatInterface] SSE event received:", { type: event.type, dataKeys: Object.keys(event.data) });
+          debug.log("[ChatInterface] SSE event received:", { type: event.type, dataKeys: Object.keys(event.data) });
 
           if (event.type === "meta") {
             // Meta event received with quotes data - currently unused but may be needed in future
@@ -241,7 +242,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
             };
             chunkIdCounter++;
 
-            console.log("[ChatInterface] Chunk data:", {
+            debug.log("[ChatInterface] Chunk data:", {
               type: chunkData.type,
               hasContent: !!chunkData.content,
               hasText: !!chunkData.text,
@@ -264,7 +265,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
               chunkData.url
             ) {
               // Backend now sends fully processed quote with filtered text
-              console.log("[ChatInterface] Received quote chunk:", {
+              debug.log("[ChatInterface] Received quote chunk:", {
                 reference: chunkData.reference,
                 textLength: chunkData.text.length,
               });

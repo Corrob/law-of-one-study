@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { AnimationChunk } from "@/lib/types";
+import { debug } from "@/lib/debug";
 
 interface UseAnimationQueueReturn {
   // All chunks received so far (for building final message)
@@ -31,7 +32,7 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
 
   // Log queue state changes
   useEffect(() => {
-    console.log("[useAnimationQueue] Queue state:", {
+    debug.log("[useAnimationQueue] Queue state:", {
       queueLength: queue.length,
       queueTypes: queue.map((c) => c.type),
       currentChunkType: currentChunk?.type,
@@ -45,7 +46,7 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
       setQueue((currentQueue) => {
         if (currentQueue.length === 0) return currentQueue;
         const [next, ...rest] = currentQueue;
-        console.log("[useAnimationQueue] Pulling next chunk from queue:", {
+        debug.log("[useAnimationQueue] Pulling next chunk from queue:", {
           type: next.type,
           queueLength: currentQueue.length,
           remainingAfter: rest.length,
@@ -59,7 +60,7 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
 
   const onChunkComplete = useCallback(() => {
     if (currentChunk) {
-      console.log("[useAnimationQueue] Chunk completed:", {
+      debug.log("[useAnimationQueue] Chunk completed:", {
         type: currentChunk.type,
         reference: currentChunk.type === "quote" ? currentChunk.quote.reference : undefined,
         queueLength: queue.length,
@@ -71,18 +72,18 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
   }, [currentChunk, queue]);
 
   const addChunk = useCallback((chunk: AnimationChunk) => {
-    console.log("[useAnimationQueue] Adding chunk to queue:", {
+    debug.log("[useAnimationQueue] Adding chunk to queue:", {
       type: chunk.type,
       reference: chunk.type === "quote" ? chunk.quote.reference : undefined,
     });
     setQueue((prev) => {
-      console.log("[useAnimationQueue] setQueue prev state:", {
+      debug.log("[useAnimationQueue] setQueue prev state:", {
         prevLength: prev.length,
         prevTypes: prev.map((c) => c.type),
         adding: chunk.type,
       });
       const newQueue = [...prev, chunk];
-      console.log("[useAnimationQueue] setQueue new state:", {
+      debug.log("[useAnimationQueue] setQueue new state:", {
         newLength: newQueue.length,
         newTypes: newQueue.map((c) => c.type),
       });

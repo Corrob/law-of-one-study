@@ -1,5 +1,7 @@
 // Utility functions for parsing and filtering Ra Material quotes
 
+import { debug } from "@/lib/debug";
+
 // Result of parsing a session/question reference from user query
 export interface SessionQuestionRef {
   session: number;
@@ -88,17 +90,17 @@ export async function fetchFullQuote(reference: string): Promise<string | null> 
   // Extract session number from reference (e.g., "49.8" -> "49" or "Ra 49.8" -> "49")
   const match = reference.match(/(\d+)\.\d+/);
   if (!match) {
-    console.error("[fetchFullQuote] Failed to extract session number from:", reference);
+    debug.error("[fetchFullQuote] Failed to extract session number from:", reference);
     return null;
   }
 
   const sessionNumber = match[1];
 
   try {
-    console.log("[fetchFullQuote] Fetching /sections/" + sessionNumber + ".json");
+    debug.log("[fetchFullQuote] Fetching /sections/" + sessionNumber + ".json");
     const response = await fetch(`/sections/${sessionNumber}.json`);
     if (!response.ok) {
-      console.error("[fetchFullQuote] HTTP error:", response.status, response.statusText);
+      debug.error("[fetchFullQuote] HTTP error:", response.status, response.statusText);
       return null;
     }
 
@@ -107,21 +109,21 @@ export async function fetchFullQuote(reference: string): Promise<string | null> 
     // Extract session.question from reference (e.g., "Ra 49.8" -> "49.8")
     const refMatch = reference.match(/(\d+\.\d+)/);
     if (!refMatch) {
-      console.error("[fetchFullQuote] Failed to extract key from:", reference);
+      debug.error("[fetchFullQuote] Failed to extract key from:", reference);
       return null;
     }
 
     const key = refMatch[1];
-    console.log("[fetchFullQuote] Looking for key:", key, "in data");
+    debug.log("[fetchFullQuote] Looking for key:", key, "in data");
     const fullText = data[key];
 
     if (!fullText) {
-      console.error("[fetchFullQuote] Key not found in data. Available keys:", Object.keys(data).slice(0, 5));
+      debug.error("[fetchFullQuote] Key not found in data. Available keys:", Object.keys(data).slice(0, 5));
     }
 
     return fullText || null;
   } catch (error) {
-    console.error("[fetchFullQuote] Error fetching full quote:", error);
+    debug.error("[fetchFullQuote] Error fetching full quote:", error);
     return null;
   }
 }
@@ -307,18 +309,18 @@ export function applySentenceRangeToQuote(
   sentenceStart: number,
   sentenceEnd: number
 ): string {
-  console.log("[applySentenceRangeToQuote] Input text length:", text.length);
-  console.log("[applySentenceRangeToQuote] Sentence range:", sentenceStart, "-", sentenceEnd);
+  debug.log("[applySentenceRangeToQuote] Input text length:", text.length);
+  debug.log("[applySentenceRangeToQuote] Sentence range:", sentenceStart, "-", sentenceEnd);
 
   const allParagraphs = parseIntoParagraphs(text);
-  console.log("[applySentenceRangeToQuote] Total paragraphs:", allParagraphs.length);
+  debug.log("[applySentenceRangeToQuote] Total paragraphs:", allParagraphs.length);
   console.log(
     "[applySentenceRangeToQuote] Paragraph ranges:",
     allParagraphs.map((p) => `${p.sentenceStart}-${p.sentenceEnd}`)
   );
 
   const selectedParagraphs = filterParagraphsByRange(allParagraphs, sentenceStart, sentenceEnd);
-  console.log("[applySentenceRangeToQuote] Selected paragraphs:", selectedParagraphs.length);
+  debug.log("[applySentenceRangeToQuote] Selected paragraphs:", selectedParagraphs.length);
 
   if (selectedParagraphs.length === 0) {
     console.warn(
@@ -333,8 +335,8 @@ export function applySentenceRangeToQuote(
     allParagraphs[allParagraphs.length - 1].sentenceEnd;
 
   const result = reconstructTextFromParagraphs(selectedParagraphs, hasTextBefore, hasTextAfter);
-  console.log("[applySentenceRangeToQuote] Result length:", result.length);
-  console.log("[applySentenceRangeToQuote] Has ellipsis:", hasTextBefore, hasTextAfter);
+  debug.log("[applySentenceRangeToQuote] Result length:", result.length);
+  debug.log("[applySentenceRangeToQuote] Has ellipsis:", hasTextBefore, hasTextAfter);
 
   return result;
 }

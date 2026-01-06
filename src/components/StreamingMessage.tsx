@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimationChunk } from "@/lib/types";
+import { debug } from "@/lib/debug";
 import QuoteCard from "./QuoteCard";
 import AnimatedQuoteCard from "./AnimatedQuoteCard";
 import AnimatedMarkdown from "./AnimatedMarkdown";
@@ -65,7 +66,7 @@ function ChunkRenderer({
   onComplete,
   onSearch,
 }: ChunkRendererProps) {
-  console.log("[ChunkRenderer] Rendering chunk:", {
+  debug.log("[ChunkRenderer] Rendering chunk:", {
     type: chunk.type,
     animate,
     isFirst,
@@ -96,7 +97,7 @@ function ChunkRenderer({
   }
 
   if (chunk.type === "quote") {
-    console.log("[ChunkRenderer] Rendering quote:", {
+    debug.log("[ChunkRenderer] Rendering quote:", {
       animate,
       quoteText: chunk.quote.text.substring(0, 50),
       reference: chunk.quote.reference,
@@ -107,6 +108,6 @@ function ChunkRenderer({
     return <QuoteCard quote={chunk.quote} />;
   }
 
-  console.warn("[ChunkRenderer] Unknown chunk type:", chunk);
+  debug.warn("[ChunkRenderer] Unknown chunk type:", chunk);
   return null;
 }

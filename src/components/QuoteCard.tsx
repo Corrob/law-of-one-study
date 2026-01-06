@@ -2,6 +2,7 @@
 
 import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
+import { debug } from "@/lib/debug";
 import { useEffect, useState } from "react";
 import { fetchFullQuote, formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
 
@@ -75,7 +76,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
   // Parse ellipsis from quote text
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
-  console.log("[QuoteCard] Rendering quote:", {
+  debug.log("[QuoteCard] Rendering quote:", {
     reference: quote.reference,
     textLength: quote.text.length,
     hasLeading,
@@ -91,7 +92,7 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
 
   // Format the content (without ellipsis)
   const segments = formatRaText(isExpanded && fullQuoteText ? fullQuoteText : content);
-  console.log("[QuoteCard] Formatted segments:", segments.length, segments);
+  debug.log("[QuoteCard] Formatted segments:", segments.length, segments);
   const shortRef = getShortReference(quote.reference);
 
   // Extract session and question numbers for tracking
@@ -131,17 +132,17 @@ export default function QuoteCard({ quote }: QuoteCardProps) {
     // Expand - fetch full quote if not already loaded
     if (!fullQuoteText) {
       setIsLoadingFull(true);
-      console.log("[QuoteCard] Fetching full quote for reference:", quote.reference);
+      debug.log("[QuoteCard] Fetching full quote for reference:", quote.reference);
       const fullText = await fetchFullQuote(quote.reference);
-      console.log("[QuoteCard] Fetched full text length:", fullText?.length || 0);
-      console.log("[QuoteCard] Original text length:", quote.text.length);
+      debug.log("[QuoteCard] Fetched full text length:", fullText?.length || 0);
+      debug.log("[QuoteCard] Original text length:", quote.text.length);
       if (fullText) {
         // Format with paragraph breaks
         const formatted = formatWholeQuote(fullText);
-        console.log("[QuoteCard] Formatted text length:", formatted.length);
+        debug.log("[QuoteCard] Formatted text length:", formatted.length);
         setFullQuoteText(formatted);
       } else {
-        console.error("[QuoteCard] Failed to fetch full quote");
+        debug.error("[QuoteCard] Failed to fetch full quote");
       }
       setIsLoadingFull(false);
     }
