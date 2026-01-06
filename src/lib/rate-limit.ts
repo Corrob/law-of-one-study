@@ -12,7 +12,8 @@ interface RateLimitEntry {
 const limitMap = new Map<string, RateLimitEntry>();
 
 // Cleanup old entries every 5 minutes
-setInterval(
+// Using .unref() so this timer doesn't prevent Node.js from exiting (e.g., in tests)
+const cleanupInterval = setInterval(
   () => {
     const now = Date.now();
     for (const [key, value] of limitMap.entries()) {
@@ -23,6 +24,7 @@ setInterval(
   },
   5 * 60 * 1000
 );
+cleanupInterval.unref();
 
 export interface RateLimitConfig {
   maxRequests: number;

@@ -65,7 +65,8 @@ export function createMockStreamFromText(
   textChunks: string[],
   usage?: StreamChunk["usage"]
 ): AsyncIterable<StreamChunk> {
-  const chunks = textChunks.map((content) => ({ content }));
+  const chunks: Array<{ content?: string; usage?: StreamChunk["usage"] }> =
+    textChunks.map((content) => ({ content }));
   if (usage) {
     chunks.push({ content: "", usage });
   }
