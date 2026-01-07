@@ -53,7 +53,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should submit message with Enter key", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     // Use .first() to avoid ambiguity with disabled textarea during loading
     const input = page.getByRole("textbox").first();
@@ -70,7 +70,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should allow newlines with Shift+Enter", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Line 1");
@@ -84,7 +84,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should navigate suggestion chips with arrow keys", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     // Send message to get suggestions
     const input = page.getByRole("textbox").first();
@@ -110,7 +110,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should navigate to last chip with End key", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Test");
@@ -130,7 +130,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should navigate to first chip with Home key", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Test");
@@ -150,7 +150,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should activate suggestion with Enter key", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Test");
@@ -169,7 +169,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should have correct tab order", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
 
@@ -197,7 +197,7 @@ test.describe("Keyboard Navigation", () => {
   });
 
   test("should wrap around with arrow keys on suggestions", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Test");

@@ -6,7 +6,7 @@ import { test, expect } from "@playwright/test";
 
 test.describe("Error States", () => {
   test("should handle empty message gracefully", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox");
     await input.press("Enter"); // Submit empty
@@ -21,7 +21,7 @@ test.describe("Error States", () => {
       await route.abort("failed");
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox");
     await input.fill("Test message");
@@ -45,7 +45,7 @@ test.describe("Error States", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox");
     await input.fill("Test message");
@@ -67,7 +67,7 @@ test.describe("Error States", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox");
     await input.fill("a".repeat(100)); // Send a message (API will mock 400 response)
@@ -89,7 +89,7 @@ test.describe("Error States", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox");
     await input.fill("Test message");

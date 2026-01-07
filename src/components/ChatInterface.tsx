@@ -15,6 +15,11 @@ export interface ChatInterfaceRef {
   reset: () => void;
 }
 
+export interface ChatInterfaceProps {
+  /** Callback fired when message count changes */
+  onMessagesChange?: (count: number) => void;
+}
+
 /**
  * Main chat interface component that orchestrates the conversation UI.
  *
@@ -29,7 +34,10 @@ export interface ChatInterfaceRef {
  * - useAnimationQueue: Chunk animation sequencing
  * - MessageList: Rendering messages and streaming content
  */
-const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref) {
+const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function ChatInterface(
+  { onMessagesChange },
+  ref
+) {
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
 
   // Randomize placeholder after hydration (client-side only)
@@ -136,6 +144,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
   const hasConversation = messages.length > 0 || allChunks.length > 0;
 
+  // Notify parent of message count changes
+  useEffect(() => {
+    onMessagesChange?.(messages.length);
+  }, [messages.length, onMessagesChange]);
+
   // Build scroll shadow classes
   const scrollShadowClasses = [
     "scroll-shadow-container",
@@ -181,6 +194,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.3 }}
+                  className="h-full flex flex-col"
                 >
                   <WelcomeScreen onSelectStarter={handleSend} inputElement={inputElement} />
                 </motion.div>
