@@ -179,7 +179,7 @@ describe("chat/suggestions", () => {
         expect(suggestions).toContain("Tell me more about love");
       });
 
-      it("should filter suggestions over 60 characters", async () => {
+      it("should filter suggestions over 100 characters", async () => {
         mockCreate.mockResolvedValue({
           choices: [
             {
@@ -187,7 +187,7 @@ describe("chat/suggestions", () => {
                 content: JSON.stringify({
                   suggestions: [
                     "Short one",
-                    "This is a very long suggestion that definitely exceeds the sixty character limit we have set",
+                    "This is an extremely long suggestion that definitely exceeds the one hundred character limit we have set for suggestions in the app",
                     "Another short one",
                   ],
                 }),
@@ -203,7 +203,7 @@ describe("chat/suggestions", () => {
           defaultContext
         );
 
-        expect(suggestions.some((s) => s.length > 60)).toBe(false);
+        expect(suggestions.some((s) => s.length > 100)).toBe(false);
       });
 
       it("should pad with fallbacks if fewer than 3 suggestions", async () => {

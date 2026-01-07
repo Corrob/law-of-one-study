@@ -151,7 +151,7 @@ export async function generateSuggestions(
     if (Array.isArray(validated.suggestions)) {
       const rawSuggestions = validated.suggestions;
       let validSuggestions = rawSuggestions
-        .filter((s) => s.length > 0 && s.length <= 60)
+        .filter((s) => s.length > 0 && s.length <= 100)
         .slice(0, 3);
 
       // Log if suggestions were filtered out due to length
@@ -159,7 +159,7 @@ export async function generateSuggestions(
         debug.log("[API] Some suggestions filtered:", {
           raw: rawSuggestions,
           valid: validSuggestions,
-          filtered: rawSuggestions.filter((s) => s.length > 60),
+          filtered: rawSuggestions.filter((s) => s.length > 100),
         });
       }
 

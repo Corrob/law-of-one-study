@@ -10,9 +10,23 @@ interface MessageInputProps {
 
 const MAX_MESSAGE_LENGTH = 5000;
 
+// Tailwind sm breakpoint
+const SM_BREAKPOINT = 640;
+
 export default function MessageInput({ onSend, disabled, placeholder }: MessageInputProps) {
   const [input, setInput] = useState("");
+  const [maxHeight, setMaxHeight] = useState(300);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Responsive max height: 220px on mobile, 300px on desktop
+  useEffect(() => {
+    const updateMaxHeight = () => {
+      setMaxHeight(window.innerWidth < SM_BREAKPOINT ? 220 : 300);
+    };
+    updateMaxHeight();
+    window.addEventListener("resize", updateMaxHeight);
+    return () => window.removeEventListener("resize", updateMaxHeight);
+  }, []);
 
   const characterCount = input.length;
   const isNearLimit = characterCount > MAX_MESSAGE_LENGTH * 0.8; // Show warning at 80%
@@ -43,6 +57,17 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
       });
     }, 300);
   };
+
+  // Auto-resize textarea based on content
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // Reset height to auto to get accurate scrollHeight
+      textarea.style.height = "auto";
+      // Set to scrollHeight, capped by maxHeight via CSS
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  }, [input, maxHeight]);
 
   // Also handle when keyboard appears on mobile
   useEffect(() => {
@@ -98,7 +123,7 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
                      text-[var(--lo1-starlight)] placeholder:text-[var(--lo1-stardust)]
                      focus:outline-none
                      disabled:opacity-50 disabled:cursor-not-allowed"
-          style={{ minHeight: "56px", maxHeight: "120px" }}
+          style={{ minHeight: "56px", maxHeight: `${maxHeight}px`, overflowY: "auto" }}
         />
 
         {/* Send button - positioned inside input, smaller on mobile */}
