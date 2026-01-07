@@ -5,7 +5,6 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
 import WelcomeScreen from "./WelcomeScreen";
-import OnboardingModal from "./OnboardingModal";
 import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
@@ -167,7 +166,6 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
 
   return (
     <LayoutGroup>
-      <OnboardingModal />
       <GlobalPopover />
       <div className="flex flex-col h-full relative">
         {/* Starfield - only on welcome screen */}

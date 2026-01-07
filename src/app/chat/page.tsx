@@ -1,21 +1,44 @@
 "use client";
 
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ChatInterface, { ChatInterfaceRef } from "@/components/ChatInterface";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import ConfirmModal from "@/components/ConfirmModal";
 
 export default function ChatPage() {
   const chatRef = useRef<ChatInterfaceRef>(null);
   const [hasMessages, setHasMessages] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleNewChat = useCallback(() => {
     if (hasMessages) {
-      // TODO: Add confirmation dialog
-      chatRef.current?.reset();
-      setHasMessages(false);
+      setShowConfirmModal(true);
     }
   }, [hasMessages]);
+
+  const handleConfirmNewChat = useCallback(() => {
+    chatRef.current?.reset();
+    setHasMessages(false);
+    setShowConfirmModal(false);
+  }, []);
+
+  const handleCancelNewChat = useCallback(() => {
+    setShowConfirmModal(false);
+  }, []);
+
+  // Keyboard shortcut: Cmd/Ctrl + Shift + O for new chat (matches ChatGPT)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === "o") {
+        e.preventDefault();
+        handleNewChat();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleNewChat]);
 
   const handleMessagesChange = useCallback((messageCount: number) => {
     setHasMessages(messageCount > 0);
@@ -33,6 +56,15 @@ export default function ChatPage() {
           </ErrorBoundary>
         </div>
       </NavigationWrapper>
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onConfirm={handleConfirmNewChat}
+        onCancel={handleCancelNewChat}
+        title="Start a new conversation?"
+        message="Your current conversation will be cleared. This cannot be undone."
+        confirmText="Start New"
+        cancelText="Keep Chatting"
+      />
     </main>
   );
 }
