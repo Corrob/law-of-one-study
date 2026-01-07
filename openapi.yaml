@@ -1,0 +1,269 @@
+openapi: 3.1.0
+info:
+  title: Law of One Study API
+  version: 1.0.0
+  description: |
+    AI-powered RAG chatbot API for the Ra Material (Law of One).
+
+    The chat endpoint uses Server-Sent Events (SSE) for streaming responses.
+
+    Live site: https://lawofone.study
+
+servers:
+  - url: https://lawofone.study
+    description: Production
+
+paths:
+  /api/chat:
+    post:
+      summary: Send a chat message
+      description: |
+        Send a message to the AI assistant and receive a streaming response.
+
+        The response uses Server-Sent Events (SSE) to stream content in real-time.
+        Each event has a type and JSON data payload.
+      operationId: sendChatMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            example:
+              message: "What is the Law of One?"
+              history: []
+      responses:
+        '200':
+          description: SSE stream of chat events
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: |
+                  Server-Sent Events stream with the following event types:
+                  - `meta`: Initial metadata (quotes, intent, confidence)
+                  - `chunk`: Streaming content (text or quote)
+                  - `suggestions`: Follow-up question suggestions
+                  - `done`: Stream complete
+                  - `error`: Error occurred
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                error: "Message is required"
+        '429':
+          description: Rate limited
+          headers:
+            X-RateLimit-Limit:
+              schema:
+                type: integer
+              description: Request limit per window
+            X-RateLimit-Remaining:
+              schema:
+                type: integer
+              description: Remaining requests in window
+            X-RateLimit-Reset:
+              schema:
+                type: string
+                format: date-time
+              description: When the rate limit resets
+            Retry-After:
+              schema:
+                type: integer
+              description: Seconds until retry is allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+              example:
+                error: "Too many requests. Please wait before trying again."
+                retryAfter: 45
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+        - history
+      properties:
+        message:
+          type: string
+          description: The user's message
+          maxLength: 5000
+          example: "What is the Law of One?"
+        history:
+          type: array
+          description: Previous messages in the conversation
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+
+    ChatMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+          description: Who sent the message
+        content:
+          type: string
+          description: Message content
+          maxLength: 10000
+        quotesUsed:
+          type: array
+          description: Quote references used in the message (for deduplication)
+          items:
+            type: string
+          example: ["50.7", "51.1"]
+
+    SSEMetaEvent:
+      type: object
+      description: Initial metadata sent at start of response
+      properties:
+        quotes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quote'
+        intent:
+          $ref: '#/components/schemas/QueryIntent'
+        confidence:
+          $ref: '#/components/schemas/IntentConfidence'
+        concepts:
+          type: array
+          items:
+            type: string
+          description: Detected Law of One concepts
+
+    SSEChunkEvent:
+      oneOf:
+        - $ref: '#/components/schemas/TextChunk'
+        - $ref: '#/components/schemas/QuoteChunk'
+
+    TextChunk:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text]
+        content:
+          type: string
+          description: Text content to display
+
+    QuoteChunk:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [quote]
+        text:
+          type: string
+          description: Quote text content
+        reference:
+          type: string
+          description: Quote reference (e.g., "50.7")
+        url:
+          type: string
+          format: uri
+          description: URL to the quote on lawofone.info
+
+    SSESuggestionsEvent:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: string
+          maxItems: 3
+          description: Follow-up question suggestions
+
+    SSEErrorEvent:
+      type: object
+      properties:
+        code:
+          $ref: '#/components/schemas/ChatErrorCode'
+        message:
+          type: string
+          description: User-friendly error message
+        retryable:
+          type: boolean
+          description: Whether the request can be retried
+
+    Quote:
+      type: object
+      properties:
+        text:
+          type: string
+          description: Full quote text
+        reference:
+          type: string
+          description: Session.question reference
+          example: "50.7"
+        url:
+          type: string
+          format: uri
+          description: Link to lawofone.info
+
+    QueryIntent:
+      type: string
+      enum:
+        - quote-search
+        - conceptual
+        - practical
+        - personal
+        - comparative
+        - meta
+        - off-topic
+      description: Detected intent of the user's query
+
+    IntentConfidence:
+      type: string
+      enum: [high, medium, low]
+      description: Confidence in intent classification
+
+    ChatErrorCode:
+      type: string
+      enum:
+        - AUGMENTATION_FAILED
+        - EMBEDDING_FAILED
+        - SEARCH_FAILED
+        - STREAM_FAILED
+        - QUOTE_PROCESSING_FAILED
+        - SUGGESTIONS_FAILED
+        - RATE_LIMITED
+        - VALIDATION_ERROR
+        - UNKNOWN_ERROR
+
+    ValidationError:
+      type: object
+      properties:
+        error:
+          type: string
+
+    RateLimitError:
+      type: object
+      properties:
+        error:
+          type: string
+        retryAfter:
+          type: integer
+          description: Seconds until retry is allowed
+
+    ServerError:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Failed to process request"

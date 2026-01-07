@@ -38,7 +38,7 @@ export function buildConversationContext(history: ChatMessage[]): ConversationMe
   // Collect all quotes used in conversation
   const quotesUsed = history
     .flatMap((m) => m.quotesUsed || [])
-    .filter(Boolean) as string[];
+    .filter((q): q is string => typeof q === "string" && q.length > 0);
 
   return { turnCount, quotesUsed };
 }

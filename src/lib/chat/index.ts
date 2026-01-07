@@ -25,7 +25,15 @@ export type { SuggestionContext } from "./suggestions";
 
 // Stream processing
 export { processStreamWithMarkers } from "./stream-processor";
-export type { StreamProcessorResult, StreamChunk, TokenUsage, SSESender } from "./stream-processor";
+export type { StreamProcessorResult, StreamChunk, TokenUsage } from "./stream-processor";
+
+// SSE encoding
+export { createSSESender, encodeSSEEvent, createSSEResponse, SSE_HEADERS } from "./sse-encoder";
+export type { SSESender } from "./sse-encoder";
+
+// Error response handling
+export { sendStreamError, sendTypedError, toErrorEventData, isErrorEventData } from "./error-response";
+export type { ErrorEventData } from "./error-response";
 
 // Input validation
 export { validateMessage, validateHistory, validateChatRequest, validationErrorResponse } from "./validation";
@@ -42,3 +50,7 @@ export type { OffTopicHandlerResult } from "./off-topic";
 // Search orchestration
 export { createSearchEmbedding, searchPassages, performSearch } from "./search";
 export type { SessionReference, SearchResult } from "./search";
+
+// Chat pipeline orchestrator
+export { executeChatQuery } from "./orchestrator";
+export type { ExecuteChatParams } from "./orchestrator";

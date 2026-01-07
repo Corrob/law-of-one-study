@@ -29,6 +29,9 @@ src/
 ├── hooks/                  # Custom React hooks with tests
 ├── lib/                    # Business logic and utilities
 │   ├── chat/               # Chat pipeline modules (modular, testable)
+│   │   ├── orchestrator.ts # Main chat pipeline orchestration
+│   │   ├── sse-encoder.ts  # SSE response encoding utilities
+│   │   ├── error-response.ts # Unified error event formatting
 │   │   ├── augmentation.ts # Query augmentation with intent detection
 │   │   ├── concept-processing.ts # Hybrid concept detection
 │   │   ├── context.ts      # Conversation context building
@@ -49,6 +52,7 @@ src/
 scripts/                    # Data processing scripts
 sections/                   # Ra material source (106 JSON files)
 e2e/                        # Playwright E2E tests
+openapi.yaml                # API documentation (OpenAPI 3.1)
 ```
 
 ---
@@ -218,6 +222,26 @@ throw new Error("Something went wrong");
 
 ---
 
+## API Documentation
+
+The chat API is documented in `openapi.yaml` (OpenAPI 3.1 specification).
+
+**Keep it updated when:**
+- Adding/removing API endpoints
+- Changing request/response schemas
+- Adding new SSE event types
+- Modifying error codes or validation rules
+- Changing rate limit configuration
+
+**SSE Event Types** (documented in openapi.yaml):
+- `meta` - Initial metadata (quotes, intent, confidence, concepts)
+- `chunk` - Streaming content (text or quote)
+- `suggestions` - Follow-up question suggestions
+- `done` - Stream complete
+- `error` - Error with code, message, retryable flag
+
+---
+
 ## Adding New Features
 
 1. **Plan first**: Consider which modules are affected
@@ -226,6 +250,7 @@ throw new Error("Something went wrong");
 4. **Validate inputs**: Use Zod schemas for external data
 5. **Handle errors**: Add appropriate error codes and user messages
 6. **Update exports**: Add to index.ts files for clean imports
+7. **Update API docs**: If changing the API, update `openapi.yaml`
 
 ---
 

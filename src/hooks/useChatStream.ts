@@ -5,20 +5,14 @@ import { Message as MessageType, MessageSegment, AnimationChunk } from "@/lib/ty
 import { parseSSE } from "@/lib/sse";
 import { debug } from "@/lib/debug";
 import { analytics } from "@/lib/analytics";
+import {
+  parseChunkData,
+  parseSuggestionsEventData,
+  parseErrorEventData,
+} from "@/lib/schemas/sse-events";
 
 /** Maximum number of messages to keep in memory (prevents unbounded growth) */
 const MAX_CONVERSATION_HISTORY = 30;
-
-/**
- * Chunk data received from the SSE stream
- */
-interface ChunkData {
-  type: "text" | "quote";
-  content?: string;
-  text?: string;
-  reference?: string;
-  url?: string;
-}
 
 /**
  * Return type for the useChatStream hook
@@ -174,22 +168,21 @@ export function useChatStream(
             debug.log("[useChatStream] SSE event:", { type: event.type });
 
             if (event.type === "chunk") {
-              const chunkData = event.data as unknown as ChunkData;
+              const chunkData = parseChunkData(event.data);
+              if (!chunkData) {
+                debug.log("[useChatStream] Invalid chunk data:", event.data);
+                continue;
+              }
               chunkIdCounter++;
 
-              if (chunkData.type === "text" && chunkData.content) {
+              if (chunkData.type === "text") {
                 responseLength += chunkData.content.length;
                 addChunk({
                   id: `chunk-${chunkIdCounter}`,
                   type: "text",
                   content: chunkData.content,
                 });
-              } else if (
-                chunkData.type === "quote" &&
-                chunkData.text &&
-                chunkData.reference &&
-                chunkData.url
-              ) {
+              } else if (chunkData.type === "quote") {
                 quoteCount++;
                 addChunk({
                   id: `chunk-${chunkIdCounter}`,
@@ -202,8 +195,8 @@ export function useChatStream(
                 });
               }
             } else if (event.type === "suggestions") {
-              const suggestionsData = event.data as { items?: string[] };
-              if (Array.isArray(suggestionsData.items)) {
+              const suggestionsData = parseSuggestionsEventData(event.data);
+              if (suggestionsData) {
                 setSuggestions(suggestionsData.items);
               }
             } else if (event.type === "done") {
@@ -217,17 +210,15 @@ export function useChatStream(
                 isQuoteSearch: containsQuotedText,
               });
             } else if (event.type === "error") {
-              const errorData = event.data as {
-                code?: string;
-                message?: string;
-                retryable?: boolean;
-              };
+              const errorData = parseErrorEventData(event.data);
               debug.log("[useChatStream] SSE error:", errorData);
 
               // Create error with structured data for analytics
-              const error = new Error(errorData.message || "An error occurred");
-              (error as Error & { code?: string; retryable?: boolean }).code = errorData.code;
-              (error as Error & { code?: string; retryable?: boolean }).retryable = errorData.retryable;
+              const error = new Error(errorData?.message || "An error occurred");
+              Object.assign(error, {
+                code: errorData?.code,
+                retryable: errorData?.retryable,
+              });
               throw error;
             }
           }
@@ -236,17 +227,21 @@ export function useChatStream(
         console.error("Chat error:", error);
 
         // Extract error code if present (from SSE error events)
-        const errorCode = (error as Error & { code?: string })?.code;
-        const isRetryable = (error as Error & { retryable?: boolean })?.retryable ?? true;
+        // Use type guard pattern to safely access extended error properties
+        const hasErrorCode = (e: unknown): e is Error & { code?: string; retryable?: boolean } =>
+          e instanceof Error && "code" in e;
+
+        const errorCode = hasErrorCode(error) ? error.code : undefined;
+        const isRetryable = hasErrorCode(error) ? (error.retryable ?? true) : true;
 
         // Map error codes to display text and analytics type
         let errorText = "I apologize, but I encountered an error. Please try again.";
         let errorType: "rate_limit" | "validation" | "api_error" | "streaming_error" =
           "streaming_error";
 
-        if (errorCode) {
+        if (errorCode && error instanceof Error) {
           // Use the user-friendly message from the server
-          errorText = (error as Error).message;
+          errorText = error.message;
 
           // Map error codes to analytics types
           if (errorCode === "RATE_LIMITED") {
@@ -306,8 +301,8 @@ export function useChatStream(
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content: segments
-          .filter((s) => s.type === "text")
-          .map((s) => (s as { type: "text"; content: string }).content)
+          .filter((s): s is { type: "text"; content: string } => s.type === "text")
+          .map((s) => s.content)
           .join(""),
         segments,
         timestamp: new Date(),

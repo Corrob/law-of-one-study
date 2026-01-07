@@ -4,6 +4,8 @@
  * Handles queries that are outside the scope of the Ra Material.
  */
 
+import type { SSESender } from "./sse-encoder";
+
 export interface OffTopicHandlerResult {
   message: string;
   suggestions: string[];
@@ -38,7 +40,7 @@ export function getOffTopicResponse(): OffTopicHandlerResult {
  * @param chunkDelay - Delay between chunks in ms (default 10)
  */
 export async function streamOffTopicResponse(
-  send: (event: string, data: object) => void,
+  send: SSESender,
   chunkSize = 10,
   chunkDelay = 10
 ): Promise<void> {

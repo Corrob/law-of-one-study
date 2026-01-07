@@ -9,6 +9,7 @@ import { Quote } from "@/lib/types";
 import { couldBePartialMarker, QUOTE_MARKER_REGEX, MAX_PARTIAL_MARKER_LENGTH } from "./quote-markers";
 import { applySentenceRangeToQuote, formatWholeQuote } from "@/lib/quote-utils";
 import { debug } from "@/lib/debug";
+import type { SSESender } from "./sse-encoder";
 
 /** Token usage data from OpenAI API */
 export interface TokenUsage {
@@ -30,9 +31,6 @@ export interface StreamChunk {
   choices: Array<{ delta?: { content?: string } }>;
   usage?: TokenUsage;
 }
-
-/** Function to emit SSE events to the client */
-export type SSESender = (event: string, data: object) => void;
 
 /**
  * Process a streaming LLM response, detecting quote markers and sending SSE events.

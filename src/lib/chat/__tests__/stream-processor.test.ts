@@ -1,9 +1,9 @@
 import {
   processStreamWithMarkers,
   StreamProcessorResult,
-  SSESender,
   TokenUsage,
 } from "../stream-processor";
+import type { SSESender } from "../sse-encoder";
 import { Quote } from "@/lib/types";
 import {
   createMockStream,
@@ -362,6 +362,62 @@ describe("chat/stream-processor", () => {
         (e) => (e.data as { type: string }).type === "text"
       );
       expect(textEvents).toHaveLength(0);
+    });
+
+    it("should handle marker split across 3+ chunks", async () => {
+      const stream = createMockStreamFromText([
+        "Before {{",
+        "QUO",
+        "TE:",
+        "1}} after",
+      ]);
+
+      await processStreamWithMarkers(stream, mockQuotes, sendMock);
+
+      expect(sentEvents.some((e) => (e.data as { type: string }).type === "quote")).toBe(true);
+    });
+
+    it("should handle zero-indexed quote marker", async () => {
+      const stream = createMockStreamWithQuotes([
+        "Zero index: ",
+        { quoteIndex: 0 },
+      ]);
+
+      await processStreamWithMarkers(stream, mockQuotes, sendMock);
+
+      // Quote index 0 should be skipped (1-indexed)
+      expect(sentEvents.some((e) => (e.data as { type: string }).type === "quote")).toBe(false);
+    });
+
+    it("should handle negative quote index", async () => {
+      const stream = createMockStreamFromText(["Invalid: {{QUOTE:-1}} end"]);
+
+      await processStreamWithMarkers(stream, mockQuotes, sendMock);
+
+      // Should not crash, negative index should be skipped
+      expect(sentEvents.some((e) => (e.data as { type: string }).type === "quote")).toBe(false);
+    });
+
+    it("should handle empty passages array", async () => {
+      const stream = createMockStreamWithQuotes([
+        "Quote: ",
+        { quoteIndex: 1 },
+        " end",
+      ]);
+
+      await processStreamWithMarkers(stream, [], sendMock);
+
+      // Should handle gracefully when no passages provided
+      expect(sentEvents.filter((e) => (e.data as { type: string }).type === "quote")).toHaveLength(0);
+    });
+
+    it("should handle very large quote index", async () => {
+      const stream = createMockStreamFromText(["Large: {{QUOTE:999999}} end"]);
+
+      await processStreamWithMarkers(stream, mockQuotes, sendMock);
+
+      // Should not crash, just skip the invalid index
+      expect(sentEvents.some((e) => (e.data as { type: string }).type === "quote")).toBe(false);
     });
   });
 });

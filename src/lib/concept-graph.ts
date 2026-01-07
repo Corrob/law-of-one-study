@@ -5,12 +5,13 @@ import type {
   GraphConcept,
   ConceptCategory,
 } from "./types-graph";
+import { validateConceptGraph } from "./schemas/concept-graph";
 
 // Import the concept graph data
 import conceptGraphData from "@/data/concept-graph.json";
 
-// Typed graph with proper casting
-const conceptGraph = conceptGraphData as ConceptGraph;
+// Validate and type the graph at module load time
+const conceptGraph: ConceptGraph = validateConceptGraph(conceptGraphData);
 
 // Cache for the compiled regex pattern
 let _conceptRegex: RegExp | null = null;
