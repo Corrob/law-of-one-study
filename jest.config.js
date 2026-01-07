@@ -17,7 +17,26 @@ const customJestConfig = {
     "!src/**/*.d.ts",
     "!src/**/*.stories.{js,jsx,ts,tsx}",
     "!src/**/__tests__/**",
+    // Exclude files that are difficult to test or low-value
+    "!src/providers/**",         // PostHog requires browser environment
+    "!src/contexts/**",          // React contexts tested via component tests
+    "!src/data/placeholders.ts", // Static data
+    "!src/data/starters.ts",     // Static data
+    "!src/app/**/layout.tsx",    // Next.js layouts
+    "!src/app/**/error.tsx",     // Next.js error boundaries
+    "!src/app/**/loading.tsx",   // Next.js loading states
+    "!src/**/index.ts",          // Re-export files
+    "!src/lib/posthog-server.ts", // PostHog server requires env
   ],
+  coverageThreshold: {
+    // Global thresholds - achievable with current test coverage
+    global: {
+      branches: 55,
+      functions: 55,
+      lines: 60,
+      statements: 60,
+    },
+  },
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
   testPathIgnorePatterns: ["/node_modules/", "/e2e/"],
 };

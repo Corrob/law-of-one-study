@@ -26,3 +26,19 @@ export type { SuggestionContext } from "./suggestions";
 // Stream processing
 export { processStreamWithMarkers } from "./stream-processor";
 export type { StreamProcessorResult, StreamChunk, TokenUsage, SSESender } from "./stream-processor";
+
+// Input validation
+export { validateMessage, validateHistory, validateChatRequest, validationErrorResponse } from "./validation";
+export type { ValidationResult } from "./validation";
+
+// Concept detection
+export { detectConcepts, formatConceptsForMeta, buildQueryWithConcepts } from "./concept-processing";
+export type { ConceptDetectionResult } from "./concept-processing";
+
+// Off-topic handling
+export { getOffTopicResponse, streamOffTopicResponse, OFF_TOPIC_MESSAGE, OFF_TOPIC_SUGGESTIONS } from "./off-topic";
+export type { OffTopicHandlerResult } from "./off-topic";
+
+// Search orchestration
+export { createSearchEmbedding, searchPassages, performSearch } from "./search";
+export type { SessionReference, SearchResult } from "./search";
