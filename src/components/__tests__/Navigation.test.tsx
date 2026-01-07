@@ -3,8 +3,10 @@ import { ThemeProvider } from "../ThemeProvider";
 
 // Mock next/navigation
 const mockPathname = jest.fn(() => "/");
+const mockBack = jest.fn();
 jest.mock("next/navigation", () => ({
   usePathname: () => mockPathname(),
+  useRouter: () => ({ back: mockBack }),
 }));
 
 // Mock framer-motion
@@ -46,7 +48,7 @@ describe("Header", () => {
     mockPathname.mockReturnValue("/chat");
     render(<Header onMenuClick={mockOnMenuClick} />);
 
-    expect(screen.getByLabelText("Back to home")).toBeInTheDocument();
+    expect(screen.getByLabelText("Go back")).toBeInTheDocument();
     expect(screen.getByText("Seek")).toBeInTheDocument();
   });
 

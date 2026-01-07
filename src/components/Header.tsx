@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { UnityIcon, MenuIcon, BackIcon, PlusIcon } from "./icons";
 
 interface HeaderProps {
@@ -21,6 +21,7 @@ const PAGE_TITLES: Record<string, string> = {
 
 export default function Header({ onMenuClick, onNewChat, showNewChat }: HeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const isDashboard = pathname === "/";
 
   // Get page title for non-dashboard pages
@@ -49,13 +50,13 @@ export default function Header({ onMenuClick, onNewChat, showNewChat }: HeaderPr
           ) : (
             // Feature page: Show back button and page title
             <>
-              <Link
-                href="/"
-                className="flex items-center justify-center w-10 h-10 -ml-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 transition-colors"
-                aria-label="Back to home"
+              <button
+                onClick={() => router.back()}
+                className="flex items-center justify-center w-10 h-10 -ml-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 transition-colors cursor-pointer"
+                aria-label="Go back"
               >
                 <BackIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
-              </Link>
+              </button>
               <h1 className="text-lg font-semibold tracking-wide">{pageTitle}</h1>
             </>
           )}

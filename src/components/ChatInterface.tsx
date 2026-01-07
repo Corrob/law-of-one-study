@@ -17,6 +17,8 @@ export interface ChatInterfaceRef {
 export interface ChatInterfaceProps {
   /** Callback fired when message count changes */
   onMessagesChange?: (count: number) => void;
+  /** Initial query to send automatically */
+  initialQuery?: string;
 }
 
 /**
@@ -34,10 +36,12 @@ export interface ChatInterfaceProps {
  * - MessageList: Rendering messages and streaming content
  */
 const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function ChatInterface(
-  { onMessagesChange },
+  { onMessagesChange, initialQuery },
   ref
 ) {
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+  // Use ref to track initial query sent (avoids StrictMode double-send)
+  const initialQuerySentRef = useRef(false);
 
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
@@ -124,6 +128,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
       resetQueue();
     }
   }, [streamDone, isFullyComplete, allChunks, finalizeMessage, resetQueue]);
+
+  // Auto-send initial query if provided (e.g., from search "Ask about this")
+  useEffect(() => {
+    if (initialQuery && !initialQuerySentRef.current && !isStreaming) {
+      initialQuerySentRef.current = true;
+      handleSend(initialQuery);
+    }
+  }, [initialQuery, isStreaming, handleSend]);
 
   // Reset handler
   const handleReset = useCallback(() => {

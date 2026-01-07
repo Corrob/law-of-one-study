@@ -1,12 +1,16 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ChatInterface, { ChatInterfaceRef } from "@/components/ChatInterface";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ConfirmModal from "@/components/ConfirmModal";
 
 export default function ChatPage() {
+  const searchParams = useSearchParams();
+  const initialQuery = searchParams.get("q") || undefined;
+
   const chatRef = useRef<ChatInterfaceRef>(null);
   const [hasMessages, setHasMessages] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -52,6 +56,7 @@ export default function ChatPage() {
             <ChatInterface
               ref={chatRef}
               onMessagesChange={handleMessagesChange}
+              initialQuery={initialQuery}
             />
           </ErrorBoundary>
         </div>

@@ -19,3 +19,13 @@ export {
   type ValidatedAugmentationResponse,
   type ValidatedSuggestionResponse,
 } from "./openai";
+
+export {
+  SearchRequestSchema,
+  SearchResultSchema,
+  SearchResponseSchema,
+  parseSearchRequest,
+  type ValidatedSearchRequest,
+  type SearchResult,
+  type SearchResponse,
+} from "./search";
