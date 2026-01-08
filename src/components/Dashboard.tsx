@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import FeatureCard from "./FeatureCard";
+import CopyButton from "./CopyButton";
 import { ChatIcon, ExploreIcon, BookIcon, SearchIcon } from "./icons";
-import { getRandomQuote } from "@/data/starters";
-
-interface Quote {
-  text: string;
-  reference: string;
-  url: string;
-}
+import { getDailyQuote } from "@/lib/daily-quote";
+import { formatQuoteWithAttribution } from "@/lib/quote-utils";
+import { type DailyQuote } from "@/data/daily-quotes";
 
 const FEATURES = [
   {
@@ -40,13 +37,19 @@ const FEATURES = [
 ];
 
 export default function Dashboard() {
-  const [quote, setQuote] = useState<Quote | null>(null);
+  const [quote, setQuote] = useState<DailyQuote | null>(null);
 
   useEffect(() => {
     // Get quote on client to avoid hydration mismatch
-    // TODO: Replace with deterministic daily quote in Step 3
-    setQuote(getRandomQuote());
+    // Deterministic: same quote for all users on same day
+    setQuote(getDailyQuote());
   }, []);
+
+  // Compute formatted copy text
+  const copyText = useMemo(() => {
+    if (!quote) return "";
+    return formatQuoteWithAttribution(quote.text, quote.reference, quote.url);
+  }, [quote]);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
@@ -54,30 +57,39 @@ export default function Dashboard() {
       {quote && (
         <div className="light-quote-card animate-quote-wrapper group max-w-xl mx-auto">
           <div
+            role="link"
+            tabIndex={0}
+            aria-label={`Read ${quote.reference} on lawofone.info`}
+            onClick={() => window.open(quote.url, "_blank", "noopener,noreferrer")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                window.open(quote.url, "_blank", "noopener,noreferrer");
+              }
+            }}
             className="p-5 rounded-2xl
                      border-l-4 border-[var(--lo1-gold)] bg-[var(--lo1-indigo)]/60 backdrop-blur-sm
                      shadow-lg hover:bg-[var(--lo1-indigo)]/70
                      hover:shadow-[0_0_40px_rgba(212,168,83,0.2)]
-                     transition-all duration-300"
+                     transition-all duration-300 cursor-pointer"
           >
             <p className="animate-quote-enter font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-4">
               &ldquo;{quote.text}&rdquo;
             </p>
             <div className="flex items-center justify-between gap-4">
               <Link
-                href={`/chat?quote=${encodeURIComponent(quote.reference)}`}
+                href={`/chat?q=${encodeURIComponent(`Help me explore "${quote.text}" from ${quote.reference}`)}`}
                 className="animate-quote-reference text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors"
+                onClick={(e) => e.stopPropagation()}
               >
                 Explore this &rarr;
               </Link>
-              <a
-                href={quote.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="animate-quote-reference text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] text-sm transition-colors"
-              >
-                &mdash; {quote.reference}
-              </a>
+              <div className="flex items-center gap-2 animate-quote-reference">
+                <CopyButton textToCopy={copyText} size="md" />
+                <span className="text-[var(--lo1-stardust)] text-sm">
+                  &mdash; {quote.reference}
+                </span>
+              </div>
             </div>
           </div>
         </div>

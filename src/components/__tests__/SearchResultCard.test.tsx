@@ -2,9 +2,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SearchResultCard from "../SearchResultCard";
 
-// Mock formatWholeQuote to return text as-is for testing
+// Mock quote-utils to return text as-is for testing
 jest.mock("@/lib/quote-utils", () => ({
   formatWholeQuote: (text: string) => text,
+  formatQuoteWithAttribution: (text: string, reference: string, url: string) =>
+    `"${text}"\n— ${reference}\n\n${url}`,
 }));
 
 const mockResult = {

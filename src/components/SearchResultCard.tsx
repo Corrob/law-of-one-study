@@ -2,12 +2,13 @@
 
 import { useState, useMemo } from "react";
 import { SearchResult } from "@/lib/schemas";
-import { formatWholeQuote } from "@/lib/quote-utils";
+import { formatWholeQuote, formatQuoteWithAttribution } from "@/lib/quote-utils";
 import {
   getHighlightTerms,
   parseRaMaterialText,
   getSegmentDisplayContent,
 } from "@/lib/search";
+import CopyButton from "./CopyButton";
 
 export interface SearchResultCardProps {
   result: SearchResult;
@@ -71,6 +72,12 @@ export default function SearchResultCard({
 
   // Parse formatted text into Questioner/Ra segments
   const segments = useMemo(() => parseRaMaterialText(formattedText), [formattedText]);
+
+  // Compute formatted copy text with attribution
+  const copyText = useMemo(
+    () => formatQuoteWithAttribution(formattedText, result.reference, result.url),
+    [formattedText, result.reference, result.url]
+  );
 
   const toggleSegment = (index: number) => {
     setExpandedSegments(prev => {
@@ -147,7 +154,7 @@ export default function SearchResultCard({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2 mt-4 pt-3 border-t border-[var(--lo1-celestial)]/10">
+      <div className="flex items-center gap-2 mt-4 pt-3 border-t border-[var(--lo1-celestial)]/10">
         <a
           href={result.url}
           target="_blank"
@@ -169,6 +176,9 @@ export default function SearchResultCard({
         >
           Ask about this
         </button>
+        <div className="ml-auto">
+          <CopyButton textToCopy={copyText} size="sm" />
+        </div>
       </div>
     </div>
   );
