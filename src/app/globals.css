@@ -594,6 +594,20 @@ h6 {
   opacity: 0;
 }
 
+/* Header - appears first, before the card */
+.animate-quote-header {
+  animation: quote-enter 500ms ease-out forwards;
+  animation-delay: 50ms;
+  opacity: 0;
+}
+
+/* Footer - appears last, after the reference */
+.animate-quote-footer {
+  animation: quote-enter 500ms ease-out forwards;
+  animation-delay: 900ms;
+  opacity: 0;
+}
+
 /* Staggered starter cards */
 @keyframes starter-enter {
   from {

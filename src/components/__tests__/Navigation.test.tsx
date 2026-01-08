@@ -40,7 +40,7 @@ describe("Header", () => {
   it("renders dashboard header with logo and title on home page", () => {
     render(<Header onMenuClick={mockOnMenuClick} />);
 
-    expect(screen.getByText("Law of One Study")).toBeInTheDocument();
+    expect(screen.getByText("Law of One Study Companion")).toBeInTheDocument();
     expect(screen.getByLabelText("Open menu")).toBeInTheDocument();
   });
 
