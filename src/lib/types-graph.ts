@@ -26,6 +26,16 @@ export type ConceptCategory =
   | "practice" // Spiritual methods
   | "archetypes"; // Deep mind structure
 
+// Subcategory for archetype groupings (7 positions in the archetypal mind)
+export type ArchetypeSubcategory =
+  | "matrix" // Position 1: Unrealized potential
+  | "potentiator" // Position 2: Activation
+  | "catalyst" // Position 3: Opportunity
+  | "experience" // Position 4: Processing
+  | "significator" // Position 5: The Actor (Self)
+  | "transformation" // Position 6: Change through choice
+  | "great-way"; // Position 7: Integration/Environment
+
 // Key passage from the Ra Material
 export interface KeyPassage {
   reference: string; // e.g., "16.51"
@@ -55,6 +65,7 @@ export interface GraphConcept {
   term: string; // Canonical display name
   aliases: string[]; // Alternative names/forms for matching
   category: ConceptCategory;
+  subcategory?: ArchetypeSubcategory; // For archetypes: position grouping
   definition: string; // Brief definition (for popover)
   extendedDefinition: string; // Longer explanation
   relationships: ConceptRelationships;

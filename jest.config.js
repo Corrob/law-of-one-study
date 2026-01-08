@@ -12,6 +12,10 @@ const customJestConfig = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
+  // Transform D3 and related ESM modules
+  transformIgnorePatterns: [
+    "/node_modules/(?!(d3|d3-.*|d3dag|internmap|delaunator|robust-predicates)/)",
+  ],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",
     "!src/**/*.d.ts",
