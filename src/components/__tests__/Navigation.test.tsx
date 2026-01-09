@@ -48,7 +48,7 @@ describe("Header", () => {
     mockPathname.mockReturnValue("/chat");
     render(<Header onMenuClick={mockOnMenuClick} />);
 
-    expect(screen.getByLabelText("Go back")).toBeInTheDocument();
+    expect(screen.getByLabelText("Go to home")).toBeInTheDocument();
     expect(screen.getByText("Seek")).toBeInTheDocument();
   });
 

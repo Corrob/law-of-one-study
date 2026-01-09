@@ -113,12 +113,21 @@ export default function SearchPage() {
     handleSearch(suggestion);
   };
 
+  const handleNewSearch = useCallback(() => {
+    setQuery("");
+    setResults([]);
+    setHasSearched(false);
+    setError(null);
+    initialSearchDone.current = false;
+    router.push("/search");
+  }, [router]);
+
   // Show welcome state (centered) or results state (top-aligned)
   const showWelcome = !hasSearched && !isLoading;
 
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
-      <NavigationWrapper>
+      <NavigationWrapper showNewSearch={hasSearched} onNewSearch={handleNewSearch}>
         <div className="flex-1 overflow-hidden relative z-10 flex flex-col">
           {/* Welcome State - Centered */}
           {showWelcome && (

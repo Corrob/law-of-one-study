@@ -8,6 +8,8 @@ interface HeaderProps {
   onMenuClick: () => void;
   onNewChat?: () => void;
   showNewChat?: boolean;
+  onNewSearch?: () => void;
+  showNewSearch?: boolean;
 }
 
 // Page titles for feature pages
@@ -19,7 +21,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/support": "About",
 };
 
-export default function Header({ onMenuClick, onNewChat, showNewChat }: HeaderProps) {
+export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearch, showNewSearch }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const isDashboard = pathname === "/";
@@ -48,12 +50,12 @@ export default function Header({ onMenuClick, onNewChat, showNewChat }: HeaderPr
               </div>
             </Link>
           ) : (
-            // Feature page: Show back button and page title
+            // Feature page: Show home button and page title
             <>
               <button
-                onClick={() => router.back()}
+                onClick={() => router.push("/")}
                 className="flex items-center justify-center w-10 h-10 -ml-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 transition-colors cursor-pointer"
-                aria-label="Go back"
+                aria-label="Go to home"
               >
                 <BackIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
               </button>
@@ -70,6 +72,18 @@ export default function Header({ onMenuClick, onNewChat, showNewChat }: HeaderPr
               onClick={onNewChat}
               className="flex items-center gap-1.5 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 cursor-pointer"
               aria-label="Start new conversation"
+            >
+              <PlusIcon className="w-4 h-4" />
+              <span className="hidden sm:inline">New</span>
+            </button>
+          )}
+
+          {/* New Search button (only on /search when results showing) */}
+          {pathname === "/search" && showNewSearch && onNewSearch && (
+            <button
+              onClick={onNewSearch}
+              className="flex items-center gap-1.5 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 cursor-pointer"
+              aria-label="Start new search"
             >
               <PlusIcon className="w-4 h-4" />
               <span className="hidden sm:inline">New</span>

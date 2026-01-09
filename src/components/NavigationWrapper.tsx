@@ -8,12 +8,16 @@ interface NavigationWrapperProps {
   children: React.ReactNode;
   showNewChat?: boolean;
   onNewChat?: () => void;
+  showNewSearch?: boolean;
+  onNewSearch?: () => void;
 }
 
 export default function NavigationWrapper({
   children,
   showNewChat,
   onNewChat,
+  showNewSearch,
+  onNewSearch,
 }: NavigationWrapperProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -31,6 +35,8 @@ export default function NavigationWrapper({
         onMenuClick={handleMenuOpen}
         showNewChat={showNewChat}
         onNewChat={onNewChat}
+        showNewSearch={showNewSearch}
+        onNewSearch={onNewSearch}
       />
       <BurgerMenu isOpen={isMenuOpen} onClose={handleMenuClose} />
       {children}
