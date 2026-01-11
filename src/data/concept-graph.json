@@ -231,14 +231,14 @@
       "aliases": ["fourth density", "4th density", "density of love"],
       "category": "cosmology",
       "definition": "The density of love and understanding. Beings here live in harmony, with thoughts visible to all. Social memory complexes form.",
-      "extendedDefinition": "Fourth density is the density of love or understanding. It is characterized by the formation of social memory complexes, where groups share a collective consciousness and memory. Thoughts are visible to all; there is no deception. Entities work on understanding universal love but may lack wisdom in its application. Graduation to fourth density positive requires 51% orientation toward service to others.",
+      "extendedDefinition": "Fourth density is the density of love or understanding. It is characterized by the formation of social memory complexes, where groups share a collective consciousness and memory. The positive and negative paths through fourth density are markedly different: positive entities share thoughts transparently, while negative entities form strict hierarchies. Graduation to fourth density positive requires 51% orientation toward service to others; negative requires 95% service to self. See fourth-density-positive and fourth-density-negative for path-specific details.",
       "relationships": {
         "prerequisite": ["third-density", "harvest"],
         "leads_to": ["fifth-density"],
         "related": ["love", "social-memory-complex", "green-ray"],
         "contrasts": [],
         "part_of": ["density", "octave"],
-        "contains": []
+        "contains": ["fourth-density-positive", "fourth-density-negative"]
       },
       "sessions": {
         "primary": [6, 16, 17, 20, 43, 47, 48],
@@ -390,7 +390,7 @@
       "relationships": {
         "prerequisite": ["polarity"],
         "leads_to": ["fourth-density"],
-        "related": ["graduation", "polarity", "third-density"],
+        "related": ["graduation", "polarity", "third-density", "sinkhole-of-indifference"],
         "contrasts": [],
         "part_of": [],
         "contains": []
@@ -435,7 +435,7 @@
       },
       "keyPassages": [
         {
-          "reference": "17.31",
+          "reference": "47.6",
           "excerpt": "The requirement for graduation to fourth density positive is that the entity be at least 51 percent in service to others; for graduation to fourth density negative, the requirement is 95 percent service to self.",
           "context": "Specific graduation requirements"
         }
@@ -454,7 +454,7 @@
         "prerequisite": ["third-density", "veil"],
         "leads_to": ["harvest", "graduation"],
         "related": ["service-to-others", "service-to-self", "the-choice"],
-        "contrasts": [],
+        "contrasts": ["sinkhole-of-indifference"],
         "part_of": [],
         "contains": ["service-to-others", "service-to-self"]
       },
@@ -551,7 +551,7 @@
       },
       "keyPassages": [
         {
-          "reference": "1.7",
+          "reference": "1.0",
           "excerpt": "You have not completely grasped the concept that you are part of the original thought.",
           "context": "The nature of consciousness as part of the Creator"
         }
@@ -598,7 +598,7 @@
       "relationships": {
         "prerequisite": ["sixth-density"],
         "leads_to": [],
-        "related": ["spirit-complex", "pre-incarnative", "incarnation"],
+        "related": ["spirit-complex", "pre-incarnative", "incarnation", "totality-of-self", "time-lateral"],
         "contrasts": [],
         "part_of": ["mind-body-spirit-complex"],
         "contains": []
@@ -609,7 +609,7 @@
       },
       "keyPassages": [
         {
-          "reference": "36.7",
+          "reference": "36.2",
           "excerpt": "The higher self is that self which exists with full understanding of the accumulation of experiences of the entity.",
           "context": "Definition of higher self"
         }
@@ -876,8 +876,8 @@
       "keyPassages": [
         {
           "reference": "49.5",
-          "excerpt": "The movement of the kundalini or, as we have preferred to call this, the meeting place of cosmic and inner, shall we say, vibratory understanding.",
-          "context": "Definition of kundalini energy"
+          "excerpt": "This phenomenon has been called by your peoples the kundalini. However, it may better be thought of as the meeting place of cosmic and inner, shall we say, vibratory understanding.",
+          "context": "Ra's explanation of kundalini"
         }
       ],
       "searchTerms": ["kundalini", "rising energy", "serpent power", "energy rising"],
@@ -1067,7 +1067,7 @@
       "relationships": {
         "prerequisite": [],
         "leads_to": [],
-        "related": ["service-to-others", "incarnation", "fourth-density"],
+        "related": ["service-to-others", "incarnation", "fourth-density", "confederation"],
         "contrasts": [],
         "part_of": [],
         "contains": []
@@ -1099,7 +1099,7 @@
         "related": ["love", "intelligent-energy", "archetypical-mind"],
         "contrasts": [],
         "part_of": ["one-infinite-creator"],
-        "contains": ["sub-logos"]
+        "contains": ["sub-logos", "planetary-logos"]
       },
       "sessions": {
         "primary": [13, 27, 28, 29, 76, 78, 82, 90],
@@ -1125,10 +1125,10 @@
       "relationships": {
         "prerequisite": ["logos"],
         "leads_to": [],
-        "related": ["logos", "intelligent-energy"],
+        "related": ["logos", "intelligent-energy", "planetary-logos"],
         "contrasts": [],
         "part_of": ["logos"],
-        "contains": []
+        "contains": ["planetary-logos"]
       },
       "sessions": {
         "primary": [28, 29, 76, 78, 82, 90],
@@ -1468,6 +1468,7 @@
       "term": "Matrix",
       "aliases": ["matrix"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "An archetype representing the unconscious, unrealized potential in mind, body, or spirit.",
       "extendedDefinition": "The Matrix is the first archetype in each of the three groups (mind, body, spirit). It represents the unrealized, unconscious potential waiting to be activated. The Matrix of the Mind is the Magician (Card 1); the Matrix of the Body is Justice (Card 8); the Matrix of the Spirit is the Devil (Card 15). The Matrix contains everything but has not yet realized it.",
       "relationships": {
@@ -1484,7 +1485,7 @@
       },
       "keyPassages": [
         {
-          "reference": "78.11",
+          "reference": "79.20",
           "excerpt": "The Matrix of the Mind is that from which all comes. It is unmoving yet is the activator in potentiation of all mind activity.",
           "context": "Definition of Matrix archetype"
         }
@@ -1497,6 +1498,7 @@
       "term": "Potentiator",
       "aliases": ["potentiator"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "An archetype that catalyzes and activates the Matrix, bringing potential into possibility.",
       "extendedDefinition": "The Potentiator is the second archetype in each group, representing that which activates or catalyzes the Matrix. The Potentiator of the Mind is the High Priestess (Card 2); the Potentiator of the Body is the Hermit (Card 9); the Potentiator of the Spirit is the Tower (Card 16). It reaches into the Matrix and draws out potential into manifestation.",
       "relationships": {
@@ -1514,8 +1516,8 @@
       "keyPassages": [
         {
           "reference": "79.20",
-          "excerpt": "The Potentiator of Mind reaches into the roots of the mind, offering the Matrix of Mind the possibility of knowing Itself.",
-          "context": "Function of the Potentiator"
+          "excerpt": "The Potentiator of the Mind is that great resource which may be seen as the sea into which the consciousness dips ever deeper and more thoroughly in order to create, ideate, and become more self-conscious.",
+          "context": "Ra's description of the Potentiator"
         }
       ],
       "searchTerms": ["potentiator", "activate", "high priestess", "hermit", "tower", "unconscious activator"],
@@ -1526,6 +1528,7 @@
       "term": "Catalyst (Archetype)",
       "aliases": ["catalyst of mind", "catalyst of body", "catalyst of spirit"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The third archetype in each group, representing that which acts upon the potentiated consciousness to produce experience.",
       "extendedDefinition": "The Catalyst archetype represents that which acts upon consciousness to produce experience and opportunity for growth. The Catalyst of the Mind is the Empress (Card 3), representing the fertile ground of possibilities; the Catalyst of the Body is the Wheel of Fortune (Card 10); the Catalyst of the Spirit is the Star (Card 17). Catalyst is neither positive nor negative but offers the opportunity for polarization.",
       "relationships": {
@@ -1542,9 +1545,9 @@
       },
       "keyPassages": [
         {
-          "reference": "93.10",
-          "excerpt": "The Catalyst of the Mind, the Empress, is that which reaches into the subconscious and produces catalyst for the conscious mind to process.",
-          "context": "Function of Catalyst archetype"
+          "reference": "93.11",
+          "excerpt": "All that assaults your senses is catalyst.",
+          "context": "Ra's definition of catalyst"
         }
       ],
       "searchTerms": ["catalyst archetype", "empress", "wheel of fortune", "star", "opportunity"],
@@ -1555,6 +1558,7 @@
       "term": "Experience (Archetype)",
       "aliases": ["experience of mind", "experience of body", "experience of spirit"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The fourth archetype in each group, representing how catalyst is processed and utilized.",
       "extendedDefinition": "The Experience archetype represents the result of processing catalyst - how the entity uses and integrates what has been offered. The Experience of the Mind is the Emperor (Card 4), representing the male principle of reaching and grasping experience; the Experience of the Body is Strength/Enchantress (Card 11); the Experience of the Spirit is the Moon (Card 18). Experience is what the entity makes of catalyst through its choices.",
       "relationships": {
@@ -1571,9 +1575,9 @@
       },
       "keyPassages": [
         {
-          "reference": "94.9",
-          "excerpt": "The Experience of the Mind, the Emperor, has the quality of being that which is sought and that which pursues.",
-          "context": "Function of Experience archetype"
+          "reference": "94.15",
+          "excerpt": "The archetype of Experience of the Mind reaches not, O student, but with firm authority grasps what it is given.",
+          "context": "Ra's description of Experience"
         }
       ],
       "searchTerms": ["experience archetype", "emperor", "strength", "enchantress", "moon", "processing catalyst"],
@@ -1584,6 +1588,7 @@
       "term": "Significator",
       "aliases": ["significator"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "An archetype representing the complex of mind, body, or spirit as it is being developed and transformed.",
       "extendedDefinition": "The Significator represents the entity itself - the mind, body, or spirit complex that is undergoing transformation. It is shaped by the interplay of Matrix and Potentiator, Catalyst and Experience. The Significator of the Mind is the Hierophant (Card 5); of the Body is the Hanged Man (Card 12); of the Spirit is the Sun (Card 19).",
       "relationships": {
@@ -1600,9 +1605,9 @@
       },
       "keyPassages": [
         {
-          "reference": "79.32",
-          "excerpt": "The Significator is the significant self, the complex of mind, body, or spirit which has within it the potential to become all things.",
-          "context": "The Significator as the self"
+          "reference": "97.10",
+          "excerpt": "O student, you have grasped the barest essence of the nature of the Significator's complete envelopment within the rectangle.",
+          "context": "Ra discussing the nature of the Significator"
         }
       ],
       "searchTerms": ["significator", "self", "entity", "hierophant", "hanged man", "sun"],
@@ -1613,6 +1618,7 @@
       "term": "Transformation",
       "aliases": ["transformation"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "An archetype representing the process of change and evolution through the integration of catalyst.",
       "extendedDefinition": "The Transformation archetype represents the change that occurs when catalyst is fully processed and integrated. It represents the choice between two paths and the resulting transformation. The Transformation of the Mind is the Lovers (Card 6), representing the choice between light and dark paths; of the Body is Death (Card 13); of the Spirit is Judgement (Card 20). Ra described it as 'the student of the mysteries being transformed by the need to choose.'",
       "relationships": {
@@ -1629,7 +1635,7 @@
       },
       "keyPassages": [
         {
-          "reference": "99.8",
+          "reference": "79.40",
           "excerpt": "As you observe Archetype Six you may see the student of the mysteries being transformed by the need to choose betwixt the light and the dark in mind.",
           "context": "Transformation of Mind as choosing between paths"
         }
@@ -1642,6 +1648,7 @@
       "term": "Great Way",
       "aliases": ["great way"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The archetype representing the integration of mind, body, and spirit on the spiritual journey.",
       "extendedDefinition": "The Great Way is the seventh archetype in each group, representing the full integration and expression of mind, body, or spirit. The Great Way of the Mind is the Chariot (Card 7); of the Body is Temperance (Card 14); of the Spirit is the World (Card 21). It shows the environment, milieu, and manner of the spiritual journey.",
       "relationships": {
@@ -1658,9 +1665,9 @@
       },
       "keyPassages": [
         {
-          "reference": "79.42",
-          "excerpt": "The Great Way of the Mind, Body, or Spirit draws together all of the other archetypes of each complex and shows the manner of the spiritual journey.",
-          "context": "The Great Way as integration"
+          "reference": "100.7",
+          "excerpt": "The Great Way of Mind, Body, or Spirit is intended to limn the milieu within which the work of mind, body, or spirit shall be placed.",
+          "context": "Ra explaining the function of the Great Way"
         }
       ],
       "searchTerms": ["great way", "path", "chariot", "temperance", "world", "integration", "spiritual journey"],
@@ -1700,6 +1707,7 @@
       "term": "Matrix of the Mind",
       "aliases": ["matrix of the mind", "matrix of mind", "the magician", "magician", "card 1", "arcanum 1", "archetype 1"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "The first archetype (Tarot Card 1, The Magician). Represents the conscious mind in its unfed, new, and potent state, reaching for experience.",
       "extendedDefinition": "The Matrix of the Mind is the conscious mind itself, male in nature, reaching without limit for that which it desires. It is depicted as a magician, the figure with all magical tools available, representing the conscious mind's inherent potential. The Matrix reaches but must be potentiated by the unconscious (High Priestess) to become fruitful.",
       "relationships": {
@@ -1716,14 +1724,14 @@
       },
       "keyPassages": [
         {
-          "reference": "78.11",
+          "reference": "79.20",
           "excerpt": "The Matrix of the Mind is that from which all comes. It is unmoving yet is the activator in potentiation of all mind activity.",
           "context": "Definition of Matrix of the Mind"
         },
         {
-          "reference": "79.20",
-          "excerpt": "The Matrix of the Mind is the conscious mind and is further described as the Magician because of the power of the conscious mind to manipulate through will.",
-          "context": "The Magician archetype"
+          "reference": "91.33",
+          "excerpt": "We ask the student to consider the concept of the unfed conscious mind, the mind without any resource but consciousness.",
+          "context": "The nature of the Matrix of Mind as unfed consciousness"
         }
       ],
       "searchTerms": ["matrix of mind", "magician", "conscious mind", "card 1", "first archetype", "male principle mind"],
@@ -1734,6 +1742,7 @@
       "term": "Potentiator of the Mind",
       "aliases": ["potentiator of the mind", "potentiator of mind", "the high priestess", "high priestess", "card 2", "arcanum 2", "archetype 2"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "The second archetype (Tarot Card 2, The High Priestess). Represents the unconscious mind, the great feminine repository of potential waiting to be accessed.",
       "extendedDefinition": "The Potentiator of the Mind is the unconscious or subconscious mind, female in nature and veiled. The High Priestess sits between the pillars of light and darkness, holding the scroll of wisdom. She potentiates the Matrix by offering the riches of the subconscious to the reaching conscious mind. The veil between conscious and unconscious is a key feature.",
       "relationships": {
@@ -1751,8 +1760,8 @@
       "keyPassages": [
         {
           "reference": "79.20",
-          "excerpt": "The Potentiator of Mind reaches into the roots of the mind, offering the Matrix of Mind the possibility of knowing Itself.",
-          "context": "Function of the High Priestess"
+          "excerpt": "The Potentiator of the Mind is that great resource which may be seen as the sea into which the consciousness dips ever deeper and more thoroughly in order to create, ideate, and become more self-conscious.",
+          "context": "Ra's description of the unconscious mind"
         }
       ],
       "searchTerms": ["potentiator of mind", "high priestess", "unconscious mind", "subconscious", "card 2", "female principle mind", "veiled"],
@@ -1763,6 +1772,7 @@
       "term": "Catalyst of the Mind",
       "aliases": ["catalyst of the mind", "catalyst of mind", "the empress", "empress", "card 3", "arcanum 3", "archetype 3"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The third archetype (Tarot Card 3, The Empress). Represents catalyst as it acts upon the mind, the fertile ground of mental experience.",
       "extendedDefinition": "The Catalyst of the Mind is that which acts upon the consciousness to produce mental catalyst or experience. The Empress represents the fertile abundance of catalyst available to the conscious mind. Through the gateway opened by the Potentiator, catalyst flows into conscious experience. The Empress is shown pregnant, holding the scepter of power over catalyst.",
       "relationships": {
@@ -1779,9 +1789,9 @@
       },
       "keyPassages": [
         {
-          "reference": "92.11",
-          "excerpt": "The Catalyst of the Mind represents the interaction of the conscious mind with the catalyst which has been processed by the subconscious mind and made available to the conscious mind.",
-          "context": "The Empress archetype"
+          "reference": "93.11",
+          "excerpt": "All that assaults your senses is catalyst.",
+          "context": "Ra's definition of what constitutes catalyst"
         }
       ],
       "searchTerms": ["catalyst of mind", "empress", "mental catalyst", "card 3", "fertility", "abundance"],
@@ -1792,6 +1802,7 @@
       "term": "Experience of the Mind",
       "aliases": ["experience of the mind", "experience of mind", "the emperor", "emperor", "card 4", "arcanum 4", "archetype 4"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The fourth archetype (Tarot Card 4, The Emperor). Represents the experience processed by mind, the structuring of catalyst into meaningful experience.",
       "extendedDefinition": "The Experience of the Mind is the processing of catalyst into structured experience. The Emperor represents the ordering principle that takes raw catalyst and shapes it into experience. He sits upon his throne with symbols of structured power, showing how the mind processes and organizes the fertile catalyst of the Empress into usable experience.",
       "relationships": {
@@ -1808,9 +1819,9 @@
       },
       "keyPassages": [
         {
-          "reference": "92.14",
-          "excerpt": "The Experience of the Mind then has the duty or function of examining that which is placed before it, accepting what is desired, rejecting what is not desired, and understanding what is found.",
-          "context": "The Emperor archetype"
+          "reference": "94.15",
+          "excerpt": "The archetype of Experience of the Mind reaches not, O student, but with firm authority grasps what it is given.",
+          "context": "Ra's description of how Experience processes catalyst"
         }
       ],
       "searchTerms": ["experience of mind", "emperor", "mental experience", "card 4", "structure", "order", "processing"],
@@ -1821,6 +1832,7 @@
       "term": "Significator of the Mind",
       "aliases": ["significator of the mind", "significator of mind", "the hierophant", "hierophant", "card 5", "arcanum 5", "archetype 5"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "The fifth archetype (Tarot Card 5, The Hierophant). Represents the complex of mind itself, the actor who uses catalyst and experience for evolution.",
       "extendedDefinition": "The Significator of the Mind represents the mind complex itself, the entity who processes catalyst and experience. The Hierophant is shown as a teacher figure between two pillars, with two students. This archetype signifies the mind's choice-making faculty and its role as the central processor of the mental experience. It is the 'actor' in the drama of mind.",
       "relationships": {
@@ -1837,9 +1849,9 @@
       },
       "keyPassages": [
         {
-          "reference": "91.22",
-          "excerpt": "The Significator of the Mind represents the entire complex of consciousness which is available to the seeker or adept.",
-          "context": "The Hierophant archetype"
+          "reference": "79.42",
+          "excerpt": "The Hierophant is the original archetype of mind which has been made complex through the subtile movements of the conscious and unconscious.",
+          "context": "Ra's description of the Significator of Mind"
         }
       ],
       "searchTerms": ["significator of mind", "hierophant", "mind complex", "card 5", "teacher", "consciousness", "actor"],
@@ -1850,6 +1862,7 @@
       "term": "Transformation of the Mind",
       "aliases": ["transformation of the mind", "transformation of mind", "the lovers", "lovers", "two paths", "card 6", "arcanum 6", "archetype 6"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "The sixth archetype (Tarot Card 6, The Lovers). Represents the transformation possible when the mind faces the choice between paths.",
       "extendedDefinition": "The Transformation of the Mind represents the critical choice point where transformation becomes possible. The Lovers card shows the choice between paths - often depicted as a figure choosing between two others. This archetype shows how the mind can be transformed through making the fundamental choice of polarity. Without this choice, no transformation is possible.",
       "relationships": {
@@ -1866,9 +1879,9 @@
       },
       "keyPassages": [
         {
-          "reference": "93.11",
-          "excerpt": "The Transformation of the Mind is the process through which the seeker chooses its polarity and transforms all previous experiences according to that choice.",
-          "context": "The Lovers archetype"
+          "reference": "79.40",
+          "excerpt": "As you observe Archetype Six you may see the student of the mysteries being transformed by the need to choose betwixt the light and the dark in mind.",
+          "context": "Ra's description of the Transformation of Mind"
         }
       ],
       "searchTerms": ["transformation of mind", "lovers", "two paths", "card 6", "choice", "polarity choice", "mental transformation"],
@@ -1879,6 +1892,7 @@
       "term": "Great Way of the Mind",
       "aliases": ["great way of the mind", "great way of mind", "the chariot", "chariot", "card 7", "arcanum 7", "archetype 7", "conqueror"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The seventh archetype (Tarot Card 7, The Chariot). Represents the environment and summation of mind work, the triumphant progress of consciousness.",
       "extendedDefinition": "The Great Way of the Mind represents the environment in which the mind complex functions and the culmination of mental evolution. The Chariot shows a figure in a vehicle of triumph, having conquered through the integration of all previous archetypes. The sphinxes or horses represent the balanced forces now under the direction of the will.",
       "relationships": {
@@ -1895,9 +1909,9 @@
       },
       "keyPassages": [
         {
-          "reference": "94.11",
-          "excerpt": "The Great Way of the Mind depicts the environment in which the work of the mind is accomplished: within the chariot of progress, both horses of polarity pulling the seeker forward.",
-          "context": "The Chariot archetype"
+          "reference": "79.41",
+          "excerpt": "The Archetype Seven is one difficult to enunciate. We may call it the Path, the Way, or the Great Way of the Mind.",
+          "context": "Ra naming the seventh archetype"
         }
       ],
       "searchTerms": ["great way of mind", "chariot", "card 7", "triumph", "conquest", "progress", "environment of mind"],
@@ -1908,6 +1922,7 @@
       "term": "Matrix of the Body",
       "aliases": ["matrix of the body", "matrix of body", "justice", "card 8", "arcanum 8", "archetype 8"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "The eighth archetype (Tarot Card 8, Justice). Represents the physical vehicle in its unrealized state, the body as continuation of consciousness.",
       "extendedDefinition": "The Matrix of the Body represents the physical vehicle and its inherent wisdom. Justice shows the balanced nature of the body - it simply is, without judgment. The body continues the consciousness of the mind into physical manifestation. Note: In Ra's ordering, Justice is Card 8 (following the older Marseilles tradition), not Strength.",
       "relationships": {
@@ -1924,7 +1939,7 @@
       },
       "keyPassages": [
         {
-          "reference": "95.24",
+          "reference": "79.20",
           "excerpt": "The Matrix of the Body may be seen to be a reflection in opposites of the mind; that is, unrestricted motion.",
           "context": "Justice as Matrix of Body"
         }
@@ -1937,6 +1952,7 @@
       "term": "Potentiator of the Body",
       "aliases": ["potentiator of the body", "potentiator of body", "the hermit", "hermit", "card 9", "arcanum 9", "archetype 9"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "The ninth archetype (Tarot Card 9, The Hermit). Represents wisdom that potentiates the body, the inner light guiding physical existence.",
       "extendedDefinition": "The Potentiator of the Body is the wisdom principle that activates the physical vehicle. The Hermit holds his lamp high, illuminating the path - representing the inner wisdom available to guide bodily experience. This archetype shows how inner wisdom potentiates and guides the body's journey through incarnation.",
       "relationships": {
@@ -1953,9 +1969,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.25",
-          "excerpt": "The Potentiator of the Body is Wisdom. The body without wisdom is not capable of learning.",
-          "context": "The Hermit archetype"
+          "reference": "79.20",
+          "excerpt": "The Potentiator of the Body then is that which, being informed, regulates activity.",
+          "context": "Ra's description of the Potentiator of Body"
         }
       ],
       "searchTerms": ["potentiator of body", "hermit", "card 9", "wisdom", "inner light", "guide"],
@@ -1966,6 +1982,7 @@
       "term": "Catalyst of the Body",
       "aliases": ["catalyst of the body", "catalyst of body", "wheel of fortune", "wheel", "card 10", "arcanum 10", "archetype 10"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The tenth archetype (Tarot Card 10, Wheel of Fortune). Represents bodily catalyst, the turning circumstances that challenge the physical vehicle.",
       "extendedDefinition": "The Catalyst of the Body represents the circumstances and events that act upon the body. The Wheel of Fortune shows the cyclic nature of bodily catalyst - health, illness, pleasure, pain, all turning on the wheel of physical existence. This archetype shows how the body receives and processes physical catalyst.",
       "relationships": {
@@ -1982,9 +1999,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.26",
-          "excerpt": "The Catalyst of the Body concerns catalyst upon the physical vehicle which is not processed by the mind but directly upon the body complex.",
-          "context": "Wheel of Fortune archetype"
+          "reference": "48.7",
+          "excerpt": "Catalyst which is not used by the mind complex is then given to the body complex.",
+          "context": "Ra explaining how catalyst flows to the body"
         }
       ],
       "searchTerms": ["catalyst of body", "wheel of fortune", "wheel", "card 10", "physical catalyst", "cycles", "fortune"],
@@ -1995,6 +2012,7 @@
       "term": "Experience of the Body",
       "aliases": ["experience of the body", "experience of body", "strength", "the enchantress", "enchantress", "lust", "card 11", "arcanum 11", "archetype 11"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The eleventh archetype (Tarot Card 11, Strength/Enchantress). Represents bodily experience, the taming and integration of physical energies.",
       "extendedDefinition": "The Experience of the Body shows how the body processes and integrates physical catalyst. Strength (or the Enchantress in some traditions) depicts a figure gently handling a lion - representing the taming and integration of powerful physical energies. Ra calls this the Enchantress. Note: In Ra's ordering, Strength is Card 11, not Card 8.",
       "relationships": {
@@ -2011,9 +2029,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.27",
-          "excerpt": "The Experience of the Body is symbolized by the Enchantress who, by the power of experience, tames the great cat.",
-          "context": "Strength/Enchantress archetype"
+          "reference": "79.35",
+          "excerpt": "The Empress, is the Catalyst of the Mind, that which acts upon the conscious mind. The fourth being the Emperor, which is the Experience of the Mind.",
+          "context": "Ra explaining the progression from Catalyst to Experience"
         }
       ],
       "searchTerms": ["experience of body", "strength", "enchantress", "card 11", "taming", "physical experience", "lion"],
@@ -2024,6 +2042,7 @@
       "term": "Significator of the Body",
       "aliases": ["significator of the body", "significator of body", "the hanged man", "hanged man", "card 12", "arcanum 12", "archetype 12"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "The twelfth archetype (Tarot Card 12, The Hanged Man). Represents the body complex itself, suspended between worlds, sacrificing for transformation.",
       "extendedDefinition": "The Significator of the Body represents the body complex as a whole - the physical vehicle through which consciousness experiences incarnation. The Hanged Man is suspended upside down, showing the reversal of perspective that bodily existence requires. The body is sacrificed to serve consciousness, hung between heaven and earth.",
       "relationships": {
@@ -2040,9 +2059,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.28",
-          "excerpt": "The Significator of the Body is that which signifies the body complex, being suspended between the reaching for spirit and the pull of earth.",
-          "context": "The Hanged Man archetype"
+          "reference": "79.17",
+          "excerpt": "The body, the mind, and the spirit each contained and functioned under the aegis of the matrix, the potentiator, and the significator.",
+          "context": "Ra describing the three-part structure for body"
         }
       ],
       "searchTerms": ["significator of body", "hanged man", "card 12", "body complex", "suspension", "sacrifice", "reversal"],
@@ -2053,6 +2072,7 @@
       "term": "Transformation of the Body",
       "aliases": ["transformation of the body", "transformation of body", "death", "card 13", "arcanum 13", "archetype 13"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "The thirteenth archetype (Tarot Card 13, Death). Represents bodily transformation, the necessary death and rebirth of physical patterns.",
       "extendedDefinition": "The Transformation of the Body shows how the physical vehicle transforms through death and rebirth of patterns. Death shows the skeleton reaper harvesting - but this is transformation, not ending. Old physical patterns must die for new ones to emerge. This is the transformation that makes the body a more fitting vehicle for spirit.",
       "relationships": {
@@ -2069,9 +2089,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.29",
-          "excerpt": "The Transformation of the Body is well indicated by the image of Death, for with the change to a more lightened body comes the seeming death of the grosser body.",
-          "context": "Death archetype"
+          "reference": "79.18",
+          "excerpt": "The significator must become a complex. The significator of the mind, body, and spirit is not identical to the significator of the mind, body, and spirit complexes.",
+          "context": "Ra explaining how archetypes become complex through transformation"
         }
       ],
       "searchTerms": ["transformation of body", "death", "card 13", "bodily transformation", "rebirth", "change", "harvest"],
@@ -2082,6 +2102,7 @@
       "term": "Great Way of the Body",
       "aliases": ["great way of the body", "great way of body", "temperance", "alchemist", "art", "card 14", "arcanum 14", "archetype 14"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The fourteenth archetype (Tarot Card 14, Temperance). Represents the environment and summation of body work, the alchemical integration of physical existence.",
       "extendedDefinition": "The Great Way of the Body shows the environment in which bodily transformation occurs and its culmination. Temperance (or the Alchemist) depicts the mixing and balancing of essences - the integration of physical experiences into a refined whole. This is the alchemy of the body, the tempering process that creates a more perfected physical vehicle.",
       "relationships": {
@@ -2098,9 +2119,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.30",
-          "excerpt": "The Great Way of the Body is called Temperance because it involves the tempering of the self through the integration of body, mind, and spirit.",
-          "context": "Temperance/Alchemist archetype"
+          "reference": "100.7",
+          "excerpt": "The Great Way of Mind, Body, or Spirit is intended to limn the milieu within which the work of mind, body, or spirit shall be placed.",
+          "context": "Ra explaining the function of the Great Way archetype"
         }
       ],
       "searchTerms": ["great way of body", "temperance", "alchemist", "art", "card 14", "alchemy", "integration", "tempering"],
@@ -2111,6 +2132,7 @@
       "term": "Matrix of the Spirit",
       "aliases": ["matrix of the spirit", "matrix of spirit", "the devil", "devil", "card 15", "arcanum 15", "archetype 15"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "The fifteenth archetype (Tarot Card 15, The Devil). Represents the spirit in its bound state, the illusion of bondage that must be transcended.",
       "extendedDefinition": "The Matrix of the Spirit shows the spirit's initial condition - apparently bound but actually free. The Devil depicts figures in chains that are loose enough to remove, symbolizing the illusory nature of spiritual bondage. The Matrix of Spirit contains infinite potential but appears constrained by the illusions of incarnation.",
       "relationships": {
@@ -2127,9 +2149,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.31",
-          "excerpt": "The Matrix of the Spirit is that which binds and frees spirit. It is the illusion of the chains which, when examined, are seen to be quite loose.",
-          "context": "The Devil archetype"
+          "reference": "80.10",
+          "excerpt": "The nature of the spirit is so infinitely subtle that the fructifying influence of light upon the great darkness of the spirit is very often not as apparent as the darkness itself.",
+          "context": "Ra's description of the Matrix of Spirit (The Devil)"
         }
       ],
       "searchTerms": ["matrix of spirit", "devil", "card 15", "bondage", "illusion", "chains", "spirit bound"],
@@ -2140,6 +2162,7 @@
       "term": "Potentiator of the Spirit",
       "aliases": ["potentiator of the spirit", "potentiator of spirit", "the tower", "tower", "lightning struck tower", "card 16", "arcanum 16", "archetype 16"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "The sixteenth archetype (Tarot Card 16, The Tower). Represents the sudden influx of spirit that shatters illusion and false structures.",
       "extendedDefinition": "The Potentiator of the Spirit is the lightning bolt of spiritual truth that shatters illusion. The Tower shows a structure struck by lightning, figures falling - representing the destruction of false constructs by spiritual illumination. This sudden potentiation frees the spirit from its apparent bondage in the Matrix.",
       "relationships": {
@@ -2156,9 +2179,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.32",
-          "excerpt": "The Potentiator of the Spirit is that which, in its sudden and inevitable lightnings, shatters the illusion of the Devil.",
-          "context": "The Tower archetype"
+          "reference": "80.13",
+          "excerpt": "Because of the illuminations of the Potentiator of the Spirit, will begin to cause these changes in the adept's viewpoint.",
+          "context": "Ra's description of the Potentiator of Spirit (The Tower)"
         }
       ],
       "searchTerms": ["potentiator of spirit", "tower", "lightning", "card 16", "illumination", "shattering", "destruction of illusion"],
@@ -2169,6 +2192,7 @@
       "term": "Catalyst of the Spirit",
       "aliases": ["catalyst of the spirit", "catalyst of spirit", "the star", "star", "hope", "card 17", "arcanum 17", "archetype 17"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The seventeenth archetype (Tarot Card 17, The Star). Represents spiritual catalyst, the hope and guidance that draws the spirit forward.",
       "extendedDefinition": "The Catalyst of the Spirit is the hope and faith that catalyzes spiritual growth. The Star shows a figure pouring water while a bright star shines above - representing the catalyst of hope, inspiration, and spiritual guidance. After the Tower's destruction, the Star offers the catalyst of renewed faith and direction.",
       "relationships": {
@@ -2185,9 +2209,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.33",
-          "excerpt": "The Catalyst of the Spirit is Hope, also called Faith. This is the star that beckons the spirit onwards.",
-          "context": "The Star archetype"
+          "reference": "80.13",
+          "excerpt": "That archetype you call Hope which we would prefer to call Faith. This archetype is the Catalyst of the Spirit.",
+          "context": "Ra naming The Star as the Catalyst of Spirit"
         }
       ],
       "searchTerms": ["catalyst of spirit", "star", "hope", "faith", "card 17", "guidance", "inspiration", "spiritual catalyst"],
@@ -2198,6 +2222,7 @@
       "term": "Experience of the Spirit",
       "aliases": ["experience of the spirit", "experience of spirit", "the moon", "moon", "card 18", "arcanum 18", "archetype 18"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The eighteenth archetype (Tarot Card 18, The Moon). Represents spiritual experience, the navigation through darkness and illusion by inner light.",
       "extendedDefinition": "The Experience of the Spirit shows how spirit experiences and processes catalyst in the realm of shadow and illusion. The Moon illuminates a path between towers, with creatures emerging from water - representing the journey through the unconscious, the dark night of the soul, and the navigation by pale reflected light. Experience of Spirit involves facing shadows.",
       "relationships": {
@@ -2214,9 +2239,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.34",
-          "excerpt": "The Experience of the Spirit is that of the soul walking through darkness, guided by the pale light of the moon.",
-          "context": "The Moon archetype"
+          "reference": "80.15",
+          "excerpt": "The Experience of the Spirit, that which you have called the Moon, is then, by far, the more manifest of influences upon the polarity of the adept.",
+          "context": "Ra's description of the Experience of Spirit"
         }
       ],
       "searchTerms": ["experience of spirit", "moon", "card 18", "darkness", "illusion", "shadow", "dark night", "unconscious"],
@@ -2227,6 +2252,7 @@
       "term": "Significator of the Spirit",
       "aliases": ["significator of the spirit", "significator of spirit", "the sun", "sun", "card 19", "arcanum 19", "archetype 19"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "The nineteenth archetype (Tarot Card 19, The Sun). Represents the spirit complex itself, radiant consciousness illuminating all.",
       "extendedDefinition": "The Significator of the Spirit represents the spirit complex in its true nature - radiant, joyful, illuminating. The Sun shows bright light, often with children playing - representing the pure joy and radiance of spirit when freed from illusion. This is spirit knowing itself as light, illuminating all it touches.",
       "relationships": {
@@ -2243,9 +2269,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.35",
-          "excerpt": "The Significator of the Spirit is the Sun, showing forth the brilliance of that spirit which has discovered its own nature.",
-          "context": "The Sun archetype"
+          "reference": "80.17",
+          "excerpt": "The Significator of the Spirit is that living entity which either radiates or absorbs the love and the light of the One Infinite Creator, radiates it to others or absorbs it for the self.",
+          "context": "Ra's definition of the Significator of Spirit"
         }
       ],
       "searchTerms": ["significator of spirit", "sun", "card 19", "radiance", "joy", "illumination", "spirit complex", "light"],
@@ -2256,6 +2282,7 @@
       "term": "Transformation of the Spirit",
       "aliases": ["transformation of the spirit", "transformation of spirit", "judgement", "judgment", "the angel", "aeon", "card 20", "arcanum 20", "archetype 20"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "The twentieth archetype (Tarot Card 20, Judgement). Represents spiritual transformation, the resurrection and renewal of spirit.",
       "extendedDefinition": "The Transformation of the Spirit shows the spirit's complete transformation and resurrection. Judgement depicts figures rising from graves at an angel's call - representing spiritual rebirth, the calling forth of the true self, and the transformation from bounded to unbounded awareness. This is spirit transformed by its journey.",
       "relationships": {
@@ -2272,9 +2299,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.36",
-          "excerpt": "The Transformation of the Spirit is the resurrection, the calling forth by the angelic to that which has lain in spirit's tomb.",
-          "context": "Judgement archetype"
+          "reference": "80.20",
+          "excerpt": "This material world is transformed by the spirit into that which is infinite and eternal.",
+          "context": "Ra's description of the Transformation of Spirit"
         }
       ],
       "searchTerms": ["transformation of spirit", "judgement", "judgment", "angel", "card 20", "resurrection", "rebirth", "awakening"],
@@ -2285,6 +2312,7 @@
       "term": "Great Way of the Spirit",
       "aliases": ["great way of the spirit", "great way of spirit", "the world", "world", "universe", "card 21", "arcanum 21", "archetype 21"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The twenty-first archetype (Tarot Card 21, The World). Represents the environment and summation of spirit work, wholeness and completion.",
       "extendedDefinition": "The Great Way of the Spirit shows the environment of spiritual work and its culmination in wholeness. The World depicts a dancing figure within a wreath, surrounded by the four elements or evangelists - representing the complete integration of spirit with all aspects of creation. This is spirit's recognition of itself as all things.",
       "relationships": {
@@ -2301,9 +2329,9 @@
       },
       "keyPassages": [
         {
-          "reference": "95.37",
-          "excerpt": "The Great Way of the Spirit is the World, or the dancing soul rejoicing in its completion and wholeness.",
-          "context": "The World archetype"
+          "reference": "80.22",
+          "excerpt": "This energy is the energy of the Logos, and thus it is the energy which heals, builds, removes, destroys, and transforms all other-selves as well as the self.",
+          "context": "Ra describing contact with intelligent energy (The World)"
         }
       ],
       "searchTerms": ["great way of spirit", "world", "universe", "card 21", "completion", "wholeness", "integration", "dancing"],
@@ -2330,7 +2358,7 @@
       },
       "keyPassages": [
         {
-          "reference": "10.14",
+          "reference": "18.5",
           "excerpt": "The proper role of the entity is in this density to experience all things desired, to then analyze, understand, and accept these experiences, distilling from them the love/light within them. Nothing shall be overcome. That which is not needed falls away.",
           "context": "The purpose of meditation and contemplation"
         }
@@ -2360,8 +2388,8 @@
       "keyPassages": [
         {
           "reference": "5.2",
-          "excerpt": "The purpose of the Confederation is service. Each day you serve the Creator. Each day you accept the light and emit it.",
-          "context": "Balancing as daily practice"
+          "excerpt": "The disciplines of the mind involve, first of all, identifying both those things of which you approve and those things of which you disapprove within yourself, and then balancing each and every positive and negative charge with its equal.",
+          "context": "Ra's instruction on balancing exercises"
         }
       ],
       "searchTerms": ["balancing", "balance", "equilibrium", "integration", "accepting emotions"],
@@ -2446,7 +2474,7 @@
       },
       "keyPassages": [
         {
-          "reference": "75.32",
+          "reference": "74.11",
           "excerpt": "The magical personality is that which is the adept when it has become at one with its higher self.",
           "context": "Definition of magical personality"
         }
@@ -2476,8 +2504,8 @@
       "keyPassages": [
         {
           "reference": "52.7",
-          "excerpt": "We may suggest that the vitality of seeking, the will to know, and the intensity of the desire for the truth be the foundation for seeking.",
-          "context": "Importance of seeking"
+          "excerpt": "Acceptance of self, forgiveness of self, and the direction of the will; this is the path towards the disciplined personality. Your faculty of will is that which is powerful within you as co-Creator.",
+          "context": "Ra on the seeker's path to discipline"
         }
       ],
       "searchTerms": ["seeking", "seeker", "spiritual search", "truth seeking", "path"],
@@ -2509,7 +2537,7 @@
           "context": "Ra's self-description"
         },
         {
-          "reference": "23.16",
+          "reference": "90.29",
           "excerpt": "We came to your peoples to enunciate the Law of One. We wished to impress upon those who wished to learn of unity that in unity all paradoxes are resolved; all that is broken is healed; all that is forgotten is brought to light.",
           "context": "Ra's purpose in contacting Earth"
         }
@@ -2700,13 +2728,13 @@
       "id": "honor-duty",
       "term": "Honor/Duty",
       "aliases": ["honor/duty", "honour/duty"],
-      "category": "metaphysics",
+      "category": "practice",
       "definition": "The responsibility one feels toward the Creator and creation, balanced with wisdom to know when and how to serve.",
       "extendedDefinition": "Honor/duty represents the intertwined nature of privilege and responsibility in spiritual service. Each honor carries responsibility; each responsibility is an honor. At fifth density, conscious acceptance of honor/duty of the Law of One is required for graduation. It represents the balance of serving with wisdom.",
       "relationships": {
         "prerequisite": [],
         "leads_to": [],
-        "related": ["service-to-others", "fifth-density"],
+        "related": ["service-to-others", "fifth-density", "discipline-of-personality"],
         "contrasts": [],
         "part_of": [],
         "contains": []
@@ -2751,9 +2779,9 @@
       },
       "keyPassages": [
         {
-          "reference": "21.9",
-          "excerpt": "This is due to the intense interest in the experiential possibilities of third density at the time of harvest.",
-          "context": "Why seniority of vibration occurs at harvest"
+          "reference": "65.5",
+          "excerpt": "Seniority by vibration of incarnation has greatly polarized those upon the surface now.",
+          "context": "Ra confirming seniority of vibration concept"
         }
       ],
       "searchTerms": ["seniority of vibration", "incarnation priority", "older souls", "harvest incarnation"],
@@ -2781,13 +2809,8 @@
       "keyPassages": [
         {
           "reference": "50.7",
-          "excerpt": "This game can only be won by those who lose their cards in the melting influence of love; can only be won by those who lay their pleasures, their limitations, their all upon the table face up and say inwardly: 'All, all of you players, each other-self, whatever your hand, I love you.' This is the game: to know, to accept, to forgive, to balance, and to open the self in love.",
+          "excerpt": "This game can only be won by those who lose their cards in the melting influence of love; can only be won by those who lay their pleasures, their limitations, their all upon the table face up and say inwardly: All, all of you players, each other-self, whatever your hand, I love you. This is the game: to know, to accept, to forgive, to balance, and to open the self in love.",
           "context": "Ra's metaphor of life as a card game won through love"
-        },
-        {
-          "reference": "97.17",
-          "excerpt": "The Choice, Archetype 22, is the Significator of the Spirit. It is the stepping off place from which the spirit views the cosmos.",
-          "context": "The Fool as the Choice archetype"
         }
       ],
       "searchTerms": ["the choice", "choice", "polarity choice", "third density choice", "service choice", "fool", "card 22", "fool tarot", "archetype 22"],
@@ -2970,8 +2993,8 @@
       "keyPassages": [
         {
           "reference": "47.8",
-          "excerpt": "The indigo-ray body may be described as being intelligent energy. It is, however, that which may mold itself as it desires in order to manifest in the experience of third density the infinite potential of Intelligent Infinity.",
-          "context": "Description of the indigo-ray body"
+          "excerpt": "We have the number seven repeated from the macrocosm to the microcosm in structure and experience. Therefore, it would only be expected that there would be seven basic bodies.",
+          "context": "Ra explaining the seven bodies"
         }
       ],
       "searchTerms": ["seven bodies", "body complex", "subtle bodies", "astral body", "etheric body"],
@@ -2987,8 +3010,8 @@
       "relationships": {
         "prerequisite": [],
         "leads_to": [],
-        "related": ["confederation", "orion", "free-will", "quarantine"],
-        "contrasts": [],
+        "related": ["confederation", "orion", "free-will", "quarantine", "bidding"],
+        "contrasts": ["bidding"],
         "part_of": [],
         "contains": []
       },
@@ -3056,9 +3079,9 @@
       },
       "keyPassages": [
         {
-          "reference": "46.7",
-          "excerpt": "If catalyst is not used by the mind or spirit complex, it will then filter through to the body complex and manifest as some form of physical distortion.",
-          "context": "Origin of disease in unused catalyst"
+          "reference": "46.9",
+          "excerpt": "Between these polarities lies the potential for this random and undirected energy creating a bodily complex analog of what you call the cancerous growth of tissue.",
+          "context": "Ra explaining how unused catalyst manifests as disease"
         }
       ],
       "searchTerms": ["disease", "illness", "sickness", "bodily distortion", "physical condition"],
@@ -3067,14 +3090,14 @@
     "dual-activated": {
       "id": "dual-activated",
       "term": "Dual-Activated",
-      "aliases": ["dual-activated", "dual-activated bodies", "dual-activated entities"],
+      "aliases": ["dual-activated", "dual-activated bodies", "dual-activated entities", "transitional bodies"],
       "category": "incarnation",
       "definition": "Service-to-others beings who, upon graduating from third density elsewhere, have incarnated during Earth's transition with a third-density/fourth-density double body in activation.",
-      "extendedDefinition": "Dual-activated entities are not wanderers because Earth is their fourth-density home planet. Their transitional body can appreciate an increasing influx of fourth-density light without the disruption a third-density body would experience. To some extent, they are consciously aware of fourth-density understandings that third density cannot remember. It is a privilege to incarnate before the full transition, as there is intensive catalyst available for serving others.",
+      "extendedDefinition": "Dual-activated entities are not wanderers because Earth is their fourth-density home planet. Their transitional body can appreciate an increasing influx of fourth-density light without the disruption a third-density body would experience. To some extent, they are consciously aware of fourth-density understandings that third density cannot remember. This phenomenon is particularly significant for Earth's current transition period—these entities bridge the gap between densities and help anchor fourth-density vibrations. It is a privilege to incarnate before the full transition, as there is intensive catalyst available for serving others.",
       "relationships": {
         "prerequisite": [],
         "leads_to": [],
-        "related": ["wanderer", "harvest", "fourth-density"],
+        "related": ["wanderer", "harvest", "fourth-density", "fourth-density-positive", "green-ray", "incarnation"],
         "contrasts": ["wanderer"],
         "part_of": [],
         "contains": []
@@ -3183,14 +3206,14 @@
     "inner-planes": {
       "id": "inner-planes",
       "term": "Inner Planes",
-      "aliases": ["inner planes", "time/space planes"],
+      "aliases": ["inner planes", "time/space planes", "astral", "devachanic"],
       "category": "cosmology",
       "definition": "The non-physical portion of third-density experience, in time/space, experienced between incarnations and in non-ordinary states of consciousness.",
-      "extendedDefinition": "The inner planes contain various subtle planes including the astral, devachanic, and etheric. They are populated with positively and negatively oriented beings who serve as guides and teachers, and lower-level thought-form entities. Entities experience the inner planes between incarnations for review, healing, and planning. The inner planes may also be entered through dreaming and other non-ordinary consciousness.",
+      "extendedDefinition": "The inner planes contain various subtle planes including the astral, devachanic, and etheric. They are populated with positively and negatively oriented beings who serve as guides and teachers, and lower-level thought-form entities. Between incarnations, entities experience the inner planes for life review (examining catalyst and its use), healing of incarnational distortions, and pre-incarnative planning with guides and the higher self. The inner planes may also be entered through dreaming, meditation, and other non-ordinary consciousness.",
       "relationships": {
         "prerequisite": [],
         "leads_to": [],
-        "related": ["time-space", "incarnation", "higher-self"],
+        "related": ["time-space", "incarnation", "higher-self", "pre-incarnative", "karma", "third-density"],
         "contrasts": ["space-time"],
         "part_of": [],
         "contains": []
@@ -3201,9 +3224,9 @@
       },
       "keyPassages": [
         {
-          "reference": "70.17",
-          "excerpt": "Time/space is no more homogenous than space/time. It is as complex and complete a system of illusions, dances, and pattern as is space/time, and has as structured a system of what you may call natural laws.",
-          "context": "The structure of the inner planes"
+          "reference": "17.38",
+          "excerpt": "The invisible, or inner, third-density planes are inhabited by those who are not of body complex natures such as yours; that is, they do not collect about their spirit/mind complexes a chemical body. Nevertheless these entities are divided in what you may call an artificial dream within a dream into various levels.",
+          "context": "Description of who inhabits the inner planes"
         }
       ],
       "searchTerms": ["inner planes", "time space", "between incarnations", "astral plane", "devachanic"],
@@ -3248,7 +3271,7 @@
       "relationships": {
         "prerequisite": [],
         "leads_to": [],
-        "related": ["service-to-others", "catalyst", "polarity"],
+        "related": ["service-to-others", "catalyst", "polarity", "seeking"],
         "contrasts": [],
         "part_of": [],
         "contains": []
@@ -3414,7 +3437,7 @@
       },
       "keyPassages": [
         {
-          "reference": "9.18",
+          "reference": "10.1",
           "excerpt": "The entities of Maldek had a civilization somewhat similar to that of the societal complex known to you as Atlantis in that it gained much technological information and used it without care for the preservation of their planet, following the ways of warfare and service to self.",
           "context": "What happened on Maldek"
         }
@@ -3443,9 +3466,9 @@
       },
       "keyPassages": [
         {
-          "reference": "10.8",
-          "excerpt": "It is the distortion of our vision/understanding that the mind and spirit complexes of those of your people need orientation rather than the 'toys' needing dismantlement, for are not all things that exist part of the Creator? Therefore, freely to choose is your honor/duty.",
-          "context": "Ra's perspective on nuclear weapons"
+          "reference": "9.10",
+          "excerpt": "The entities of the Red Planet were attempting to learn the Laws of Love which form one of the primal distortions of the Law of One. However, the tendencies of these people towards bellicose actions caused such difficulties in the atmospheric environment of their planet that it became inhospitable for third-density experience before the end of its cycle.",
+          "context": "Why Mars became inhospitable"
         }
       ],
       "searchTerms": ["mars", "red planet", "martian", "mars transfer"],
@@ -3461,7 +3484,7 @@
       "relationships": {
         "prerequisite": [],
         "leads_to": [],
-        "related": ["service-to-others", "polarity", "fourth-density"],
+        "related": ["service-to-others", "polarity", "fourth-density", "balancing"],
         "contrasts": [],
         "part_of": [],
         "contains": []
@@ -3501,9 +3524,9 @@
       },
       "keyPassages": [
         {
-          "reference": "17.29",
-          "excerpt": "This planet has a certain scheduling which is part of the mechanism of the intelligent energy. The appropriate time for such a harvest was approximately 75,000 of your years ago. The cycles move precisely as a clock strikes the hour.",
-          "context": "The timing of cycles"
+          "reference": "21.26",
+          "excerpt": "The appropriate sound vibration complex is major cycle.",
+          "context": "Ra distinguishing between master and major cycle terminology"
         }
       ],
       "searchTerms": ["master cycle", "major cycle", "75000 years", "25000 years", "harvest cycle"],
@@ -3565,24 +3588,256 @@
       "keyPassages": [
         {
           "reference": "65.17",
-          "excerpt": "The planetary entity is a strong entity not having the necessity of any particular mind/body/spirit complex for its existence or for its action, but it does have its consciousness.",
-          "context": "The nature of planetary consciousness"
+          "excerpt": "In your space/time you and your peoples are the parents of that which is in the womb. The Earth, as you call it, is ready to be born and the delivery is not going smoothly.",
+          "context": "Ra describing the planetary entity as preparing for fourth-density birth"
         }
       ],
       "searchTerms": ["planetary mind", "planetary consciousness", "earth consciousness", "gaia"],
       "teachingLevel": "intermediate"
+    },
+    "sinkhole-of-indifference": {
+      "id": "sinkhole-of-indifference",
+      "term": "Sinkhole of Indifference",
+      "aliases": ["sinkhole of indifference", "unpolarized", "lukewarm", "indifferent"],
+      "category": "polarity",
+      "definition": "The state of insufficient polarity for harvest - neither 51% service-to-others nor 95% service-to-self. The vast majority of third-density beings exist in this unpolarized state.",
+      "extendedDefinition": "Ra describes this as the condition of most third-density entities who have not made a decisive choice of polarity. These entities are not 'bad' but simply have not generated enough momentum in either direction to graduate. They must repeat the third-density cycle until sufficient polarity is achieved. The 'sinkhole' metaphor suggests the difficulty of escaping this neutral zone where neither path has been committed to.",
+      "relationships": {
+        "prerequisite": [],
+        "leads_to": [],
+        "related": ["harvest", "the-choice", "polarity", "third-density"],
+        "contrasts": ["service-to-others", "service-to-self"],
+        "part_of": [],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [17, 34],
+        "secondary": [10, 16, 20, 47]
+      },
+      "keyPassages": [
+        {
+          "reference": "17.33",
+          "excerpt": "To attain fifty-one percent dedication to the welfare of other-selves is as difficult as attaining a grade of five percent dedication to other-selves. The, shall we say, sinkhole of indifference is between those two.",
+          "context": "Ra's explanation of why most entities are not harvestable"
+        }
+      ],
+      "searchTerms": ["sinkhole of indifference", "unpolarized", "lukewarm", "no harvest", "repeat cycle", "not harvestable"],
+      "teachingLevel": "foundational"
+    },
+    "fourth-density-positive": {
+      "id": "fourth-density-positive",
+      "term": "Fourth Density Positive",
+      "aliases": ["fourth density positive", "positive fourth density", "4D positive", "4D STO", "fourth density love"],
+      "category": "cosmology",
+      "definition": "The positive path through fourth density, characterized by transparent thoughts, social memory complexes, and the refinement of universal love.",
+      "extendedDefinition": "In positive fourth density, entities form true social memory complexes where all thoughts and experiences are shared transparently. There is no deception possible. The lesson is refining the understanding of unconditional love while beginning to integrate wisdom. Entities work together as one mind while retaining individual identity. This is achieved through graduation at 51% or greater service-to-others orientation.",
+      "relationships": {
+        "prerequisite": ["harvest", "service-to-others"],
+        "leads_to": ["fifth-density"],
+        "related": ["fourth-density", "social-memory-complex", "love", "green-ray"],
+        "contrasts": ["fourth-density-negative"],
+        "part_of": ["fourth-density"],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [16, 17, 43, 47, 48],
+        "secondary": [6, 20, 36]
+      },
+      "keyPassages": [
+        {
+          "reference": "16.50",
+          "excerpt": "It is a plane wherein one is aware of the thoughts of other-selves; it is a plane where one is aware of the vibrations of other-selves; it is a plane of compassion and understanding of the sorrows of third density.",
+          "context": "Description of positive fourth density telepathic experience"
+        }
+      ],
+      "searchTerms": ["positive fourth density", "4D positive", "love density positive", "STO fourth density", "transparent thoughts"],
+      "teachingLevel": "intermediate"
+    },
+    "fourth-density-negative": {
+      "id": "fourth-density-negative",
+      "term": "Fourth Density Negative",
+      "aliases": ["fourth density negative", "negative fourth density", "4D negative", "4D STS"],
+      "category": "cosmology",
+      "definition": "The negative path through fourth density, characterized by strict hierarchy, control, and the refinement of separation and domination.",
+      "extendedDefinition": "In negative fourth density, entities form hierarchies of control rather than shared consciousness. Higher-ranking entities can shield their thoughts from those below them while reading subordinates' minds. The lesson is refining the ability to control and manipulate others through the use of will and separation. This is a more difficult path as it requires 95% polarization toward service-to-self to graduate. Constant competition for position characterizes this density.",
+      "relationships": {
+        "prerequisite": ["harvest", "service-to-self"],
+        "leads_to": ["fifth-density"],
+        "related": ["fourth-density", "orion", "service-to-self"],
+        "contrasts": ["fourth-density-positive"],
+        "part_of": ["fourth-density"],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [38, 47, 48, 87],
+        "secondary": [36, 68]
+      },
+      "keyPassages": [
+        {
+          "reference": "38.14",
+          "excerpt": "The early fourth density is one of the most intensive struggle. When the order of authority has been established and all have fought until convinced that each is in the proper placement for power structure, the social memory complex begins.",
+          "context": "Description of negative fourth density hierarchy and struggle"
+        }
+      ],
+      "searchTerms": ["negative fourth density", "4D negative", "STS fourth density", "hierarchy control", "orion fourth density"],
+      "teachingLevel": "intermediate"
+    },
+    "time-lateral": {
+      "id": "time-lateral",
+      "term": "Time Lateral",
+      "aliases": ["time lateral", "simultaneous time", "simultaneous incarnations", "eternal present", "parallel incarnations"],
+      "category": "metaphysics",
+      "definition": "The understanding that all incarnations exist simultaneously from the higher-self perspective. What we perceive as 'past lives' are actually concurrent experiences.",
+      "extendedDefinition": "Ra explains that from outside the space/time illusion, all incarnations exist in an eternal present. The higher self can see and work with all incarnations simultaneously. What third-density consciousness perceives as linear progression through 'past' and 'future' lives is actually a simultaneous array of experiences available in time/space. This concept challenges the common misunderstanding of 'reincarnation' as sequential.",
+      "relationships": {
+        "prerequisite": ["veil"],
+        "leads_to": [],
+        "related": ["higher-self", "incarnation", "time-space", "space-time", "totality-of-self"],
+        "contrasts": [],
+        "part_of": [],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [36, 70, 71],
+        "secondary": [37, 69]
+      },
+      "keyPassages": [
+        {
+          "reference": "16.22",
+          "excerpt": "Past, present, and future are not. All is present.",
+          "context": "Ra's statement on the illusion of linear time"
+        }
+      ],
+      "searchTerms": ["time lateral", "simultaneous incarnations", "all lives now", "eternal present", "past lives simultaneous", "parallel lives"],
+      "teachingLevel": "advanced"
+    },
+    "totality-of-self": {
+      "id": "totality-of-self",
+      "term": "Mind/Body/Spirit Totality",
+      "aliases": ["totality of self", "mind body spirit totality", "totality", "mbs totality", "totality beingness"],
+      "category": "metaphysics",
+      "definition": "The complete self that includes all simultaneous incarnations and aspects. Distinct from and more encompassing than the higher self.",
+      "extendedDefinition": "The totality is the complete beingness of all incarnational experiences existing simultaneously. While the higher self exists at mid-sixth density with access to all incarnational experiences, the totality represents an even more complete picture - described by Ra as 'the seventh-density equivalent to the Higher Self.' It encompasses the full scope of the entity's evolution across all simultaneous incarnations.",
+      "relationships": {
+        "prerequisite": ["higher-self"],
+        "leads_to": [],
+        "related": ["higher-self", "incarnation", "time-lateral", "seventh-density"],
+        "contrasts": [],
+        "part_of": [],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [36, 37, 70],
+        "secondary": [71]
+      },
+      "keyPassages": [
+        {
+          "reference": "37.6",
+          "excerpt": "The mind/body/spirit complex totality left behind as a type of infinitely complex thought-form.",
+          "context": "Ra's description of the totality as a resource beyond the higher self"
+        }
+      ],
+      "searchTerms": ["totality", "totality of self", "complete self", "all incarnations", "seventh density self", "totality beingness"],
+      "teachingLevel": "advanced"
+    },
+    "social-complex": {
+      "id": "social-complex",
+      "term": "Social Complex",
+      "aliases": ["social complex", "society"],
+      "category": "entities",
+      "definition": "A group of entities working together without shared memory or consciousness. The precursor to social memory complex.",
+      "extendedDefinition": "A social complex is a group of entities who work together as a society but do not share memories or consciousness directly. Third-density Earth has many social complexes (nations, cultures, organizations). These can form the basis for social memory complexes in fourth density, but the key distinction is that social complexes lack the transparent thought-sharing and unified memory of true social memory. Ra explicitly distinguishes between the two.",
+      "relationships": {
+        "prerequisite": ["third-density"],
+        "leads_to": ["social-memory-complex"],
+        "related": ["third-density", "social-memory-complex"],
+        "contrasts": ["social-memory-complex"],
+        "part_of": [],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [11],
+        "secondary": [18, 21]
+      },
+      "keyPassages": [
+        {
+          "reference": "11.17",
+          "excerpt": "A mind/body/spirit social complex becomes a social memory complex when its entire group of entities are of one orientation or seeking.",
+          "context": "Ra's description of when a social complex becomes a social memory complex"
+        }
+      ],
+      "searchTerms": ["social complex", "society", "group", "pre-social memory", "collective"],
+      "teachingLevel": "intermediate"
+    },
+    "bidding": {
+      "id": "bidding",
+      "term": "Bidding",
+      "aliases": ["bidding", "negative calling", "negative invitation"],
+      "category": "entities",
+      "definition": "The negative equivalent of calling - when entities attract negative contacts through fear, anger, or desire for power and control.",
+      "extendedDefinition": "While positive entities respond to the 'calling' of those seeking light, negative entities respond to 'bidding' - the attraction created by fear, anger, hatred, or lust for power. Entities who generate these vibrations may attract Orion group contact or influence, though free will cannot be directly violated. The negative path only responds to those who have already begun moving in that direction.",
+      "relationships": {
+        "prerequisite": [],
+        "leads_to": [],
+        "related": ["calling", "orion", "service-to-self", "mixed-contact"],
+        "contrasts": ["calling"],
+        "part_of": [],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [53, 68],
+        "secondary": [16, 62, 87]
+      },
+      "keyPassages": [
+        {
+          "reference": "26.38",
+          "excerpt": "The Orion group is unable to come to any entity which has not moved toward the negative polarization on their own.",
+          "context": "How negative contact requires prior negative orientation from the entity"
+        }
+      ],
+      "searchTerms": ["bidding", "negative calling", "attract negative", "orion contact", "fear attraction"],
+      "teachingLevel": "intermediate"
+    },
+    "planetary-logos": {
+      "id": "planetary-logos",
+      "term": "Planetary Logos",
+      "aliases": ["planetary logos", "planetary sub-logos", "earth logos", "sub-sub-logos"],
+      "category": "cosmology",
+      "definition": "A sub-sub-Logos - the creative intelligence of a planet, which makes choices about the nature of incarnational experience within its sphere.",
+      "extendedDefinition": "Each planet is a sub-sub-Logos of its solar system's sun (sub-Logos). Earth, as a planetary Logos, has its own identity and makes certain choices about incarnational patterns, though within the framework established by the solar Logos. The planetary Logos is involved in initiating first density, maintaining the incarnational patterns, and influencing the lessons available on that sphere. It represents the planet as a conscious creative entity.",
+      "relationships": {
+        "prerequisite": ["sub-logos"],
+        "leads_to": [],
+        "related": ["logos", "sub-logos", "incarnation", "planetary-mind"],
+        "contrasts": [],
+        "part_of": ["sub-logos"],
+        "contains": []
+      },
+      "sessions": {
+        "primary": [29, 30],
+        "secondary": [13, 28, 41]
+      },
+      "keyPassages": [
+        {
+          "reference": "29.9",
+          "excerpt": "A planetary entity is so named only as Logos if it is working in harmonic fashion with entities or mind/body complexes upon its surface or within its electromagnetic field.",
+          "context": "Ra defining when a planet becomes a Logos"
+        }
+      ],
+      "searchTerms": ["planetary logos", "earth logos", "planet consciousness", "sub-sub-logos", "planetary entity"],
+      "teachingLevel": "advanced"
     }
   },
   "categories": {
     "cosmology": {
       "name": "Cosmology & Structure",
       "description": "The fundamental structure of creation and consciousness evolution",
-      "concepts": ["density", "first-density", "second-density", "third-density", "fourth-density", "fifth-density", "sixth-density", "seventh-density", "octave", "logos", "sub-logos", "inner-planes", "maldek", "mars", "master-cycles", "planetary-mind"]
+      "concepts": ["density", "first-density", "second-density", "third-density", "fourth-density", "fourth-density-positive", "fourth-density-negative", "fifth-density", "sixth-density", "seventh-density", "octave", "logos", "sub-logos", "planetary-logos", "inner-planes", "maldek", "mars", "master-cycles", "planetary-mind"]
     },
     "polarity": {
       "name": "Polarity & Service",
       "description": "The paths of spiritual evolution through choice",
-      "concepts": ["polarity", "service-to-others", "service-to-self", "harvest", "graduation", "the-choice"]
+      "concepts": ["polarity", "service-to-others", "service-to-self", "sinkhole-of-indifference", "harvest", "graduation", "the-choice"]
     },
     "energy-work": {
       "name": "Energy Centers",
@@ -3595,14 +3850,14 @@
       "concepts": ["mind-body-spirit-complex", "incarnation", "pre-incarnative", "catalyst", "veil", "karma", "higher-self", "seniority-of-vibration", "disease", "dual-activated"]
     },
     "entities": {
-      "name": "Beings & Groups",
-      "description": "Various entities and collectives in the Ra Material",
-      "concepts": ["Ra", "social-memory-complex", "wanderer", "confederation", "orion", "council-of-saturn", "guardians", "quarantine", "calling", "mixed-contact"]
+      "name": "Beings & Contacts",
+      "description": "Various entities, collectives, and contact phenomena in the Ra Material",
+      "concepts": ["Ra", "social-memory-complex", "wanderer", "confederation", "orion", "council-of-saturn", "guardians", "quarantine", "calling", "mixed-contact", "social-complex", "bidding"]
     },
     "metaphysics": {
       "name": "Metaphysics",
       "description": "The nature of reality and consciousness",
-      "concepts": ["law-of-one", "one-infinite-creator", "unity", "distortion", "free-will", "love", "light", "love-light", "law-of-confusion", "intelligent-infinity", "intelligent-energy", "time-space", "space-time", "honor-duty", "primal-distortion", "gateway-to-intelligent-infinity", "law-of-responsibility", "mind-complex", "spirit-complex", "one-original-thought"]
+      "concepts": ["law-of-one", "one-infinite-creator", "unity", "distortion", "free-will", "love", "light", "love-light", "law-of-confusion", "intelligent-infinity", "intelligent-energy", "time-space", "space-time", "time-lateral", "honor-duty", "primal-distortion", "gateway-to-intelligent-infinity", "law-of-responsibility", "mind-complex", "spirit-complex", "one-original-thought", "totality-of-self"]
     },
     "practice": {
       "name": "Spiritual Practice",

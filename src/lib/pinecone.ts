@@ -2,7 +2,12 @@ import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeMetadata } from "./types";
 import { SessionQuestionRef } from "./quote-utils";
 import { debug } from "@/lib/debug";
-import { parsePineconeMetadata, parseConceptMetadata } from "@/lib/schemas";
+import {
+  parsePineconeMetadata,
+  parseConceptMetadata,
+  parseSentenceMetadata,
+  type SentenceSearchResult,
+} from "@/lib/schemas";
 
 let pineconeClient: Pinecone | null = null;
 
@@ -115,6 +120,47 @@ export async function searchConcepts(
           category: metadata?.category || "",
         };
       }) ?? []
+  );
+}
+
+/**
+ * Search for sentences by semantic similarity.
+ * Uses the "sentences" namespace for fine-grained quote matching.
+ */
+export async function searchSentences(
+  embedding: number[],
+  topK: number = 10
+): Promise<SentenceSearchResult[]> {
+  const pinecone = getPineconeClient();
+  const index = pinecone.index(INDEX_NAME);
+  const namespace = index.namespace("sentences");
+
+  const results = await namespace.query({
+    vector: embedding,
+    topK,
+    includeMetadata: true,
+  });
+
+  return (
+    results.matches
+      ?.map((m) => {
+        const metadata = parseSentenceMetadata(m.metadata);
+        if (!metadata) {
+          debug.log("[Pinecone] Invalid sentence metadata, skipping:", m.id);
+          return null;
+        }
+        return {
+          sentence: metadata.text,
+          session: metadata.session,
+          question: metadata.question,
+          sentenceIndex: metadata.sentenceIndex,
+          speaker: metadata.speaker,
+          reference: metadata.reference,
+          url: metadata.url,
+          score: m.score ?? 0,
+        };
+      })
+      .filter((r): r is SentenceSearchResult => r !== null) ?? []
   );
 }
 

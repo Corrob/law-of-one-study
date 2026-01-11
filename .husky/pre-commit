@@ -1,4 +1,5 @@
 npm run lint
+npm run validate:quotes
 npm test -- --silent
 npm run build
 npm run test:e2e

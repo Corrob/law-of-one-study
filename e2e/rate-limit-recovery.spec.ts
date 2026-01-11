@@ -54,7 +54,7 @@ test.describe("Rate Limit Handling", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Test message");
@@ -99,7 +99,7 @@ test.describe("Rate Limit Handling", () => {
       }
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
 
@@ -137,7 +137,7 @@ test.describe("Rate Limit Handling", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Test message");
@@ -154,7 +154,7 @@ test.describe("Rate Limit Handling", () => {
       await route.abort("failed");
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
     await input.fill("Test message");
@@ -193,7 +193,7 @@ test.describe("Rate Limit Handling", () => {
       }
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox").first();
 

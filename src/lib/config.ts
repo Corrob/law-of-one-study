@@ -80,6 +80,8 @@ export const SEARCH_CONFIG = {
   conceptMinScore: 0.3,
   /** Number of concept search results */
   conceptTopK: 3,
+  /** Number of sentence search results to retrieve */
+  sentenceTopK: 10,
 } as const;
 
 // =============================================================================
