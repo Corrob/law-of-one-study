@@ -50,7 +50,7 @@ src/
 │   └── schemas/            # Zod validation schemas
 ├── providers/              # App-level providers (PostHog, Theme)
 scripts/                    # Data processing scripts
-sections/                   # Ra material source (106 JSON files)
+public/sections/            # Ra material source (106 JSON files)
 e2e/                        # Playwright E2E tests
 openapi.yaml                # API documentation (OpenAPI 3.1)
 ```

@@ -35,7 +35,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 const SECONDARY_ITEMS: NavItem[] = [
-  { href: "/support", label: "About", icon: InfoIcon },
+  { href: "/about", label: "About", icon: InfoIcon },
 ];
 
 export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {

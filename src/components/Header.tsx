@@ -18,7 +18,7 @@ const PAGE_TITLES: Record<string, string> = {
   "/explore": "Explore",
   "/paths": "Study",
   "/search": "Search",
-  "/support": "About",
+  "/about": "About",
 };
 
 export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearch, showNewSearch }: HeaderProps) {

@@ -58,7 +58,7 @@ describe("Header", () => {
       { path: "/explore", title: "Explore" },
       { path: "/paths", title: "Study" },
       { path: "/search", title: "Search" },
-      { path: "/support", title: "About" },
+      { path: "/about", title: "About" },
     ];
 
     routes.forEach(({ path, title }) => {

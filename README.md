@@ -75,7 +75,7 @@ Before running the app, you need to index the Ra Material into Pinecone:
 npm run index
 ```
 
-This processes all 106 sessions from the `sections/` directory and creates embeddings in your Pinecone index.
+This processes all 106 sessions from the `public/sections/` directory and creates embeddings in your Pinecone index.
 
 ### Running Locally
 
