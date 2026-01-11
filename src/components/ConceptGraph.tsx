@@ -322,7 +322,7 @@ export default function ConceptGraph({
         </g>
       </svg>
 
-      <ZoomControls svgRef={svgRef} />
+      <ZoomControls svgRef={svgRef} zoomRef={zoomRef} />
       <CategoryLegend expandedCategories={expandedCategories} />
     </div>
   );

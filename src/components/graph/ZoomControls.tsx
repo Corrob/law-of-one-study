@@ -6,24 +6,25 @@ import * as d3 from "d3";
 
 interface ZoomControlsProps {
   svgRef: React.RefObject<SVGSVGElement | null>;
+  zoomRef: React.RefObject<d3.ZoomBehavior<SVGSVGElement, unknown> | null>;
 }
 
-export function ZoomControls({ svgRef }: ZoomControlsProps) {
+export function ZoomControls({ svgRef, zoomRef }: ZoomControlsProps) {
   const handleZoomIn = () => {
-    if (svgRef.current) {
+    if (svgRef.current && zoomRef.current) {
       const svg = d3.select(svgRef.current);
       svg.transition().duration(200).call(
-        d3.zoom<SVGSVGElement, unknown>().scaleBy,
+        zoomRef.current.scaleBy,
         1.3
       );
     }
   };
 
   const handleZoomOut = () => {
-    if (svgRef.current) {
+    if (svgRef.current && zoomRef.current) {
       const svg = d3.select(svgRef.current);
       svg.transition().duration(200).call(
-        d3.zoom<SVGSVGElement, unknown>().scaleBy,
+        zoomRef.current.scaleBy,
         0.7
       );
     }
