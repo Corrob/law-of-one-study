@@ -3,6 +3,13 @@
  */
 
 import { z } from "zod";
+import { SpeakerSchema } from "./sentence";
+
+/**
+ * Schema for search mode.
+ */
+export const SearchModeSchema = z.enum(["sentence", "passage"]);
+export type SearchMode = z.infer<typeof SearchModeSchema>;
 
 /**
  * Schema for search request body.
@@ -13,31 +20,44 @@ export const SearchRequestSchema = z.object({
     .min(2, "Search query must be at least 2 characters")
     .max(500, "Search query must be at most 500 characters"),
   limit: z.number().int().min(1).max(50).optional().default(20),
+  mode: SearchModeSchema.optional().default("passage"),
 });
 
 export type ValidatedSearchRequest = z.infer<typeof SearchRequestSchema>;
 
 /**
- * Schema for individual search result.
+ * Schema for hybrid search result.
+ * Combines passage and sentence data - each result may have either or both.
  */
-export const SearchResultSchema = z.object({
-  text: z.string(),
+export const HybridSearchResultSchema = z.object({
+  // Passage data (from passage search)
+  text: z.string().optional(),
+  // Sentence data (from sentence search)
+  sentence: z.string().optional(),
+  sentenceIndex: z.number().optional(),
+  speaker: SpeakerSchema.optional(),
+  // Common fields (always present)
   reference: z.string(),
   session: z.number(),
   question: z.number(),
   url: z.string(),
-  score: z.number().optional(),
+  score: z.number(),
 });
 
-export type SearchResult = z.infer<typeof SearchResultSchema>;
+export type HybridSearchResult = z.infer<typeof HybridSearchResultSchema>;
+
+// Alias for backwards compatibility
+export const SearchResultSchema = HybridSearchResultSchema;
+export type SearchResult = HybridSearchResult;
 
 /**
  * Schema for search response.
  */
 export const SearchResponseSchema = z.object({
-  results: z.array(SearchResultSchema),
+  results: z.array(HybridSearchResultSchema),
   query: z.string(),
   totalResults: z.number(),
+  mode: SearchModeSchema.optional(),
 });
 
 export type SearchResponse = z.infer<typeof SearchResponseSchema>;

@@ -32,15 +32,28 @@ jest.mock("@/lib/pinecone", () => ({
       url: "https://lawofone.info/s/1#2",
     },
   ]),
+  searchSentences: jest.fn().mockResolvedValue([
+    {
+      sentence: "The Law of One states simply that all things are one.",
+      session: 1,
+      question: 1,
+      sentenceIndex: 0,
+      speaker: "ra",
+      reference: "Ra 1.1",
+      url: "https://lawofone.info/s/1#1",
+      score: 0.9,
+    },
+  ]),
 }));
 
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createEmbedding } from "@/lib/openai";
-import { searchRaMaterial } from "@/lib/pinecone";
+import { searchRaMaterial, searchSentences } from "@/lib/pinecone";
 
 const mockCheckRateLimit = checkRateLimit as jest.Mock;
 const mockCreateEmbedding = createEmbedding as jest.Mock;
 const mockSearchRaMaterial = searchRaMaterial as jest.Mock;
+const mockSearchSentences = searchSentences as jest.Mock;
 
 function createRequest(body: Record<string, unknown>): NextRequest {
   return new NextRequest("http://localhost:3000/api/search", {
@@ -56,9 +69,77 @@ describe("POST /api/search", () => {
     mockCheckRateLimit.mockResolvedValue({ success: true });
   });
 
+  describe("mode-specific searches", () => {
+    it("should only query sentence index when mode=sentence", async () => {
+      const request = createRequest({
+        query: "You are infinity",
+        mode: "sentence",
+      });
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockSearchSentences).toHaveBeenCalled();
+      expect(mockSearchRaMaterial).not.toHaveBeenCalled();
+      expect(data.mode).toBe("sentence");
+      expect(data.results[0].sentence).toBe(
+        "The Law of One states simply that all things are one."
+      );
+    });
+
+    it("should only query passage index when mode=passage", async () => {
+      const request = createRequest({ query: "Law of One", mode: "passage" });
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockSearchRaMaterial).toHaveBeenCalled();
+      expect(mockSearchSentences).not.toHaveBeenCalled();
+      expect(data.mode).toBe("passage");
+      expect(data.results[0].text).toBe(
+        "Ra: I am Ra. The Law of One states simply that all things are one."
+      );
+    });
+
+    it("should default to passage mode when mode not specified", async () => {
+      const request = createRequest({ query: "densities" });
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(200);
+      expect(mockSearchRaMaterial).toHaveBeenCalled();
+      expect(mockSearchSentences).not.toHaveBeenCalled();
+      expect(data.mode).toBe("passage");
+    });
+
+    it("should pass limit to sentence search", async () => {
+      const request = createRequest({
+        query: "love",
+        mode: "sentence",
+        limit: 15,
+      });
+      await POST(request);
+
+      expect(mockSearchSentences).toHaveBeenCalledWith(expect.any(Array), 15);
+    });
+
+    it("should pass limit to passage search", async () => {
+      const request = createRequest({
+        query: "love",
+        mode: "passage",
+        limit: 15,
+      });
+      await POST(request);
+
+      expect(mockSearchRaMaterial).toHaveBeenCalledWith(expect.any(Array), {
+        topK: 15,
+      });
+    });
+  });
+
   describe("successful searches", () => {
     it("should return search results for valid query", async () => {
-      const request = createRequest({ query: "Law of One" });
+      const request = createRequest({ query: "Law of One", mode: "passage" });
       const response = await POST(request);
       const data = await response.json();
 
@@ -74,26 +155,6 @@ describe("POST /api/search", () => {
 
       expect(mockCreateEmbedding).toHaveBeenCalledWith("love and light");
     });
-
-    it("should pass limit to search function", async () => {
-      const request = createRequest({ query: "densities", limit: 10 });
-      await POST(request);
-
-      expect(mockSearchRaMaterial).toHaveBeenCalledWith(
-        expect.any(Array),
-        { topK: 10 }
-      );
-    });
-
-    it("should use default limit of 20", async () => {
-      const request = createRequest({ query: "densities" });
-      await POST(request);
-
-      expect(mockSearchRaMaterial).toHaveBeenCalledWith(
-        expect.any(Array),
-        { topK: 20 }
-      );
-    });
   });
 
   describe("validation errors", () => {
@@ -108,6 +169,13 @@ describe("POST /api/search", () => {
 
     it("should reject missing query", async () => {
       const request = createRequest({});
+      const response = await POST(request);
+
+      expect(response.status).toBe(400);
+    });
+
+    it("should reject invalid mode", async () => {
+      const request = createRequest({ query: "test", mode: "invalid" });
       const response = await POST(request);
 
       expect(response.status).toBe(400);
@@ -143,10 +211,19 @@ describe("POST /api/search", () => {
       expect(response.status).toBe(500);
     });
 
-    it("should return 500 on search error", async () => {
+    it("should return 500 on sentence search error", async () => {
+      mockSearchSentences.mockRejectedValue(new Error("Pinecone error"));
+
+      const request = createRequest({ query: "test query", mode: "sentence" });
+      const response = await POST(request);
+
+      expect(response.status).toBe(500);
+    });
+
+    it("should return 500 on passage search error", async () => {
       mockSearchRaMaterial.mockRejectedValue(new Error("Pinecone error"));
 
-      const request = createRequest({ query: "test query" });
+      const request = createRequest({ query: "test query", mode: "passage" });
       const response = await POST(request);
 
       expect(response.status).toBe(500);

@@ -1,4 +1,21 @@
-import { parseSearchRequest, SearchRequestSchema } from "../search";
+import { parseSearchRequest, SearchRequestSchema, SearchModeSchema } from "../search";
+
+describe("SearchModeSchema", () => {
+  it("should accept 'sentence' as valid mode", () => {
+    const result = SearchModeSchema.safeParse("sentence");
+    expect(result.success).toBe(true);
+  });
+
+  it("should accept 'passage' as valid mode", () => {
+    const result = SearchModeSchema.safeParse("passage");
+    expect(result.success).toBe(true);
+  });
+
+  it("should reject invalid mode values", () => {
+    const result = SearchModeSchema.safeParse("invalid");
+    expect(result.success).toBe(false);
+  });
+});
 
 describe("SearchRequestSchema", () => {
   it("should validate a valid search request", () => {
@@ -23,6 +40,50 @@ describe("SearchRequestSchema", () => {
     if (result.success) {
       expect(result.data.limit).toBe(20);
     }
+  });
+
+  it("should default to passage mode when not provided", () => {
+    const result = SearchRequestSchema.safeParse({
+      query: "densities",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.mode).toBe("passage");
+    }
+  });
+
+  it("should accept sentence mode", () => {
+    const result = SearchRequestSchema.safeParse({
+      query: "You are infinity",
+      mode: "sentence",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.mode).toBe("sentence");
+    }
+  });
+
+  it("should accept passage mode", () => {
+    const result = SearchRequestSchema.safeParse({
+      query: "Law of One",
+      mode: "passage",
+    });
+
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.mode).toBe("passage");
+    }
+  });
+
+  it("should reject invalid mode", () => {
+    const result = SearchRequestSchema.safeParse({
+      query: "test",
+      mode: "invalid",
+    });
+
+    expect(result.success).toBe(false);
   });
 
   it("should reject query that is too short", () => {

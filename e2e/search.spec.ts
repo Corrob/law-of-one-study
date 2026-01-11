@@ -12,6 +12,7 @@ const mockSearchResults = [
     session: 1,
     question: 7,
     url: "https://lawofone.info/s/1#7",
+    score: 0,
   },
   {
     text: "Ra: I am Ra. Consider the nature of love. Love is the great healer.",
@@ -19,6 +20,7 @@ const mockSearchResults = [
     session: 10,
     question: 14,
     url: "https://lawofone.info/s/10#14",
+    score: 0,
   },
 ];
 
@@ -34,7 +36,12 @@ test.describe("Search Feature", () => {
         await route.fulfill({
           status: 200,
           contentType: "application/json",
-          body: JSON.stringify({ results: [], query: body.query, totalResults: 0 }),
+          body: JSON.stringify({
+            results: [],
+            query: body.query,
+            totalResults: 0,
+            mode: body.mode || "passage",
+          }),
         });
         return;
       }
@@ -47,24 +54,41 @@ test.describe("Search Feature", () => {
           results: mockSearchResults,
           query: body?.query || "test",
           totalResults: mockSearchResults.length,
+          mode: body?.mode || "passage",
         }),
       });
     });
   });
 
-  test("should display search welcome screen", async ({ page }) => {
+  test("should display mode selection on initial load", async ({ page }) => {
     await page.goto("/search");
 
-    // Check for greeting and search input
+    // Check for mode selection cards
+    await expect(page.getByText("Sentence Search")).toBeVisible();
+    await expect(page.getByText("Passage Search")).toBeVisible();
+    await expect(page.getByText("Find quotes you already know")).toBeVisible();
+    await expect(page.getByText("Discover quotes by concept")).toBeVisible();
+
+    // Search input should not be visible until mode is selected
+    await expect(page.getByRole("textbox")).not.toBeVisible();
+  });
+
+  test("should show search input after selecting mode", async ({ page }) => {
+    await page.goto("/search");
+
+    // Select Passage Search mode
+    await page.getByText("Passage Search").click();
+
+    // Now search input should be visible
     await expect(page.getByRole("textbox")).toBeVisible();
     await expect(page.getByText(/Try these/i)).toBeVisible();
 
-    // Check for suggestion chips (at least one button with text > 10 chars should be visible)
-    await expect(page.locator("button").filter({ hasText: /.{10,}/ }).first()).toBeVisible();
+    // URL should reflect mode
+    await expect(page).toHaveURL(/\/search\?mode=passage/);
   });
 
   test("should search and display results", async ({ page }) => {
-    await page.goto("/search");
+    await page.goto("/search?mode=passage");
 
     // Enter search query
     const input = page.getByRole("textbox");
@@ -80,7 +104,7 @@ test.describe("Search Feature", () => {
   });
 
   test("should highlight search terms in results", async ({ page }) => {
-    await page.goto("/search");
+    await page.goto("/search?mode=passage");
 
     const input = page.getByRole("textbox");
     await input.fill("Law");
@@ -94,19 +118,19 @@ test.describe("Search Feature", () => {
     await expect(highlights.first()).toBeVisible();
   });
 
-  test("should update URL with search query", async ({ page }) => {
-    await page.goto("/search");
+  test("should update URL with search query and mode", async ({ page }) => {
+    await page.goto("/search?mode=passage");
 
     const input = page.getByRole("textbox");
     await input.fill("test query");
     await input.press("Enter");
 
-    // Wait for navigation
-    await expect(page).toHaveURL(/\/search\?q=test%20query/);
+    // Wait for navigation - URL should include both mode and query
+    await expect(page).toHaveURL(/\/search\?mode=passage&q=test%20query/);
   });
 
   test("should load search from URL query param", async ({ page }) => {
-    await page.goto("/search?q=Law%20of%20One");
+    await page.goto("/search?mode=passage&q=Law%20of%20One");
 
     // Should automatically search and show results
     await expect(page.getByText("Closest 2 matches by meaning")).toBeVisible({ timeout: 10000 });
@@ -114,7 +138,7 @@ test.describe("Search Feature", () => {
   });
 
   test("should show no results message", async ({ page }) => {
-    await page.goto("/search");
+    await page.goto("/search?mode=passage");
 
     const input = page.getByRole("textbox");
     await input.fill("xyznonexistent");
@@ -125,7 +149,7 @@ test.describe("Search Feature", () => {
   });
 
   test("should navigate to chat with Ask about this", async ({ page }) => {
-    await page.goto("/search");
+    await page.goto("/search?mode=passage");
 
     const input = page.getByRole("textbox");
     await input.fill("Law of One");
@@ -142,7 +166,7 @@ test.describe("Search Feature", () => {
   });
 
   test("should open external link in new tab", async ({ page }) => {
-    await page.goto("/search");
+    await page.goto("/search?mode=passage");
 
     const input = page.getByRole("textbox");
     await input.fill("Law of One");
@@ -157,7 +181,7 @@ test.describe("Search Feature", () => {
   });
 
   test("should handle suggestion chip click", async ({ page }) => {
-    await page.goto("/search");
+    await page.goto("/search?mode=passage");
 
     // Click a suggestion chip (they're dynamically generated, so find any button in the suggestions area)
     const suggestionButton = page.locator("button").filter({ hasText: /.{10,}/ }).first();
@@ -172,8 +196,8 @@ test.describe("Search Feature", () => {
     await expect(input).toHaveValue(suggestionText || "");
   });
 
-  test("should preserve search on back navigation", async ({ page }) => {
-    await page.goto("/search");
+  test("should handle back navigation to search", async ({ page }) => {
+    await page.goto("/search?mode=passage");
 
     // Perform a search
     const input = page.getByRole("textbox");
@@ -187,10 +211,29 @@ test.describe("Search Feature", () => {
     await page.getByText("Ask about this").first().click();
     await expect(page).toHaveURL(/\/chat\?q=/);
 
-    // Go back
+    // Go back - should return to search page with mode preserved
     await page.goBack();
 
-    // Should be back on search with results (URL-based restore)
-    await expect(page).toHaveURL(/\/search\?q=Law/);
+    // Should be back on search page (mode should be preserved via popstate)
+    await expect(page).toHaveURL(/\/search\?mode=passage/);
+    await expect(page.getByRole("textbox")).toBeVisible();
+  });
+
+  test("should toggle between modes and re-search", async ({ page }) => {
+    await page.goto("/search?mode=passage");
+
+    // Perform a search in passage mode
+    const input = page.getByRole("textbox");
+    await input.fill("Law of One");
+    await input.press("Enter");
+
+    // Wait for results
+    await expect(page.getByText("Closest 2 matches by meaning")).toBeVisible({ timeout: 10000 });
+
+    // Toggle to sentence mode
+    await page.getByRole("button", { name: "Sentence" }).click();
+
+    // URL should update to sentence mode
+    await expect(page).toHaveURL(/\/search\?mode=sentence&q=Law/);
   });
 });
