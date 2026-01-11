@@ -58,7 +58,7 @@ test.describe("Chat Interaction Flow", () => {
   });
 
   test("should display welcome screen initially", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     // Check for key elements on the welcome screen
     await expect(page.locator("body")).toContainText(/Law of One|Ra Material/i);
@@ -66,7 +66,7 @@ test.describe("Chat Interaction Flow", () => {
   });
 
   test("should send message and receive response", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     // Find and fill the input
     const input = page.getByRole("textbox");
@@ -78,7 +78,7 @@ test.describe("Chat Interaction Flow", () => {
   });
 
   test("should display quote cards in response", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox");
     await input.fill("Show me Ra 1.1");
@@ -90,7 +90,7 @@ test.describe("Chat Interaction Flow", () => {
   });
 
   test("should display suggestion chips after response", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     const input = page.getByRole("textbox");
     await input.fill("What are densities?");
@@ -102,7 +102,7 @@ test.describe("Chat Interaction Flow", () => {
   });
 
   test("should handle follow-up conversation", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/chat");
 
     // First message
     const input = page.getByRole("textbox");

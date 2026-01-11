@@ -5,7 +5,8 @@ import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { debug } from "@/lib/debug";
 import { useEffect, useState } from "react";
-import { fetchFullQuote, formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
+import { fetchFullQuote, formatWholeQuote, formatQuoteWithAttribution } from "@/lib/quote-utils";
+import CopyButton from "./CopyButton";
 
 interface QuoteCardProps {
   quote: Quote;
@@ -104,7 +105,6 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [fullQuoteText, setFullQuoteText] = useState<string | null>(null);
   const [isLoadingFull, setIsLoadingFull] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
 
   // Format the content (without ellipsis)
   const segments = formatRaText(isExpanded && fullQuoteText ? fullQuoteText : content);
@@ -173,25 +173,17 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
     });
   };
 
-  // Handle copy quote
-  const handleCopyQuote = async () => {
-    try {
-      const textToCopy = isExpanded && fullQuoteText ? fullQuoteText : content;
-      // Format with proper paragraph breaks between speakers
-      const formattedText = formatQuoteForCopy(textToCopy);
-      await navigator.clipboard.writeText(formattedText);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
+  // Compute formatted copy text
+  const textToCopy = isExpanded && fullQuoteText ? fullQuoteText : content;
+  const copyText = formatQuoteWithAttribution(textToCopy, quote.reference, quote.url);
 
-      // Track copy action
-      analytics.quoteCopied({
-        sessionNumber,
-        questionNumber,
-        isExpanded,
-      });
-    } catch (error) {
-      console.error("Failed to copy quote:", error);
-    }
+  // Track copy action for analytics
+  const handleCopyAnalytics = () => {
+    analytics.quoteCopied({
+      sessionNumber,
+      questionNumber,
+      isExpanded,
+    });
   };
 
   const showEllipsis = !isExpanded && (hasLeading || hasTrailing);
@@ -273,47 +265,13 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
       )}
 
       {/* Copy button - bottom right corner */}
-      <button
-        onClick={handleCopyQuote}
-        className="absolute bottom-2 right-2 p-1.5 rounded hover:bg-[var(--lo1-celestial)]/20 transition-colors group"
-        title={copySuccess ? "Copied!" : "Copy quote"}
-        aria-label={copySuccess ? "Quote copied to clipboard" : "Copy quote to clipboard"}
-      >
-        {copySuccess ? (
-          <svg
-            className="w-3.5 h-3.5 text-[var(--lo1-gold)]"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
-          </svg>
-        ) : (
-          <svg
-            className="w-3.5 h-3.5 text-[var(--lo1-celestial)] group-hover:text-[var(--lo1-gold)] transition-colors"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-            />
-          </svg>
-        )}
-      </button>
-
-      {/* Hidden live region for copy feedback */}
-      <span role="status" aria-live="polite" className="sr-only">
-        {copySuccess ? "Quote copied to clipboard" : ""}
-      </span>
+      <div className="absolute bottom-2 right-2">
+        <CopyButton
+          textToCopy={copyText}
+          onCopy={handleCopyAnalytics}
+          size="sm"
+        />
+      </div>
     </div>
   );
 });

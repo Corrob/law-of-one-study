@@ -5,7 +5,6 @@ import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
 import WelcomeScreen from "./WelcomeScreen";
-import OnboardingModal from "./OnboardingModal";
 import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
@@ -13,6 +12,13 @@ import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
 
 export interface ChatInterfaceRef {
   reset: () => void;
+}
+
+export interface ChatInterfaceProps {
+  /** Callback fired when message count changes */
+  onMessagesChange?: (count: number) => void;
+  /** Initial query to send automatically */
+  initialQuery?: string;
 }
 
 /**
@@ -29,8 +35,13 @@ export interface ChatInterfaceRef {
  * - useAnimationQueue: Chunk animation sequencing
  * - MessageList: Rendering messages and streaming content
  */
-const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref) {
+const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function ChatInterface(
+  { onMessagesChange, initialQuery },
+  ref
+) {
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+  // Use ref to track initial query sent (avoids StrictMode double-send)
+  const initialQuerySentRef = useRef(false);
 
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
@@ -118,6 +129,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
     }
   }, [streamDone, isFullyComplete, allChunks, finalizeMessage, resetQueue]);
 
+  // Auto-send initial query if provided (e.g., from search "Ask about this")
+  useEffect(() => {
+    if (initialQuery && !initialQuerySentRef.current && !isStreaming) {
+      initialQuerySentRef.current = true;
+      handleSend(initialQuery);
+    }
+  }, [initialQuery, isStreaming, handleSend]);
+
   // Reset handler
   const handleReset = useCallback(() => {
     resetChat();
@@ -135,6 +154,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
   );
 
   const hasConversation = messages.length > 0 || allChunks.length > 0;
+
+  // Notify parent of message count changes
+  useEffect(() => {
+    onMessagesChange?.(messages.length);
+  }, [messages.length, onMessagesChange]);
 
   // Build scroll shadow classes
   const scrollShadowClasses = [
@@ -154,7 +178,6 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
 
   return (
     <LayoutGroup>
-      <OnboardingModal />
       <GlobalPopover />
       <div className="flex flex-col h-full relative">
         {/* Starfield - only on welcome screen */}
@@ -181,6 +204,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef>(function ChatInterface(_, ref
                   initial={{ opacity: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.3 }}
+                  className="h-full flex flex-col"
                 >
                   <WelcomeScreen onSelectStarter={handleSend} inputElement={inputElement} />
                 </motion.div>

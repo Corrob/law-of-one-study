@@ -93,12 +93,6 @@ jest.mock("../WelcomeScreen", () => {
   };
 });
 
-jest.mock("../OnboardingModal", () => {
-  return function MockOnboardingModal() {
-    return <div data-testid="onboarding-modal">Onboarding</div>;
-  };
-});
-
 jest.mock("../GlobalPopover", () => {
   return function MockGlobalPopover() {
     return <div data-testid="global-popover">Popover</div>;
@@ -182,12 +176,6 @@ describe("ChatInterface", () => {
       render(<ChatInterface />);
 
       expect(screen.getByTestId("welcome-screen")).toBeInTheDocument();
-    });
-
-    it("should render onboarding modal", () => {
-      render(<ChatInterface />);
-
-      expect(screen.getByTestId("onboarding-modal")).toBeInTheDocument();
     });
 
     it("should render global popover", () => {

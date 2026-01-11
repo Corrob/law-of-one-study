@@ -303,6 +303,25 @@ export function formatQuoteForCopy(text: string): string {
   return parts.join("").trim();
 }
 
+/**
+ * Format a quote with attribution and source URL for clipboard copying.
+ * Produces a consistent format across the app:
+ *
+ * "{quote text}"
+ * — Ra {session.question}
+ *
+ * https://lawofone.info/s/{session}#{question}
+ */
+export function formatQuoteWithAttribution(
+  text: string,
+  reference: string,
+  url: string
+): string {
+  // Clean up text - format with paragraph breaks if it has speakers
+  const formattedText = formatQuoteForCopy(text);
+  return `"${formattedText}"\n— ${reference}\n\n${url}`;
+}
+
 // Apply sentence range to quote text (main function to use)
 export function applySentenceRangeToQuote(
   text: string,

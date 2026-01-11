@@ -88,7 +88,7 @@ test.describe("Multi-turn Conversations", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     // First turn
     const input = page.getByRole("textbox").first();
@@ -138,7 +138,7 @@ test.describe("Multi-turn Conversations", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     // First message
     const input = page.getByRole("textbox").first();
@@ -183,7 +183,7 @@ test.describe("Multi-turn Conversations", () => {
       });
     });
 
-    await page.goto("/");
+    await page.goto("/chat");
 
     // Send first message
     const input = page.getByRole("textbox").first();

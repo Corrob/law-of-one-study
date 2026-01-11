@@ -1468,6 +1468,7 @@
       "term": "Matrix",
       "aliases": ["matrix"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "An archetype representing the unconscious, unrealized potential in mind, body, or spirit.",
       "extendedDefinition": "The Matrix is the first archetype in each of the three groups (mind, body, spirit). It represents the unrealized, unconscious potential waiting to be activated. The Matrix of the Mind is the Magician (Card 1); the Matrix of the Body is Justice (Card 8); the Matrix of the Spirit is the Devil (Card 15). The Matrix contains everything but has not yet realized it.",
       "relationships": {
@@ -1497,6 +1498,7 @@
       "term": "Potentiator",
       "aliases": ["potentiator"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "An archetype that catalyzes and activates the Matrix, bringing potential into possibility.",
       "extendedDefinition": "The Potentiator is the second archetype in each group, representing that which activates or catalyzes the Matrix. The Potentiator of the Mind is the High Priestess (Card 2); the Potentiator of the Body is the Hermit (Card 9); the Potentiator of the Spirit is the Tower (Card 16). It reaches into the Matrix and draws out potential into manifestation.",
       "relationships": {
@@ -1526,6 +1528,7 @@
       "term": "Catalyst (Archetype)",
       "aliases": ["catalyst of mind", "catalyst of body", "catalyst of spirit"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The third archetype in each group, representing that which acts upon the potentiated consciousness to produce experience.",
       "extendedDefinition": "The Catalyst archetype represents that which acts upon consciousness to produce experience and opportunity for growth. The Catalyst of the Mind is the Empress (Card 3), representing the fertile ground of possibilities; the Catalyst of the Body is the Wheel of Fortune (Card 10); the Catalyst of the Spirit is the Star (Card 17). Catalyst is neither positive nor negative but offers the opportunity for polarization.",
       "relationships": {
@@ -1555,6 +1558,7 @@
       "term": "Experience (Archetype)",
       "aliases": ["experience of mind", "experience of body", "experience of spirit"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The fourth archetype in each group, representing how catalyst is processed and utilized.",
       "extendedDefinition": "The Experience archetype represents the result of processing catalyst - how the entity uses and integrates what has been offered. The Experience of the Mind is the Emperor (Card 4), representing the male principle of reaching and grasping experience; the Experience of the Body is Strength/Enchantress (Card 11); the Experience of the Spirit is the Moon (Card 18). Experience is what the entity makes of catalyst through its choices.",
       "relationships": {
@@ -1584,6 +1588,7 @@
       "term": "Significator",
       "aliases": ["significator"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "An archetype representing the complex of mind, body, or spirit as it is being developed and transformed.",
       "extendedDefinition": "The Significator represents the entity itself - the mind, body, or spirit complex that is undergoing transformation. It is shaped by the interplay of Matrix and Potentiator, Catalyst and Experience. The Significator of the Mind is the Hierophant (Card 5); of the Body is the Hanged Man (Card 12); of the Spirit is the Sun (Card 19).",
       "relationships": {
@@ -1613,6 +1618,7 @@
       "term": "Transformation",
       "aliases": ["transformation"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "An archetype representing the process of change and evolution through the integration of catalyst.",
       "extendedDefinition": "The Transformation archetype represents the change that occurs when catalyst is fully processed and integrated. It represents the choice between two paths and the resulting transformation. The Transformation of the Mind is the Lovers (Card 6), representing the choice between light and dark paths; of the Body is Death (Card 13); of the Spirit is Judgement (Card 20). Ra described it as 'the student of the mysteries being transformed by the need to choose.'",
       "relationships": {
@@ -1642,6 +1648,7 @@
       "term": "Great Way",
       "aliases": ["great way"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The archetype representing the integration of mind, body, and spirit on the spiritual journey.",
       "extendedDefinition": "The Great Way is the seventh archetype in each group, representing the full integration and expression of mind, body, or spirit. The Great Way of the Mind is the Chariot (Card 7); of the Body is Temperance (Card 14); of the Spirit is the World (Card 21). It shows the environment, milieu, and manner of the spiritual journey.",
       "relationships": {
@@ -1700,6 +1707,7 @@
       "term": "Matrix of the Mind",
       "aliases": ["matrix of the mind", "matrix of mind", "the magician", "magician", "card 1", "arcanum 1", "archetype 1"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "The first archetype (Tarot Card 1, The Magician). Represents the conscious mind in its unfed, new, and potent state, reaching for experience.",
       "extendedDefinition": "The Matrix of the Mind is the conscious mind itself, male in nature, reaching without limit for that which it desires. It is depicted as a magician, the figure with all magical tools available, representing the conscious mind's inherent potential. The Matrix reaches but must be potentiated by the unconscious (High Priestess) to become fruitful.",
       "relationships": {
@@ -1734,6 +1742,7 @@
       "term": "Potentiator of the Mind",
       "aliases": ["potentiator of the mind", "potentiator of mind", "the high priestess", "high priestess", "card 2", "arcanum 2", "archetype 2"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "The second archetype (Tarot Card 2, The High Priestess). Represents the unconscious mind, the great feminine repository of potential waiting to be accessed.",
       "extendedDefinition": "The Potentiator of the Mind is the unconscious or subconscious mind, female in nature and veiled. The High Priestess sits between the pillars of light and darkness, holding the scroll of wisdom. She potentiates the Matrix by offering the riches of the subconscious to the reaching conscious mind. The veil between conscious and unconscious is a key feature.",
       "relationships": {
@@ -1763,6 +1772,7 @@
       "term": "Catalyst of the Mind",
       "aliases": ["catalyst of the mind", "catalyst of mind", "the empress", "empress", "card 3", "arcanum 3", "archetype 3"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The third archetype (Tarot Card 3, The Empress). Represents catalyst as it acts upon the mind, the fertile ground of mental experience.",
       "extendedDefinition": "The Catalyst of the Mind is that which acts upon the consciousness to produce mental catalyst or experience. The Empress represents the fertile abundance of catalyst available to the conscious mind. Through the gateway opened by the Potentiator, catalyst flows into conscious experience. The Empress is shown pregnant, holding the scepter of power over catalyst.",
       "relationships": {
@@ -1792,6 +1802,7 @@
       "term": "Experience of the Mind",
       "aliases": ["experience of the mind", "experience of mind", "the emperor", "emperor", "card 4", "arcanum 4", "archetype 4"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The fourth archetype (Tarot Card 4, The Emperor). Represents the experience processed by mind, the structuring of catalyst into meaningful experience.",
       "extendedDefinition": "The Experience of the Mind is the processing of catalyst into structured experience. The Emperor represents the ordering principle that takes raw catalyst and shapes it into experience. He sits upon his throne with symbols of structured power, showing how the mind processes and organizes the fertile catalyst of the Empress into usable experience.",
       "relationships": {
@@ -1821,6 +1832,7 @@
       "term": "Significator of the Mind",
       "aliases": ["significator of the mind", "significator of mind", "the hierophant", "hierophant", "card 5", "arcanum 5", "archetype 5"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "The fifth archetype (Tarot Card 5, The Hierophant). Represents the complex of mind itself, the actor who uses catalyst and experience for evolution.",
       "extendedDefinition": "The Significator of the Mind represents the mind complex itself, the entity who processes catalyst and experience. The Hierophant is shown as a teacher figure between two pillars, with two students. This archetype signifies the mind's choice-making faculty and its role as the central processor of the mental experience. It is the 'actor' in the drama of mind.",
       "relationships": {
@@ -1850,6 +1862,7 @@
       "term": "Transformation of the Mind",
       "aliases": ["transformation of the mind", "transformation of mind", "the lovers", "lovers", "two paths", "card 6", "arcanum 6", "archetype 6"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "The sixth archetype (Tarot Card 6, The Lovers). Represents the transformation possible when the mind faces the choice between paths.",
       "extendedDefinition": "The Transformation of the Mind represents the critical choice point where transformation becomes possible. The Lovers card shows the choice between paths - often depicted as a figure choosing between two others. This archetype shows how the mind can be transformed through making the fundamental choice of polarity. Without this choice, no transformation is possible.",
       "relationships": {
@@ -1879,6 +1892,7 @@
       "term": "Great Way of the Mind",
       "aliases": ["great way of the mind", "great way of mind", "the chariot", "chariot", "card 7", "arcanum 7", "archetype 7", "conqueror"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The seventh archetype (Tarot Card 7, The Chariot). Represents the environment and summation of mind work, the triumphant progress of consciousness.",
       "extendedDefinition": "The Great Way of the Mind represents the environment in which the mind complex functions and the culmination of mental evolution. The Chariot shows a figure in a vehicle of triumph, having conquered through the integration of all previous archetypes. The sphinxes or horses represent the balanced forces now under the direction of the will.",
       "relationships": {
@@ -1908,6 +1922,7 @@
       "term": "Matrix of the Body",
       "aliases": ["matrix of the body", "matrix of body", "justice", "card 8", "arcanum 8", "archetype 8"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "The eighth archetype (Tarot Card 8, Justice). Represents the physical vehicle in its unrealized state, the body as continuation of consciousness.",
       "extendedDefinition": "The Matrix of the Body represents the physical vehicle and its inherent wisdom. Justice shows the balanced nature of the body - it simply is, without judgment. The body continues the consciousness of the mind into physical manifestation. Note: In Ra's ordering, Justice is Card 8 (following the older Marseilles tradition), not Strength.",
       "relationships": {
@@ -1937,6 +1952,7 @@
       "term": "Potentiator of the Body",
       "aliases": ["potentiator of the body", "potentiator of body", "the hermit", "hermit", "card 9", "arcanum 9", "archetype 9"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "The ninth archetype (Tarot Card 9, The Hermit). Represents wisdom that potentiates the body, the inner light guiding physical existence.",
       "extendedDefinition": "The Potentiator of the Body is the wisdom principle that activates the physical vehicle. The Hermit holds his lamp high, illuminating the path - representing the inner wisdom available to guide bodily experience. This archetype shows how inner wisdom potentiates and guides the body's journey through incarnation.",
       "relationships": {
@@ -1966,6 +1982,7 @@
       "term": "Catalyst of the Body",
       "aliases": ["catalyst of the body", "catalyst of body", "wheel of fortune", "wheel", "card 10", "arcanum 10", "archetype 10"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The tenth archetype (Tarot Card 10, Wheel of Fortune). Represents bodily catalyst, the turning circumstances that challenge the physical vehicle.",
       "extendedDefinition": "The Catalyst of the Body represents the circumstances and events that act upon the body. The Wheel of Fortune shows the cyclic nature of bodily catalyst - health, illness, pleasure, pain, all turning on the wheel of physical existence. This archetype shows how the body receives and processes physical catalyst.",
       "relationships": {
@@ -1995,6 +2012,7 @@
       "term": "Experience of the Body",
       "aliases": ["experience of the body", "experience of body", "strength", "the enchantress", "enchantress", "lust", "card 11", "arcanum 11", "archetype 11"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The eleventh archetype (Tarot Card 11, Strength/Enchantress). Represents bodily experience, the taming and integration of physical energies.",
       "extendedDefinition": "The Experience of the Body shows how the body processes and integrates physical catalyst. Strength (or the Enchantress in some traditions) depicts a figure gently handling a lion - representing the taming and integration of powerful physical energies. Ra calls this the Enchantress. Note: In Ra's ordering, Strength is Card 11, not Card 8.",
       "relationships": {
@@ -2024,6 +2042,7 @@
       "term": "Significator of the Body",
       "aliases": ["significator of the body", "significator of body", "the hanged man", "hanged man", "card 12", "arcanum 12", "archetype 12"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "The twelfth archetype (Tarot Card 12, The Hanged Man). Represents the body complex itself, suspended between worlds, sacrificing for transformation.",
       "extendedDefinition": "The Significator of the Body represents the body complex as a whole - the physical vehicle through which consciousness experiences incarnation. The Hanged Man is suspended upside down, showing the reversal of perspective that bodily existence requires. The body is sacrificed to serve consciousness, hung between heaven and earth.",
       "relationships": {
@@ -2053,6 +2072,7 @@
       "term": "Transformation of the Body",
       "aliases": ["transformation of the body", "transformation of body", "death", "card 13", "arcanum 13", "archetype 13"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "The thirteenth archetype (Tarot Card 13, Death). Represents bodily transformation, the necessary death and rebirth of physical patterns.",
       "extendedDefinition": "The Transformation of the Body shows how the physical vehicle transforms through death and rebirth of patterns. Death shows the skeleton reaper harvesting - but this is transformation, not ending. Old physical patterns must die for new ones to emerge. This is the transformation that makes the body a more fitting vehicle for spirit.",
       "relationships": {
@@ -2082,6 +2102,7 @@
       "term": "Great Way of the Body",
       "aliases": ["great way of the body", "great way of body", "temperance", "alchemist", "art", "card 14", "arcanum 14", "archetype 14"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The fourteenth archetype (Tarot Card 14, Temperance). Represents the environment and summation of body work, the alchemical integration of physical existence.",
       "extendedDefinition": "The Great Way of the Body shows the environment in which bodily transformation occurs and its culmination. Temperance (or the Alchemist) depicts the mixing and balancing of essences - the integration of physical experiences into a refined whole. This is the alchemy of the body, the tempering process that creates a more perfected physical vehicle.",
       "relationships": {
@@ -2111,6 +2132,7 @@
       "term": "Matrix of the Spirit",
       "aliases": ["matrix of the spirit", "matrix of spirit", "the devil", "devil", "card 15", "arcanum 15", "archetype 15"],
       "category": "archetypes",
+      "subcategory": "matrix",
       "definition": "The fifteenth archetype (Tarot Card 15, The Devil). Represents the spirit in its bound state, the illusion of bondage that must be transcended.",
       "extendedDefinition": "The Matrix of the Spirit shows the spirit's initial condition - apparently bound but actually free. The Devil depicts figures in chains that are loose enough to remove, symbolizing the illusory nature of spiritual bondage. The Matrix of Spirit contains infinite potential but appears constrained by the illusions of incarnation.",
       "relationships": {
@@ -2140,6 +2162,7 @@
       "term": "Potentiator of the Spirit",
       "aliases": ["potentiator of the spirit", "potentiator of spirit", "the tower", "tower", "lightning struck tower", "card 16", "arcanum 16", "archetype 16"],
       "category": "archetypes",
+      "subcategory": "potentiator",
       "definition": "The sixteenth archetype (Tarot Card 16, The Tower). Represents the sudden influx of spirit that shatters illusion and false structures.",
       "extendedDefinition": "The Potentiator of the Spirit is the lightning bolt of spiritual truth that shatters illusion. The Tower shows a structure struck by lightning, figures falling - representing the destruction of false constructs by spiritual illumination. This sudden potentiation frees the spirit from its apparent bondage in the Matrix.",
       "relationships": {
@@ -2169,6 +2192,7 @@
       "term": "Catalyst of the Spirit",
       "aliases": ["catalyst of the spirit", "catalyst of spirit", "the star", "star", "hope", "card 17", "arcanum 17", "archetype 17"],
       "category": "archetypes",
+      "subcategory": "catalyst",
       "definition": "The seventeenth archetype (Tarot Card 17, The Star). Represents spiritual catalyst, the hope and guidance that draws the spirit forward.",
       "extendedDefinition": "The Catalyst of the Spirit is the hope and faith that catalyzes spiritual growth. The Star shows a figure pouring water while a bright star shines above - representing the catalyst of hope, inspiration, and spiritual guidance. After the Tower's destruction, the Star offers the catalyst of renewed faith and direction.",
       "relationships": {
@@ -2198,6 +2222,7 @@
       "term": "Experience of the Spirit",
       "aliases": ["experience of the spirit", "experience of spirit", "the moon", "moon", "card 18", "arcanum 18", "archetype 18"],
       "category": "archetypes",
+      "subcategory": "experience",
       "definition": "The eighteenth archetype (Tarot Card 18, The Moon). Represents spiritual experience, the navigation through darkness and illusion by inner light.",
       "extendedDefinition": "The Experience of the Spirit shows how spirit experiences and processes catalyst in the realm of shadow and illusion. The Moon illuminates a path between towers, with creatures emerging from water - representing the journey through the unconscious, the dark night of the soul, and the navigation by pale reflected light. Experience of Spirit involves facing shadows.",
       "relationships": {
@@ -2227,6 +2252,7 @@
       "term": "Significator of the Spirit",
       "aliases": ["significator of the spirit", "significator of spirit", "the sun", "sun", "card 19", "arcanum 19", "archetype 19"],
       "category": "archetypes",
+      "subcategory": "significator",
       "definition": "The nineteenth archetype (Tarot Card 19, The Sun). Represents the spirit complex itself, radiant consciousness illuminating all.",
       "extendedDefinition": "The Significator of the Spirit represents the spirit complex in its true nature - radiant, joyful, illuminating. The Sun shows bright light, often with children playing - representing the pure joy and radiance of spirit when freed from illusion. This is spirit knowing itself as light, illuminating all it touches.",
       "relationships": {
@@ -2256,6 +2282,7 @@
       "term": "Transformation of the Spirit",
       "aliases": ["transformation of the spirit", "transformation of spirit", "judgement", "judgment", "the angel", "aeon", "card 20", "arcanum 20", "archetype 20"],
       "category": "archetypes",
+      "subcategory": "transformation",
       "definition": "The twentieth archetype (Tarot Card 20, Judgement). Represents spiritual transformation, the resurrection and renewal of spirit.",
       "extendedDefinition": "The Transformation of the Spirit shows the spirit's complete transformation and resurrection. Judgement depicts figures rising from graves at an angel's call - representing spiritual rebirth, the calling forth of the true self, and the transformation from bounded to unbounded awareness. This is spirit transformed by its journey.",
       "relationships": {
@@ -2285,6 +2312,7 @@
       "term": "Great Way of the Spirit",
       "aliases": ["great way of the spirit", "great way of spirit", "the world", "world", "universe", "card 21", "arcanum 21", "archetype 21"],
       "category": "archetypes",
+      "subcategory": "great-way",
       "definition": "The twenty-first archetype (Tarot Card 21, The World). Represents the environment and summation of spirit work, wholeness and completion.",
       "extendedDefinition": "The Great Way of the Spirit shows the environment of spiritual work and its culmination in wholeness. The World depicts a dancing figure within a wreath, surrounded by the four elements or evangelists - representing the complete integration of spirit with all aspects of creation. This is spirit's recognition of itself as all things.",
       "relationships": {

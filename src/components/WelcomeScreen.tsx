@@ -1,8 +1,16 @@
 "use client";
 
 import { useEffect, useState, ReactNode } from "react";
-import { getRandomStarters, getRandomQuote } from "@/data/starters";
-import { ThemeToggle } from "./ThemeToggle";
+import { getRandomStarters } from "@/data/starters";
+
+// Warm, spiritual greetings (statements to complement question-style placeholders)
+const GREETINGS = [
+  "Welcome, seeker.",
+  "In love and light.",
+  "The journey continues.",
+  "How may I serve?",
+  "Greetings, wanderer.",
+];
 
 interface WelcomeScreenProps {
   onSelectStarter: (starter: string) => void;
@@ -10,36 +18,24 @@ interface WelcomeScreenProps {
 }
 
 export default function WelcomeScreen({ onSelectStarter, inputElement }: WelcomeScreenProps) {
-  const [quote, setQuote] = useState<{ text: string; reference: string; url: string } | null>(null);
+  const [greeting, setGreeting] = useState<string | null>(null);
   const [starters, setStarters] = useState<string[]>([]);
 
   useEffect(() => {
     // Only run on client to avoid hydration mismatch
-    setQuote(getRandomQuote());
+    setGreeting(GREETINGS[Math.floor(Math.random() * GREETINGS.length)]);
     setStarters(getRandomStarters(3));
   }, []);
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-4 py-8">
-      {/* Welcome Quote with decorative wrapper */}
-      {quote && (
-        <a
-          href={quote.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="light-quote-card animate-quote-wrapper group max-w-xl text-left mb-8 p-4 rounded-lg block
-                     border-l-4 border-[var(--lo1-gold)] bg-[var(--lo1-indigo)]/60 backdrop-blur-sm
-                     shadow-lg hover:bg-[var(--lo1-indigo)]/70
-                     hover:shadow-[0_0_30px_rgba(212,168,83,0.15)]
-                     transition-all duration-300 cursor-pointer"
-        >
-          <p className="animate-quote-enter font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-3">
-            &ldquo;{quote.text}&rdquo;
-          </p>
-          <span className="animate-quote-reference inline-block text-[var(--lo1-stardust)] group-hover:text-[var(--lo1-gold)] text-sm transition-colors">
-            — {quote.reference}
-          </span>
-        </a>
+      {/* Welcome Greeting */}
+      {greeting && (
+        <div className="animate-quote-wrapper text-center mb-8">
+          <h1 className="animate-quote-enter font-[family-name:var(--font-cormorant)] text-3xl md:text-4xl text-[var(--lo1-starlight)]">
+            {greeting}
+          </h1>
+        </div>
       )}
 
       {/* Input slot with ambient glow */}
@@ -89,10 +85,6 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
         </p>
       </div>
 
-      {/* Theme Toggle */}
-      <div className="mt-6 animate-starter-0">
-        <ThemeToggle />
-      </div>
     </div>
   );
 }

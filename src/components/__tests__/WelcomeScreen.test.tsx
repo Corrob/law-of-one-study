@@ -3,21 +3,11 @@ import WelcomeScreen from "../WelcomeScreen";
 
 // Mock the data module
 jest.mock("@/data/starters", () => ({
-  getRandomQuote: jest.fn(() => ({
-    text: "We are all one.",
-    reference: "Ra 1.1",
-    url: "https://lawofone.info/s/1#1",
-  })),
   getRandomStarters: jest.fn(() => [
     "What is the Law of One?",
     "Tell me about densities",
     "What is love/light?",
   ]),
-}));
-
-// Mock ThemeToggle
-jest.mock("../ThemeToggle", () => ({
-  ThemeToggle: () => <div data-testid="theme-toggle">Theme Toggle</div>,
 }));
 
 describe("WelcomeScreen", () => {
@@ -28,30 +18,19 @@ describe("WelcomeScreen", () => {
   });
 
   describe("rendering", () => {
-    it("should render the welcome screen", () => {
+    it("should render the welcome screen with a greeting", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
-      expect(screen.getByText(/We are all one/)).toBeInTheDocument();
-    });
-
-    it("should render the quote", () => {
-      render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
-
-      expect(screen.getByText(/We are all one/)).toBeInTheDocument();
-      expect(screen.getByText(/Ra 1.1/)).toBeInTheDocument();
-    });
-
-    it("should render quote as a link", () => {
-      render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
-
-      // Find the quote link (external link starting with https://)
-      const links = screen.getAllByRole("link");
-      const quoteLink = links.find(
-        (link) => link.getAttribute("href")?.startsWith("https://lawofone")
-      );
-      expect(quoteLink).toHaveAttribute("href", "https://lawofone.info/s/1#1");
-      expect(quoteLink).toHaveAttribute("target", "_blank");
-      expect(quoteLink).toHaveAttribute("rel", "noopener noreferrer");
+      // Should render one of the greetings
+      const greetings = [
+        "Welcome, seeker.",
+        "In love and light.",
+        "The journey continues.",
+        "How may I serve?",
+        "Greetings, wanderer.",
+      ];
+      const greeting = screen.getByRole("heading", { level: 1 });
+      expect(greetings).toContain(greeting.textContent);
     });
 
     it("should render conversation starters", () => {
@@ -81,12 +60,6 @@ describe("WelcomeScreen", () => {
 
       const learnMoreLink = screen.getByText("Learn more");
       expect(learnMoreLink).toHaveAttribute("href", "/support");
-    });
-
-    it("should render theme toggle", () => {
-      render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
-
-      expect(screen.getByTestId("theme-toggle")).toBeInTheDocument();
     });
   });
 
@@ -140,11 +113,11 @@ describe("WelcomeScreen", () => {
   });
 
   describe("accessibility", () => {
-    it("should have accessible links", () => {
+    it("should have accessible link to support page", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
       const links = screen.getAllByRole("link");
-      expect(links.length).toBeGreaterThanOrEqual(2); // Quote link + Learn more link
+      expect(links.length).toBeGreaterThanOrEqual(1); // Learn more link
     });
 
     it("should have accessible buttons for starters", () => {
@@ -158,22 +131,19 @@ describe("WelcomeScreen", () => {
   });
 
   describe("styling", () => {
-    it("should have proper classes on quote card", () => {
-      render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
-
-      // Get the external quote link (starts with https://)
-      const links = screen.getAllByRole("link");
-      const quoteLink = links.find(
-        (link) => link.getAttribute("href")?.startsWith("https://")
-      );
-      expect(quoteLink?.className).toContain("light-quote-card");
-    });
-
     it("should have proper classes on starter buttons", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
       const button = screen.getByText("What is the Law of One?");
       expect(button.className).toContain("starter-card");
+    });
+
+    it("should have greeting with proper font styling", () => {
+      render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
+
+      const greeting = screen.getByRole("heading", { level: 1 });
+      expect(greeting).toBeInTheDocument();
+      expect(greeting.className).toContain("font-[family-name:var(--font-cormorant)]");
     });
   });
 });

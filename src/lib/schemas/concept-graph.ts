@@ -43,6 +43,19 @@ export const ConceptCategorySchema = z.enum([
 ]);
 
 /**
+ * Schema for archetype subcategory (7 positions in the archetypal mind).
+ */
+export const ArchetypeSubcategorySchema = z.enum([
+  "matrix",
+  "potentiator",
+  "catalyst",
+  "experience",
+  "significator",
+  "transformation",
+  "great-way",
+]);
+
+/**
  * Schema for key passages from the Ra Material.
  */
 export const KeyPassageSchema = z.object({
@@ -79,6 +92,7 @@ export const GraphConceptSchema = z.object({
   term: z.string(),
   aliases: z.array(z.string()),
   category: ConceptCategorySchema,
+  subcategory: ArchetypeSubcategorySchema.optional(),
   definition: z.string(),
   extendedDefinition: z.string(),
   relationships: ConceptRelationshipsSchema,
