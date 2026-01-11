@@ -41,6 +41,9 @@ export default function ExplorePage() {
 
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
+      {/* Starfield background */}
+      <div className="starfield" />
+
       <NavigationWrapper>
         <ErrorBoundary>
           <div className="flex-1 overflow-hidden relative z-10 flex">

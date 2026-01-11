@@ -55,6 +55,9 @@ export default function PathsPage() {
   if (!isLoaded) {
     return (
       <main className="h-dvh flex flex-col cosmic-bg relative">
+        {/* Starfield background */}
+        <div className="starfield" />
+
         <NavigationWrapper>
           <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
             <div className="max-w-4xl mx-auto">
@@ -78,6 +81,9 @@ export default function PathsPage() {
 
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
+      {/* Starfield background */}
+      <div className="starfield" />
+
       <NavigationWrapper>
         <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
           <div className="max-w-4xl mx-auto">

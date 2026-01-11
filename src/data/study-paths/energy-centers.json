@@ -3,9 +3,86 @@
   "title": "Energy Centers Exploration",
   "description": "Journey through the seven energy centers (chakras) as described by Ra. Understanding these centers is essential for spiritual development, as they form the pathway through which consciousness evolves and intelligent energy flows.",
   "difficulty": "beginner",
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 50,
   "concepts": ["chakra", "energy-center", "kundalini", "balancing", "activation", "crystallization"],
   "lessons": [
+    {
+      "id": "introduction",
+      "title": "What Are Energy Centers?",
+      "estimatedMinutes": 5,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "Throughout history, spiritual traditions have recognized that the human body contains centers of vital energy. In the East, these are called chakras (Sanskrit for 'wheel'). Ra refers to them as 'energy centers' or 'rays,' and teaches that understanding them is fundamental to spiritual development. These centers are not merely physical; they exist at the intersection of body, mind, and spirit."
+        },
+        {
+          "type": "quote",
+          "reference": "15.12",
+          "text": "The steps are only one; that is, an understanding of the energy centers which make up the mind/body/spirit complex. This understanding may be briefly summarized. The first balancing is of the Malkuth, or Earth, vibratory energy complex, called the red-ray complex. An understanding and acceptance of this energy is fundamental.",
+          "context": "Ra explains that energy center work is the essential step in spiritual development.",
+          "highlight": ["understanding of the energy centers", "fundamental"]
+        },
+        {
+          "type": "content",
+          "markdown": "Ra describes two streams of energy that meet within us. The first is the **inner light**, our true nature as beings of the Creator, which streams downward from the crown. The second is **universal light energy** that enters through the base of the spine from the cosmos and spirals upward. Spiritual development involves raising the meeting point of these two energies higher through the centers."
+        },
+        {
+          "type": "quote",
+          "reference": "49.6",
+          "text": "The most important concept to grasp about the energy field is that the lower or negative pole will draw the universal energy into itself from the cosmos. Therefrom it will move upward to be met and reacted to by the positive spiraling energy moving downward from within. The measure of an entity's level of ray activity is the locus wherein the south pole outer energy has been met by the inner spiraling positive energy.",
+          "context": "Ra describes how energy flows through the body.",
+          "highlight": ["draw the universal energy into itself", "move upward to be met", "measure of an entity's level of ray activity"]
+        },
+        {
+          "type": "content",
+          "markdown": "There are **seven primary energy centers**, each corresponding to a color of the spectrum:\n\n1. **Red Ray** (base) - Survival, physical foundation\n2. **Orange Ray** (lower abdomen) - Personal identity, individual relationships\n3. **Yellow Ray** (solar plexus) - Social self, group relationships\n4. **Green Ray** (heart) - Universal love, compassion\n5. **Blue Ray** (throat) - Communication, co-creation\n6. **Indigo Ray** (third eye) - Gateway to intelligent infinity\n7. **Violet Ray** (crown) - The sum total of the entity\n\nEnergy must flow upward through each center in sequence. Blockages in lower centers restrict the flow to higher ones, which is why Ra emphasizes starting with red ray and working upward."
+        },
+        {
+          "type": "multiple-choice",
+          "question": "According to Ra, what is the key to spiritual development regarding energy centers?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Focusing only on the higher spiritual centers",
+              "isCorrect": false,
+              "explanation": "Ra teaches that all centers are important and must be balanced from the foundation upward. Skipping lower centers creates imbalance.",
+              "relatedPassage": "15.12"
+            },
+            {
+              "id": "b",
+              "text": "Understanding and balancing the energy centers sequentially",
+              "isCorrect": true,
+              "explanation": "Ra states that understanding the energy centers is 'the steps are only one' - the essential path. This begins with red ray and moves upward.",
+              "relatedPassage": "15.12"
+            },
+            {
+              "id": "c",
+              "text": "Forcing the kundalini energy to rise quickly",
+              "isCorrect": false,
+              "explanation": "Ra warns that attempting to raise energy without proper understanding 'is to invite great imbalance.' The process must be organic and grounded.",
+              "relatedPassage": "49.6"
+            },
+            {
+              "id": "d",
+              "text": "Eliminating the lower physical energies",
+              "isCorrect": false,
+              "explanation": "The lower rays are not to be eliminated but balanced and integrated. Red ray is called the 'foundation ray' for all densities.",
+              "relatedPassage": "15.12"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "Before we explore each center in detail, take a moment to sense your own energy body. Where do you feel most alive or open? Where do you sense tension or restriction? There are no wrong answers - just notice.",
+          "guidingThoughts": [
+            "The body holds wisdom beyond the mind",
+            "Awareness is the first step to balance",
+            "Each center has its own intelligence"
+          ],
+          "placeholder": "Notice your energy body..."
+        }
+      ]
+    },
     {
       "id": "red-ray",
       "title": "Red Ray: The Foundation",
