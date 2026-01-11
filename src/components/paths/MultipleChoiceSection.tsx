@@ -5,6 +5,8 @@ import type {
   MultipleChoiceSection as MultipleChoiceSectionType,
   QuizResponse,
 } from "@/lib/schemas/study-paths";
+import QuizOption from "./QuizOption";
+import QuizFeedback from "./QuizFeedback";
 
 interface MultipleChoiceSectionProps {
   section: MultipleChoiceSectionType;
@@ -15,19 +17,9 @@ interface MultipleChoiceSectionProps {
 }
 
 type AnswerState =
-  | { type: "unanswered" }
-  | { type: "showing_hint" }
+  | { type: "unanswered"; previousAttempts: number }
+  | { type: "showing_hint"; previousAttempts: number }
   | { type: "answered"; selectedId: string; isCorrect: boolean; attempts: number };
-
-/**
- * Get URL for a Ra Material reference.
- */
-function getQuoteUrl(reference: string): string {
-  const match = reference.match(/(\d+)\.(\d+)/);
-  if (!match) return `https://lawofone.info`;
-  const [, session, question] = match;
-  return `https://lawofone.info/s/${session}#${question}`;
-}
 
 const MAX_ATTEMPTS = 2;
 
@@ -45,20 +37,26 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
   onAnswer,
 }: MultipleChoiceSectionProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const [answerState, setAnswerState] = useState<AnswerState>({ type: "unanswered" });
+  const [answerState, setAnswerState] = useState<AnswerState>({ type: "unanswered", previousAttempts: 0 });
 
   // Initialize from saved response if available
+  // Note: We recalculate isCorrect from current option data rather than trusting
+  // the saved value, in case the quiz options were modified after the response was saved
   useEffect(() => {
     if (savedResponse) {
+      const savedOption = section.options.find(
+        (o) => o.id === savedResponse.selectedOptionId
+      );
+      const isCorrect = savedOption?.isCorrect ?? false;
       setSelectedId(savedResponse.selectedOptionId);
       setAnswerState({
         type: "answered",
         selectedId: savedResponse.selectedOptionId,
-        isCorrect: savedResponse.wasCorrect,
+        isCorrect,
         attempts: savedResponse.attempts,
       });
     }
-  }, [savedResponse]);
+  }, [savedResponse, section.options]);
 
   const correctOption = section.options.find((o) => o.isCorrect);
   const selectedOption = section.options.find((o) => o.id === selectedId);
@@ -67,16 +65,17 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
     if (!selectedId || !selectedOption) return;
 
     const isCorrect = selectedOption.isCorrect;
-    const currentAttempts =
-      answerState.type === "answered" ? answerState.attempts + 1 : 1;
+    const previousAttempts = answerState.type === "answered"
+      ? answerState.attempts
+      : answerState.previousAttempts;
+    const currentAttempts = previousAttempts + 1;
 
-    const newState: AnswerState = {
+    setAnswerState({
       type: "answered",
       selectedId,
       isCorrect,
       attempts: currentAttempts,
-    };
-    setAnswerState(newState);
+    });
 
     onAnswer?.({
       selectedOptionId: selectedId,
@@ -86,28 +85,30 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
   }, [selectedId, selectedOption, answerState, onAnswer]);
 
   const handleRetry = useCallback(() => {
+    const previousAttempts = answerState.type === "answered" ? answerState.attempts : 0;
     setSelectedId(null);
-    setAnswerState({ type: "unanswered" });
-  }, []);
+    setAnswerState({ type: "unanswered", previousAttempts });
+  }, [answerState]);
 
   const handleShowHint = useCallback(() => {
-    setAnswerState({ type: "showing_hint" });
-  }, []);
+    const previousAttempts = answerState.type === "answered"
+      ? answerState.attempts
+      : answerState.previousAttempts;
+    setAnswerState({ type: "showing_hint", previousAttempts });
+  }, [answerState]);
 
   const handleHideHint = useCallback(() => {
-    setAnswerState({ type: "unanswered" });
-  }, []);
+    const previousAttempts = answerState.type === "showing_hint"
+      ? answerState.previousAttempts
+      : 0;
+    setAnswerState({ type: "unanswered", previousAttempts });
+  }, [answerState]);
 
+  // Derived state
   const isAnswered = answerState.type === "answered";
   const showingHint = answerState.type === "showing_hint";
-  const canRetry =
-    isAnswered &&
-    !answerState.isCorrect &&
-    answerState.attempts < MAX_ATTEMPTS;
-  const showCorrectAnswer =
-    isAnswered &&
-    !answerState.isCorrect &&
-    answerState.attempts >= MAX_ATTEMPTS;
+  const canRetry = isAnswered && !answerState.isCorrect && answerState.attempts < MAX_ATTEMPTS;
+  const showCorrectAnswer = isAnswered && !answerState.isCorrect && answerState.attempts >= MAX_ATTEMPTS;
 
   // Get the option to show explanation for
   const explanationOption = isAnswered
@@ -115,6 +116,9 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
       ? correctOption
       : selectedOption
     : null;
+
+  // Question ID for radio group name (use first 20 chars)
+  const questionId = section.question.slice(0, 20);
 
   return (
     <div className="rounded-lg bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 p-5">
@@ -132,88 +136,27 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
       <div className="space-y-2" role="radiogroup" aria-label={section.question}>
         {section.options.map((option) => {
           const isSelected = selectedId === option.id;
-          const isCorrectOption = option.isCorrect;
-          const showAsCorrect = isAnswered && isCorrectOption && showCorrectAnswer;
-          const showAsWrong =
-            isAnswered && isSelected && !option.isCorrect;
-
-          // Determine option styling
-          let optionStyles = "border border-[var(--lo1-celestial)]/20 bg-[var(--lo1-space)]/30";
-          if (showAsCorrect) {
-            optionStyles = "bg-green-900/20 border border-green-500/40";
-          } else if (showAsWrong) {
-            optionStyles = "bg-amber-900/20 border border-amber-500/40";
-          } else if (isSelected && !isAnswered) {
-            optionStyles = "bg-[var(--lo1-gold)]/10 border border-[var(--lo1-gold)]/40";
-          }
-
-          // Custom radio button styling
-          let radioStyles = "border-2 border-[var(--lo1-celestial)]/40";
-          let radioInner = "";
-          if (showAsCorrect) {
-            radioStyles = "border-2 border-green-500 bg-green-500";
-            radioInner = "bg-white";
-          } else if (showAsWrong) {
-            radioStyles = "border-2 border-amber-500 bg-amber-500";
-            radioInner = "bg-white";
-          } else if (isSelected) {
-            radioStyles = "border-2 border-[var(--lo1-gold)] bg-[var(--lo1-gold)]";
-            radioInner = "bg-[var(--lo1-space)]";
-          }
+          const showAsCorrect = isAnswered && option.isCorrect && showCorrectAnswer;
+          const showAsWrong = isAnswered && isSelected && !option.isCorrect;
 
           return (
-            <label
+            <QuizOption
               key={option.id}
-              className={`
-                flex items-center gap-3 p-3 rounded-lg transition-all
-                ${optionStyles}
-                ${isAnswered ? "cursor-default" : "cursor-pointer hover:bg-[var(--lo1-celestial)]/15 hover:border-[var(--lo1-celestial)]/40"}
-                ${isSelected && !isAnswered ? "hover:bg-[var(--lo1-gold)]/15" : ""}
-              `}
-            >
-              {/* Hidden native radio for accessibility */}
-              <input
-                type="radio"
-                name={`mc-${section.question.slice(0, 20)}`}
-                value={option.id}
-                checked={isSelected}
-                onChange={() => !isAnswered && setSelectedId(option.id)}
-                disabled={isAnswered}
-                className="sr-only"
-              />
-              {/* Custom radio circle */}
-              <span
-                className={`
-                  flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center transition-all
-                  ${radioStyles}
-                `}
-              >
-                {isSelected && (
-                  <span className={`w-2 h-2 rounded-full ${radioInner}`} />
-                )}
-              </span>
-              <span
-                className={`
-                  flex-1
-                  ${isSelected && !isAnswered ? "text-[var(--lo1-starlight)]" : "text-[var(--lo1-text-light)]"}
-                  ${showAsCorrect ? "text-green-300" : ""}
-                  ${showAsWrong ? "text-amber-300" : ""}
-                `}
-              >
-                {option.text}
-              </span>
-              {showAsCorrect && (
-                <span className="text-green-400">✓</span>
-              )}
-              {showAsWrong && (
-                <span className="text-amber-400">✗</span>
-              )}
-            </label>
+              id={option.id}
+              text={option.text}
+              isSelected={isSelected}
+              isAnswered={isAnswered}
+              isCorrectOption={option.isCorrect}
+              showAsCorrect={showAsCorrect}
+              showAsWrong={showAsWrong}
+              questionId={questionId}
+              onSelect={() => setSelectedId(option.id)}
+            />
           );
         })}
       </div>
 
-      {/* Hint display (when shown) */}
+      {/* Hint display */}
       {section.hint && showingHint && !isAnswered && (
         <div className="mt-4 text-sm text-[var(--lo1-celestial)] bg-[var(--lo1-celestial)]/10 p-3 rounded-lg">
           <span className="font-medium">Hint:</span> {section.hint}
@@ -258,75 +201,15 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
 
       {/* Feedback section */}
       {isAnswered && explanationOption && (
-        <div
-          className={`
-            mt-4 p-4 rounded-lg
-            ${answerState.isCorrect ? "bg-green-900/20 border border-green-500/30" : ""}
-            ${!answerState.isCorrect && !showCorrectAnswer ? "bg-amber-900/20 border border-amber-500/30" : ""}
-            ${showCorrectAnswer ? "bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/30" : ""}
-          `}
-          role="alert"
-          aria-live="polite"
-        >
-          <p
-            className={`
-              font-medium mb-2
-              ${answerState.isCorrect ? "text-green-300" : ""}
-              ${!answerState.isCorrect && !showCorrectAnswer ? "text-amber-300" : ""}
-              ${showCorrectAnswer ? "text-[var(--lo1-starlight)]" : ""}
-            `}
-          >
-            {answerState.isCorrect && "That's right!"}
-            {!answerState.isCorrect && !showCorrectAnswer && "Not quite, but let's explore this"}
-            {showCorrectAnswer && `The answer is: "${correctOption?.text}"`}
-          </p>
-
-          <p className="text-sm text-[var(--lo1-text-light)] leading-relaxed">
-            {explanationOption.explanation}
-          </p>
-
-          {showCorrectAnswer && (
-            <p className="text-sm text-[var(--lo1-text-light)]/70 mt-3 italic">
-              Don&apos;t worry, this is about learning, not testing. Take a moment to absorb this before continuing.
-            </p>
-          )}
-
-          {/* Actions */}
-          <div className="mt-4 flex flex-wrap gap-3">
-            {canRetry && (
-              <button
-                onClick={handleRetry}
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-amber-600/30 text-amber-200 hover:bg-amber-600/40 transition-colors cursor-pointer"
-              >
-                Try Again
-              </button>
-            )}
-
-            {explanationOption.relatedPassage && (
-              <a
-                href={getQuoteUrl(explanationOption.relatedPassage)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline inline-flex items-center gap-1 cursor-pointer"
-              >
-                Read more: {explanationOption.relatedPassage}
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </a>
-            )}
-          </div>
-        </div>
+        <QuizFeedback
+          isCorrect={answerState.isCorrect}
+          showCorrectAnswer={showCorrectAnswer}
+          canRetry={canRetry}
+          explanationOption={explanationOption}
+          correctOption={correctOption}
+          allOptions={section.options}
+          onRetry={handleRetry}
+        />
       )}
     </div>
   );

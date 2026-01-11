@@ -27,7 +27,8 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const urlQuery = searchParams.get("q") || "";
 
-  const [query, setQuery] = useState(urlQuery);
+  const [inputValue, setInputValue] = useState(urlQuery);
+  const [searchedQuery, setSearchedQuery] = useState(""); // The query used for current results/highlights
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +36,7 @@ export default function SearchPage() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [greeting, setGreeting] = useState<string | null>(null);
   const initialSearchDone = useRef(false);
+  const lastPushedQuery = useRef<string | null>(null);
 
   // Randomize greeting and suggestions on client to avoid hydration mismatch
   useEffect(() => {
@@ -50,6 +52,7 @@ export default function SearchPage() {
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
+    setSearchedQuery(trimmed); // Lock in the query for highlights
 
     try {
       const response = await fetch("/api/search", {
@@ -80,6 +83,8 @@ export default function SearchPage() {
     const trimmed = searchQuery.trim();
     if (!trimmed || trimmed.length < 2) return;
 
+    // Track that we're pushing this query (not a browser navigation)
+    lastPushedQuery.current = trimmed;
     // Update URL with search query
     router.push(`/search?q=${encodeURIComponent(trimmed)}`);
     performSearch(trimmed);
@@ -88,20 +93,24 @@ export default function SearchPage() {
   // Auto-search when URL has a query param (on initial load or back navigation)
   useEffect(() => {
     if (urlQuery && !initialSearchDone.current) {
+      // Initial page load with query param
       initialSearchDone.current = true;
-      setQuery(urlQuery);
+      setInputValue(urlQuery);
       performSearch(urlQuery);
-    } else if (urlQuery && query !== urlQuery) {
-      // Handle back/forward navigation
-      setQuery(urlQuery);
+    } else if (urlQuery && urlQuery !== lastPushedQuery.current) {
+      // Browser back/forward navigation - URL changed but not from our push
+      lastPushedQuery.current = urlQuery;
+      setInputValue(urlQuery);
       performSearch(urlQuery);
     } else if (!urlQuery && hasSearched) {
       // Navigated back to /search without query - reset state
+      lastPushedQuery.current = null;
       setHasSearched(false);
       setResults([]);
-      setQuery("");
+      setInputValue("");
+      setSearchedQuery("");
     }
-  }, [urlQuery, performSearch, query, hasSearched]);
+  }, [urlQuery, performSearch, hasSearched]);
 
   const handleAskAbout = (result: SearchResult) => {
     const prompt = `Tell me more about this passage from ${result.reference}: "${result.text.slice(0, 200)}${result.text.length > 200 ? "..." : ""}"`;
@@ -109,16 +118,18 @@ export default function SearchPage() {
   };
 
   const handleSuggestedSearch = (suggestion: string) => {
-    setQuery(suggestion);
+    setInputValue(suggestion);
     handleSearch(suggestion);
   };
 
   const handleNewSearch = useCallback(() => {
-    setQuery("");
+    setInputValue("");
+    setSearchedQuery("");
     setResults([]);
     setHasSearched(false);
     setError(null);
     initialSearchDone.current = false;
+    lastPushedQuery.current = null;
     router.push("/search");
   }, [router]);
 
@@ -142,9 +153,9 @@ export default function SearchPage() {
               {/* Search Input */}
               <div className="w-full max-w-lg mb-6">
                 <SearchInput
-                  value={query}
-                  onChange={setQuery}
-                  onSearch={() => handleSearch(query)}
+                  value={inputValue}
+                  onChange={setInputValue}
+                  onSearch={() => handleSearch(inputValue)}
                   isLoading={isLoading}
                 />
               </div>
@@ -187,9 +198,9 @@ export default function SearchPage() {
               <div className="px-4 pt-4 pb-3 bg-[var(--lo1-deep-space)]/50 backdrop-blur-sm">
                 <div className="max-w-2xl mx-auto">
                   <SearchInput
-                    value={query}
-                    onChange={setQuery}
-                    onSearch={() => handleSearch(query)}
+                    value={inputValue}
+                    onChange={setInputValue}
+                    onSearch={() => handleSearch(inputValue)}
                     isLoading={isLoading}
                     compact
                   />
@@ -234,7 +245,7 @@ export default function SearchPage() {
                         <SearchResultCard
                           key={`${result.reference}-${index}`}
                           result={result}
-                          query={query}
+                          query={searchedQuery}
                           onAskAbout={() => handleAskAbout(result)}
                         />
                       ))}

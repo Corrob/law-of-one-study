@@ -8,12 +8,14 @@ import { parseStudyPath, extractPathMeta } from "@/lib/schemas/study-paths";
 // Import study path data directly
 // In a larger app, this might be fetched from an API
 import densitiesData from "@/data/study-paths/densities.json";
+import polarityData from "@/data/study-paths/polarity.json";
+import energyCentersData from "@/data/study-paths/energy-centers.json";
 
 /**
  * All available study paths.
  * Add new paths here as they are created.
  */
-const STUDY_PATHS_DATA: unknown[] = [densitiesData];
+const STUDY_PATHS_DATA: unknown[] = [densitiesData, polarityData, energyCentersData];
 
 /**
  * Parsed and validated study paths.

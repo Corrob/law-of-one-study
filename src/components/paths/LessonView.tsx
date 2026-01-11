@@ -186,7 +186,7 @@ const LessonView = memo(function LessonView({
       <div className="space-y-8">
         {lesson.sections.map((section, index) => (
           <div
-            key={index}
+            key={`${lesson.id}_${index}`}
             onClick={() => onPositionChange?.(index)}
           >
             {renderSection(

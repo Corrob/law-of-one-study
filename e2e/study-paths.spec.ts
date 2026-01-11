@@ -47,7 +47,13 @@ test.describe("Study Paths", () => {
 
       // Check for the densities path
       await expect(page.getByText("Understanding Densities")).toBeVisible();
-      await expect(page.getByText("beginner")).toBeVisible();
+      await expect(page.getByText("beginner").first()).toBeVisible();
+
+      // Check for the polarity path
+      await expect(page.getByText("The Choice: Service to Others vs Self")).toBeVisible();
+
+      // Check for the energy centers path
+      await expect(page.getByText("Energy Centers Exploration")).toBeVisible();
     });
 
     test("should navigate to path detail when clicking a path card", async ({ page }) => {
