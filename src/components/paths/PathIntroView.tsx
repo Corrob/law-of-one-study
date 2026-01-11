@@ -1,6 +1,8 @@
 "use client";
 
 import { memo } from "react";
+import { motion } from "framer-motion";
+import { titleVariants, fadeWithDelay, staggerContainer, staggerChild } from "@/lib/animations";
 import type { StudyPath } from "@/lib/schemas/study-paths";
 
 interface PathIntroViewProps {
@@ -37,17 +39,27 @@ const PathIntroView = memo(function PathIntroView({
   return (
     <div className="max-w-2xl mx-auto py-8">
       {/* Header */}
-      <header className="text-center mb-8">
+      <motion.header
+        className="text-center mb-8"
+        variants={titleVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <h1 className="text-3xl font-semibold text-[var(--lo1-starlight)] mb-4">
           {path.title}
         </h1>
         <p className="text-[var(--lo1-text-light)]/80 leading-relaxed">
           {path.description}
         </p>
-      </header>
+      </motion.header>
 
       {/* Meta info */}
-      <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+      <motion.div
+        className="flex flex-wrap items-center justify-center gap-3 mb-8"
+        variants={fadeWithDelay(0.1)}
+        initial="hidden"
+        animate="visible"
+      >
         <span
           className={`px-3 py-1 rounded-full text-sm border ${getDifficultyStyle(path.difficulty)}`}
         >
@@ -60,16 +72,30 @@ const PathIntroView = memo(function PathIntroView({
         <span className="text-[var(--lo1-text-light)]/60 text-sm">
           {path.lessons.length} lessons
         </span>
-      </div>
+      </motion.div>
 
       {/* Table of Contents */}
-      <div className="bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 rounded-xl p-6 mb-8">
+      <motion.div
+        className="bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 rounded-xl p-6 mb-8"
+        variants={fadeWithDelay(0.15)}
+        initial="hidden"
+        animate="visible"
+      >
         <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-5">
           What You&apos;ll Learn
         </h2>
-        <ol className="space-y-1">
+        <motion.ol
+          className="space-y-1"
+          variants={staggerContainer(0.04)}
+          initial="hidden"
+          animate="visible"
+        >
           {path.lessons.map((lesson, index) => (
-            <li key={lesson.id} className="relative flex items-center gap-4 group">
+            <motion.li
+              key={lesson.id}
+              className="relative flex items-center gap-4 group"
+              variants={staggerChild}
+            >
               {/* Connecting line */}
               {index < path.lessons.length - 1 && (
                 <div className="absolute left-[18px] top-[36px] w-0.5 h-[calc(100%)] bg-gradient-to-b from-[var(--lo1-celestial)]/30 to-transparent" />
@@ -91,14 +117,19 @@ const PathIntroView = memo(function PathIntroView({
                   </span>
                 )}
               </div>
-            </li>
+            </motion.li>
           ))}
-        </ol>
-      </div>
+        </motion.ol>
+      </motion.div>
 
       {/* Concepts (if any) */}
       {path.concepts && path.concepts.length > 0 && (
-        <div className="mb-8">
+        <motion.div
+          className="mb-8"
+          variants={fadeWithDelay(0.25)}
+          initial="hidden"
+          animate="visible"
+        >
           <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-3 text-center">
             Key Concepts
           </h2>
@@ -112,18 +143,23 @@ const PathIntroView = memo(function PathIntroView({
               </span>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Start button */}
-      <div className="text-center">
+      <motion.div
+        className="text-center"
+        variants={fadeWithDelay(0.3)}
+        initial="hidden"
+        animate="visible"
+      >
         <button
           onClick={onStart}
           className="px-8 py-3 rounded-lg font-medium text-lg bg-[var(--lo1-gold)] text-[var(--lo1-space)] hover:bg-[var(--lo1-gold-light)] transition-colors cursor-pointer"
         >
           Start Path
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 });

@@ -2,10 +2,12 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
-import SearchResultCard from "@/components/SearchResultCard";
 import SearchInput from "@/components/SearchInput";
-import ModeToggle from "@/components/ModeToggle";
+import SearchModeSelection from "@/components/SearchModeSelection";
+import SearchWelcome from "@/components/SearchWelcome";
+import SearchResults from "@/components/SearchResults";
 import { SearchResult, type SearchMode } from "@/lib/schemas";
 import { getRandomSuggestions } from "@/data/search-suggestions";
 import { getRandomSentenceSuggestions } from "@/data/sentence-suggestions";
@@ -206,209 +208,105 @@ export default function SearchPage() {
   const showModeSelection = mode === null && !hasSearched && !isLoading;
   const showSearchWelcome = mode !== null && !hasSearched && !isLoading;
 
+  // Create the animated input element with layoutId for position animation
+  const inputElement = (
+    <motion.div
+      layoutId="search-input"
+      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+    >
+      <SearchInput
+        value={inputValue}
+        onChange={setInputValue}
+        onSearch={() => handleSearch(inputValue)}
+        isLoading={isLoading}
+        compact={!showSearchWelcome}
+      />
+    </motion.div>
+  );
+
   return (
-    <main className="h-dvh flex flex-col cosmic-bg relative">
-      {/* Starfield background */}
-      <div className="starfield" />
-
-      <NavigationWrapper showNewSearch={hasSearched || mode !== null} onNewSearch={handleNewSearch}>
-        <div className="flex-1 overflow-hidden relative z-10 flex flex-col">
-          {/* Mode Selection State */}
-          {showModeSelection && (
-            <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
-              <h2 className="font-[family-name:var(--font-cormorant)] text-2xl md:text-3xl text-[var(--lo1-starlight)] mb-8 text-center">
-                How would you like to search?
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full">
-                {/* Sentence Search Card */}
-                <button
-                  onClick={() => handleModeSelect("sentence")}
-                  className="flex flex-col items-center p-6 rounded-xl
-                             bg-[var(--lo1-indigo)]/50 border border-[var(--lo1-celestial)]/20
-                             hover:border-[var(--lo1-gold)]/40 hover:bg-[var(--lo1-indigo)]/70
-                             transition-all duration-300 cursor-pointer text-center group"
-                >
-                  <svg
-                    className="w-8 h-8 text-[var(--lo1-gold)] mb-3 group-hover:scale-110 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
-                    />
-                  </svg>
-                  <h3 className="font-[family-name:var(--font-cormorant)] text-xl text-[var(--lo1-starlight)] mb-2">
-                    Sentence Search
-                  </h3>
-                  <p className="text-sm text-[var(--lo1-stardust)]">
-                    Find quotes you already know
-                  </p>
-                </button>
-
-                {/* Passage Search Card */}
-                <button
-                  onClick={() => handleModeSelect("passage")}
-                  className="flex flex-col items-center p-6 rounded-xl
-                             bg-[var(--lo1-indigo)]/50 border border-[var(--lo1-celestial)]/20
-                             hover:border-[var(--lo1-gold)]/40 hover:bg-[var(--lo1-indigo)]/70
-                             transition-all duration-300 cursor-pointer text-center group"
-                >
-                  <svg
-                    className="w-8 h-8 text-[var(--lo1-gold)] mb-3 group-hover:scale-110 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                    />
-                  </svg>
-                  <h3 className="font-[family-name:var(--font-cormorant)] text-xl text-[var(--lo1-starlight)] mb-2">
-                    Passage Search
-                  </h3>
-                  <p className="text-sm text-[var(--lo1-stardust)]">
-                    Discover quotes by concept
-                  </p>
-                </button>
-              </div>
-            </div>
+    <LayoutGroup>
+      <main className="h-dvh flex flex-col cosmic-bg relative">
+        {/* Starfield background - fades out when showing results */}
+        <AnimatePresence>
+          {(showModeSelection || showSearchWelcome) && (
+            <motion.div
+              className="starfield"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            />
           )}
+        </AnimatePresence>
+        {/* Keep starfield visible but static during results */}
+        {!showModeSelection && !showSearchWelcome && (
+          <div className="starfield opacity-30" />
+        )}
 
-          {/* Search Welcome State - Mode selected, no search yet */}
-          {showSearchWelcome && (
-            <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
-              {/* Mode Toggle */}
-              <div className="mb-6">
-                <ModeToggle mode={mode} onChange={handleModeChange} />
-              </div>
-
-              {/* Greeting */}
-              {greeting && (
-                <h2 className="font-[family-name:var(--font-cormorant)] text-2xl md:text-3xl text-[var(--lo1-starlight)] mb-6 text-center">
-                  {greeting}
-                </h2>
+        <NavigationWrapper showNewSearch={hasSearched || mode !== null} onNewSearch={handleNewSearch}>
+          <div className="flex-1 overflow-hidden relative z-10 flex flex-col min-h-0">
+            <AnimatePresence mode="wait">
+              {/* Mode Selection State */}
+              {showModeSelection && (
+                <motion.div
+                  key="mode-selection"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex-1 flex flex-col"
+                >
+                  <SearchModeSelection onSelectMode={handleModeSelect} />
+                </motion.div>
               )}
 
-              {/* Search Input */}
-              <div className="w-full max-w-lg mb-6">
-                <SearchInput
-                  value={inputValue}
-                  onChange={setInputValue}
-                  onSearch={() => handleSearch(inputValue)}
-                  isLoading={isLoading}
-                />
-              </div>
-
-              {/* Mode-specific explanation */}
-              <p className="text-[var(--lo1-stardust)]/70 text-sm text-center mb-8 max-w-md">
-                {mode === "sentence"
-                  ? "Search by partial quote or phrase you remember"
-                  : "Search by meaning—describe what you seek"}
-              </p>
-
-              {/* Suggestions */}
-              {suggestions.length > 0 && (
-                <div className="w-full max-w-2xl">
-                  <p className="text-[var(--lo1-stardust)]/60 text-xs mb-3 text-center uppercase tracking-wider">
-                    Try these
-                  </p>
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {suggestions.map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        onClick={() => handleSuggestedSearch(suggestion)}
-                        className="px-3 py-2 rounded-lg text-sm
-                                   bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-celestial)]/20
-                                   text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)]
-                                   hover:border-[var(--lo1-gold)]/30 hover:bg-[var(--lo1-indigo)]/80
-                                   transition-all duration-200 cursor-pointer"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Results State - Top-aligned with sticky search */}
-          {!showModeSelection && !showSearchWelcome && (
-            <>
-              {/* Sticky Search Header */}
-              <div className="px-4 pt-4 pb-3 bg-[var(--lo1-deep-space)]/50 backdrop-blur-sm">
-                <div className="max-w-2xl mx-auto">
-                  {/* Mode Toggle */}
-                  <div className="flex justify-center mb-3">
-                    <ModeToggle mode={mode!} onChange={handleModeChange} />
-                  </div>
-                  <SearchInput
-                    value={inputValue}
-                    onChange={setInputValue}
-                    onSearch={() => handleSearch(inputValue)}
-                    isLoading={isLoading}
-                    compact
+              {/* Search Welcome State */}
+              {showSearchWelcome && (
+                <motion.div
+                  key="search-welcome"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex-1 flex flex-col"
+                >
+                  <SearchWelcome
+                    mode={mode!}
+                    greeting={greeting}
+                    suggestions={suggestions}
+                    onModeChange={handleModeChange}
+                    onSuggestedSearch={handleSuggestedSearch}
+                    inputElement={inputElement}
                   />
-                </div>
-              </div>
+                </motion.div>
+              )}
 
-              {/* Results Area */}
-              <div className="flex-1 overflow-y-auto px-4 pb-6">
-                <div className="max-w-2xl mx-auto">
-                  {/* Loading State */}
-                  {isLoading && (
-                    <div className="text-center py-12">
-                      <div className="text-[var(--lo1-stardust)] italic animate-pulse">
-                        Searching the cosmic records...
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Error State */}
-                  {error && !isLoading && (
-                    <div className="text-center py-12">
-                      <p className="text-[var(--lo1-error)]">{error}</p>
-                    </div>
-                  )}
-
-                  {/* No Results */}
-                  {hasSearched && !isLoading && !error && results.length === 0 && (
-                    <div className="text-center py-12">
-                      <p className="text-[var(--lo1-stardust)]">
-                        No passages found. Try rephrasing your question or using different words.
-                      </p>
-                    </div>
-                  )}
-
-                  {/* Results */}
-                  {results.length > 0 && !isLoading && (
-                    <div className="space-y-5">
-                      <p className="text-sm text-[var(--lo1-stardust)]/60 pt-2">
-                        Closest {results.length} matches by meaning
-                      </p>
-                      {results.map((result, index) => (
-                        <SearchResultCard
-                          key={`${result.reference}-${index}`}
-                          result={result}
-                          query={searchedQuery}
-                          onAskAbout={() => handleAskAbout(result)}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </NavigationWrapper>
-    </main>
+              {/* Results State */}
+              {!showModeSelection && !showSearchWelcome && (
+                <motion.div
+                  key="search-results"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="flex-1 flex flex-col min-h-0"
+                >
+                  <SearchResults
+                    mode={mode!}
+                    results={results}
+                    searchedQuery={searchedQuery}
+                    isLoading={isLoading}
+                    error={error}
+                    hasSearched={hasSearched}
+                    onModeChange={handleModeChange}
+                    onAskAbout={handleAskAbout}
+                    inputElement={inputElement}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </NavigationWrapper>
+      </main>
+    </LayoutGroup>
   );
 }

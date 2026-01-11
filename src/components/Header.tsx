@@ -32,7 +32,7 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
 
   return (
     <header className="light-header relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-3 px-4 border-b border-[var(--lo1-gold)]/20">
-      <div className="max-w-4xl mx-auto flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         {/* Left side: Logo/Title or Back button */}
         <div className="flex items-center gap-3">
           {isDashboard ? (

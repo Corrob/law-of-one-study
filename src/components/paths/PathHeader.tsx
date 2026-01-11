@@ -27,7 +27,7 @@ const PathHeader = memo(function PathHeader({
         !showProgressBar ? "border-b border-[var(--lo1-celestial)]/10" : ""
       }`}
     >
-      <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div className="px-4 py-3 flex items-center justify-between">
         <Link
           href="/paths"
           className="text-sm text-[var(--lo1-text-light)]/60 hover:text-[var(--lo1-starlight)] flex items-center gap-1 cursor-pointer"

@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useCallback } from "react";
+import { motion } from "framer-motion";
 import type {
   StudyPath,
   PathProgress,
@@ -11,6 +12,7 @@ import QuoteSection from "./QuoteSection";
 import MultipleChoiceSection from "./MultipleChoiceSection";
 import ReflectionSection from "./ReflectionSection";
 import { getSectionKey } from "@/lib/schemas/study-paths";
+import { titleVariants, staggerContainer, staggerChild } from "@/lib/animations";
 
 interface LessonViewProps {
   /** The current study path */
@@ -133,8 +135,14 @@ const LessonView = memo(function LessonView({
 
   return (
     <div className="max-w-3xl mx-auto">
-      {/* Lesson Title */}
-      <header className="mt-6 mb-4">
+      {/* Lesson Title - key ensures re-animation on lesson change */}
+      <motion.header
+        key={`header-${lesson.id}`}
+        className="mt-6 mb-4"
+        variants={titleVariants}
+        initial="hidden"
+        animate="visible"
+      >
         <h1 className="text-2xl font-semibold text-[var(--lo1-starlight)]">
           {lesson.title}
         </h1>
@@ -143,7 +151,7 @@ const LessonView = memo(function LessonView({
             ~{lesson.estimatedMinutes} min read
           </p>
         )}
-      </header>
+      </motion.header>
 
       {/* Top Navigation */}
       <nav className="flex items-center justify-between mb-8 py-2 border-y border-[var(--lo1-celestial)]/10">
@@ -182,11 +190,18 @@ const LessonView = memo(function LessonView({
         </button>
       </nav>
 
-      {/* Sections */}
-      <div className="space-y-8">
+      {/* Sections - key ensures re-animation on lesson change */}
+      <motion.div
+        key={`sections-${lesson.id}`}
+        className="space-y-8"
+        variants={staggerContainer(0.03)}
+        initial="hidden"
+        animate="visible"
+      >
         {lesson.sections.map((section, index) => (
-          <div
+          <motion.div
             key={`${lesson.id}_${index}`}
+            variants={staggerChild}
             onClick={() => onPositionChange?.(index)}
           >
             {renderSection(
@@ -197,9 +212,9 @@ const LessonView = memo(function LessonView({
               handleReflectionSave(index),
               handleQuizResponse(index)
             )}
-          </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Lesson Completion CTA */}
       <footer className="mt-12 pt-8 border-t border-[var(--lo1-celestial)]/20 text-center">

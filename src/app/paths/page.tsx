@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { PathCard } from "@/components/paths";
 import { SparkleIcon } from "@/components/icons";
 import { useStudyProgress } from "@/hooks/useStudyProgress";
 import { getAllPathMetas } from "@/lib/study-paths";
+import { titleVariants, fadeWithDelay, staggerContainer, staggerChild } from "@/lib/animations";
 import type { StudyPathMeta } from "@/lib/schemas/study-paths";
 
 /** Maximum number of in-progress paths to show in the "Continue" section */
@@ -88,56 +90,82 @@ export default function PathsPage() {
         <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
           <div className="max-w-4xl mx-auto">
             {/* Page Header */}
-            <div className="mb-8">
+            <motion.div
+              className="mb-8"
+              variants={titleVariants}
+              initial="hidden"
+              animate="visible"
+            >
               <h1 className="text-2xl font-semibold text-[var(--lo1-starlight)] mb-2">
                 Study Paths
               </h1>
               <p className="text-[var(--lo1-text-light)]/70">
                 Guided journeys through the Ra Material with interactive lessons and reflections.
               </p>
-            </div>
+            </motion.div>
 
             {/* Continue Your Journey */}
             {inProgress.length > 0 && (
-              <section className="mb-10">
+              <motion.section
+                className="mb-10"
+                variants={fadeWithDelay(0.1)}
+                initial="hidden"
+                animate="visible"
+              >
                 <h2 className="text-lg font-medium text-[var(--lo1-starlight)] mb-4">
                   Continue Your Journey
                 </h2>
-                <div className="space-y-5">
+                <motion.div
+                  className="space-y-5"
+                  variants={staggerContainer(0.05)}
+                  initial="hidden"
+                  animate="visible"
+                >
                   {inProgress.slice(0, MAX_CONTINUE_PATHS).map((path) => (
-                    <PathCard
-                      key={path.id}
-                      path={path}
-                      progress={progress[path.id]}
-                      variant="continue"
-                    />
+                    <motion.div key={path.id} variants={staggerChild}>
+                      <PathCard
+                        path={path}
+                        progress={progress[path.id]}
+                        variant="continue"
+                      />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
                 {inProgress.length > MAX_CONTINUE_PATHS && (
                   <p className="text-sm text-[var(--lo1-text-light)]/60 mt-3">
                     + {inProgress.length - MAX_CONTINUE_PATHS} more path
                     {inProgress.length - MAX_CONTINUE_PATHS > 1 ? "s" : ""} in progress
                   </p>
                 )}
-              </section>
+              </motion.section>
             )}
 
             {/* Available Paths - only show not-started paths */}
             {notStarted.length > 0 && (
-              <section>
+              <motion.section
+                variants={fadeWithDelay(0.15)}
+                initial="hidden"
+                animate="visible"
+              >
                 <h2 className="text-lg font-medium text-[var(--lo1-starlight)] mb-4">
                   Available Paths
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <motion.div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-5"
+                  variants={staggerContainer(0.05)}
+                  initial="hidden"
+                  animate="visible"
+                >
                   {notStarted.map((path) => (
-                    <PathCard
-                      key={path.id}
-                      path={path}
-                      progress={progress[path.id]}
-                    />
+                    <motion.div key={path.id} variants={staggerChild}>
+                      <PathCard
+                        path={path}
+                        progress={progress[path.id]}
+                      />
+                    </motion.div>
                   ))}
-                </div>
-              </section>
+                </motion.div>
+              </motion.section>
             )}
 
             {/* Empty state when all paths completed */}
@@ -167,23 +195,34 @@ export default function PathsPage() {
 
             {/* Completed Section */}
             {completed.length > 0 && (
-              <section className="mt-10">
+              <motion.section
+                className="mt-10"
+                variants={fadeWithDelay(0.2)}
+                initial="hidden"
+                animate="visible"
+              >
                 <h2 className="text-lg font-medium text-[var(--lo1-gold)] mb-4 flex items-center gap-2">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                   Completed Paths
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <motion.div
+                  className="grid grid-cols-1 md:grid-cols-2 gap-5"
+                  variants={staggerContainer(0.05)}
+                  initial="hidden"
+                  animate="visible"
+                >
                   {completed.map((path) => (
-                    <PathCard
-                      key={path.id}
-                      path={path}
-                      progress={progress[path.id]}
-                    />
+                    <motion.div key={path.id} variants={staggerChild}>
+                      <PathCard
+                        path={path}
+                        progress={progress[path.id]}
+                      />
+                    </motion.div>
                   ))}
-                </div>
-              </section>
+                </motion.div>
+              </motion.section>
             )}
           </div>
         </div>

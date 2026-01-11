@@ -183,8 +183,19 @@ test.describe("Search Feature", () => {
   test("should handle suggestion chip click", async ({ page }) => {
     await page.goto("/search?mode=passage");
 
-    // Click a suggestion chip (they're dynamically generated, so find any button in the suggestions area)
-    const suggestionButton = page.locator("button").filter({ hasText: /.{10,}/ }).first();
+    // Wait for the search input to be visible (animations complete)
+    await expect(page.getByRole("textbox")).toBeVisible({ timeout: 5000 });
+
+    // Wait for suggestions to appear (they animate in with delay)
+    await expect(page.getByText("Try these")).toBeVisible({ timeout: 5000 });
+
+    // Find a suggestion chip - they appear after "Try these" label
+    // Use a more specific selector to avoid mode toggle buttons
+    const suggestionButton = page
+      .locator("button")
+      .filter({ hasText: /\w+\s+\w+\s+\w+/ }) // At least 3 words (suggestions are longer)
+      .first();
+    await expect(suggestionButton).toBeVisible({ timeout: 5000 });
     const suggestionText = await suggestionButton.textContent();
     await suggestionButton.click();
 
