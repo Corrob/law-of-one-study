@@ -14,16 +14,16 @@ interface PathCardProps {
 }
 
 /**
- * Get difficulty badge color.
+ * Get difficulty badge color (theme-aware).
  */
 function getDifficultyColor(difficulty: StudyPathMeta["difficulty"]): string {
   switch (difficulty) {
     case "beginner":
-      return "bg-green-900/30 text-green-300 border-green-500/30";
+      return "bg-[var(--lo1-success-bg)] text-[var(--lo1-success-text)] border-[var(--lo1-success-border)]";
     case "intermediate":
-      return "bg-amber-900/30 text-amber-300 border-amber-500/30";
+      return "bg-[var(--lo1-warning-bg)] text-[var(--lo1-warning-text)] border-[var(--lo1-warning-border)]";
     case "advanced":
-      return "bg-red-900/30 text-red-300 border-red-500/30";
+      return "bg-[var(--lo1-error)]/15 text-[var(--lo1-error)] border-[var(--lo1-error)]/30";
     default:
       return "bg-[var(--lo1-celestial)]/20 text-[var(--lo1-celestial)]";
   }

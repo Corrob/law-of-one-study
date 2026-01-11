@@ -72,7 +72,7 @@ export default function SearchWelcome({
         className="text-[var(--lo1-stardust)]/70 text-sm text-center mb-8 max-w-md"
       >
         {mode === "sentence"
-          ? "Search by partial quote or phrase you remember"
+          ? "Search by meaning by describing a sentence you're looking for"
           : "Search by meaning—describe what you seek"}
       </motion.p>
 

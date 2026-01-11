@@ -2,8 +2,20 @@
 
 import { useTheme } from './ThemeProvider';
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  /** Optional callback fired after theme changes */
+  onThemeChange?: () => void;
+}
+
+export function ThemeToggle({ onThemeChange }: ThemeToggleProps = {}) {
   const { theme, toggleTheme, mounted } = useTheme();
+
+  const handleToggle = (targetTheme: 'dark' | 'light') => {
+    if (theme !== targetTheme) {
+      toggleTheme();
+      onThemeChange?.();
+    }
+  };
 
   if (!mounted) {
     // Placeholder to prevent layout shift
@@ -19,7 +31,7 @@ export function ThemeToggle() {
       aria-label="Theme selection"
     >
       <button
-        onClick={() => theme !== 'dark' && toggleTheme()}
+        onClick={() => handleToggle('dark')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer
           ${theme === 'dark'
             ? 'bg-[var(--lo1-indigo)] text-[var(--lo1-gold)] shadow-sm'
@@ -45,7 +57,7 @@ export function ThemeToggle() {
         <span>Dark</span>
       </button>
       <button
-        onClick={() => theme !== 'light' && toggleTheme()}
+        onClick={() => handleToggle('light')}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer
           ${theme === 'light'
             ? 'bg-[var(--lo1-indigo)] text-[var(--lo1-gold)] shadow-sm'

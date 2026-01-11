@@ -40,22 +40,22 @@ const QuizFeedback = memo(function QuizFeedback({
 }: QuizFeedbackProps) {
   const [showOtherExplanations, setShowOtherExplanations] = useState(false);
 
-  // Determine container styling based on state
+  // Determine container styling based on state (theme-aware)
   let containerStyles = "";
   if (isCorrect) {
-    containerStyles = "bg-green-900/20 border border-green-500/30";
+    containerStyles = "bg-[var(--lo1-success-bg)] border border-[var(--lo1-success-border)]";
   } else if (!showCorrectAnswer) {
-    containerStyles = "bg-amber-900/20 border border-amber-500/30";
+    containerStyles = "bg-[var(--lo1-warning-bg)] border border-[var(--lo1-warning-border)]";
   } else {
     containerStyles = "bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/30";
   }
 
-  // Determine header text styling
+  // Determine header text styling (theme-aware)
   let headerStyles = "";
   if (isCorrect) {
-    headerStyles = "text-green-300";
+    headerStyles = "text-[var(--lo1-success-text)]";
   } else if (!showCorrectAnswer) {
-    headerStyles = "text-amber-300";
+    headerStyles = "text-[var(--lo1-warning-text)]";
   } else {
     headerStyles = "text-[var(--lo1-starlight)]";
   }

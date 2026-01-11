@@ -55,7 +55,7 @@ describe("SearchPage", () => {
 
       expect(screen.getByText("Sentence Search")).toBeInTheDocument();
       expect(screen.getByText("Passage Search")).toBeInTheDocument();
-      expect(screen.getByText("Find quotes you already know")).toBeInTheDocument();
+      expect(screen.getByText("Find a specific quote by meaning")).toBeInTheDocument();
       expect(screen.getByText("Discover quotes by concept")).toBeInTheDocument();
     });
 

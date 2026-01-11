@@ -89,16 +89,16 @@ describe("QuizOption", () => {
       );
 
       const label = container.querySelector("label");
-      expect(label?.className).toContain("border-green-500");
+      expect(label?.className).toContain("border-[var(--lo1-success-border)]");
     });
 
-    it("should apply amber border styling when showing as wrong", () => {
+    it("should apply warning border styling when showing as wrong", () => {
       const { container } = render(
         <QuizOption {...defaultProps} showAsWrong={true} isAnswered={true} />
       );
 
       const label = container.querySelector("label");
-      expect(label?.className).toContain("border-amber-500");
+      expect(label?.className).toContain("border-[var(--lo1-warning-border)]");
     });
 
     it("should apply gold styling when selected but not answered", () => {

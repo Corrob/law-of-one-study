@@ -72,7 +72,7 @@ export default function SearchModeSelection({ onSelectMode }: SearchModeSelectio
             Sentence Search
           </h3>
           <p className="text-sm text-[var(--lo1-stardust)]">
-            Find quotes you already know
+            Find a specific quote by meaning
           </p>
         </motion.button>
 

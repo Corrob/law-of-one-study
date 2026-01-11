@@ -32,6 +32,16 @@
   --lo1-warning: #e07b4c;
   --lo1-error: #c45c5c;
 
+  /* Success state (green) - for correct answers, beginner badges */
+  --lo1-success-bg: rgba(34, 197, 94, 0.15);
+  --lo1-success-text: #4ade80;
+  --lo1-success-border: rgba(34, 197, 94, 0.3);
+
+  /* Warning state (amber) - for incorrect but retryable */
+  --lo1-warning-bg: rgba(245, 158, 11, 0.15);
+  --lo1-warning-text: #fbbf24;
+  --lo1-warning-border: rgba(245, 158, 11, 0.3);
+
   /* Spacing */
   --space-xs: 4px;
   --space-sm: 8px;
@@ -90,6 +100,16 @@
   --lo1-success: #d4a83f;
   --lo1-warning: #d06b3c;
   --lo1-error: #b44c4c;
+
+  /* Success state (green) - darker for light backgrounds */
+  --lo1-success-bg: rgba(22, 163, 74, 0.12);
+  --lo1-success-text: #15803d;
+  --lo1-success-border: rgba(22, 163, 74, 0.3);
+
+  /* Warning state (amber) - darker for light backgrounds */
+  --lo1-warning-bg: rgba(217, 119, 6, 0.12);
+  --lo1-warning-text: #b45309;
+  --lo1-warning-border: rgba(217, 119, 6, 0.3);
 
   --background: var(--lo1-deep-space);
   --foreground: var(--lo1-starlight);
@@ -745,7 +765,7 @@ h6 {
 }
 
 /* Light mode quote card - white background for contrast */
-[data-theme="light"] .light-quote-card {
+[data-theme="light"] .light-quote-card > div {
   background: #ffffff;
   border: 1px solid #e0dbd0;
   border-left: 4px solid var(--lo1-gold);

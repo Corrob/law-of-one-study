@@ -66,7 +66,7 @@ test.describe("Search Feature", () => {
     // Check for mode selection cards
     await expect(page.getByText("Sentence Search")).toBeVisible();
     await expect(page.getByText("Passage Search")).toBeVisible();
-    await expect(page.getByText("Find quotes you already know")).toBeVisible();
+    await expect(page.getByText("Find a specific quote by meaning")).toBeVisible();
     await expect(page.getByText("Discover quotes by concept")).toBeVisible();
 
     // Search input should not be visible until mode is selected

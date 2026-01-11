@@ -151,7 +151,7 @@ export default function SupportPage() {
                       </h3>
                     </div>
                     <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
-                      Search the Ra Material by meaning or exact phrase. Find passages by concept or locate specific quotes you remember.
+                      Search the Ra Material by meaning. Find specific quotes with Sentence mode, or explore broader concepts with Passage mode.
                     </p>
                   </Link>
                 </motion.div>

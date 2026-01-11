@@ -27,38 +27,38 @@ const QuizOption = memo(function QuizOption({
   questionId,
   onSelect,
 }: QuizOptionProps) {
-  // Determine option container styling
+  // Determine option container styling (theme-aware)
   let optionStyles = "border border-[var(--lo1-celestial)]/20 bg-[var(--lo1-space)]/30";
   if (showAsCorrect) {
-    optionStyles = "bg-green-900/20 border border-green-500/40";
+    optionStyles = "bg-[var(--lo1-success-bg)] border border-[var(--lo1-success-border)]";
   } else if (showAsWrong) {
-    optionStyles = "bg-amber-900/20 border border-amber-500/40";
+    optionStyles = "bg-[var(--lo1-warning-bg)] border border-[var(--lo1-warning-border)]";
   } else if (isSelected && !isAnswered) {
     optionStyles = "bg-[var(--lo1-gold)]/10 border border-[var(--lo1-gold)]/40";
   }
 
-  // Determine radio button styling
+  // Determine radio button styling (theme-aware)
   let radioStyles = "border-2 border-[var(--lo1-celestial)]/40";
   let radioInner = "";
   if (showAsCorrect) {
-    radioStyles = "border-2 border-green-500 bg-green-500";
+    radioStyles = "border-2 border-[var(--lo1-success-text)] bg-[var(--lo1-success-text)]";
     radioInner = "bg-white";
   } else if (showAsWrong) {
-    radioStyles = "border-2 border-amber-500 bg-amber-500";
+    radioStyles = "border-2 border-[var(--lo1-warning-text)] bg-[var(--lo1-warning-text)]";
     radioInner = "bg-white";
   } else if (isSelected) {
     radioStyles = "border-2 border-[var(--lo1-gold)] bg-[var(--lo1-gold)]";
     radioInner = "bg-[var(--lo1-space)]";
   }
 
-  // Determine text styling
+  // Determine text styling (theme-aware)
   let textStyles = "text-[var(--lo1-text-light)]";
   if (isSelected && !isAnswered) {
     textStyles = "text-[var(--lo1-starlight)]";
   } else if (showAsCorrect) {
-    textStyles = "text-green-300";
+    textStyles = "text-[var(--lo1-success-text)]";
   } else if (showAsWrong) {
-    textStyles = "text-amber-300";
+    textStyles = "text-[var(--lo1-warning-text)]";
   }
 
   return (
@@ -94,8 +94,8 @@ const QuizOption = memo(function QuizOption({
       <span className={`flex-1 ${textStyles}`}>
         {text}
       </span>
-      {showAsCorrect && <span className="text-green-400">✓</span>}
-      {showAsWrong && <span className="text-amber-400">✗</span>}
+      {showAsCorrect && <span className="text-[var(--lo1-success-text)]">✓</span>}
+      {showAsWrong && <span className="text-[var(--lo1-warning-text)]">✗</span>}
     </label>
   );
 });
