@@ -1,271 +1,400 @@
 /**
- * Validate daily quotes against the actual Ra Material.
+ * Validate that all quotes in the concept graph and study paths reference real Ra Material quotes.
  *
- * This script reads the local section JSON files and compares
- * stored quotes to the actual text to ensure accuracy.
- *
- * Usage:
- *   npx tsx scripts/validate-quotes.ts
- *   npx tsx scripts/validate-quotes.ts --verbose
- *   npx tsx scripts/validate-quotes.ts --fix  # Output corrected quotes
+ * Run with: npm run validate:quotes
  */
 
 import * as fs from "fs";
 import * as path from "path";
-import { dailyQuotes, type DailyQuote } from "../src/data/daily-quotes";
 
-const VERBOSE = process.argv.includes("--verbose");
-const FIX_MODE = process.argv.includes("--fix");
-
-const SECTIONS_DIR = path.join(__dirname, "../public/sections");
-
-interface ValidationResult {
-  quote: DailyQuote;
-  status: "valid" | "mismatch" | "not_found" | "error";
-  actualText?: string;
-  similarity?: number;
-  error?: string;
+interface KeyPassage {
+  reference: string;
+  excerpt: string;
+  context: string;
 }
 
-/**
- * Fetch the actual quote text from local section files
- */
-function fetchQuoteFromLocal(reference: string): string | null {
-  // Parse reference like "Ra 1.7" -> session 1, question 7
-  const match = reference.match(/Ra (\d+)\.(\d+)/);
-  if (!match) {
-    console.error(`Invalid reference format: ${reference}`);
-    return null;
-  }
-
-  const session = match[1];
-  const question = match[2];
-  const key = `${session}.${question}`;
-
-  const filePath = path.join(SECTIONS_DIR, `${session}.json`);
-
-  try {
-    if (!fs.existsSync(filePath)) {
-      console.error(`Section file not found: ${filePath}`);
-      return null;
-    }
-
-    const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-
-    if (data[key]) {
-      return data[key];
-    }
-
-    // Try without leading zeros
-    const altKey = `${parseInt(session)}.${parseInt(question)}`;
-    if (data[altKey]) {
-      return data[altKey];
-    }
-
-    console.error(`Key ${key} not found in ${filePath}`);
-    return null;
-  } catch (error) {
-    console.error(`Error reading ${filePath}:`, error);
-    return null;
-  }
+interface GraphConcept {
+  id: string;
+  term: string;
+  keyPassages: KeyPassage[];
 }
 
-/**
- * Normalize text for comparison
- */
+interface ConceptGraph {
+  concepts: Record<string, GraphConcept>;
+}
+
+// Study path types
+interface StudyPathSection {
+  type: string;
+  reference?: string;
+  text?: string;
+}
+
+interface StudyPathLesson {
+  id: string;
+  title: string;
+  sections: StudyPathSection[];
+}
+
+interface StudyPath {
+  id: string;
+  title: string;
+  lessons: StudyPathLesson[];
+}
+
+// Load paths
+const conceptGraphPath = path.join(__dirname, "../src/data/concept-graph.json");
+const studyPathsDir = path.join(__dirname, "../src/data/study-paths");
+const sectionsDir = path.join(__dirname, "../public/sections");
+
+function loadConceptGraph(): ConceptGraph {
+  const data = fs.readFileSync(conceptGraphPath, "utf-8");
+  return JSON.parse(data);
+}
+
+function loadStudyPaths(): StudyPath[] {
+  const paths: StudyPath[] = [];
+  if (!fs.existsSync(studyPathsDir)) {
+    return paths;
+  }
+  const files = fs.readdirSync(studyPathsDir).filter(f => f.endsWith(".json"));
+  for (const file of files) {
+    const filePath = path.join(studyPathsDir, file);
+    const data = fs.readFileSync(filePath, "utf-8");
+    paths.push(JSON.parse(data));
+  }
+  return paths;
+}
+
+function loadSession(sessionNum: number): Record<string, string> | null {
+  const filePath = path.join(sectionsDir, `${sessionNum}.json`);
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+  const data = fs.readFileSync(filePath, "utf-8");
+  return JSON.parse(data);
+}
+
+// Load all sessions
+function loadAllSessions(): Map<string, string> {
+  const allText = new Map<string, string>();
+  for (let i = 1; i <= 106; i++) {
+    const session = loadSession(i);
+    if (session) {
+      for (const [key, text] of Object.entries(session)) {
+        allText.set(key, text);
+      }
+    }
+  }
+  return allText;
+}
+
+function parseReference(reference: string): { session: number; question: number } | null {
+  // Handle formats like "16.51", "1.0", "82.10"
+  const match = reference.match(/^(\d+)\.(\d+)$/);
+  if (match) {
+    return {
+      session: parseInt(match[1], 10),
+      question: parseInt(match[2], 10),
+    };
+  }
+  return null;
+}
+
 function normalizeText(text: string): string {
+  // Normalize for comparison: lowercase, remove extra whitespace, punctuation variations
   return text
     .toLowerCase()
-    .replace(/[""'']/g, '"')     // Normalize quotes
-    .replace(/[—–]/g, "-")       // Normalize dashes
-    .replace(/\.\.\./g, "…")     // Normalize ellipsis
-    .replace(/\s+/g, " ")        // Normalize whitespace
-    .replace(/\bi am ra\b/gi, "") // Remove "I am Ra" prefix variations
-    .replace(/^ra:\s*/i, "")     // Remove "Ra:" prefix
+    .replace(/\s+/g, " ")
+    .replace(/[""]/g, '"')
+    .replace(/['']/g, "'")
+    .replace(/…/g, "...")
+    .replace(/—/g, "-")
+    .replace(/\[.*?\]/g, "") // Remove bracketed editorial notes
     .trim();
 }
 
-/**
- * Check if our stored quote text appears in the source text
- * Returns a similarity score (0-1)
- */
-function calculateSimilarity(stored: string, source: string): number {
-  const normalizedStored = normalizeText(stored);
-  const normalizedSource = normalizeText(source);
+function getExcerptSignature(excerpt: string): string[] {
+  // Get key phrases from the excerpt for matching
+  const normalized = normalizeText(excerpt);
+  // Get unique significant words (>4 chars)
+  const words = normalized.split(" ").filter(w => w.length > 4);
+  return words.slice(0, 15);
+}
 
-  // Check if stored text is a substring of source (exact match)
-  if (normalizedSource.includes(normalizedStored)) {
-    return 1.0;
-  }
+function excerptExistsInText(excerpt: string, fullText: string): boolean {
+  const normalizedFull = normalizeText(fullText);
 
-  // Check if most words from stored appear in source
-  const storedWords = normalizedStored.split(/\s+/).filter(w => w.length > 3);
-  const sourceWords = new Set(normalizedSource.split(/\s+/));
+  // Check for key phrase matches
+  const signature = getExcerptSignature(excerpt);
+  if (signature.length === 0) return false;
 
   let matchCount = 0;
-  for (const word of storedWords) {
-    if (sourceWords.has(word)) {
+  for (const word of signature) {
+    if (normalizedFull.includes(word)) {
       matchCount++;
     }
   }
 
-  const wordSimilarity = storedWords.length > 0 ? matchCount / storedWords.length : 0;
+  const matchRatio = matchCount / signature.length;
 
-  // Also check for key phrases (consecutive words)
-  const storedPhrases = extractPhrases(normalizedStored, 3);
-  const sourcePhrases = extractPhrases(normalizedSource, 3);
+  // Need at least 80% of signature words to match
+  return matchRatio >= 0.8;
+}
 
-  let phraseMatchCount = 0;
-  for (const phrase of storedPhrases) {
-    if (sourcePhrases.has(phrase)) {
-      phraseMatchCount++;
+function findQuoteInAllSessions(
+  excerpt: string,
+  allSessions: Map<string, string>
+): string | null {
+  const signature = getExcerptSignature(excerpt);
+  if (signature.length === 0) return null;
+
+  let bestMatch: { ref: string; score: number } | null = null;
+
+  for (const [ref, text] of allSessions) {
+    const normalizedText = normalizeText(text);
+    let matchCount = 0;
+    for (const word of signature) {
+      if (normalizedText.includes(word)) {
+        matchCount++;
+      }
+    }
+    const score = matchCount / signature.length;
+    if (score >= 0.8 && (!bestMatch || score > bestMatch.score)) {
+      bestMatch = { ref, score };
     }
   }
 
-  const phraseSimilarity = storedPhrases.size > 0 ? phraseMatchCount / storedPhrases.size : 0;
-
-  // Weight phrase similarity higher (more reliable indicator)
-  return phraseSimilarity * 0.7 + wordSimilarity * 0.3;
+  return bestMatch?.ref || null;
 }
 
-/**
- * Extract n-word phrases from text
- */
-function extractPhrases(text: string, n: number): Set<string> {
-  const words = text.split(/\s+/);
-  const phrases = new Set<string>();
-
-  for (let i = 0; i <= words.length - n; i++) {
-    phrases.add(words.slice(i, i + n).join(" "));
-  }
-
-  return phrases;
+interface ValidationResult {
+  source: "concept-graph" | "study-path";
+  sourceId: string;
+  sourceName: string;
+  reference: string;
+  excerpt: string;
+  status: "valid" | "invalid_reference" | "quote_not_found" | "wrong_reference" | "session_not_found";
+  suggestedReference?: string;
+  actualText?: string;
 }
 
-/**
- * Validate a single quote
- */
-function validateQuote(quote: DailyQuote): ValidationResult {
-  const actualText = fetchQuoteFromLocal(quote.reference);
+function validateQuote(
+  source: "concept-graph" | "study-path",
+  sourceId: string,
+  sourceName: string,
+  reference: string,
+  excerpt: string,
+  sessionCache: Map<number, Record<string, string> | null>,
+  allSessions: Map<string, string>
+): ValidationResult {
+  const parsed = parseReference(reference);
 
-  if (actualText === null) {
+  if (!parsed) {
     return {
-      quote,
-      status: "not_found",
-      error: "Could not find in local section files",
+      source,
+      sourceId,
+      sourceName,
+      reference,
+      excerpt,
+      status: "invalid_reference",
     };
   }
 
-  const similarity = calculateSimilarity(quote.text, actualText);
+  // Load session (with caching)
+  if (!sessionCache.has(parsed.session)) {
+    sessionCache.set(parsed.session, loadSession(parsed.session));
+  }
+  const session = sessionCache.get(parsed.session);
 
-  // 70% threshold - accounts for partial quotes and minor variations
-  if (similarity >= 0.7) {
+  if (!session) {
     return {
-      quote,
+      source,
+      sourceId,
+      sourceName,
+      reference,
+      excerpt,
+      status: "session_not_found",
+    };
+  }
+
+  const questionKey = `${parsed.session}.${parsed.question}`;
+  const actualText = session[questionKey];
+
+  // Check if quote exists at the stated reference
+  if (actualText && excerptExistsInText(excerpt, actualText)) {
+    return {
+      source,
+      sourceId,
+      sourceName,
+      reference,
+      excerpt,
       status: "valid",
-      actualText,
-      similarity,
     };
   }
 
-  return {
-    quote,
-    status: "mismatch",
-    actualText,
-    similarity,
-  };
+  // Quote not found at stated reference - search all sessions
+  const foundRef = findQuoteInAllSessions(excerpt, allSessions);
+
+  if (foundRef && foundRef !== questionKey) {
+    return {
+      source,
+      sourceId,
+      sourceName,
+      reference,
+      excerpt,
+      status: "wrong_reference",
+      suggestedReference: foundRef,
+      actualText: allSessions.get(foundRef)?.substring(0, 150) + "...",
+    };
+  } else if (!foundRef) {
+    return {
+      source,
+      sourceId,
+      sourceName,
+      reference,
+      excerpt,
+      status: "quote_not_found",
+      actualText: actualText ? actualText.substring(0, 150) + "..." : "Reference not found",
+    };
+  } else {
+    return {
+      source,
+      sourceId,
+      sourceName,
+      reference,
+      excerpt,
+      status: "valid",
+    };
+  }
 }
 
-/**
- * Main validation function
- */
-function main() {
-  console.log(`\nValidating ${dailyQuotes.length} daily quotes...\n`);
-  console.log(`Reading from: ${SECTIONS_DIR}\n`);
-
+function validateAllQuotes(): ValidationResult[] {
   const results: ValidationResult[] = [];
-  let validCount = 0;
-  let mismatchCount = 0;
-  let notFoundCount = 0;
-  let errorCount = 0;
+  const sessionCache = new Map<number, Record<string, string> | null>();
+  const allSessions = loadAllSessions();
 
-  for (const quote of dailyQuotes) {
-    try {
-      const result = validateQuote(quote);
-      results.push(result);
-
-      switch (result.status) {
-        case "valid":
-          validCount++;
-          if (VERBOSE) {
-            console.log(`✓ ${quote.reference} - Valid (${Math.round((result.similarity || 0) * 100)}% match)`);
-          }
-          break;
-        case "mismatch":
-          mismatchCount++;
-          console.log(`✗ ${quote.reference} - MISMATCH (${Math.round((result.similarity || 0) * 100)}% match)`);
-          console.log(`  Stored: "${quote.text.slice(0, 80)}..."`);
-          console.log(`  Actual: "${result.actualText?.slice(0, 80)}..."`);
-          console.log();
-          break;
-        case "not_found":
-          notFoundCount++;
-          console.log(`? ${quote.reference} - Not found in local files`);
-          break;
-        case "error":
-          errorCount++;
-          console.log(`! ${quote.reference} - Error: ${result.error}`);
-          break;
-      }
-    } catch (error) {
-      errorCount++;
-      results.push({
-        quote,
-        status: "error",
-        error: String(error),
-      });
-      console.log(`! ${quote.reference} - Error: ${error}`);
+  // Validate concept graph quotes
+  const graph = loadConceptGraph();
+  for (const [conceptId, concept] of Object.entries(graph.concepts)) {
+    for (const passage of concept.keyPassages) {
+      results.push(
+        validateQuote(
+          "concept-graph",
+          conceptId,
+          concept.term,
+          passage.reference,
+          passage.excerpt,
+          sessionCache,
+          allSessions
+        )
+      );
     }
   }
 
-  // Summary
-  console.log("\n" + "=".repeat(60));
-  console.log("VALIDATION SUMMARY");
-  console.log("=".repeat(60));
-  console.log(`Total quotes:    ${dailyQuotes.length}`);
-  console.log(`Valid:           ${validCount} (${Math.round(validCount / dailyQuotes.length * 100)}%)`);
-  console.log(`Mismatches:      ${mismatchCount}`);
-  console.log(`Not found:       ${notFoundCount}`);
-  console.log(`Errors:          ${errorCount}`);
-  console.log("=".repeat(60));
-
-  // If fix mode, output corrected quotes
-  if (FIX_MODE && mismatchCount > 0) {
-    console.log("\n\nCORRECTED QUOTES (copy these to fix mismatches):\n");
-    for (const result of results) {
-      if (result.status === "mismatch" && result.actualText) {
-        // Clean up the actual text for use as a quote
-        const cleanText = result.actualText
-          .replace(/^Ra: I am Ra\.\s*/i, "")
-          .replace(/^I am Ra\.\s*/i, "")
-          .trim();
-
-        console.log(`  {`);
-        console.log(`    text: "${cleanText.replace(/"/g, '\\"').replace(/\n/g, "\\n")}",`);
-        console.log(`    reference: "${result.quote.reference}",`);
-        console.log(`    url: "${result.quote.url}",`);
-        console.log(`  },`);
-        console.log();
+  // Validate study path quotes
+  const studyPaths = loadStudyPaths();
+  for (const studyPath of studyPaths) {
+    for (const lesson of studyPath.lessons) {
+      for (const section of lesson.sections) {
+        if (section.type === "quote" && section.reference && section.text) {
+          results.push(
+            validateQuote(
+              "study-path",
+              `${studyPath.id}/${lesson.id}`,
+              `${studyPath.title} > ${lesson.title}`,
+              section.reference,
+              section.text,
+              sessionCache,
+              allSessions
+            )
+          );
+        }
       }
     }
   }
 
-  // Exit with error code if there are issues
-  if (mismatchCount > 0 || notFoundCount > 0 || errorCount > 0) {
-    process.exit(1);
-  }
-
-  console.log("\n✓ All quotes validated successfully!\n");
+  return results;
 }
 
-main();
+// Run validation
+console.log("Validating quotes against Ra Material...\n");
+console.log("Loading all 106 sessions...");
+
+const results = validateAllQuotes();
+
+// Separate by source
+const conceptGraphResults = results.filter(r => r.source === "concept-graph");
+const studyPathResults = results.filter(r => r.source === "study-path");
+
+// Calculate stats for concept graph
+const cgValid = conceptGraphResults.filter(r => r.status === "valid");
+const cgWrongRef = conceptGraphResults.filter(r => r.status === "wrong_reference");
+const cgNotFound = conceptGraphResults.filter(r => r.status === "quote_not_found");
+const cgInvalidRef = conceptGraphResults.filter(r => r.status === "invalid_reference");
+
+// Calculate stats for study paths
+const spValid = studyPathResults.filter(r => r.status === "valid");
+const spWrongRef = studyPathResults.filter(r => r.status === "wrong_reference");
+const spNotFound = studyPathResults.filter(r => r.status === "quote_not_found");
+const spInvalidRef = studyPathResults.filter(r => r.status === "invalid_reference");
+
+console.log(`\n=== CONCEPT GRAPH ===`);
+console.log(`Total passages checked: ${conceptGraphResults.length}`);
+console.log(`  Valid: ${cgValid.length}`);
+console.log(`  Wrong reference (fixable): ${cgWrongRef.length}`);
+console.log(`  Not found anywhere (fabricated?): ${cgNotFound.length}`);
+console.log(`  Invalid reference format: ${cgInvalidRef.length}`);
+
+console.log(`\n=== STUDY PATHS ===`);
+console.log(`Total quotes checked: ${studyPathResults.length}`);
+console.log(`  Valid: ${spValid.length}`);
+console.log(`  Wrong reference (fixable): ${spWrongRef.length}`);
+console.log(`  Not found anywhere (fabricated?): ${spNotFound.length}`);
+console.log(`  Invalid reference format: ${spInvalidRef.length}`);
+
+const allWrongRef = [...cgWrongRef, ...spWrongRef];
+const allNotFound = [...cgNotFound, ...spNotFound];
+const allInvalidRef = [...cgInvalidRef, ...spInvalidRef];
+
+if (allWrongRef.length > 0) {
+  console.log("\n=== WRONG REFERENCE (quote exists but at different location) ===\n");
+  for (const result of allWrongRef) {
+    const prefix = result.source === "concept-graph" ? "Concept" : "Study Path";
+    console.log(`${prefix}: ${result.sourceName}`);
+    console.log(`  Stated ref: ${result.reference} -> Should be: ${result.suggestedReference}`);
+    console.log(`  Excerpt: "${result.excerpt.substring(0, 80)}..."`);
+    console.log("");
+  }
+}
+
+if (allNotFound.length > 0) {
+  console.log("=== NOT FOUND (possibly fabricated) ===\n");
+  for (const result of allNotFound) {
+    const prefix = result.source === "concept-graph" ? "Concept" : "Study Path";
+    console.log(`${prefix}: ${result.sourceName} (${result.sourceId})`);
+    console.log(`  Stated ref: ${result.reference}`);
+    console.log(`  Excerpt: "${result.excerpt.substring(0, 80)}..."`);
+    if (result.actualText) {
+      console.log(`  Actual at ref: "${result.actualText.substring(0, 80)}..."`);
+    }
+    console.log("");
+  }
+}
+
+if (allInvalidRef.length > 0) {
+  console.log("=== INVALID REFERENCE FORMAT ===\n");
+  for (const result of allInvalidRef) {
+    const prefix = result.source === "concept-graph" ? "Concept" : "Study Path";
+    console.log(`${prefix}: ${result.sourceName} - Reference: ${result.reference}`);
+  }
+}
+
+const hasErrors = allNotFound.length > 0 || allInvalidRef.length > 0;
+console.log(`\n=== SUMMARY ===`);
+console.log(`Total quotes validated: ${results.length}`);
+console.log(`  Concept Graph: ${conceptGraphResults.length}`);
+console.log(`  Study Paths: ${studyPathResults.length}`);
+console.log(`Status: ${hasErrors ? "FAILED - Issues found" : "PASSED - All quotes valid"}`);
+
+process.exit(hasErrors ? 1 : 0);

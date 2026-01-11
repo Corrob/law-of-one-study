@@ -176,16 +176,16 @@ export function createForceSimulation(
     .velocityDecay(0.5); // Higher friction for more controlled movement
 }
 
-// Category display labels
+// Category display labels - match names from concept-graph.json
 export const CATEGORY_LABELS: Record<ConceptCategory, string> = {
-  cosmology: "Cosmology",
-  polarity: "Polarity",
-  "energy-work": "Energy Work",
-  incarnation: "Incarnation",
-  entities: "Entities",
+  cosmology: "Cosmology & Structure",
+  polarity: "Polarity & Service",
+  "energy-work": "Energy Centers",
+  incarnation: "Incarnation & Catalyst",
+  entities: "Beings & Contacts",
   metaphysics: "Metaphysics",
-  practice: "Practice",
-  archetypes: "Archetypes",
+  practice: "Spiritual Practice",
+  archetypes: "Archetypical Mind",
 };
 
 // Sugiyama layout for hierarchical DAG visualization

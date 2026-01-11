@@ -103,28 +103,24 @@ export default function ConceptGraph({
     svg.call(zoom);
     zoomRef.current = zoom;
 
-    // Apply initial zoomed-out transform on mobile
-    if (isMobile && dimensions.width > 0) {
-      const scale = 0.55;
+    // Apply initial zoomed-out transform to show all categories
+    if (dimensions.width > 0) {
+      const scale = isMobile ? 0.55 : 0.75; // More zoomed out on mobile
       const offsetX = (dimensions.width * (1 - scale)) / 2;
       const offsetY = (dimensions.height * (1 - scale)) / 2;
       const initialTransform = d3.zoomIdentity.translate(offsetX, offsetY).scale(scale);
       svg.call(zoom.transform, initialTransform);
     }
 
-    // Double-click to reset zoom (to fit view on mobile, identity on desktop)
+    // Double-click to reset zoom (to fit view showing all categories)
     svg.on("dblclick.zoom", () => {
-      if (isMobile) {
-        const scale = 0.55;
-        const offsetX = (dimensions.width * (1 - scale)) / 2;
-        const offsetY = (dimensions.height * (1 - scale)) / 2;
-        svg.transition().duration(300).call(
-          zoom.transform,
-          d3.zoomIdentity.translate(offsetX, offsetY).scale(scale)
-        );
-      } else {
-        svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
-      }
+      const scale = isMobile ? 0.55 : 0.75;
+      const offsetX = (dimensions.width * (1 - scale)) / 2;
+      const offsetY = (dimensions.height * (1 - scale)) / 2;
+      svg.transition().duration(300).call(
+        zoom.transform,
+        d3.zoomIdentity.translate(offsetX, offsetY).scale(scale)
+      );
     });
 
     return () => {
