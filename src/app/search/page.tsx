@@ -240,7 +240,7 @@ export default function SearchPage() {
 
                   {/* Results */}
                   {results.length > 0 && !isLoading && (
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       <p className="text-sm text-[var(--lo1-stardust)]/60 pt-2">
                         Closest {results.length} matches by meaning
                       </p>

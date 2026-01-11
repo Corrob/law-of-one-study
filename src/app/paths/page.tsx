@@ -64,11 +64,11 @@ export default function PathsPage() {
               <h1 className="text-2xl font-semibold text-[var(--lo1-starlight)] mb-6">
                 Study Paths
               </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[1, 2, 3, 4].map((i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="h-32 rounded-lg bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 animate-pulse"
+                    className="h-44 rounded-xl bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 animate-pulse"
                   />
                 ))}
               </div>
@@ -103,7 +103,7 @@ export default function PathsPage() {
                 <h2 className="text-lg font-medium text-[var(--lo1-starlight)] mb-4">
                   Continue Your Journey
                 </h2>
-                <div className="space-y-4">
+                <div className="space-y-5">
                   {inProgress.slice(0, MAX_CONTINUE_PATHS).map((path) => (
                     <PathCard
                       key={path.id}
@@ -128,7 +128,7 @@ export default function PathsPage() {
                 <h2 className="text-lg font-medium text-[var(--lo1-starlight)] mb-4">
                   Available Paths
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {notStarted.map((path) => (
                     <PathCard
                       key={path.id}
@@ -174,7 +174,7 @@ export default function PathsPage() {
                   </svg>
                   Completed Paths
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   {completed.map((path) => (
                     <PathCard
                       key={path.id}

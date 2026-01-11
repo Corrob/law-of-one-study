@@ -59,16 +59,31 @@ export default function ExplorePage() {
                 expandedCategories={expandedCategories}
               />
 
-              {/* Stats overlay */}
-              <div className="absolute top-4 left-4 text-xs text-[var(--lo1-stardust)]">
-                {stats.visibleConcepts > 0 ? (
-                  <span>
-                    {stats.visibleConcepts} concepts &middot; {stats.totalLinks} connections
-                  </span>
-                ) : (
-                  <span>Click a category to explore</span>
-                )}
-              </div>
+              {/* Stats overlay - only show when concepts visible */}
+              {stats.visibleConcepts > 0 && (
+                <div className="absolute top-4 left-4 text-xs text-[var(--lo1-stardust)] bg-[var(--lo1-space)]/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                  {stats.visibleConcepts} concepts &middot; {stats.totalLinks} connections
+                </div>
+              )}
+
+              {/* Onboarding hint - show when no categories expanded */}
+              {stats.visibleConcepts === 0 && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="text-center max-w-xs mx-4 animate-pulse">
+                    <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[var(--lo1-gold)]/20 flex items-center justify-center">
+                      <svg className="w-6 h-6 text-[var(--lo1-gold)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                      </svg>
+                    </div>
+                    <p className="text-[var(--lo1-starlight)] font-medium mb-2">
+                      Tap a category to explore
+                    </p>
+                    <p className="text-sm text-[var(--lo1-stardust)]/70">
+                      Each circle contains related concepts from the Ra Material
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Concept detail panel */}

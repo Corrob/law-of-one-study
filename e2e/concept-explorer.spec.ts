@@ -27,10 +27,13 @@ test.describe("Concept Explorer", () => {
     await expect(clusterNodes).toHaveCount(8);
   });
 
-  test("should show stats overlay", async ({ page }) => {
-    // Should show initial instruction text
+  test("should show onboarding hint when no categories expanded", async ({ page }) => {
+    // Should show centered onboarding hint
     await expect(
-      page.getByText("Click a category to explore")
+      page.getByText("Tap a category to explore")
+    ).toBeVisible();
+    await expect(
+      page.getByText("Each circle contains related concepts from the Ra Material")
     ).toBeVisible();
   });
 

@@ -63,19 +63,34 @@ const PathIntroView = memo(function PathIntroView({
       </div>
 
       {/* Table of Contents */}
-      <div className="bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 rounded-lg p-6 mb-8">
-        <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-4">
+      <div className="bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 rounded-xl p-6 mb-8">
+        <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-5">
           What You&apos;ll Learn
         </h2>
-        <ol className="space-y-3">
+        <ol className="space-y-1">
           {path.lessons.map((lesson, index) => (
-            <li key={lesson.id} className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--lo1-celestial)]/20 text-[var(--lo1-celestial)] text-sm flex items-center justify-center">
-                {index + 1}
-              </span>
-              <span className="text-[var(--lo1-text-light)] pt-0.5">
-                {lesson.title}
-              </span>
+            <li key={lesson.id} className="relative flex items-center gap-4 group">
+              {/* Connecting line */}
+              {index < path.lessons.length - 1 && (
+                <div className="absolute left-[18px] top-[36px] w-0.5 h-[calc(100%)] bg-gradient-to-b from-[var(--lo1-celestial)]/30 to-transparent" />
+              )}
+              {/* Step number */}
+              <div className="relative flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-[var(--lo1-celestial)]/20 to-[var(--lo1-indigo)]/30 border border-[var(--lo1-celestial)]/20 flex items-center justify-center group-hover:border-[var(--lo1-gold)]/40 transition-colors">
+                <span className="text-sm font-semibold text-[var(--lo1-celestial)] group-hover:text-[var(--lo1-gold)] transition-colors">
+                  {index + 1}
+                </span>
+              </div>
+              {/* Lesson title */}
+              <div className="flex-1 py-3">
+                <span className="text-[var(--lo1-text-light)] group-hover:text-[var(--lo1-starlight)] transition-colors">
+                  {lesson.title}
+                </span>
+                {lesson.estimatedMinutes && (
+                  <span className="ml-2 text-xs text-[var(--lo1-text-light)]/40">
+                    ~{lesson.estimatedMinutes} min
+                  </span>
+                )}
+              </div>
             </li>
           ))}
         </ol>
