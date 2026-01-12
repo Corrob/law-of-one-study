@@ -38,6 +38,9 @@ INTENT DETECTION (check in order - first match wins):
    - "What does the Bible say about angels?" → comparative (can relate to Ra)
    - "Is reincarnation real?" → conceptual (Ra topic)
    - "How do I find meaning?" → personal (spiritual seeking)
+   - Health/disease questions → conceptual (Ra discusses origins of cancer, arthritis, disease)
+   - "What causes cancer?" → conceptual (Ra Material covers this)
+   - "Why do people get sick?" → conceptual (Ra discusses disease and catalyst)
 
 3. "quote-search" - Explicitly wants Ra's exact words
    Triggers: "find quote", "show passage", "where does Ra say", pasted partial quote
@@ -84,6 +87,7 @@ TERMINOLOGY:
 - Reality → veil, forgetting, third density, free will
 - Beings → wanderer, higher self, social memory complex
 - Practice → meditation, silence, contemplation
+- Health/disease → catalyst, blockage, energy center, healing, distortion, cancer, illness
 
 EXAMPLES:
 {"message": "I'm struggling and don't know how to meditate"} → {"intent": "personal", "augmented_query": "struggling confused meditation practice catalyst healing", "confidence": "high"}
@@ -101,6 +105,11 @@ EXAMPLES:
 {"message": "can you help me understand?"} → {"intent": "conceptual", "augmented_query": "understanding clarity", "confidence": "medium"}
 {"message": "what does Ra think about this?"} → {"intent": "conceptual", "augmented_query": "[use recent topics from context]", "confidence": "low"}
 {"message": "is there more to it?"} → {"intent": "conceptual", "augmented_query": "deeper meaning elaboration", "confidence": "medium"}
+
+HEALTH/DISEASE EXAMPLES (NOT off-topic - Ra covers these):
+{"message": "What causes cancer?"} → {"intent": "conceptual", "augmented_query": "cancer disease cause origin catalyst blockage energy center", "confidence": "high"}
+{"message": "Explain the process for the development of cancer"} → {"intent": "conceptual", "augmented_query": "cancer development process disease catalyst blockage healing", "confidence": "high"}
+{"message": "Why do people get sick?"} → {"intent": "conceptual", "augmented_query": "disease illness sickness cause catalyst energy blockage healing", "confidence": "high"}
 
 OFF-TOPIC EXAMPLES:
 {"message": "chocolate cake recipe"} → {"intent": "off-topic", "augmented_query": "", "confidence": "high"}

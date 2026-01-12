@@ -36,25 +36,18 @@ export function getOffTopicResponse(): OffTopicHandlerResult {
  * Streams an off-topic response through SSE
  *
  * @param send - The SSE sender function
- * @param chunkSize - Number of characters per chunk (default 10)
- * @param chunkDelay - Delay between chunks in ms (default 10)
  */
 export async function streamOffTopicResponse(
-  send: SSESender,
-  chunkSize = 10,
-  chunkDelay = 10
+  send: SSESender
 ): Promise<void> {
   const { message, suggestions } = getOffTopicResponse();
 
   // Send meta event with no quotes
   send("meta", { quotes: [], intent: "off-topic", confidence: "high" });
 
-  // Stream the message in chunks for consistent UX
-  for (let i = 0; i < message.length; i += chunkSize) {
-    const chunk = message.slice(i, i + chunkSize);
-    send("chunk", { type: "text", content: chunk });
-    await new Promise((resolve) => setTimeout(resolve, chunkDelay));
-  }
+  // Send the message as a single chunk to avoid formatting issues
+  // (Multiple small chunks create separate block elements with margins)
+  send("chunk", { type: "text", content: message });
 
   // Send suggestions
   send("suggestions", { items: suggestions });

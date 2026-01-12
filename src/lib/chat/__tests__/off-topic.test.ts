@@ -43,15 +43,13 @@ describe("off-topic", () => {
         data: { quotes: [], intent: "off-topic", confidence: "high" },
       });
 
-      // Should send chunks
+      // Should send the message as a single chunk
       const chunks = events.filter((e) => e.event === "chunk");
-      expect(chunks.length).toBeGreaterThan(0);
-
-      // Reconstruct the message from chunks
-      const reconstructed = chunks
-        .map((e) => (e.data as { content: string }).content)
-        .join("");
-      expect(reconstructed).toBe(OFF_TOPIC_MESSAGE);
+      expect(chunks).toHaveLength(1);
+      expect(chunks[0]).toEqual({
+        event: "chunk",
+        data: { type: "text", content: OFF_TOPIC_MESSAGE },
+      });
 
       // Should send suggestions
       const suggestionsEvent = events.find((e) => e.event === "suggestions");
@@ -65,22 +63,6 @@ describe("off-topic", () => {
       expect(doneEvent).toEqual({
         event: "done",
         data: {},
-      });
-    });
-
-    it("should respect custom chunk size", async () => {
-      const events: Array<{ event: string; data: object }> = [];
-      const send = jest.fn((event: string, data: object) => {
-        events.push({ event, data });
-      });
-
-      await streamOffTopicResponse(send, 20, 1);
-
-      const chunks = events.filter((e) => e.event === "chunk");
-      // With chunk size of 20, each chunk should be at most 20 chars
-      chunks.forEach((chunk) => {
-        const content = (chunk.data as { content: string }).content;
-        expect(content.length).toBeLessThanOrEqual(20);
       });
     });
   });
