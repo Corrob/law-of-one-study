@@ -19,15 +19,23 @@
 
 ## Current State
 
+**Phase 1 Complete!** All discovery and learning tools are now live.
+
 **Shipped:**
-- AI-powered semantic search across all 106 sessions
-- Real-time streaming responses with quote attribution
+- AI-powered chat with streaming responses and quote attribution
 - Interactive quote cards with source links
 - Concept detection and linking in responses
 - Suggestion chips for follow-up questions
 - Animated, personality-driven UI
+- Dark and light theme support
 - Onboarding modal for new users
-- Support/About page
+- About page
+
+**Phase 1 Features (Shipped):**
+- Semantic Search — search by sentence or passage across all 106 sessions
+- Concept Explorer — interactive graph of 100+ concepts with relationships
+- Guided Study Paths — curated lessons with quizzes and reflections
+- Daily Quote — rotating wisdom on the home page
 
 ---
 
@@ -106,11 +114,11 @@ Profile opens **"My Library"** — a personal hub that grows across phases.
 
 ---
 
-## Phase 1: Learning & Discovery
+## Phase 1: Learning & Discovery ✓ Complete
 
 **Theme:** Enhance the learning experience without requiring accounts.
 
-**Development:** Feature branch → `develop` → `main` (prod)
+**Status:** All Phase 1 features are shipped and live at [lawofone.study](https://lawofone.study).
 
 ---
 

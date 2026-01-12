@@ -73,7 +73,7 @@ Ready to contribute code? Here's how:
 
 ### Prerequisites
 
-- Node.js 20 or higher
+- Node.js 18 or higher
 - npm, yarn, or pnpm
 - Git
 
@@ -128,14 +128,21 @@ Ready to contribute code? Here's how:
 ### Project Structure
 
 ```
-/app              # Next.js app router pages and API routes
-/components       # React components
-/lib              # Utilities (Pinecone, OpenAI, analytics)
-/scripts          # Data processing scripts
-/sections         # Ra Material source data (106 JSON files)
-/data             # Static data (placeholders, roadmap features, etc.)
-/types            # TypeScript type definitions
-/hooks            # React custom hooks
+src/
+├── app/                    # Next.js app router pages and API routes
+│   └── api/chat/           # Chat API route
+├── components/             # React components with co-located tests
+├── contexts/               # React context providers
+├── hooks/                  # Custom React hooks with tests
+├── lib/                    # Business logic and utilities
+│   ├── chat/               # Chat pipeline modules
+│   ├── prompts/            # LLM prompts
+│   └── schemas/            # Zod validation schemas
+├── providers/              # App-level providers (PostHog, Theme)
+├── data/                   # Static data (concepts, study paths, etc.)
+scripts/                    # Data processing scripts
+public/sections/            # Ra Material source (106 JSON files)
+e2e/                        # Playwright E2E tests
 ```
 
 ---
@@ -294,6 +301,9 @@ npm run test:watch
 
 # Run tests with coverage
 npm run test:coverage
+
+# Run E2E tests (Playwright)
+npm run test:e2e
 ```
 
 ---

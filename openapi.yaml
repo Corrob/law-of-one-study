@@ -88,6 +88,81 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServerError'
 
+  /api/search:
+    post:
+      summary: Search the Ra Material
+      description: |
+        Semantic search across all 106 sessions of the Ra Material.
+
+        Supports two search modes:
+        - `sentence`: Search individual sentences for precise quote matching
+        - `passage`: Search full question/answer pairs for concept exploration
+      operationId: searchRaMaterial
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
+            examples:
+              sentenceSearch:
+                summary: Search by sentence
+                value:
+                  query: "no protection from storms"
+                  mode: "sentence"
+                  limit: 20
+              passageSearch:
+                summary: Search by passage
+                value:
+                  query: "What is the harvest?"
+                  mode: "passage"
+                  limit: 10
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+        '400':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                error: "Search query must be at least 2 characters"
+        '429':
+          description: Rate limited
+          headers:
+            X-RateLimit-Limit:
+              schema:
+                type: integer
+              description: Request limit per window
+            X-RateLimit-Remaining:
+              schema:
+                type: integer
+              description: Remaining requests in window
+            X-RateLimit-Reset:
+              schema:
+                type: string
+                format: date-time
+              description: When the rate limit resets
+            Retry-After:
+              schema:
+                type: integer
+              description: Seconds until retry is allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerError'
+
 components:
   schemas:
     ChatRequest:
@@ -267,3 +342,85 @@ components:
         error:
           type: string
           example: "Failed to process request"
+
+    SearchRequest:
+      type: object
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          description: The search query
+          minLength: 2
+          maxLength: 500
+          example: "What is the harvest?"
+        mode:
+          type: string
+          enum: [sentence, passage]
+          default: passage
+          description: |
+            Search mode:
+            - `sentence`: Search individual sentences for precise quote matching
+            - `passage`: Search full question/answer pairs for concept exploration
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 50
+          default: 20
+          description: Maximum number of results to return
+
+    SearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SearchResult'
+        query:
+          type: string
+          description: The original search query
+        totalResults:
+          type: integer
+          description: Number of results returned
+        mode:
+          type: string
+          enum: [sentence, passage]
+          description: The search mode used
+
+    SearchResult:
+      type: object
+      description: |
+        Search result with mode-specific fields.
+        Sentence mode returns `sentence`, `sentenceIndex`, `speaker`.
+        Passage mode returns `text`.
+      properties:
+        text:
+          type: string
+          description: Full passage text (passage mode only)
+        sentence:
+          type: string
+          description: Matched sentence text (sentence mode only)
+        sentenceIndex:
+          type: integer
+          description: Index of sentence within passage (sentence mode only)
+        speaker:
+          type: string
+          enum: [Ra, Questioner, both]
+          description: Who spoke the sentence (sentence mode only)
+        reference:
+          type: string
+          description: Session.question reference
+          example: "50.7"
+        session:
+          type: integer
+          description: Session number (1-106)
+        question:
+          type: integer
+          description: Question number within session
+        url:
+          type: string
+          format: uri
+          description: Link to lawofone.info
+        score:
+          type: number
+          description: Relevance score (higher is better)

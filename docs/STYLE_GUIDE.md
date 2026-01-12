@@ -6,6 +6,8 @@
 **Feel:** Expansive, ethereal, infinite - like gazing into the night sky
 **Tone:** Wise, gentle, inviting exploration of deeper truths
 
+> **Note:** The app supports both dark and light themes. Dark theme is the default and embodies the cosmic aesthetic described here. Light theme uses the Starlight/Cosmic White palette for comfortable daytime reading.
+
 ---
 
 ## Color Palette

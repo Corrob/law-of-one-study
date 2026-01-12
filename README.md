@@ -8,13 +8,20 @@ An AI-powered study companion for the Ra Material (Law of One). Ask questions, e
 
 ## Features
 
+### Core Experience
 - **Conversational AI** — Ask questions in natural language and receive thoughtful responses grounded in the Ra Material
 - **Smart Quote Integration** — Relevant passages are automatically retrieved and beautifully displayed with links to the source
-- **Intelligent Intent Detection** — Automatically adapts responses based on whether you're searching for quotes or seeking explanations
-- **Query Augmentation** — Your questions are enhanced with Ra Material terminology for better semantic search results
 - **Concept Linking** — Key terms (densities, polarity, catalyst, etc.) are subtly highlighted; hover for definitions, click to explore
+
+### Discovery Tools
+- **Semantic Search** — Search by sentence or passage with semantic matching across all 106 sessions
+- **Concept Explorer** — Interactive graph visualization of 100+ Law of One concepts and their relationships
+- **Guided Study Paths** — Curated learning journeys with lessons, quizzes, and reflection prompts
+- **Daily Quote** — Fresh wisdom from Ra each day on the home page
+
+### Experience
 - **Streaming Responses** — Real-time word-by-word animation for a natural reading experience
-- **Dark Cosmic Theme** — Immersive UI designed for contemplative study
+- **Dark & Light Themes** — Choose your preferred reading experience
 - **Mobile Friendly** — Fully responsive design
 
 ---
@@ -105,7 +112,7 @@ law-of-one-study/
 │   │   ├── ConceptPopover.tsx
 │   │   └── ...
 │   ├── data/
-│   │   ├── concepts.ts      # Law of One glossary (80+ terms)
+│   │   ├── concepts.ts      # Law of One glossary (100+ terms)
 │   │   ├── starters.ts      # Welcome screen prompts
 │   │   └── placeholders.ts  # Input placeholders
 │   ├── hooks/               # Custom React hooks
@@ -120,7 +127,7 @@ law-of-one-study/
 │       └── types.ts         # TypeScript types
 ├── scripts/
 │   └── index-ra.ts          # Pinecone indexing script
-├── sections/                # Ra Material source (106 JSON files)
+├── public/sections/         # Ra Material source (106 JSON files)
 └── public/                  # Static assets
 ```
 
@@ -142,7 +149,7 @@ This architecture provides fast, relevant responses without requiring special sy
 
 ### Concept Auto-Linking
 
-The app maintains a glossary of 80+ Law of One terms (`src/data/concepts.ts`). When these appear in AI responses:
+The app maintains a glossary of 100+ Law of One terms (`src/data/concepts.ts`). When these appear in AI responses:
 
 - Terms get a subtle dotted underline
 - Hovering shows a popover with the definition

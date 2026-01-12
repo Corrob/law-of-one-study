@@ -102,11 +102,14 @@ E2E tests are slow (~30s+) and run on every commit, so be strategic:
 
 ```
 e2e/
-├── chat-flow.spec.ts        # Happy path: send message, receive response
-├── error-states.spec.ts     # Error handling and recovery
-├── keyboard-navigation.spec.ts  # Accessibility
-├── multi-turn.spec.ts       # Conversation context
-└── rate-limit-recovery.spec.ts  # Rate limit UX
+├── chat-flow.spec.ts           # Happy path: send message, receive response
+├── concept-explorer.spec.ts    # Concept graph interactions
+├── error-states.spec.ts        # Error handling and recovery
+├── keyboard-navigation.spec.ts # Accessibility
+├── multi-turn.spec.ts          # Conversation context
+├── rate-limit-recovery.spec.ts # Rate limit UX
+├── search.spec.ts              # Semantic search feature
+└── study-paths.spec.ts         # Guided study paths
 ```
 
 **When to add E2E tests:**
@@ -211,7 +214,7 @@ throw new Error("Something went wrong");
 ### Styling
 
 - Tailwind CSS for all styling
-- Dark theme is the default/only theme
+- Dark theme is the default; light theme also supported
 - Use design tokens from Tailwind config
 
 ### Quote System
