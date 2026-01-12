@@ -16,8 +16,10 @@
 export const MODEL_CONFIG = {
   /** Primary model for chat responses */
   chatModel: "gpt-5-mini" as const,
-  /** Reasoning effort for main chat responses (quote selection, citations) */
-  chatReasoningEffort: "medium" as const,
+  /** Default reasoning effort for chat responses (fast mode) */
+  chatReasoningEffort: "low" as const,
+  /** Higher reasoning effort for thinking mode (more thoughtful) */
+  thinkingModeReasoningEffort: "medium" as const,
   /** Reasoning effort for simpler tasks (augmentation, suggestions) */
   utilityReasoningEffort: "low" as const,
 } as const;

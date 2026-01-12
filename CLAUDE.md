@@ -144,6 +144,7 @@ e2e/
 - **Small components**: Extract when a component exceeds ~150 lines
 - **Explicit returns**: Prefer explicit over implicit for complex logic
 - **No magic numbers**: Use config constants from `lib/config.ts`
+- **Cursor pointer**: Always add `cursor-pointer` class to clickable elements (buttons, links, interactive divs)
 
 ---
 

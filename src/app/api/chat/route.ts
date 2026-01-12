@@ -21,6 +21,7 @@ import {
 interface ChatRequest {
   message: string;
   history: ChatMessage[];
+  thinkingMode?: boolean;
 }
 
 /**
@@ -63,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request
     const body: ChatRequest = await request.json();
-    const { message, history } = body;
+    const { message, history, thinkingMode } = body;
 
     const validationResult = validateChatRequest(message, history);
     if (!validationResult.valid) {
@@ -80,6 +81,7 @@ export async function POST(request: NextRequest) {
           history,
           clientIp,
           send,
+          thinkingMode: thinkingMode ?? false,
         });
 
         controller.close();

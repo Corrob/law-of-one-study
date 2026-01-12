@@ -17,7 +17,8 @@ describe("config", () => {
     });
 
     it("should have valid reasoning effort levels", () => {
-      expect(MODEL_CONFIG.chatReasoningEffort).toBe("medium");
+      expect(MODEL_CONFIG.chatReasoningEffort).toBe("low");
+      expect(MODEL_CONFIG.thinkingModeReasoningEffort).toBe("medium");
       expect(MODEL_CONFIG.utilityReasoningEffort).toBe("low");
     });
   });

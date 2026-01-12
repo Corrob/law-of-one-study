@@ -238,7 +238,8 @@ describe("ChatInterface", () => {
       await waitFor(() => {
         expect(mockSendMessage).toHaveBeenCalledWith(
           "What is the Law of One?",
-          expect.any(Function)
+          expect.any(Function),
+          false // thinkingMode defaults to false
         );
       });
     });

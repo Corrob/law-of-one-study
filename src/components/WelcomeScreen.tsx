@@ -2,6 +2,7 @@
 
 import { useEffect, useState, ReactNode } from "react";
 import { getRandomStarters } from "@/data/starters";
+import ThinkingModeToggle from "./ThinkingModeToggle";
 
 // Warm, spiritual greetings (statements to complement question-style placeholders)
 const GREETINGS = [
@@ -15,9 +16,11 @@ const GREETINGS = [
 interface WelcomeScreenProps {
   onSelectStarter: (starter: string) => void;
   inputElement?: ReactNode;
+  thinkingMode?: boolean;
+  onThinkingModeChange?: (enabled: boolean) => void;
 }
 
-export default function WelcomeScreen({ onSelectStarter, inputElement }: WelcomeScreenProps) {
+export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingMode = false, onThinkingModeChange }: WelcomeScreenProps) {
   const [greeting, setGreeting] = useState<string | null>(null);
   const [starters, setStarters] = useState<string[]>([]);
 
@@ -40,9 +43,16 @@ export default function WelcomeScreen({ onSelectStarter, inputElement }: Welcome
 
       {/* Input slot with ambient glow */}
       {inputElement && (
-        <div className="relative w-full max-w-lg mb-10 animate-input-enter">
+        <div className="relative w-full max-w-lg mb-6 animate-input-enter">
           <div className="welcome-input-glow" />
           {inputElement}
+        </div>
+      )}
+
+      {/* Thinking Mode Toggle */}
+      {onThinkingModeChange && (
+        <div className="w-full max-w-lg mb-8 animate-input-enter flex justify-center">
+          <ThinkingModeToggle enabled={thinkingMode} onChange={onThinkingModeChange} />
         </div>
       )}
 

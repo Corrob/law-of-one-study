@@ -36,6 +36,8 @@ export interface ExecuteChatParams {
   history: ChatMessage[];
   clientIp: string;
   send: SSESender;
+  /** When true, use higher reasoning effort for more thoughtful responses */
+  thinkingMode?: boolean;
 }
 
 /**
@@ -128,14 +130,19 @@ async function performAugmentation(
 async function streamLLMResponse(
   messages: Array<{ role: "system" | "user" | "assistant"; content: string }>,
   passages: Quote[],
-  send: SSESender
+  send: SSESender,
+  thinkingMode: boolean = false
 ): Promise<{ fullOutput: string; usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number } }> {
+  const reasoningEffort = thinkingMode
+    ? MODEL_CONFIG.thinkingModeReasoningEffort
+    : MODEL_CONFIG.chatReasoningEffort;
+
   let response;
   try {
     response = await openai.chat.completions.create({
       model: MODEL_CONFIG.chatModel,
       messages,
-      reasoning_effort: MODEL_CONFIG.chatReasoningEffort,
+      reasoning_effort: reasoningEffort,
       stream: true,
       stream_options: { include_usage: true },
     });
@@ -206,7 +213,7 @@ function trackAnalytics(
  * @throws Never - all errors are sent via SSE
  */
 export async function executeChatQuery(params: ExecuteChatParams): Promise<void> {
-  const { message, history, clientIp, send } = params;
+  const { message, history, clientIp, send, thinkingMode = false } = params;
   const startTime = Date.now();
 
   try {
@@ -259,7 +266,7 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
     );
 
     // Stream LLM response
-    const { fullOutput, usage } = await streamLLMResponse(llmMessages, passages, send);
+    const { fullOutput, usage } = await streamLLMResponse(llmMessages, passages, send, thinkingMode);
 
     // Track analytics
     if (usage) {

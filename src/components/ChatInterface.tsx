@@ -40,6 +40,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   ref
 ) {
   const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+  const [thinkingMode, setThinkingMode] = useState(false);
   // Use ref to track initial query sent (avoids StrictMode double-send)
   const initialQuerySentRef = useRef(false);
 
@@ -116,9 +117,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     async (content: string) => {
       resetQueue();
       setTimeout(() => scrollToBottom("smooth"), 50);
-      await sendMessage(content, addChunk);
+      await sendMessage(content, addChunk, thinkingMode);
     },
-    [sendMessage, addChunk, resetQueue, scrollToBottom]
+    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode]
   );
 
   // Finalize message when stream is done AND all animations are complete
@@ -206,7 +207,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
                   transition={{ duration: 0.3 }}
                   className="h-full flex flex-col"
                 >
-                  <WelcomeScreen onSelectStarter={handleSend} inputElement={inputElement} />
+                  <WelcomeScreen
+                    onSelectStarter={handleSend}
+                    inputElement={inputElement}
+                    thinkingMode={thinkingMode}
+                    onThinkingModeChange={setThinkingMode}
+                  />
                 </motion.div>
               ) : (
                 <motion.div
