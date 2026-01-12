@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Middleware for nonce-based Content Security Policy.
+ * Proxy for nonce-based Content Security Policy.
  *
  * Generates a unique nonce for each request and adds it to the CSP header.
  * The nonce is passed to the application via x-nonce header for use in
  * inline scripts.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Generate a random nonce for this request
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
 
