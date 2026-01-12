@@ -16,8 +16,10 @@
 export const MODEL_CONFIG = {
   /** Primary model for chat responses */
   chatModel: "gpt-5-mini" as const,
-  /** Reasoning effort level for augmentation and suggestion calls */
-  reasoningEffort: "low" as const,
+  /** Reasoning effort for main chat responses (quote selection, citations) */
+  chatReasoningEffort: "medium" as const,
+  /** Reasoning effort for simpler tasks (augmentation, suggestions) */
+  utilityReasoningEffort: "low" as const,
 } as const;
 
 /** OpenAI API pricing (per 1M tokens, as of Dec 2025) */
@@ -73,7 +75,7 @@ export const CONVERSATION_CONFIG = {
 /** Pinecone vector search configuration */
 export const SEARCH_CONFIG = {
   /** Default number of results to return */
-  defaultTopK: 5,
+  defaultTopK: 8,
   /** Number of results for session-specific queries */
   sessionRefTopK: 10,
   /** Minimum similarity score for concept detection */

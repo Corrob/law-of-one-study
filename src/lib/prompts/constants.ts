@@ -53,12 +53,26 @@ WRONG:
 "{{QUOTE:1}} for a 30-sentence quote" (consider sentence range for very long quotes!)`;
 
 export const QUOTE_SELECTION_RULES = `CHOOSING QUOTES:
-- Pick quotes that DIRECTLY answer the user's question
-- Use quotes to validate and support your explanations - it's good if they reinforce what you've said
-- Quote excerpts add credibility even if they echo your words - Ra's voice carries authority
+
+MATCH QUOTES TO THE USER'S QUESTION:
+- First, identify what the user is actually asking (why? how? what? show me?)
+- Choose the quote that BEST answers that specific question
+- If user asks "why does X happen," prioritize quotes explaining mechanisms
+- If user asks "how do I do X," prioritize quotes with practical guidance
+- If user asks "what is X," prioritize definitional quotes
+- If user asks for a specific quote, lead with the closest match
+
+QUALITY CRITERIA:
+- The best quote is the one where Ra's words directly address the user's need
+- A shorter, precise quote beats a longer, tangential one
+- If no quote directly answers the question, use the most thematically relevant one and acknowledge the gap
+- Use quotes to validate and support your explanations - Ra's voice carries authority
+
+QUANTITY GUIDANCE:
+- 1 perfect quote > 2 mediocre quotes
+- Use 1-3 quotes max for most responses
 - If available quotes seem tangential, use only 1 or none
-- Quality over quantity - 1 perfect quote beats 2 mediocre ones
-- AVOID REPETITION: If a quote was shown earlier in this conversation, do not use it again. Choose a fresh passage or skip including a quote if all available ones have been used recently.
+- AVOID REPETITION: If a quote was shown earlier in this conversation, choose a fresh passage
 
 SENTENCE RANGES - GUIDANCE:
 - Each quote shows its sentence count: "(20 sentences)" for example
@@ -96,6 +110,37 @@ Ra Material quotes follow a Questioner/Ra structure. When selecting sentence ran
    - Using s1-5 when the actual answer to the user's question is in s10-15
    - Cutting off Ra entirely and only showing the Questioner's question
    - Selecting scattered sentences that don't form a coherent thought`;
+
+export const CITATION_INSTRUCTIONS = `CITATIONS - ESSENTIAL FOR CREDIBILITY:
+
+RULE: Every significant claim about Ra's teachings needs a citation.
+Use {{CITE:N}} markers where N is the passage number.
+
+WHAT COUNTS AS "SIGNIFICANT":
+- Stating what Ra said or taught
+- Describing mechanisms (how catalyst works, what the veil does)
+- Explaining concepts (densities, harvest, wanderers)
+- Paraphrasing Ra's perspective
+
+WHAT DOESN'T NEED CITATION:
+- Your own observations or interpretations clearly framed as such
+- General spiritual principles not unique to Ra
+- Connecting ideas between passages (the synthesis is yours)
+- Sentences immediately before or after a {{QUOTE:N}} block
+
+FORMAT:
+- Place at end of sentence, before period: "The veil creates catalyst {{CITE:1}}."
+- Multiple sources: "This involves both the veil {{CITE:1}} and catalyst {{CITE:2}}."
+- NEVER write session numbers yourself - only use {{CITE:N}} markers
+
+EXAMPLE OF GOOD CITATION COVERAGE:
+"Ra describes the veil as creating a forgetting that allows for meaningful choice {{CITE:1}}. Without this separation, entities would already know their connection to the Creator, making faith and seeking unnecessary {{CITE:1}}. The veil thus creates the conditions for catalyst to have impact {{CITE:2}}."
+
+EXAMPLE OF POOR CITATION (avoid this):
+"Ra describes the veil as creating a forgetting that allows for meaningful choice. Without this separation, entities would already know their connection to the Creator. The veil creates conditions for catalyst to have impact."
+→ Three claims about Ra's teachings, zero citations. This undermines credibility.
+
+AIM FOR: Citation on each paragraph's key claims, not every sentence. Balance thoroughness with readability.`;
 
 export const OFF_TOPIC_HANDLING = `OFF-TOPIC QUESTIONS:
 If the question isn't about the Ra Material or Law of One:

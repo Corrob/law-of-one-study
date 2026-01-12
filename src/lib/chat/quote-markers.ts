@@ -1,8 +1,8 @@
 /**
- * Quote marker detection utilities for streaming SSE responses.
+ * Quote and citation marker detection utilities for streaming SSE responses.
  *
  * Handles partial marker buffering when chunks split markers like
- * {{QUOTE:N}} or {{QUOTE:N:sX:sY}} across network packets.
+ * {{QUOTE:N}}, {{QUOTE:N:sX:sY}}, or {{CITE:N}} across network packets.
  */
 
 /**
@@ -10,6 +10,12 @@
  * Captures: [1] quote index, [2] optional start sentence, [3] optional end sentence
  */
 export const QUOTE_MARKER_REGEX = /\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/;
+
+/**
+ * Complete regex for matching full citation markers
+ * Captures: [1] passage index
+ */
+export const CITE_MARKER_REGEX = /\{\{CITE:(\d+)\}\}/;
 
 /**
  * Check if a string could be the start of a quote marker that spans multiple chunks.
@@ -65,9 +71,18 @@ export const QUOTE_MARKER_REGEX = /\{\{QUOTE:(\d+)(?::s(\d+):s(\d+))?\}\}/;
  * ```
  */
 export function couldBePartialMarker(s: string): boolean {
-  // Stage 1: Static prefixes - building up to "{{QUOTE:"
-  const prefixes = ["{", "{{", "{{Q", "{{QU", "{{QUO", "{{QUOT", "{{QUOTE", "{{QUOTE:"];
-  if (prefixes.includes(s)) return true;
+  // Stage 1: Static prefixes - building up to "{{QUOTE:" or "{{CITE:"
+  // Note: "{", "{{" are shared prefixes for both QUOTE and CITE markers
+  const sharedPrefixes = ["{", "{{"];
+  if (sharedPrefixes.includes(s)) return true;
+
+  // QUOTE marker prefixes
+  const quotePrefixes = ["{{Q", "{{QU", "{{QUO", "{{QUOT", "{{QUOTE", "{{QUOTE:"];
+  if (quotePrefixes.includes(s)) return true;
+
+  // CITE marker prefixes
+  const citePrefixes = ["{{C", "{{CI", "{{CIT", "{{CITE", "{{CITE:"];
+  if (citePrefixes.includes(s)) return true;
 
   // Stage 2: Quote index in progress - {{QUOTE:N (where N is one or more digits)
   if (/^\{\{QUOTE:\d+$/.test(s)) return true;
@@ -83,6 +98,12 @@ export function couldBePartialMarker(s: string): boolean {
   if (/^\{\{QUOTE:\d+:s\d+:s$/.test(s)) return true; // awaiting end sentence number
   if (/^\{\{QUOTE:\d+:s\d+:s\d+$/.test(s)) return true; // end number in progress
   if (/^\{\{QUOTE:\d+:s\d+:s\d+\}$/.test(s)) return true; // awaiting second "}"
+
+  // CITE marker in progress - {{CITE:N
+  if (/^\{\{CITE:\d+$/.test(s)) return true;
+
+  // CITE marker almost complete - {{CITE:N} (awaiting second "}")
+  if (/^\{\{CITE:\d+\}$/.test(s)) return true;
 
   return false;
 }

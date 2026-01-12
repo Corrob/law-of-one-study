@@ -432,6 +432,32 @@ h6 {
   border-radius: 2px;
 }
 
+/* Citation link styling - clickable button that looks like a link */
+.citation-link {
+  color: var(--lo1-gold);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.citation-link:hover {
+  color: var(--lo1-gold-light);
+  text-decoration: underline;
+}
+
+.citation-link:focus {
+  outline: 2px solid var(--lo1-gold);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 /* Concept popover wrapper */
 .concept-popover-wrapper {
   position: relative;

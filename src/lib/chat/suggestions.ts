@@ -127,7 +127,7 @@ export async function generateSuggestions(
             { role: "system", content: SUGGESTION_GENERATION_PROMPT },
             { role: "user", content: conversationContext },
           ],
-          reasoning_effort: MODEL_CONFIG.reasoningEffort,
+          reasoning_effort: MODEL_CONFIG.utilityReasoningEffort,
         }),
       RETRY_CONFIG.suggestions
     );

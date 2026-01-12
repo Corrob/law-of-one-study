@@ -6,10 +6,34 @@
  */
 
 import { Quote } from "@/lib/types";
-import { couldBePartialMarker, QUOTE_MARKER_REGEX, MAX_PARTIAL_MARKER_LENGTH } from "./quote-markers";
+import { couldBePartialMarker, QUOTE_MARKER_REGEX, CITE_MARKER_REGEX, MAX_PARTIAL_MARKER_LENGTH } from "./quote-markers";
 import { applySentenceRangeToQuote, formatWholeQuote } from "@/lib/quote-utils";
 import { debug } from "@/lib/debug";
 import type { SSESender } from "./sse-encoder";
+
+/**
+ * Replace all {{CITE:N}} markers in text with (Ra X.Y) format.
+ * Citations are inline text, not block elements like quotes.
+ */
+function replaceCiteMarkers(text: string, passages: Quote[]): string {
+  const replaced = text.replace(new RegExp(CITE_MARKER_REGEX.source, "g"), (match, indexStr) => {
+    const index = parseInt(indexStr, 10);
+    const passage = passages[index - 1]; // Convert from 1-indexed to 0-indexed
+    if (passage?.reference) {
+      // Reference may be "50.7" or "Ra 50.7" - normalize to "(Ra X.Y)" format
+      const ref = passage.reference.replace(/^Ra\s+/i, "");
+      const formatted = `(Ra ${ref})`;
+      debug.log("[API] Replaced citation marker:", match, "->", formatted);
+      return formatted;
+    }
+    // If passage not found, remove the marker to avoid showing raw marker
+    debug.warn("[API] Citation marker not found:", match);
+    return "";
+  });
+
+  // Ensure exactly one space between adjacent citations: "(Ra X.Y)(Ra Z.W)" -> "(Ra X.Y) (Ra Z.W)"
+  return replaced.replace(/\)\(Ra /g, ") (Ra ");
+}
 
 /** Token usage data from OpenAI API */
 export interface TokenUsage {
@@ -125,9 +149,10 @@ export async function processStreamWithMarkers(
         const textBefore = buffer.slice(0, markerMatch.index);
         accumulatedText += textBefore;
 
-        // Emit accumulated text as one complete chunk
+        // Emit accumulated text as one complete chunk (with citation markers replaced)
         if (accumulatedText.trim()) {
-          send("chunk", { type: "text", content: accumulatedText });
+          const processedText = replaceCiteMarkers(accumulatedText, passages);
+          send("chunk", { type: "text", content: processedText });
           accumulatedText = "";
         }
 
@@ -163,10 +188,11 @@ export async function processStreamWithMarkers(
     }
   }
 
-  // Flush any remaining text
+  // Flush any remaining text (with citation markers replaced)
   accumulatedText += buffer;
   if (accumulatedText.trim()) {
-    send("chunk", { type: "text", content: accumulatedText });
+    const processedText = replaceCiteMarkers(accumulatedText, passages);
+    send("chunk", { type: "text", content: processedText });
   }
 
   return { fullOutput, usage: usageData };

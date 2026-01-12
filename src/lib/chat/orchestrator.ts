@@ -135,7 +135,7 @@ async function streamLLMResponse(
     response = await openai.chat.completions.create({
       model: MODEL_CONFIG.chatModel,
       messages,
-      reasoning_effort: MODEL_CONFIG.reasoningEffort,
+      reasoning_effort: MODEL_CONFIG.chatReasoningEffort,
       stream: true,
       stream_options: { include_usage: true },
     });

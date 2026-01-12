@@ -3,7 +3,9 @@
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { parseConceptsInText } from "@/lib/conceptParser";
+import { parseCitationsInText } from "@/lib/citationParser";
 import ConceptPopover from "./ConceptPopover";
+import CitationLink from "./CitationLink";
 import { ReactNode } from "react";
 
 interface MarkdownRendererProps {
@@ -67,11 +69,9 @@ function isPunctuationOnly(text: string): boolean {
   return /^[.,!?;:'")\]}>]+$/.test(text.trim());
 }
 
-// Extract concept linking logic for reuse
-function LinkedText({ text, onSearch }: { text: string; onSearch: (term: string) => void }) {
+// Process text for concept linking (used for text segments after citation parsing)
+function processTextWithConcepts(text: string, onSearch: (term: string) => void, keyPrefix: string): ReactNode[] {
   const segments = parseConceptsInText(text);
-
-  // Process segments to attach punctuation to concepts
   const processedElements: ReactNode[] = [];
 
   for (let i = 0; i < segments.length; i++) {
@@ -79,15 +79,12 @@ function LinkedText({ text, onSearch }: { text: string; onSearch: (term: string)
     const nextSeg = segments[i + 1];
 
     if (seg.type === "text") {
-      // Plain text - don't wrap in span to allow natural word breaking
-      // React can handle strings in arrays directly
       processedElements.push(seg.content);
     } else {
       // Concept - check if next segment is punctuation-only
       if (nextSeg && nextSeg.type === "text" && isPunctuationOnly(nextSeg.content)) {
-        // Wrap concept and punctuation together to prevent line-break between them
         processedElements.push(
-          <span key={i} style={{ whiteSpace: "nowrap" }}>
+          <span key={`${keyPrefix}-${i}`} style={{ whiteSpace: "nowrap" }}>
             <ConceptPopover
               term={seg.searchTerm}
               displayText={seg.displayText}
@@ -96,17 +93,46 @@ function LinkedText({ text, onSearch }: { text: string; onSearch: (term: string)
             {nextSeg.content}
           </span>
         );
-        i++; // Skip the punctuation segment since we've included it
+        i++; // Skip the punctuation segment
       } else {
         processedElements.push(
           <ConceptPopover
-            key={i}
+            key={`${keyPrefix}-${i}`}
             term={seg.searchTerm}
             displayText={seg.displayText}
             onSearch={onSearch}
           />
         );
       }
+    }
+  }
+
+  return processedElements;
+}
+
+// Extract citation and concept linking logic
+// First parses citations, then parses concepts within text segments
+function LinkedText({ text, onSearch }: { text: string; onSearch: (term: string) => void }) {
+  const citationSegments = parseCitationsInText(text);
+  const processedElements: ReactNode[] = [];
+
+  for (let i = 0; i < citationSegments.length; i++) {
+    const seg = citationSegments[i];
+
+    if (seg.type === "citation") {
+      // Render citation as clickable link
+      processedElements.push(
+        <CitationLink
+          key={`cite-${i}`}
+          session={seg.session}
+          question={seg.question}
+          displayText={seg.displayText}
+        />
+      );
+    } else {
+      // Text segment - parse for concepts
+      const conceptElements = processTextWithConcepts(seg.content, onSearch, `text-${i}`);
+      processedElements.push(...conceptElements);
     }
   }
 

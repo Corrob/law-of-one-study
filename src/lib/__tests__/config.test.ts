@@ -16,8 +16,9 @@ describe("config", () => {
       expect(MODEL_CONFIG.chatModel).toBe("gpt-5-mini");
     });
 
-    it("should have a valid reasoning effort", () => {
-      expect(MODEL_CONFIG.reasoningEffort).toBe("low");
+    it("should have valid reasoning effort levels", () => {
+      expect(MODEL_CONFIG.chatReasoningEffort).toBe("medium");
+      expect(MODEL_CONFIG.utilityReasoningEffort).toBe("low");
     });
   });
 

@@ -7,6 +7,7 @@ import {
   STYLE_RULES,
   QUOTE_FORMAT_RULES,
   QUOTE_SELECTION_RULES,
+  CITATION_INSTRUCTIONS,
   FALLBACK_HANDLING,
   EMOTIONAL_AWARENESS,
   CONVERSATION_CONTEXT,
@@ -235,6 +236,8 @@ If labeled "personal" but they're clearly just curious, respond conceptually.
 The human always takes precedence over the classification.
 
 Low-confidence signals (when provided as [Confidence: low]) indicate the classification is uncertain - read the message carefully and adapt. For example, if labeled "quote-search" but the user is clearly asking for explanation, respond with explanation.
+
+${CITATION_INSTRUCTIONS}
 
 ${QUOTE_FORMAT_RULES}
 

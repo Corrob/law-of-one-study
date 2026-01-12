@@ -66,7 +66,7 @@ export async function augmentQuery(
             { role: "system", content: QUERY_AUGMENTATION_PROMPT },
             { role: "user", content: userContent },
           ],
-          reasoning_effort: MODEL_CONFIG.reasoningEffort,
+          reasoning_effort: MODEL_CONFIG.utilityReasoningEffort,
         }),
       RETRY_CONFIG.augmentation
     );
