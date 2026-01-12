@@ -4,7 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
-import { ChatIcon, ExploreIcon, BookIcon, SearchIcon } from "./icons";
+import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon } from "./icons";
 import { getDailyQuote } from "@/lib/daily-quote";
 import { formatQuoteWithAttribution } from "@/lib/quote-utils";
 import { type DailyQuote } from "@/data/daily-quotes";
@@ -126,6 +126,27 @@ export default function Dashboard() {
 
       {/* Continue Studying - Placeholder for now */}
       {/* TODO: Show when user has progress in Step 5 */}
+
+      {/* Footer Links */}
+      <footer className="mt-12 pt-6 border-t border-[var(--lo1-celestial)]/20">
+        <div className="flex items-center justify-center gap-6 text-sm">
+          <Link
+            href="/about"
+            className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
+          >
+            <InfoIcon className="w-4 h-4" />
+            <span>About</span>
+          </Link>
+          <span className="text-[var(--lo1-celestial)]/40">·</span>
+          <Link
+            href="/donate"
+            className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
+          >
+            <HeartIcon className="w-4 h-4" />
+            <span>Support</span>
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -12,6 +12,7 @@ import {
   BookIcon,
   SearchIcon,
   InfoIcon,
+  HeartIcon,
 } from "./icons";
 import { ThemeToggle } from "./ThemeToggle";
 
@@ -36,6 +37,7 @@ const NAV_ITEMS: NavItem[] = [
 
 const SECONDARY_ITEMS: NavItem[] = [
   { href: "/about", label: "About", icon: InfoIcon },
+  { href: "/donate", label: "Support", icon: HeartIcon },
 ];
 
 export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
