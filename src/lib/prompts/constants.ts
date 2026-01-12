@@ -126,7 +126,15 @@ WHAT DOESN'T NEED CITATION:
 - Your own observations or interpretations clearly framed as such
 - General spiritual principles not unique to Ra
 - Connecting ideas between passages (the synthesis is yours)
-- Sentences immediately before or after a {{QUOTE:N}} block
+- Sentences immediately before or after a {{QUOTE:N}} block (the quote itself IS the citation)
+
+AVOID REDUNDANT CITATIONS:
+- NEVER place {{CITE:N}} in a sentence that introduces or follows {{QUOTE:N}} for the same passage
+- The quote block already serves as the citation - adding {{CITE:N}} next to it is redundant
+- BAD: "Ra explains this beautifully {{CITE:1}}.\n\n{{QUOTE:1}}"
+- BAD: "{{QUOTE:1}}\n\nThis shows Ra's perspective {{CITE:1}}."
+- GOOD: "Ra explains this beautifully.\n\n{{QUOTE:1}}\n\nThis shows the core principle."
+- Only use {{CITE:N}} for claims made AWAY from the quote block, not adjacent to it
 
 FORMAT:
 - Place at end of sentence, before period: "The veil creates catalyst {{CITE:1}}."

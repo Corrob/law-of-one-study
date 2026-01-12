@@ -21,7 +21,7 @@ const ConceptPopover = memo(function ConceptPopover({ term, displayText, onSearc
   const popoverId = `concept-${term.toLowerCase().replace(/\s+/g, "-")}`;
   const { openPopover, open, close, requestClose, cancelClose } = usePopoverContext();
   const [isTouchDevice, setIsTouchDevice] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
+  const triggerRef = useRef<HTMLSpanElement>(null);
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const isOpen = openPopover?.id === popoverId;
@@ -77,21 +77,37 @@ const ConceptPopover = memo(function ConceptPopover({ term, displayText, onSearc
     }
   }, [isOpen, open, close, popoverId, term, onSearch]);
 
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (triggerRef.current) {
+        if (isOpen) {
+          close();
+        } else {
+          open(popoverId, triggerRef.current, { term, onSearch });
+        }
+      }
+    }
+  }, [isOpen, open, close, popoverId, term, onSearch]);
+
   return (
     <span
       className="concept-popover-wrapper"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <button
+      <span
         ref={triggerRef}
         onClick={handleClick}
+        onKeyDown={handleKeyDown}
         className="concept-link"
+        role="button"
+        tabIndex={0}
         aria-expanded={isOpen}
         aria-haspopup="dialog"
       >
         {displayText}
-      </button>
+      </span>
     </span>
   );
 });
