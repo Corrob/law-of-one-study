@@ -426,6 +426,7 @@ Features to revisit based on community demand:
 
 | Feature | Notes |
 |---------|-------|
+| Local LLM Support | Embedding dimension mismatch prevents full privacy. See [LOCAL-LLM-CONSIDERATIONS.md](LOCAL-LLM-CONSIDERATIONS.md) |
 | Guided Meditations | Audio content requires production resources |
 | Weekly Newsletter | Editorial overhead, but high engagement potential |
 | Community Paths | User-contributed paths (moderation needed) |
