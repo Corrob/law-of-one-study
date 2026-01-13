@@ -1,6 +1,7 @@
 // Utility functions for parsing and filtering Ra Material quotes
 
 import { debug } from "@/lib/debug";
+import { type AvailableLanguage } from "./language-config";
 
 // Result of parsing a session/question reference from user query
 export interface SessionQuestionRef {
@@ -85,8 +86,19 @@ export function parseSessionQuestionReference(query: string): SessionQuestionRef
   return null;
 }
 
+// Re-export language types from centralized config
+// Note: Only languages with actual Ra Material translations are available
+export { AVAILABLE_LANGUAGES, type AvailableLanguage } from './language-config';
+
+// Alias for backwards compatibility
+export type SupportedLanguage = import('./language-config').AvailableLanguage;
+
 // Fetch full quote from sections JSON files
-export async function fetchFullQuote(reference: string): Promise<string | null> {
+// Language defaults to 'en' for backwards compatibility
+export async function fetchFullQuote(
+  reference: string,
+  language: AvailableLanguage = 'en'
+): Promise<string | null> {
   // Extract session number from reference (e.g., "49.8" -> "49" or "Ra 49.8" -> "49")
   const match = reference.match(/(\d+)\.\d+/);
   if (!match) {
@@ -97,9 +109,15 @@ export async function fetchFullQuote(reference: string): Promise<string | null> 
   const sessionNumber = match[1];
 
   try {
-    debug.log("[fetchFullQuote] Fetching /sections/" + sessionNumber + ".json");
-    const response = await fetch(`/sections/${sessionNumber}.json`);
+    const path = `/sections/${language}/${sessionNumber}.json`;
+    debug.log("[fetchFullQuote] Fetching", path);
+    const response = await fetch(path);
     if (!response.ok) {
+      // If translation not available, fall back to English
+      if (language !== 'en') {
+        debug.log("[fetchFullQuote] Translation not found, falling back to English");
+        return fetchFullQuote(reference, 'en');
+      }
       debug.error("[fetchFullQuote] HTTP error:", response.status, response.statusText);
       return null;
     }
@@ -126,6 +144,37 @@ export async function fetchFullQuote(reference: string): Promise<string | null> 
     debug.error("[fetchFullQuote] Error fetching full quote:", error);
     return null;
   }
+}
+
+// Fetch quote in both target language and English for bilingual display
+export async function fetchBilingualQuote(
+  reference: string,
+  language: AvailableLanguage
+): Promise<{ text: string; originalText?: string } | null> {
+  if (language === 'en') {
+    const text = await fetchFullQuote(reference, 'en');
+    return text ? { text } : null;
+  }
+
+  // Fetch both translations in parallel
+  const [translatedText, englishText] = await Promise.all([
+    fetchFullQuote(reference, language),
+    fetchFullQuote(reference, 'en'),
+  ]);
+
+  if (!translatedText && !englishText) {
+    return null;
+  }
+
+  // If translation not available, use English only
+  if (!translatedText) {
+    return englishText ? { text: englishText } : null;
+  }
+
+  return {
+    text: translatedText,
+    originalText: englishText || undefined,
+  };
 }
 
 // Split text into sentences (handles Ra Material formatting)

@@ -9,6 +9,7 @@ import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
 import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export interface ChatInterfaceRef {
   reset: () => void;
@@ -43,6 +44,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   const [thinkingMode, setThinkingMode] = useState(false);
   // Use ref to track initial query sent (avoids StrictMode double-send)
   const initialQuerySentRef = useRef(false);
+
+  // Get current language setting
+  const { language } = useLanguage();
 
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
@@ -117,9 +121,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     async (content: string) => {
       resetQueue();
       setTimeout(() => scrollToBottom("smooth"), 50);
-      await sendMessage(content, addChunk, thinkingMode);
+      await sendMessage(content, addChunk, thinkingMode, language);
     },
-    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode]
+    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode, language]
   );
 
   // Finalize message when stream is done AND all animations are complete

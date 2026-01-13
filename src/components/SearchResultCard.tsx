@@ -139,7 +139,8 @@ export default function SearchResultCard({
       const fetchPassage = async () => {
         setLoadingPassage(true);
         try {
-          const response = await fetch(`/sections/${result.session}.json`);
+          // TODO: Add language support for search results in future PR
+          const response = await fetch(`/sections/en/${result.session}.json`);
           if (response.ok) {
             const data = await response.json();
             const key = `${result.session}.${result.question}`;

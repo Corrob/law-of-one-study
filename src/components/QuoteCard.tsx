@@ -6,75 +6,13 @@ import { analytics } from "@/lib/analytics";
 import { debug } from "@/lib/debug";
 import { useEffect, useState } from "react";
 import { fetchFullQuote, formatWholeQuote, formatQuoteWithAttribution } from "@/lib/quote-utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getUILabels, type AvailableLanguage } from "@/lib/language-config";
+import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
 import CopyButton from "./CopyButton";
 
 interface QuoteCardProps {
   quote: Quote;
-}
-
-/**
- * Parse Ra material text into formatted segments for display.
- * Splits text by "Questioner:" and "Ra:" prefixes to apply different styling.
- */
-function formatRaText(text: string): { type: "questioner" | "ra" | "text"; content: string }[] {
-  const segments: { type: "questioner" | "ra" | "text"; content: string }[] = [];
-
-  // Handle empty or undefined text
-  if (!text || !text.trim()) {
-    return [{ type: "text", content: "" }];
-  }
-
-  // Split by Questioner: and Ra: prefixes
-  const parts = text.split(/(Questioner:|Ra:)/);
-
-  let currentType: "questioner" | "ra" | "text" = "text";
-
-  for (const part of parts) {
-    const trimmed = part.trim();
-    if (!trimmed) continue;
-
-    if (trimmed === "Questioner:") {
-      currentType = "questioner";
-    } else if (trimmed === "Ra:") {
-      currentType = "ra";
-    } else {
-      // Backend now handles paragraph breaks, just pass through
-      segments.push({ type: currentType, content: trimmed });
-    }
-  }
-
-  // If no segments were found, treat entire text as a single segment
-  if (segments.length === 0) {
-    segments.push({ type: "text", content: text.trim() });
-  }
-
-  return segments;
-}
-
-// Parse ellipsis from text (added by backend for partial quotes)
-function parseEllipsis(text: string): {
-  hasLeading: boolean;
-  hasTrailing: boolean;
-  content: string;
-} {
-  let content = text;
-  const hasLeading = text.startsWith("...\n\n") || text.startsWith("...");
-  const hasTrailing = text.endsWith("\n\n...") || text.endsWith("...");
-
-  if (hasLeading) {
-    content = content.replace(/^\.\.\.(\n\n)?/, "");
-  }
-  if (hasTrailing) {
-    content = content.replace(/(\n\n)?\.\.\.$/, "");
-  }
-
-  return { hasLeading, hasTrailing, content };
-}
-
-// Extract just the session.question from reference like "Ra 49.8"
-function getShortReference(reference: string): string {
-  const match = reference.match(/(\d+\.\d+)/);
-  return match ? match[1] : reference;
 }
 
 /**
@@ -86,10 +24,15 @@ function getShortReference(reference: string): string {
  * - Supports expanding to show full quote text
  * - Copy-to-clipboard functionality
  * - Analytics tracking for user interactions
+ * - Multilingual support via language context
  *
  * Memoized to prevent unnecessary re-renders during streaming.
  */
 const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
+  // Get current language setting and UI labels
+  const { language } = useLanguage();
+  const labels = getUILabels(language);
+
   // Parse ellipsis from quote text
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
@@ -99,6 +42,7 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
     hasLeading,
     hasTrailing,
     contentLength: content.length,
+    language,
   });
 
   // State for expansion
@@ -106,8 +50,45 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
   const [fullQuoteText, setFullQuoteText] = useState<string | null>(null);
   const [isLoadingFull, setIsLoadingFull] = useState(false);
 
+  // State for translated quote (loaded on mount for non-English)
+  const [translatedText, setTranslatedText] = useState<string | null>(null);
+  const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
+
+  // Fetch translated quote on mount if language is not English
+  useEffect(() => {
+    if (language !== 'en' && !translatedText && !isLoadingTranslation) {
+      setIsLoadingTranslation(true);
+      debug.log("[QuoteCard] Fetching translated quote:", quote.reference, language);
+
+      fetchFullQuote(quote.reference, language as AvailableLanguage)
+        .then((text) => {
+          if (text) {
+            const formatted = formatWholeQuote(text);
+            setTranslatedText(formatted);
+            debug.log("[QuoteCard] Loaded translated text:", formatted.length);
+          }
+        })
+        .catch((err) => {
+          debug.error("[QuoteCard] Failed to fetch translation:", err);
+        })
+        .finally(() => {
+          setIsLoadingTranslation(false);
+        });
+    }
+  }, [language, quote.reference, translatedText, isLoadingTranslation]);
+
+  // Determine what text to display:
+  // - If expanded and have full quote, use that
+  // - Else if have translation (for non-English), use that
+  // - Else use original content
+  const displayContent = isExpanded && fullQuoteText
+    ? fullQuoteText
+    : (language !== 'en' && translatedText)
+      ? translatedText
+      : content;
+
   // Format the content (without ellipsis)
-  const segments = formatRaText(isExpanded && fullQuoteText ? fullQuoteText : content);
+  const segments = parseRaText(displayContent);
   debug.log("[QuoteCard] Formatted segments:", segments.length, segments);
   const shortRef = getShortReference(quote.reference);
 
@@ -148,8 +129,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
     // Expand - fetch full quote if not already loaded
     if (!fullQuoteText) {
       setIsLoadingFull(true);
-      debug.log("[QuoteCard] Fetching full quote for reference:", quote.reference);
-      const fullText = await fetchFullQuote(quote.reference);
+      debug.log("[QuoteCard] Fetching full quote for reference:", quote.reference, "language:", language);
+      const fullText = await fetchFullQuote(quote.reference, language as AvailableLanguage);
       debug.log("[QuoteCard] Fetched full text length:", fullText?.length || 0);
       debug.log("[QuoteCard] Original text length:", quote.text.length);
       if (fullText) {
@@ -193,7 +174,7 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
       {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-          Questioner
+          {labels.questioner}
         </span>
         <a
           href={quote.url}
@@ -213,9 +194,9 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
           disabled={isLoadingFull}
           aria-expanded={isExpanded}
-          aria-label={isLoadingFull ? "Loading full quote" : "Show more of this quote"}
+          aria-label={isLoadingFull ? labels.loading : labels.expand}
         >
-          {isLoadingFull ? "Loading..." : "..."}
+          {isLoadingFull ? labels.loading : "..."}
         </button>
       )}
 
@@ -246,9 +227,9 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
           disabled={isLoadingFull}
           aria-expanded={isExpanded}
-          aria-label={isLoadingFull ? "Loading full quote" : "Show more of this quote"}
+          aria-label={isLoadingFull ? labels.loading : labels.expand}
         >
-          {isLoadingFull ? "Loading..." : "..."}
+          {isLoadingFull ? labels.loading : "..."}
         </button>
       )}
 
@@ -258,9 +239,9 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
           onClick={handleExpandClick}
           className="block text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-3 cursor-pointer"
           aria-expanded={isExpanded}
-          aria-label="Collapse quote"
+          aria-label={labels.collapse}
         >
-          ↑ Collapse
+          ↑ {labels.collapse}
         </button>
       )}
 

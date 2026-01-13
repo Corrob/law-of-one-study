@@ -543,7 +543,7 @@ describe("quote-utils", () => {
 
       const result = await fetchFullQuote("49.8");
       expect(result).toBe("I am Ra. This is the quote.");
-      expect(global.fetch).toHaveBeenCalledWith("/sections/49.json");
+      expect(global.fetch).toHaveBeenCalledWith("/sections/en/49.json");
     });
 
     it('should handle "Ra 49.8" format', async () => {
@@ -554,7 +554,7 @@ describe("quote-utils", () => {
 
       const result = await fetchFullQuote("Ra 49.8");
       expect(result).toBe("Quote content");
-      expect(global.fetch).toHaveBeenCalledWith("/sections/49.json");
+      expect(global.fetch).toHaveBeenCalledWith("/sections/en/49.json");
     });
 
     it("should return null on HTTP error", async () => {
@@ -599,7 +599,7 @@ describe("quote-utils", () => {
 
       const result = await fetchFullQuote("1.1");
       expect(result).toBe("First session quote");
-      expect(global.fetch).toHaveBeenCalledWith("/sections/1.json");
+      expect(global.fetch).toHaveBeenCalledWith("/sections/en/1.json");
     });
   });
 

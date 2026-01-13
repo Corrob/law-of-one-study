@@ -22,6 +22,7 @@ interface ChatRequest {
   message: string;
   history: ChatMessage[];
   thinkingMode?: boolean;
+  targetLanguage?: string;
 }
 
 /**
@@ -64,7 +65,7 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request
     const body: ChatRequest = await request.json();
-    const { message, history, thinkingMode } = body;
+    const { message, history, thinkingMode, targetLanguage } = body;
 
     const validationResult = validateChatRequest(message, history);
     if (!validationResult.valid) {
@@ -82,6 +83,7 @@ export async function POST(request: NextRequest) {
           clientIp,
           send,
           thinkingMode: thinkingMode ?? false,
+          targetLanguage: targetLanguage ?? 'en',
         });
 
         controller.close();

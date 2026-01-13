@@ -139,6 +139,13 @@ jest.mock("@/data/placeholders", () => ({
   defaultPlaceholder: "Default placeholder",
 }));
 
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: jest.fn(() => ({
+    language: "en",
+    setLanguage: jest.fn(),
+  })),
+}));
+
 import { useChatStream } from "@/hooks/useChatStream";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 
@@ -239,7 +246,8 @@ describe("ChatInterface", () => {
         expect(mockSendMessage).toHaveBeenCalledWith(
           "What is the Law of One?",
           expect.any(Function),
-          false // thinkingMode defaults to false
+          false, // thinkingMode defaults to false
+          "en" // language defaults to English from mock
         );
       });
     });

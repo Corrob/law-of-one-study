@@ -15,6 +15,7 @@ import {
   HeartIcon,
 } from "./icons";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSelector } from "./LanguageSelector";
 
 interface BurgerMenuProps {
   isOpen: boolean;
@@ -172,11 +173,22 @@ export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                 })}
               </ul>
 
-              {/* Theme toggle */}
-              <div className="mt-4 px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--lo1-text-light)] font-medium">Theme</span>
-                  <ThemeToggle onThemeChange={onClose} />
+              {/* Settings section */}
+              <div className="mt-4 space-y-3">
+                {/* Language selector */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--lo1-text-light)] font-medium">Language</span>
+                    <LanguageSelector />
+                  </div>
+                </div>
+
+                {/* Theme toggle */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--lo1-text-light)] font-medium">Theme</span>
+                    <ThemeToggle onThemeChange={onClose} />
+                  </div>
                 </div>
               </div>
             </nav>

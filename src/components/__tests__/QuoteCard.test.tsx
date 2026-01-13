@@ -8,7 +8,16 @@ jest.mock("@/lib/analytics", () => ({
   analytics: {
     quoteDisplayed: jest.fn(),
     quoteLinkClicked: jest.fn(),
+    quoteCopied: jest.fn(),
   },
+}));
+
+// Mock LanguageContext
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: jest.fn(() => ({
+    language: "en",
+    setLanguage: jest.fn(),
+  })),
 }));
 
 describe("QuoteCard", () => {

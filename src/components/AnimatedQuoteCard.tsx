@@ -4,6 +4,9 @@ import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { useEffect, useState, useRef } from "react";
 import { fetchFullQuote, formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getUILabels, type AvailableLanguage } from "@/lib/language-config";
+import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
 
 interface AnimatedQuoteCardProps {
   quote: Quote;
@@ -11,73 +14,15 @@ interface AnimatedQuoteCardProps {
   onComplete?: () => void;
 }
 
-// Parse Ra material text into formatted segments
-function formatRaText(text: string): { type: "questioner" | "ra" | "text"; content: string }[] {
-  const segments: { type: "questioner" | "ra" | "text"; content: string }[] = [];
-
-  // Handle empty or undefined text
-  if (!text || !text.trim()) {
-    return [{ type: "text", content: "" }];
-  }
-
-  // Split by Questioner: and Ra: prefixes
-  const parts = text.split(/(Questioner:|Ra:)/);
-
-  let currentType: "questioner" | "ra" | "text" = "text";
-
-  for (const part of parts) {
-    const trimmed = part.trim();
-    if (!trimmed) continue;
-
-    if (trimmed === "Questioner:") {
-      currentType = "questioner";
-    } else if (trimmed === "Ra:") {
-      currentType = "ra";
-    } else {
-      // Backend now handles paragraph breaks, just pass through
-      segments.push({ type: currentType, content: trimmed });
-    }
-  }
-
-  // If no segments were found, treat entire text as a single segment
-  if (segments.length === 0) {
-    segments.push({ type: "text", content: text.trim() });
-  }
-
-  return segments;
-}
-
-// Parse ellipsis from text (added by backend for partial quotes)
-function parseEllipsis(text: string): {
-  hasLeading: boolean;
-  hasTrailing: boolean;
-  content: string;
-} {
-  let content = text;
-  const hasLeading = text.startsWith("...\n\n") || text.startsWith("...");
-  const hasTrailing = text.endsWith("\n\n...") || text.endsWith("...");
-
-  if (hasLeading) {
-    content = content.replace(/^\.\.\.(\n\n)?/, "");
-  }
-  if (hasTrailing) {
-    content = content.replace(/(\n\n)?\.\.\.$/, "");
-  }
-
-  return { hasLeading, hasTrailing, content };
-}
-
-// Extract just the session.question from reference like "Ra 49.8"
-function getShortReference(reference: string): string {
-  const match = reference.match(/(\d+\.\d+)/);
-  return match ? match[1] : reference;
-}
-
 export default function AnimatedQuoteCard({
   quote,
   animate = true,
   onComplete,
 }: AnimatedQuoteCardProps) {
+  // Get current language setting and UI labels
+  const { language } = useLanguage();
+  const labels = getUILabels(language);
+
   const [isVisible, setIsVisible] = useState(!animate);
   const hasCompletedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
@@ -88,10 +33,35 @@ export default function AnimatedQuoteCard({
   const [isLoadingFull, setIsLoadingFull] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
+  // State for translated quote (loaded on mount for non-English)
+  const [translatedText, setTranslatedText] = useState<string | null>(null);
+  const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
+
   // Keep onComplete ref updated
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
+
+  // Fetch translated quote on mount if language is not English
+  useEffect(() => {
+    if (language !== 'en' && !translatedText && !isLoadingTranslation) {
+      setIsLoadingTranslation(true);
+
+      fetchFullQuote(quote.reference, language as AvailableLanguage)
+        .then((text) => {
+          if (text) {
+            const formatted = formatWholeQuote(text);
+            setTranslatedText(formatted);
+          }
+        })
+        .catch(() => {
+          // Fall back to English on error
+        })
+        .finally(() => {
+          setIsLoadingTranslation(false);
+        });
+    }
+  }, [language, quote.reference, translatedText, isLoadingTranslation]);
 
   // Handle fade-in animation
   useEffect(() => {
@@ -124,10 +94,15 @@ export default function AnimatedQuoteCard({
 
   const shortRef = getShortReference(quote.reference);
 
-  // Format the text being displayed (expanded or original)
-  const segments = formatRaText(
-    isExpanded && fullQuoteText ? fullQuoteText : fullTextWithoutEllipsis
-  );
+  // Determine what text to display
+  const displayContent = isExpanded && fullQuoteText
+    ? fullQuoteText
+    : (language !== 'en' && translatedText)
+      ? translatedText
+      : fullTextWithoutEllipsis;
+
+  // Format the text being displayed
+  const segments = parseRaText(displayContent);
 
   // Extract session and question numbers for tracking
   const match = quote.reference.match(/(\d+)\.(\d+)/);
@@ -166,7 +141,7 @@ export default function AnimatedQuoteCard({
     // Expand - fetch full quote if not already loaded
     if (!fullQuoteText) {
       setIsLoadingFull(true);
-      const fullText = await fetchFullQuote(quote.reference);
+      const fullText = await fetchFullQuote(quote.reference, language as AvailableLanguage);
       if (fullText) {
         // Format with paragraph breaks
         const formatted = formatWholeQuote(fullText);
@@ -219,7 +194,7 @@ export default function AnimatedQuoteCard({
       {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-          Questioner
+          {labels.questioner}
         </span>
         <a
           href={quote.url}
@@ -241,7 +216,7 @@ export default function AnimatedQuoteCard({
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
             disabled={isLoadingFull}
           >
-            {isLoadingFull ? "Loading..." : "..."}
+            {isLoadingFull ? labels.loading : "..."}
           </button>
         )}
 
@@ -274,7 +249,7 @@ export default function AnimatedQuoteCard({
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
             disabled={isLoadingFull}
           >
-            {isLoadingFull ? "Loading..." : "..."}
+            {isLoadingFull ? labels.loading : "..."}
           </button>
         )}
 
@@ -284,7 +259,7 @@ export default function AnimatedQuoteCard({
             onClick={handleExpandClick}
             className="block text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-3 cursor-pointer"
           >
-            ↑ Collapse
+            ↑ {labels.collapse}
           </button>
         )}
       </div>

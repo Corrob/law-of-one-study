@@ -27,7 +27,7 @@ interface UseChatStreamReturn {
   /** Follow-up suggestions from the AI */
   suggestions: string[];
   /** Send a message and start streaming the response */
-  sendMessage: (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode?: boolean) => Promise<void>;
+  sendMessage: (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode?: boolean, targetLanguage?: string) => Promise<void>;
   /** Finalize the assistant message after animations complete */
   finalizeMessage: (allChunks: AnimationChunk[]) => void;
   /** Reset all state for a new conversation */
@@ -68,7 +68,7 @@ export function useChatStream(
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const sendMessage = useCallback(
-    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false) => {
+    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = 'en') => {
       const requestStartTime = Date.now();
 
       // Add user message
@@ -116,6 +116,7 @@ export function useChatStream(
                 .filter(Boolean),
             })),
             thinkingMode,
+            targetLanguage,
           }),
         });
 

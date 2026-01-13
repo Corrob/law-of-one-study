@@ -6,6 +6,7 @@ import { PostHogProvider } from "@/providers/PostHogProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { PopoverProvider } from "@/contexts/PopoverContext";
 import { CitationModalProvider } from "@/contexts/CitationModalContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -131,9 +132,11 @@ export default async function RootLayout({
       <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
         <PostHogProvider>
           <ThemeProvider>
-            <PopoverProvider>
-              <CitationModalProvider>{children}</CitationModalProvider>
-            </PopoverProvider>
+            <LanguageProvider>
+              <PopoverProvider>
+                <CitationModalProvider>{children}</CitationModalProvider>
+              </PopoverProvider>
+            </LanguageProvider>
           </ThemeProvider>
         </PostHogProvider>
       </body>

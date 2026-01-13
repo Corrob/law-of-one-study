@@ -20,6 +20,16 @@ jest.mock("framer-motion", () => ({
   LayoutGroup: ({ children }: React.PropsWithChildren) => <>{children}</>,
 }));
 
+// Mock LanguageContext for BurgerMenu's LanguageSelector
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: jest.fn(() => ({
+    language: "en",
+    setLanguage: jest.fn(),
+  })),
+  LANGUAGE_DISPLAY_NAMES: { en: "English", es: "Español" },
+  AVAILABLE_LANGUAGES: ["en", "es"],
+}));
+
 import Header from "../Header";
 import BurgerMenu from "../BurgerMenu";
 
