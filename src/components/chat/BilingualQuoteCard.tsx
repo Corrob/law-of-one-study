@@ -32,6 +32,11 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   const [fullTexts, setFullTexts] = useState<{ translated: string; original?: string } | null>(null);
   const [isLoadingFull, setIsLoadingFull] = useState(false);
 
+  // State for initial translation (fetched on mount)
+  const [initialTranslation, setInitialTranslation] = useState<string | null>(null);
+  const [isLoadingInitial, setIsLoadingInitial] = useState(false);
+  const [isFallbackToEnglish, setIsFallbackToEnglish] = useState(false);
+
   debug.log("[BilingualQuoteCard] Rendering quote:", {
     reference: quote.reference,
     targetLanguage,
@@ -44,6 +49,31 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   const match = quote.reference.match(/(\d+)\.(\d+)/);
   const sessionNumber = match ? parseInt(match[1]) : 0;
   const questionNumber = match ? parseInt(match[2]) : 0;
+
+  // Fetch translated quote on mount
+  useEffect(() => {
+    if (targetLanguage === 'en' || initialTranslation || isLoadingInitial) return;
+
+    setIsLoadingInitial(true);
+    debug.log("[BilingualQuoteCard] Fetching initial translation:", quote.reference, targetLanguage);
+
+    fetchBilingualQuote(quote.reference, targetLanguage)
+      .then((result) => {
+        if (result) {
+          setInitialTranslation(formatWholeQuote(result.text));
+          // Check if we're showing English as fallback (no original means the text IS the original)
+          // Note: We already guard for targetLanguage === 'en' at the top of this effect
+          setIsFallbackToEnglish(!result.originalText);
+          debug.log("[BilingualQuoteCard] Initial translation loaded, fallback:", !result.originalText);
+        }
+      })
+      .catch((err) => {
+        debug.error("[BilingualQuoteCard] Failed to fetch translation:", err);
+      })
+      .finally(() => {
+        setIsLoadingInitial(false);
+      });
+  }, [quote.reference, targetLanguage, initialTranslation, isLoadingInitial]);
 
   // Track quote display on mount
   useEffect(() => {
@@ -104,7 +134,10 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   };
 
   // Current display text (translated version)
-  const displayText = isExpanded && fullTexts ? fullTexts.translated : content;
+  // Priority: expanded fullTexts > initial translation > original content
+  const displayText = isExpanded && fullTexts
+    ? fullTexts.translated
+    : initialTranslation || content;
   const segments = parseRaText(displayText);
 
   // Original text segments (English)
@@ -125,7 +158,8 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   };
 
   const showEllipsis = !isExpanded && (hasLeading || hasTrailing);
-  const hasOriginal = targetLanguage !== 'en' && (fullTexts?.original || !isExpanded);
+  // Only show "Show English original" if we have a translation (not showing fallback)
+  const hasOriginal = targetLanguage !== 'en' && !isFallbackToEnglish && (fullTexts?.original || !isExpanded);
 
   return (
     <div
@@ -134,9 +168,16 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
     >
       {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
-        <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-          {labels.questioner}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
+            {labels.questioner}
+          </span>
+          {isFallbackToEnglish && (
+            <span className="text-xs text-[var(--lo1-celestial)]/60 italic">
+              ({labels.translationUnavailable})
+            </span>
+          )}
+        </div>
         <a
           href={quote.url}
           target="_blank"

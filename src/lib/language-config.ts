@@ -51,6 +51,7 @@ export const UI_LABELS: Record<AvailableLanguage, {
   showEnglishOriginal: string;
   hideEnglishOriginal: string;
   englishOriginal: string;
+  translationUnavailable: string;
 }> = {
   en: {
     questioner: 'Questioner',
@@ -60,6 +61,7 @@ export const UI_LABELS: Record<AvailableLanguage, {
     showEnglishOriginal: 'Show English original',
     hideEnglishOriginal: 'Hide English original',
     englishOriginal: 'English Original',
+    translationUnavailable: 'Translation unavailable',
   },
   es: {
     questioner: 'Interrogador',
@@ -69,6 +71,7 @@ export const UI_LABELS: Record<AvailableLanguage, {
     showEnglishOriginal: 'Mostrar original en inglés',
     hideEnglishOriginal: 'Ocultar original en inglés',
     englishOriginal: 'Original en Inglés',
+    translationUnavailable: 'Traducción no disponible',
   },
 };
 

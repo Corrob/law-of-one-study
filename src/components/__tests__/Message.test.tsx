@@ -2,10 +2,31 @@ import { render, screen } from "@testing-library/react";
 import Message from "../Message";
 import { Message as MessageType, Quote } from "@/lib/types";
 
+// Mock the language context
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: jest.fn(() => ({ language: "en", setLanguage: jest.fn() })),
+}));
+
 // Mock child components
 jest.mock("../QuoteCard", () => {
   return function QuoteCard({ quote }: { quote: Quote }) {
     return <div data-testid="quote-card">{quote.reference}</div>;
+  };
+});
+
+jest.mock("../chat/BilingualQuoteCard", () => {
+  return function BilingualQuoteCard({
+    quote,
+    targetLanguage,
+  }: {
+    quote: Quote;
+    targetLanguage: string;
+  }) {
+    return (
+      <div data-testid="bilingual-quote-card">
+        {quote.reference} ({targetLanguage})
+      </div>
+    );
   };
 });
 

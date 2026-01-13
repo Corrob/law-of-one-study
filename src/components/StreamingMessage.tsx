@@ -2,8 +2,11 @@
 
 import { AnimationChunk } from "@/lib/types";
 import { debug } from "@/lib/debug";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { type AvailableLanguage } from "@/lib/language-config";
 import QuoteCard from "./QuoteCard";
 import AnimatedQuoteCard from "./AnimatedQuoteCard";
+import BilingualQuoteCard from "./chat/BilingualQuoteCard";
 import AnimatedMarkdown from "./AnimatedMarkdown";
 import MarkdownRenderer from "./MarkdownRenderer";
 import AICompanionBadge from "./AICompanionBadge";
@@ -23,6 +26,8 @@ export default function StreamingMessage({
   onSearch,
   isFirstAssistant,
 }: StreamingMessageProps) {
+  const { language } = useLanguage();
+
   return (
     <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed">
       {isFirstAssistant && <AICompanionBadge />}
@@ -34,6 +39,7 @@ export default function StreamingMessage({
           animate={false}
           isFirst={index === 0}
           onSearch={onSearch}
+          language={language}
         />
       ))}
 
@@ -45,6 +51,7 @@ export default function StreamingMessage({
           animate={true}
           isFirst={completedChunks.length === 0}
           onComplete={onChunkComplete}
+          language={language}
         />
       )}
     </div>
@@ -57,6 +64,7 @@ interface ChunkRendererProps {
   isFirst?: boolean;
   onComplete?: () => void;
   onSearch?: (term: string) => void;
+  language: string;
 }
 
 function ChunkRenderer({
@@ -65,6 +73,7 @@ function ChunkRenderer({
   isFirst = false,
   onComplete,
   onSearch,
+  language,
 }: ChunkRendererProps) {
   debug.log("[ChunkRenderer] Rendering chunk:", {
     type: chunk.type,
@@ -101,9 +110,15 @@ function ChunkRenderer({
       animate,
       quoteText: chunk.quote.text.substring(0, 50),
       reference: chunk.quote.reference,
+      language,
     });
     if (animate) {
+      // AnimatedQuoteCard handles its own translation fetching
       return <AnimatedQuoteCard quote={chunk.quote} animate={true} onComplete={onComplete} />;
+    }
+    // Use BilingualQuoteCard for non-English to show "Show English original" toggle
+    if (language !== 'en') {
+      return <BilingualQuoteCard quote={chunk.quote} targetLanguage={language as AvailableLanguage} />;
     }
     return <QuoteCard quote={chunk.quote} />;
   }
