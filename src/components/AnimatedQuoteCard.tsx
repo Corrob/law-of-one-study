@@ -4,8 +4,9 @@ import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { useEffect, useState, useRef } from "react";
 import { fetchFullQuote, formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
+import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { getUILabels, type AvailableLanguage } from "@/lib/language-config";
+import { type AvailableLanguage } from "@/lib/language-config";
 import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
 
 interface AnimatedQuoteCardProps {
@@ -19,9 +20,9 @@ export default function AnimatedQuoteCard({
   animate = true,
   onComplete,
 }: AnimatedQuoteCardProps) {
-  // Get current language setting and UI labels
+  // Get current language setting and translations
   const { language } = useLanguage();
-  const labels = getUILabels(language);
+  const t = useTranslations("quote");
 
   const [isVisible, setIsVisible] = useState(!animate);
   const hasCompletedRef = useRef(false);
@@ -194,7 +195,7 @@ export default function AnimatedQuoteCard({
       {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
         <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-          {labels.questioner}
+          {t("questioner")}
         </span>
         <a
           href={quote.url}
@@ -216,7 +217,7 @@ export default function AnimatedQuoteCard({
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
             disabled={isLoadingFull}
           >
-            {isLoadingFull ? labels.loading : "..."}
+            {isLoadingFull ? t("loading") : "..."}
           </button>
         )}
 
@@ -249,7 +250,7 @@ export default function AnimatedQuoteCard({
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
             disabled={isLoadingFull}
           >
-            {isLoadingFull ? labels.loading : "..."}
+            {isLoadingFull ? t("loading") : "..."}
           </button>
         )}
 
@@ -259,7 +260,7 @@ export default function AnimatedQuoteCard({
             onClick={handleExpandClick}
             className="block text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-3 cursor-pointer"
           >
-            ↑ {labels.collapse}
+            ↑ {t("collapse")}
           </button>
         )}
       </div>

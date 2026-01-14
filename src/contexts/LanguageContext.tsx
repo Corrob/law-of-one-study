@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { NextIntlClientProvider, AbstractIntlMessages } from "next-intl";
 import {
   AVAILABLE_LANGUAGES,
   LANGUAGE_DISPLAY_NAMES,
@@ -24,8 +25,31 @@ interface LanguageProviderProps {
   children: ReactNode;
 }
 
+// Cache for loaded messages to avoid re-fetching
+const messagesCache: Record<string, AbstractIntlMessages> = {};
+
+async function loadMessages(locale: AvailableLanguage): Promise<AbstractIntlMessages> {
+  if (messagesCache[locale]) {
+    return messagesCache[locale];
+  }
+
+  try {
+    const messages = await import(`../../messages/${locale}/common.json`);
+    messagesCache[locale] = messages.default;
+    return messages.default;
+  } catch {
+    // Fall back to English if locale messages not found
+    if (locale !== 'en' && !messagesCache['en']) {
+      const fallback = await import('../../messages/en/common.json');
+      messagesCache['en'] = fallback.default;
+    }
+    return messagesCache['en'] || {};
+  }
+}
+
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const [language, setLanguageState] = useState<AvailableLanguage>("en");
+  const [messages, setMessages] = useState<AbstractIntlMessages | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Load saved language from localStorage on mount
@@ -37,20 +61,27 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     setIsHydrated(true);
   }, []);
 
+  // Load messages when language changes
+  useEffect(() => {
+    loadMessages(language).then(setMessages);
+  }, [language]);
+
   // Save language to localStorage when it changes
   const setLanguage = (lang: AvailableLanguage) => {
     setLanguageState(lang);
     localStorage.setItem(STORAGE_KEY, lang);
   };
 
-  // Don't render children until hydrated to prevent mismatch
-  if (!isHydrated) {
+  // Don't render children until hydrated and messages are loaded
+  if (!isHydrated || !messages) {
     return null;
   }
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>
-      {children}
+      <NextIntlClientProvider locale={language} messages={messages}>
+        {children}
+      </NextIntlClientProvider>
     </LanguageContext.Provider>
   );
 }

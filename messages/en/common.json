@@ -1,0 +1,30 @@
+{
+  "quote": {
+    "questioner": "Questioner",
+    "ra": "Ra",
+    "collapse": "Collapse",
+    "expand": "Show more",
+    "loading": "Loading...",
+    "showEnglishOriginal": "Show English original",
+    "hideEnglishOriginal": "Hide English original",
+    "englishOriginal": "English Original",
+    "translationUnavailable": "Translation unavailable",
+    "copyQuote": "Copy quote",
+    "copied": "Copied!"
+  },
+  "buttons": {
+    "send": "Send",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "new": "New",
+    "close": "Close"
+  },
+  "labels": {
+    "menu": "Menu",
+    "language": "Language",
+    "theme": "Theme",
+    "loading": "Loading..."
+  }
+}

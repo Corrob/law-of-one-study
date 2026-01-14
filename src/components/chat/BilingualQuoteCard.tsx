@@ -5,7 +5,8 @@ import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { debug } from "@/lib/debug";
 import { fetchBilingualQuote, formatWholeQuote, formatQuoteWithAttribution } from "@/lib/quote-utils";
-import { getUILabels, type AvailableLanguage } from "@/lib/language-config";
+import { useTranslations } from "next-intl";
+import { type AvailableLanguage } from "@/lib/language-config";
 import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
 import CopyButton from "../CopyButton";
 
@@ -23,7 +24,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   quote,
   targetLanguage,
 }: BilingualQuoteCardProps) {
-  const labels = getUILabels(targetLanguage);
+  const t = useTranslations("quote");
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
   // State for expansion and bilingual loading
@@ -170,11 +171,11 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-            {labels.questioner}
+            {t("questioner")}
           </span>
           {isFallbackToEnglish && (
             <span className="text-xs text-[var(--lo1-celestial)]/60 italic">
-              ({labels.translationUnavailable})
+              ({t("translationUnavailable")})
             </span>
           )}
         </div>
@@ -196,9 +197,9 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
           disabled={isLoadingFull}
           aria-expanded={isExpanded}
-          aria-label={isLoadingFull ? labels.loading : labels.expand}
+          aria-label={isLoadingFull ? t("loading") : t("expand")}
         >
-          {isLoadingFull ? labels.loading : "..."}
+          {isLoadingFull ? t("loading") : "..."}
         </button>
       )}
 
@@ -229,9 +230,9 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
           disabled={isLoadingFull}
           aria-expanded={isExpanded}
-          aria-label={isLoadingFull ? labels.loading : labels.expand}
+          aria-label={isLoadingFull ? t("loading") : t("expand")}
         >
-          {isLoadingFull ? labels.loading : "..."}
+          {isLoadingFull ? t("loading") : "..."}
         </button>
       )}
 
@@ -241,9 +242,9 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
           onClick={handleExpandClick}
           className="block text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-3 cursor-pointer"
           aria-expanded={isExpanded}
-          aria-label={labels.collapse}
+          aria-label={t("collapse")}
         >
-          ↑ {labels.collapse}
+          ↑ {t("collapse")}
         </button>
       )}
 
@@ -255,14 +256,14 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
             className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-starlight)] cursor-pointer"
             aria-expanded={showOriginal}
           >
-            {showOriginal ? `↑ ${labels.hideEnglishOriginal}` : `↓ ${labels.showEnglishOriginal}`}
+            {showOriginal ? `↑ ${t("hideEnglishOriginal")}` : `↓ ${t("showEnglishOriginal")}`}
           </button>
 
           {/* Original English text */}
           {showOriginal && originalSegments && (
             <div className="mt-3 pl-3 border-l-2 border-[var(--lo1-celestial)]/30">
               <div className="text-xs text-[var(--lo1-celestial)]/70 mb-2 uppercase tracking-wide">
-                {labels.englishOriginal}
+                {t("englishOriginal")}
               </div>
               {originalSegments.map((segment, index) => (
                 <div key={index} className={segment.type === "ra" ? "mt-2" : ""}>

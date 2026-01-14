@@ -20,6 +20,20 @@ jest.mock("@/contexts/LanguageContext", () => ({
   })),
 }));
 
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      questioner: "Questioner",
+      ra: "Ra",
+      collapse: "Collapse",
+      expand: "Show more",
+      loading: "Loading...",
+    };
+    return translations[key] || key;
+  },
+}));
+
 describe("QuoteCard", () => {
   const mockQuote: Quote = {
     text: "Questioner: What is love? Ra: I am Ra. Love is the first distortion.",

@@ -7,6 +7,24 @@ jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: jest.fn(() => ({ language: "es", setLanguage: jest.fn() })),
 }));
 
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      questioner: "Interrogador",
+      ra: "Ra",
+      collapse: "Colapsar",
+      expand: "Mostrar más",
+      loading: "Cargando...",
+      showEnglishOriginal: "Mostrar original en inglés",
+      hideEnglishOriginal: "Ocultar original en inglés",
+      englishOriginal: "Original en Inglés",
+      translationUnavailable: "Traducción no disponible",
+    };
+    return translations[key] || key;
+  },
+}));
+
 // Mock quote-utils
 const mockFetchBilingualQuote = jest.fn();
 jest.mock("@/lib/quote-utils", () => ({

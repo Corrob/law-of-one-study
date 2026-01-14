@@ -1,0 +1,30 @@
+{
+  "quote": {
+    "questioner": "Interrogador",
+    "ra": "Ra",
+    "collapse": "Colapsar",
+    "expand": "Mostrar más",
+    "loading": "Cargando...",
+    "showEnglishOriginal": "Mostrar original en inglés",
+    "hideEnglishOriginal": "Ocultar original en inglés",
+    "englishOriginal": "Original en Inglés",
+    "translationUnavailable": "Traducción no disponible",
+    "copyQuote": "Copiar cita",
+    "copied": "¡Copiado!"
+  },
+  "buttons": {
+    "send": "Enviar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "new": "Nuevo",
+    "close": "Cerrar"
+  },
+  "labels": {
+    "menu": "Menú",
+    "language": "Idioma",
+    "theme": "Tema",
+    "loading": "Cargando..."
+  }
+}
