@@ -95,7 +95,21 @@
     "characterCount": "{count} / {max} characters",
     "overLimit": "(over limit)",
     "continueExploring": "Continue exploring:",
-    "suggestion": "Suggestion: {text}"
+    "suggestion": "Suggestion: {text}",
+    "initialPlaceholders": {
+      "1": "Seek and you shall find...",
+      "2": "What mystery calls to you?",
+      "3": "What are you seeking?",
+      "4": "Begin your journey..."
+    },
+    "followUpPlaceholders": {
+      "1": "Go deeper...",
+      "2": "What else calls to you?",
+      "3": "Ask a follow-up...",
+      "4": "Continue your seeking...",
+      "5": "What resonates with you?",
+      "6": "Explore further..."
+    }
   },
   "starters": {
     "1": "What is the Law of One?",

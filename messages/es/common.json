@@ -95,7 +95,21 @@
     "characterCount": "{count} / {max} caracteres",
     "overLimit": "(excede el límite)",
     "continueExploring": "Continúa explorando:",
-    "suggestion": "Sugerencia: {text}"
+    "suggestion": "Sugerencia: {text}",
+    "initialPlaceholders": {
+      "1": "Busca y encontrarás...",
+      "2": "¿Qué misterio te llama?",
+      "3": "¿Qué estás buscando?",
+      "4": "Comienza tu viaje..."
+    },
+    "followUpPlaceholders": {
+      "1": "Profundiza más...",
+      "2": "¿Qué más te llama?",
+      "3": "Haz una pregunta...",
+      "4": "Continúa tu búsqueda...",
+      "5": "¿Qué resuena contigo?",
+      "6": "Explora más..."
+    }
   },
   "starters": {
     "1": "¿Qué es la Ley del Uno?",
