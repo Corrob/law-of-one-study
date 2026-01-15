@@ -3,6 +3,7 @@ import {
   getDailyQuote,
   getQuoteForDay,
   formatQuoteForShare,
+  getRawQuoteForDay,
 } from "../daily-quote";
 import { dailyQuotes } from "@/data/daily-quotes";
 
@@ -29,7 +30,7 @@ describe("getDayOfYear", () => {
 });
 
 describe("getDailyQuote", () => {
-  it("returns a quote object with required fields", () => {
+  it("returns a localized quote object with required fields", () => {
     const quote = getDailyQuote();
 
     expect(quote).toHaveProperty("text");
@@ -42,10 +43,40 @@ describe("getDailyQuote", () => {
 
   it("returns a quote from the dailyQuotes array", () => {
     const quote = getDailyQuote();
+    // Check that the reference matches one in the array
     const isInArray = dailyQuotes.some(
-      (q) => q.text === quote.text && q.reference === quote.reference
+      (q) => q.reference === quote.reference && q.text.en === quote.text
     );
     expect(isInArray).toBe(true);
+  });
+
+  it("defaults to English locale", () => {
+    const quoteEn = getDailyQuote();
+    const quoteExplicit = getDailyQuote("en");
+    expect(quoteEn.text).toBe(quoteExplicit.text);
+  });
+
+  it("returns Spanish text for Spanish locale", () => {
+    const quoteEn = getDailyQuote("en");
+    const quoteEs = getDailyQuote("es");
+
+    // Same reference for same day
+    expect(quoteEn.reference).toBe(quoteEs.reference);
+
+    // Different text (Spanish vs English) - unless Spanish falls back to English
+    // Just verify Spanish text is returned
+    expect(quoteEs.text).toBeTruthy();
+  });
+
+  it("generates locale-aware URL for English", () => {
+    const quote = getDailyQuote("en");
+    expect(quote.url).toMatch(/^https:\/\/www\.llresearch\.org\/channeling\/ra-contact\/\d+#\d+$/);
+    expect(quote.url).not.toContain("/es/");
+  });
+
+  it("generates locale-aware URL for Spanish", () => {
+    const quote = getDailyQuote("es");
+    expect(quote.url).toMatch(/^https:\/\/www\.llresearch\.org\/es\/channeling\/ra-contact\/\d+#\d+$/);
   });
 });
 
@@ -65,24 +96,15 @@ describe("getQuoteForDay", () => {
     const quote1 = getQuoteForDay(date1);
     const quote2 = getQuoteForDay(date2);
 
-    // With 100 quotes, consecutive days should have different quotes
+    // With 90+ quotes, consecutive days should have different quotes
     expect(quote1.text).not.toBe(quote2.text);
   });
 
   it("returns deterministic results based on day of year", () => {
-    // Same day of year in different years should give same quote
-    // (since we use dayOfYear % quotes.length)
     const date2024 = new Date(2024, 2, 15); // March 15, 2024
-    const date2025 = new Date(2025, 2, 15); // March 15, 2025
-
     const quote2024 = getQuoteForDay(date2024);
-    const quote2025 = getQuoteForDay(date2025);
 
-    // Day of year for March 15:
-    // 2024 (leap year): 31 (Jan) + 29 (Feb) + 15 = 75
-    // 2025 (non-leap): 31 (Jan) + 28 (Feb) + 15 = 74
-    // They're different days, so quotes might differ
-    // But let's test that two identical dates give same result
+    // Same call should return same result
     expect(getQuoteForDay(date2024)).toEqual(quote2024);
   });
 
@@ -96,6 +118,31 @@ describe("getQuoteForDay", () => {
 
     expect(quote1.text).toBe(quoteCycle.text);
   });
+
+  it("supports locale parameter", () => {
+    const date = new Date(2024, 5, 15);
+    const quoteEn = getQuoteForDay(date, "en");
+    const quoteEs = getQuoteForDay(date, "es");
+
+    // Same reference
+    expect(quoteEn.reference).toBe(quoteEs.reference);
+
+    // Different URLs (locale path)
+    expect(quoteEn.url).not.toContain("/es/");
+    expect(quoteEs.url).toContain("/es/");
+  });
+});
+
+describe("getRawQuoteForDay", () => {
+  it("returns the raw bilingual quote data", () => {
+    const date = new Date(2024, 5, 15);
+    const rawQuote = getRawQuoteForDay(date);
+
+    expect(rawQuote).toHaveProperty("reference");
+    expect(rawQuote).toHaveProperty("text");
+    expect(rawQuote.text).toHaveProperty("en");
+    expect(rawQuote.text).toHaveProperty("es");
+  });
 });
 
 describe("formatQuoteForShare", () => {
@@ -103,14 +150,14 @@ describe("formatQuoteForShare", () => {
     const quote = {
       text: "Test quote text",
       reference: "Ra 1.7",
-      url: "https://www.llresearch.org/channeling/ra-contact/s/1#7",
+      url: "https://www.llresearch.org/channeling/ra-contact/1#7",
     };
 
     const formatted = formatQuoteForShare(quote);
 
     expect(formatted).toContain('"Test quote text"');
     expect(formatted).toContain("— Ra 1.7");
-    expect(formatted).toContain("https://www.llresearch.org/channeling/ra-contact/s/1#7");
+    expect(formatted).toContain("https://www.llresearch.org/channeling/ra-contact/1#7");
     // URL should be on its own line (separated by double newline)
     expect(formatted).toMatch(/— Ra 1\.7\n\nhttps:\/\//);
   });
@@ -119,7 +166,7 @@ describe("formatQuoteForShare", () => {
     const quote = {
       text: "Quote with \"inner quotes\" and newlines",
       reference: "Ra 10.14",
-      url: "https://www.llresearch.org/channeling/ra-contact/s/10#14",
+      url: "https://www.llresearch.org/channeling/ra-contact/10#14",
     };
 
     const formatted = formatQuoteForShare(quote);
@@ -131,22 +178,27 @@ describe("formatQuoteForShare", () => {
 
 describe("dailyQuotes data", () => {
   it("has at least 30 verified quotes", () => {
-    // 34 quotes verified against source material as of initial curation
     expect(dailyQuotes.length).toBeGreaterThanOrEqual(30);
   });
 
-  it("all quotes have required fields", () => {
-    dailyQuotes.forEach((quote, index) => {
+  it("all quotes have required fields in bilingual format", () => {
+    dailyQuotes.forEach((quote) => {
       expect(quote.text).toBeTruthy();
+      expect(quote.text.en).toBeTruthy();
+      expect(quote.text.es).toBeTruthy();
       expect(quote.reference).toBeTruthy();
-      expect(quote.url).toBeTruthy();
-      expect(quote.url).toMatch(/^https:\/\/www\.llresearch\.org\/channeling\/ra-contact\//);
     });
   });
 
   it("all quotes have Ra references", () => {
     dailyQuotes.forEach((quote) => {
       expect(quote.reference).toMatch(/^Ra \d+\.\d+$/);
+    });
+  });
+
+  it("does not store URLs (they are generated dynamically)", () => {
+    dailyQuotes.forEach((quote) => {
+      expect(quote).not.toHaveProperty("url");
     });
   });
 });

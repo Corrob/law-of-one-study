@@ -2,13 +2,13 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "@/i18n/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
 import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon } from "./icons";
-import { getDailyQuote } from "@/lib/daily-quote";
-import { formatQuoteWithAttribution } from "@/lib/quote-utils";
+import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
+import { type AvailableLanguage } from "@/lib/language-config";
 
 // Feature card configuration with translation keys
 const FEATURES = [
@@ -35,19 +35,25 @@ const FEATURES = [
 ];
 
 export default function Dashboard() {
-  const [quote, setQuote] = useState<DailyQuote | null>(null);
+  const locale = useLocale() as AvailableLanguage;
+  const [quote, setQuote] = useState<LocalizedDailyQuote | null>(null);
+  const [bilingualQuote, setBilingualQuote] = useState<DailyQuote | null>(null);
+  const [showOriginal, setShowOriginal] = useState(false);
   const t = useTranslations();
 
   useEffect(() => {
     // Get quote on client to avoid hydration mismatch
     // Deterministic: same quote for all users on same day
-    setQuote(getDailyQuote());
-  }, []);
+    // Locale-aware: shows Spanish text for Spanish users
+    const today = new Date();
+    setQuote(getDailyQuote(locale));
+    setBilingualQuote(getRawQuoteForDay(today));
+  }, [locale]);
 
   // Compute formatted copy text
   const copyText = useMemo(() => {
     if (!quote) return "";
-    return formatQuoteWithAttribution(quote.text, quote.reference, quote.url);
+    return formatQuoteForShare(quote);
   }, [quote]);
 
   return (
@@ -99,6 +105,34 @@ export default function Dashboard() {
                   </span>
                 </div>
               </div>
+
+              {/* Show English original toggle (for non-English locales) */}
+              {locale !== "en" && bilingualQuote && (
+                <div className="mt-4 pt-3 border-t border-[var(--lo1-celestial)]/20">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowOriginal(!showOriginal);
+                    }}
+                    className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-starlight)] cursor-pointer"
+                    aria-expanded={showOriginal}
+                  >
+                    {showOriginal ? `↑ ${t("quote.hideEnglishOriginal")}` : `↓ ${t("quote.showEnglishOriginal")}`}
+                  </button>
+
+                  {/* English original text */}
+                  {showOriginal && (
+                    <div className="mt-3 pl-3 border-l-2 border-[var(--lo1-celestial)]/30">
+                      <div className="text-xs text-[var(--lo1-celestial)]/70 mb-2 uppercase tracking-wide">
+                        {t("quote.englishOriginal")}
+                      </div>
+                      <p className="font-[family-name:var(--font-cormorant)] italic text-lg text-[var(--lo1-starlight)]/80 leading-relaxed">
+                        &ldquo;{bilingualQuote.text.en}&rdquo;
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
