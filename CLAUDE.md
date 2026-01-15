@@ -23,10 +23,12 @@ An AI-powered RAG chatbot for the Ra Material. Community-funded, open source, fr
 ```
 src/
 ├── app/                    # Next.js app router pages and API routes
+│   ├── [locale]/           # Locale-specific routes (en, es)
 │   └── api/chat/           # Chat API route (thin orchestrator)
 ├── components/             # React components with co-located tests
-├── contexts/               # React context providers
+├── contexts/               # React context providers (Language, Popover)
 ├── hooks/                  # Custom React hooks with tests
+├── i18n/                   # Internationalization config (next-intl)
 ├── lib/                    # Business logic and utilities
 │   ├── chat/               # Chat pipeline modules (modular, testable)
 │   │   ├── orchestrator.ts # Main chat pipeline orchestration
@@ -49,8 +51,9 @@ src/
 │   │   └── utils.ts
 │   └── schemas/            # Zod validation schemas
 ├── providers/              # App-level providers (PostHog, Theme)
+messages/                   # UI translation files (en/, es/)
 scripts/                    # Data processing scripts
-public/sections/            # Ra material source (106 JSON files)
+public/sections/            # Ra material source (en/, es/ - 106 JSON files each)
 e2e/                        # Playwright E2E tests
 openapi.yaml                # API documentation (OpenAPI 3.1)
 ```
