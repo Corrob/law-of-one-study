@@ -1,6 +1,7 @@
 "use client";
 
 import { KeyboardEvent } from "react";
+import { useTranslations } from "next-intl";
 import { SearchIcon } from "./icons";
 import { useAutoGrowTextarea } from "@/hooks/useAutoGrowTextarea";
 
@@ -19,9 +20,10 @@ export default function SearchInput({
   onChange,
   onSearch,
   isLoading = false,
-  placeholder = "Search the Ra Material...",
+  placeholder,
   compact = false,
 }: SearchInputProps) {
+  const t = useTranslations("search");
   // Use smaller max height for search (it's not a full message composer)
   const { textareaRef, maxHeight } = useAutoGrowTextarea({
     value,
@@ -52,7 +54,7 @@ export default function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder={placeholder}
+        placeholder={placeholder || t("placeholder")}
         rows={1}
         className={`flex-1 resize-none bg-transparent pl-12 pr-4
                    text-[var(--lo1-starlight)] placeholder:text-[var(--lo1-stardust)]
@@ -70,7 +72,7 @@ export default function SearchInput({
                      transition-all duration-200 cursor-pointer
                      ${compact ? "px-4 py-1.5 text-sm" : "px-4 py-2"}`}
         >
-          {isLoading ? "..." : "Search"}
+          {isLoading ? "..." : t("searchButton")}
         </button>
       )}
     </div>

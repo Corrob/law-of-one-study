@@ -69,7 +69,8 @@ describe("SuggestionChips", () => {
     it("should display 'Continue exploring:' label", () => {
       render(<SuggestionChips suggestions={mockSuggestions} onSelect={mockOnSelect} />);
 
-      expect(screen.getByText("Continue exploring:")).toBeInTheDocument();
+      // Translation key is returned by mock
+      expect(screen.getByText("chat.continueExploring")).toBeInTheDocument();
     });
   });
 

@@ -13,7 +13,8 @@ describe("MessageInput", () => {
     it("should render textarea with default placeholder", () => {
       render(<MessageInput onSend={mockOnSend} />);
 
-      expect(screen.getByPlaceholderText("Ask about the Ra Material...")).toBeInTheDocument();
+      // Translation key is returned by mock
+      expect(screen.getByPlaceholderText("chat.placeholder")).toBeInTheDocument();
     });
 
     it("should render textarea with custom placeholder", () => {
@@ -25,13 +26,14 @@ describe("MessageInput", () => {
     it("should render send button", () => {
       render(<MessageInput onSend={mockOnSend} />);
 
-      expect(screen.getByRole("button", { name: "Send message" })).toBeInTheDocument();
+      // Translation key is returned by mock
+      expect(screen.getByRole("button", { name: "chat.sendMessage" })).toBeInTheDocument();
     });
 
     it("should disable send button when input is empty", () => {
       render(<MessageInput onSend={mockOnSend} />);
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       expect(button).toBeDisabled();
     });
   });
@@ -41,7 +43,7 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Hello");
 
       expect(textarea).toHaveValue("Hello");
@@ -51,10 +53,10 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Hello");
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       expect(button).not.toBeDisabled();
     });
 
@@ -62,10 +64,10 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "   ");
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       expect(button).toBeDisabled();
     });
 
@@ -73,10 +75,10 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "  Hello World  ");
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       await user.click(button);
 
       expect(mockOnSend).toHaveBeenCalledWith("Hello World");
@@ -86,10 +88,10 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Hello");
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       await user.click(button);
 
       expect(textarea).toHaveValue("");
@@ -101,7 +103,7 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Hello");
       await user.keyboard("{Enter}");
 
@@ -112,7 +114,7 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Hello");
       await user.keyboard("{Shift>}{Enter}{/Shift}");
 
@@ -123,7 +125,7 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Line 1");
       await user.keyboard("{Shift>}{Enter}{/Shift}");
       await user.type(textarea, "Line 2");
@@ -136,7 +138,7 @@ describe("MessageInput", () => {
     it("should disable textarea when disabled prop is true", () => {
       render(<MessageInput onSend={mockOnSend} disabled />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       expect(textarea).toBeDisabled();
     });
 
@@ -145,17 +147,17 @@ describe("MessageInput", () => {
       render(<MessageInput onSend={mockOnSend} disabled />);
 
       // Even with content, button should be disabled
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       fireEvent.change(textarea, { target: { value: "Hello" } });
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       expect(button).toBeDisabled();
     });
 
     it("should not call onSend when disabled", async () => {
       render(<MessageInput onSend={mockOnSend} disabled />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       fireEvent.change(textarea, { target: { value: "Hello" } });
       fireEvent.keyDown(textarea, { key: "Enter", code: "Enter" });
 
@@ -168,48 +170,51 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Short message");
 
-      expect(screen.queryByText(/characters/)).not.toBeInTheDocument();
+      // Character count uses translation key
+      expect(screen.queryByText(/characterCount/)).not.toBeInTheDocument();
     });
 
     it("should show counter when near limit (>80%)", () => {
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       // 5000 * 0.8 = 4000, so we need > 4000 characters
       const longText = "a".repeat(4001);
       fireEvent.change(textarea, { target: { value: longText } });
 
-      expect(screen.getByText(/4,001 \/ 5,000 characters/)).toBeInTheDocument();
+      // Character count uses translation key with params filled in
+      expect(screen.getByText(/characterCount/)).toBeInTheDocument();
     });
 
     it("should show error state when over limit", () => {
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       const tooLongText = "a".repeat(5001);
       fireEvent.change(textarea, { target: { value: tooLongText } });
 
-      expect(screen.getByText(/over limit/)).toBeInTheDocument();
+      // Over limit uses translation key
+      expect(screen.getByText(/overLimit/)).toBeInTheDocument();
     });
 
     it("should disable send when over character limit", () => {
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       const tooLongText = "a".repeat(5001);
       fireEvent.change(textarea, { target: { value: tooLongText } });
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       expect(button).toBeDisabled();
     });
 
     it("should not call onSend when over character limit", () => {
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       const tooLongText = "a".repeat(5001);
       fireEvent.change(textarea, { target: { value: tooLongText } });
       fireEvent.keyDown(textarea, { key: "Enter", code: "Enter" });
@@ -223,10 +228,10 @@ describe("MessageInput", () => {
       const user = userEvent.setup();
       render(<MessageInput onSend={mockOnSend} />);
 
-      const textarea = screen.getByPlaceholderText("Ask about the Ra Material...");
+      const textarea = screen.getByPlaceholderText("chat.placeholder");
       await user.type(textarea, "Hello World");
 
-      const button = screen.getByRole("button", { name: "Send message" });
+      const button = screen.getByRole("button", { name: "chat.sendMessage" });
       await user.click(button);
 
       expect(mockOnSend).toHaveBeenCalledWith("Hello World");

@@ -1,70 +1,9 @@
-export const conversationStarters = [
-  // The Law of One - Core Concepts
-  "What is the Law of One?",
-  "What does Ra mean by 'all is one'?",
-  "How does Ra describe the One Infinite Creator?",
-  "What is the original thought according to Ra?",
-
-  // Densities & Evolution
-  "Explain the concept of densities",
-  "What is third density and why are we here?",
-  "What is the harvest and how does it work?",
-  "What happens after third density?",
-  "What is fourth density like?",
-  "How do we progress through the densities?",
-
-  // Polarity & Service
-  "What is service-to-others vs service-to-self?",
-  "How do I become more service-to-others oriented?",
-  "What does 51% service-to-others mean?",
-  "Why is polarity important for evolution?",
-  "What is the negative path?",
-
-  // The Veil & Incarnation
-  "Why do we forget our past lives?",
-  "What is the veil of forgetting?",
-  "What is the purpose of incarnation?",
-  "How does reincarnation work according to Ra?",
-  "What are pre-incarnative choices?",
-
-  // Mind/Body/Spirit
-  "What is the mind/body/spirit complex?",
-  "How do I balance my energy centers?",
-  "What are the chakras according to Ra?",
-  "What is the significance of the indigo ray?",
-  "How do I open my heart center?",
-
-  // Catalyst & Learning
-  "What is catalyst and how do I use it?",
-  "How do I learn from difficult experiences?",
-  "What is the purpose of suffering?",
-  "How do I process catalyst effectively?",
-
-  // Wanderers & Higher Beings
-  "What are wanderers?",
-  "Am I a wanderer?",
-  "What is the Confederation of Planets?",
-  "Who is Ra and where do they come from?",
-  "What is a social memory complex?",
-
-  // Meditation & Spiritual Practice
-  "How does Ra recommend we meditate?",
-  "What spiritual practices does Ra suggest?",
-  "How do I seek the One Infinite Creator?",
-  "What is the significance of silence?",
-
-  // Love & Light
-  "What does Ra mean by love/light and light/love?",
-  "How is love the building block of the universe?",
-  "What is intelligent infinity?",
-  "What is the Logos?",
-
-  // Practical Application
-  "How do I apply the Law of One in daily life?",
-  "What does Ra say about relationships?",
-  "How can I be of service to others?",
-  "What is the most important thing I can do?",
-];
+/**
+ * Conversation starters are now in messages/{locale}/common.json under "starters" key.
+ * Use useTranslations("starters") to access them.
+ * Total starters: 46 (numbered keys "1" through "46")
+ */
+export const STARTER_COUNT = 46;
 
 export const welcomeQuotes = [
   // Core Law of One
@@ -156,11 +95,6 @@ export const welcomeQuotes = [
     url: "https://lawofone.info/s/49#6",
   },
 ];
-
-export function getRandomStarters(count: number = 3): string[] {
-  const shuffled = [...conversationStarters].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-}
 
 export function getRandomQuote() {
   return welcomeQuotes[Math.floor(Math.random() * welcomeQuotes.length)];

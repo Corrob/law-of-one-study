@@ -99,6 +99,13 @@ export async function fetchFullQuote(
   reference: string,
   language: AvailableLanguage = 'en'
 ): Promise<string | null> {
+  // Validate language - only allow known languages
+  const validLanguages = ['en', 'es'] as const;
+  if (!validLanguages.includes(language as typeof validLanguages[number])) {
+    debug.log("[fetchFullQuote] Invalid language, defaulting to English:", language);
+    language = 'en';
+  }
+
   // Extract session number from reference (e.g., "49.8" -> "49" or "Ra 49.8" -> "49")
   const match = reference.match(/(\d+)\.\d+/);
   if (!match) {
@@ -107,6 +114,13 @@ export async function fetchFullQuote(
   }
 
   const sessionNumber = match[1];
+
+  // Validate session number is within valid range (1-106)
+  const sessionNum = parseInt(sessionNumber, 10);
+  if (isNaN(sessionNum) || sessionNum < 1 || sessionNum > 106) {
+    debug.error("[fetchFullQuote] Invalid session number:", sessionNumber);
+    return null;
+  }
 
   try {
     const path = `/sections/${language}/${sessionNumber}.json`;
@@ -141,7 +155,13 @@ export async function fetchFullQuote(
 
     return fullText || null;
   } catch (error) {
-    debug.error("[fetchFullQuote] Error fetching full quote:", error);
+    // Network errors are common during development (hot reload, etc.)
+    // Log quietly and return null instead of throwing
+    if (error instanceof TypeError && (error.message === 'Failed to fetch' || error.message.includes('fetch'))) {
+      debug.log("[fetchFullQuote] Network error (likely dev server reload):", reference);
+    } else {
+      debug.error("[fetchFullQuote] Error fetching full quote:", error);
+    }
     return null;
   }
 }

@@ -31,14 +31,8 @@ jest.mock("@/components/NavigationWrapper", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-// Mock search suggestions
-jest.mock("@/data/search-suggestions", () => ({
-  getRandomSuggestions: () => ["suggestion 1", "suggestion 2"],
-}));
-
-jest.mock("@/data/sentence-suggestions", () => ({
-  getRandomSentenceSuggestions: () => ["You are infinity", "all things are one"],
-}));
+// Note: Search suggestions are now handled via next-intl translations
+// The global mock in jest.setup.js returns the translation key as text
 
 import SearchPage from "../page";
 
@@ -61,10 +55,11 @@ describe("SearchPage", () => {
     it("shows mode selection cards on initial load", () => {
       render(<SearchPage />);
 
-      expect(screen.getByText("Sentence Search")).toBeInTheDocument();
-      expect(screen.getByText("Passage Search")).toBeInTheDocument();
-      expect(screen.getByText("Find a specific quote by meaning")).toBeInTheDocument();
-      expect(screen.getByText("Discover quotes by concept")).toBeInTheDocument();
+      // Translation keys are returned by mock
+      expect(screen.getByText("search.sentenceSearch")).toBeInTheDocument();
+      expect(screen.getByText("search.passageSearch")).toBeInTheDocument();
+      expect(screen.getByText("search.sentenceDescription")).toBeInTheDocument();
+      expect(screen.getByText("search.passageDescription")).toBeInTheDocument();
     });
 
     it("does not show search input until mode is selected", () => {
@@ -77,7 +72,7 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
       // Wait for animation transition
       await waitFor(() => {
@@ -89,7 +84,7 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Sentence Search"));
+      await user.click(screen.getByText("search.sentenceSearch"));
 
       // Wait for animation transition
       await waitFor(() => {
@@ -101,7 +96,7 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Sentence Search"));
+      await user.click(screen.getByText("search.sentenceSearch"));
 
       expect(mockPush).toHaveBeenCalledWith("/search?mode=sentence");
     });
@@ -110,11 +105,16 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Sentence Search"));
+      await user.click(screen.getByText("search.sentenceSearch"));
 
-      // Wait for animation transition
+      // Wait for animation transition - suggestions are translation keys
+      // The mock returns keys like "searchSuggestions.sentence.1"
       await waitFor(() => {
-        expect(screen.getByText("You are infinity")).toBeInTheDocument();
+        const buttons = screen.getAllByRole("button");
+        const suggestionButtons = buttons.filter(
+          (btn) => btn.textContent?.startsWith("searchSuggestions.sentence.")
+        );
+        expect(suggestionButtons.length).toBeGreaterThan(0);
       });
     });
 
@@ -122,11 +122,16 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
-      // Wait for animation transition
+      // Wait for animation transition - suggestions are translation keys
+      // The mock returns keys like "searchSuggestions.passage.1"
       await waitFor(() => {
-        expect(screen.getByText("suggestion 1")).toBeInTheDocument();
+        const buttons = screen.getAllByRole("button");
+        const suggestionButtons = buttons.filter(
+          (btn) => btn.textContent?.startsWith("searchSuggestions.passage.")
+        );
+        expect(suggestionButtons.length).toBeGreaterThan(0);
       });
     });
   });
@@ -137,7 +142,7 @@ describe("SearchPage", () => {
       render(<SearchPage />);
 
       // Select sentence mode
-      await user.click(screen.getByText("Sentence Search"));
+      await user.click(screen.getByText("search.sentenceSearch"));
 
       // Wait for animation transition
       const input = await screen.findByRole("textbox", { name: "Search query" });
@@ -158,7 +163,7 @@ describe("SearchPage", () => {
       render(<SearchPage />);
 
       // Select passage mode
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
       // Wait for animation transition
       const input = await screen.findByRole("textbox", { name: "Search query" });
@@ -178,7 +183,7 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
       mockPush.mockClear();
 
       // Wait for animation transition
@@ -196,12 +201,12 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
       // Wait for animation transition and toggle buttons
       await waitFor(() => {
-        expect(screen.getByRole("button", { name: "Sentence" })).toBeInTheDocument();
-        expect(screen.getByRole("button", { name: "Passage" })).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "search.modeToggle.sentence" })).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "search.modeToggle.passage" })).toBeInTheDocument();
       });
     });
 
@@ -220,7 +225,7 @@ describe("SearchPage", () => {
       render(<SearchPage />);
 
       // Select passage mode and search
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
       const input = await screen.findByRole("textbox", { name: "Search query" });
       await user.type(input, "love{Enter}");
 
@@ -230,14 +235,15 @@ describe("SearchPage", () => {
       });
 
       // Wait for search results state to settle (results are shown)
+      // Translation key with param interpolation: search.matchCount
       await waitFor(() => {
-        expect(screen.getByText(/Closest .* matches by meaning/)).toBeInTheDocument();
+        expect(screen.getByText(/search\.matchCount/)).toBeInTheDocument();
       });
 
       mockFetch.mockClear();
 
       // Toggle to sentence mode - use findByRole to ensure toggle is ready
-      const sentenceButton = await screen.findByRole("button", { name: "Sentence" });
+      const sentenceButton = await screen.findByRole("button", { name: "search.modeToggle.sentence" });
       await user.click(sentenceButton);
 
       await waitFor(() => {
@@ -289,7 +295,7 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
       // Wait for animation transition
       const input = await screen.findByRole("textbox", { name: "Search query" });
@@ -304,13 +310,13 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
       // Wait for animation transition
       const input = await screen.findByRole("textbox", { name: "Search query" });
       await user.type(input, "love");
 
-      const searchButton = screen.getByRole("button", { name: "Search" });
+      const searchButton = screen.getByRole("button", { name: "search.searchButton" });
       await user.click(searchButton);
 
       await waitFor(() => {
@@ -322,7 +328,7 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
       // Wait for animation transition
       const input = await screen.findByRole("textbox", { name: "Search query" });
@@ -337,17 +343,30 @@ describe("SearchPage", () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
-      // Wait for animation transition
-      const suggestion = await screen.findByText("suggestion 1");
-      await user.click(suggestion);
+      // Wait for suggestions to appear
+      await waitFor(() => {
+        const buttons = screen.getAllByRole("button");
+        const suggestionButtons = buttons.filter(
+          (btn) => btn.textContent?.startsWith("searchSuggestions.passage.")
+        );
+        expect(suggestionButtons.length).toBeGreaterThan(0);
+      });
+
+      // Find any suggestion button and click it
+      const buttons = screen.getAllByRole("button");
+      const suggestionButton = buttons.find(
+        (btn) => btn.textContent?.startsWith("searchSuggestions.passage.")
+      );
+      const suggestionText = suggestionButton!.textContent;
+      await user.click(suggestionButton!);
 
       await waitFor(() => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "suggestion 1", limit: 20, mode: "passage" }),
+            body: JSON.stringify({ query: suggestionText, limit: 20, mode: "passage" }),
           })
         );
       });
@@ -368,14 +387,15 @@ describe("SearchPage", () => {
 
       render(<SearchPage />);
 
-      await user.click(screen.getByText("Passage Search"));
+      await user.click(screen.getByText("search.passageSearch"));
 
       // Wait for animation transition
       const input = await screen.findByRole("textbox", { name: "Search query" });
       await user.type(input, "love{Enter}");
 
       await waitFor(() => {
-        expect(screen.getByText("Searching the cosmic records...")).toBeInTheDocument();
+        // Translation key is returned by mock
+        expect(screen.getByText("search.searching")).toBeInTheDocument();
       });
 
       // Clean up by resolving the promise

@@ -37,8 +37,9 @@ describe("SearchResultCard", () => {
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
-    expect(screen.getByText("Questioner")).toBeInTheDocument();
-    expect(screen.getByText("Ra")).toBeInTheDocument();
+    // Translation keys are returned by mock
+    expect(screen.getByText("quote.questioner")).toBeInTheDocument();
+    expect(screen.getByText("quote.ra")).toBeInTheDocument();
   });
 
   it("renders action buttons", () => {
@@ -46,8 +47,9 @@ describe("SearchResultCard", () => {
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
-    expect(screen.getByText("Read full passage")).toBeInTheDocument();
-    expect(screen.getByText("Ask about this")).toBeInTheDocument();
+    // Translation keys are returned by mock
+    expect(screen.getByText("search.readFullPassage")).toBeInTheDocument();
+    expect(screen.getByText("search.askAboutThis")).toBeInTheDocument();
   });
 
   it("calls onAskAbout when Ask button is clicked", async () => {
@@ -56,7 +58,7 @@ describe("SearchResultCard", () => {
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
-    await user.click(screen.getByText("Ask about this"));
+    await user.click(screen.getByText("search.askAboutThis"));
 
     expect(mockOnAskAbout).toHaveBeenCalledTimes(1);
   });

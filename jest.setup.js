@@ -6,6 +6,27 @@ jest.mock("next-intl/routing", () => ({
   defineRouting: (config) => config,
 }));
 
+// Mock next-intl for components using useTranslations
+jest.mock("next-intl", () => ({
+  useTranslations: (namespace) => (key, params) => {
+    // Return a simple key path or formatted string for testing
+    const fullKey = namespace ? `${namespace}.${key}` : key;
+    if (params) {
+      // Simple template replacement for testing
+      return Object.entries(params).reduce(
+        (str, [k, v]) => str.replace(`{${k}}`, String(v)),
+        fullKey
+      );
+    }
+    return fullKey;
+  },
+  useLocale: () => "en",
+  useMessages: () => ({}),
+  useNow: () => new Date(),
+  useTimeZone: () => "UTC",
+  NextIntlClientProvider: ({ children }) => children,
+}));
+
 // Create persistent mock functions for router
 const mockRouterPush = jest.fn();
 const mockRouterReplace = jest.fn();

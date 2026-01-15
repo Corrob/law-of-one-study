@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
@@ -10,24 +11,18 @@ import SearchModeSelection from "@/components/SearchModeSelection";
 import SearchWelcome from "@/components/SearchWelcome";
 import SearchResults from "@/components/SearchResults";
 import { SearchResult, type SearchMode } from "@/lib/schemas";
-import { getRandomSuggestions } from "@/data/search-suggestions";
-import { getRandomSentenceSuggestions } from "@/data/sentence-suggestions";
+
+// Number of suggestions available per mode
+const PASSAGE_SUGGESTION_COUNT = 52;
+const SENTENCE_SUGGESTION_COUNT = 52;
 
 /** Maximum number of search results to return */
 const SEARCH_LIMIT = 20;
 
-// Spiritual greetings for the search page
-const SEARCH_GREETINGS = [
-  "What calls to your seeking?",
-  "The sessions await your inquiry.",
-  "Search the infinite.",
-  "What wisdom do you seek?",
-  "Seek and you shall find.",
-  "What mystery draws you?",
-  "The material holds many truths.",
-];
-
 export default function SearchPage() {
+  const t = useTranslations("search");
+  const tPassageSuggestions = useTranslations("searchSuggestions.passage");
+  const tSentenceSuggestions = useTranslations("searchSuggestions.sentence");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -42,23 +37,39 @@ export default function SearchPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasSearched, setHasSearched] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestionKeys, setSuggestionKeys] = useState<number[]>([]);
   const [greeting, setGreeting] = useState<string | null>(null);
   const didInitialLoad = useRef(false);
 
+  // Helper to generate random keys
+  const getRandomKeys = useCallback((count: number, maxCount: number): number[] => {
+    const keys = Array.from({ length: maxCount }, (_, i) => i + 1);
+    const shuffled = keys.sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }, []);
+
   // Randomize greeting on client to avoid hydration mismatch
   useEffect(() => {
-    setGreeting(SEARCH_GREETINGS[Math.floor(Math.random() * SEARCH_GREETINGS.length)]);
-  }, []);
+    const greetingKeys = ["1", "2", "3", "4", "5", "6", "7"];
+    const randomKey = greetingKeys[Math.floor(Math.random() * greetingKeys.length)];
+    setGreeting(t(`greetings.${randomKey}`));
+  }, [t]);
 
   // Update suggestions when mode changes
   useEffect(() => {
     if (mode === "sentence") {
-      setSuggestions(getRandomSentenceSuggestions(6));
+      setSuggestionKeys(getRandomKeys(6, SENTENCE_SUGGESTION_COUNT));
     } else if (mode === "passage") {
-      setSuggestions(getRandomSuggestions(6));
+      setSuggestionKeys(getRandomKeys(6, PASSAGE_SUGGESTION_COUNT));
     }
-  }, [mode]);
+  }, [mode, getRandomKeys]);
+
+  // Get translated suggestions from keys
+  const suggestions = useMemo(() => {
+    if (!mode) return [];
+    const translator = mode === "sentence" ? tSentenceSuggestions : tPassageSuggestions;
+    return suggestionKeys.map(key => translator(String(key)));
+  }, [suggestionKeys, mode, tSentenceSuggestions, tPassageSuggestions]);
 
   // Perform the actual search API call
   const performSearch = useCallback(async (searchQuery: string, searchMode: SearchMode) => {

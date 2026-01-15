@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState, ReactNode, useMemo } from "react";
+import { useEffect, useState, ReactNode, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { getRandomStarters } from "@/data/starters";
 import ThinkingModeToggle from "./ThinkingModeToggle";
 
 // Greeting keys that map to translations
@@ -15,6 +14,9 @@ const GREETING_KEYS = [
   "wanderer",
 ] as const;
 
+// Total number of starters available in translations
+const STARTER_COUNT = 46;
+
 interface WelcomeScreenProps {
   onSelectStarter: (starter: string) => void;
   inputElement?: ReactNode;
@@ -24,14 +26,27 @@ interface WelcomeScreenProps {
 
 export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingMode = false, onThinkingModeChange }: WelcomeScreenProps) {
   const [greetingKey, setGreetingKey] = useState<typeof GREETING_KEYS[number] | null>(null);
-  const [starters, setStarters] = useState<string[]>([]);
+  const [starterKeys, setStarterKeys] = useState<number[]>([]);
   const t = useTranslations("welcome");
+  const tStarters = useTranslations("starters");
+
+  // Generate random starter keys on client to avoid hydration mismatch
+  const getRandomStarterKeys = useCallback((count: number): number[] => {
+    const keys = Array.from({ length: STARTER_COUNT }, (_, i) => i + 1);
+    const shuffled = keys.sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }, []);
 
   useEffect(() => {
     // Only run on client to avoid hydration mismatch
     setGreetingKey(GREETING_KEYS[Math.floor(Math.random() * GREETING_KEYS.length)]);
-    setStarters(getRandomStarters(3));
-  }, []);
+    setStarterKeys(getRandomStarterKeys(3));
+  }, [getRandomStarterKeys]);
+
+  // Get translated starters from the keys
+  const starters = useMemo(() => {
+    return starterKeys.map(key => tStarters(String(key)));
+  }, [starterKeys, tStarters]);
 
   // Get the translated greeting
   const greeting = useMemo(() => {

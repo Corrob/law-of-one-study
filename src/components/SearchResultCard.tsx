@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { type SearchResult } from "@/lib/schemas";
 import { formatWholeQuote, formatQuoteWithAttribution } from "@/lib/quote-utils";
 import {
@@ -91,6 +92,8 @@ export default function SearchResultCard({
   query,
   onAskAbout,
 }: SearchResultCardProps) {
+  const t = useTranslations("search");
+  const tQuote = useTranslations("quote");
   const [expandedSegments, setExpandedSegments] = useState<Set<number>>(new Set());
   const [showFullPassage, setShowFullPassage] = useState(false);
   const [fullPassageText, setFullPassageText] = useState<string | null>(null);
@@ -171,9 +174,9 @@ export default function SearchResultCard({
   // Get speaker label for sentence mode
   const speakerLabel = hasSentenceMatch
     ? result.speaker === "ra"
-      ? "Ra"
+      ? tQuote("ra")
       : result.speaker === "questioner"
-        ? "Questioner"
+        ? tQuote("questioner")
         : null
     : null;
 
@@ -201,7 +204,7 @@ export default function SearchResultCard({
             </span>
           ) : (
             <span className="text-xs font-medium text-[var(--lo1-celestial)]/80 uppercase tracking-wider">
-              Questioner
+              {tQuote("questioner")}
             </span>
           )}
           <a
@@ -231,7 +234,7 @@ export default function SearchResultCard({
               onClick={() => setShowFullPassage(true)}
               className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
             >
-              {loadingPassage ? "Loading..." : "↓ View in context"}
+              {loadingPassage ? t("loadingPassage") : `↓ ${t("viewInContext")}`}
             </button>
           </div>
         )}
@@ -246,7 +249,7 @@ export default function SearchResultCard({
                     {segment.type === "ra" && (
                       <div className="mb-2">
                         <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wider">
-                          Ra
+                          {tQuote("ra")}
                         </span>
                       </div>
                     )}
@@ -263,13 +266,13 @@ export default function SearchResultCard({
                 );
               })
             ) : (
-              <p className="text-[var(--lo1-stardust)] text-sm">Loading passage...</p>
+              <p className="text-[var(--lo1-stardust)] text-sm">{t("loadingPassage")}</p>
             )}
             <button
               onClick={() => setShowFullPassage(false)}
               className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
             >
-              ↑ Show less
+              ↑ {t("showLess")}
             </button>
           </div>
         )}
@@ -292,7 +295,7 @@ export default function SearchResultCard({
                   {segment.type === "ra" && (
                     <div className="mb-2">
                       <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wider">
-                        Ra
+                        {tQuote("ra")}
                       </span>
                     </div>
                   )}
@@ -311,7 +314,7 @@ export default function SearchResultCard({
                       onClick={() => toggleSegment(index)}
                       className="mt-2 text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
                     >
-                      {isExpanded ? "↑ Show less" : "↓ Show more"}
+                      {isExpanded ? `↑ ${t("showLess")}` : `↓ ${t("showMore")}`}
                     </button>
                   )}
                 </div>
@@ -332,7 +335,7 @@ export default function SearchResultCard({
                        hover:border-[var(--lo1-celestial)]/50 hover:bg-[var(--lo1-celestial)]/5
                        transition-all duration-200"
           >
-            Read full passage
+            {t("readFullPassage")}
           </a>
           <button
             onClick={onAskAbout}
@@ -341,7 +344,7 @@ export default function SearchResultCard({
                        text-[var(--lo1-gold)] hover:bg-[var(--lo1-gold)]/20
                        transition-all duration-200 cursor-pointer"
           >
-            Ask about this
+            {t("askAboutThis")}
           </button>
           <div className="ml-auto">
             <CopyButton textToCopy={copyText} size="sm" />

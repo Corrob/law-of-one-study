@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useRef, useCallback, useState } from "react";
+import { useTranslations } from "next-intl";
 import { analytics } from "@/lib/analytics";
 
 interface SuggestionChipsProps {
@@ -15,6 +16,7 @@ export default function SuggestionChips({
   onSelect,
   disabled = false,
 }: SuggestionChipsProps) {
+  const t = useTranslations("chat");
   // Refs for keyboard navigation
   const chipRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const [focusedIndex, setFocusedIndex] = useState(-1);
@@ -87,7 +89,7 @@ export default function SuggestionChips({
       className="mt-4 pt-4 border-t border-[var(--lo1-celestial)]/20"
     >
       <p id="suggestions-label" className="text-[var(--lo1-stardust)]/60 text-xs mb-3">
-        Continue exploring:
+        {t("continueExploring")}
       </p>
       {/* Grid layout: 1 column on mobile, 2 columns on tablet, 3 on desktop */}
       <div
@@ -109,7 +111,7 @@ export default function SuggestionChips({
             disabled={disabled}
             tabIndex={focusedIndex === -1 || focusedIndex === index ? 0 : -1}
             data-testid="suggestion-chip"
-            aria-label={`Suggestion: ${suggestion}`}
+            aria-label={t("suggestion", { text: suggestion })}
             className={`
               w-full px-4 py-2.5 rounded-lg text-sm text-left
               border border-[var(--lo1-gold)]/40
