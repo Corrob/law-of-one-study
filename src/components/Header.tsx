@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { UnityIcon, MenuIcon, BackIcon, PlusIcon } from "./icons";
 
 interface HeaderProps {
@@ -12,24 +13,26 @@ interface HeaderProps {
   showNewSearch?: boolean;
 }
 
-// Page titles for feature pages
-const PAGE_TITLES: Record<string, string> = {
-  "/chat": "Seek",
-  "/explore": "Explore",
-  "/paths": "Study",
-  "/search": "Search",
-  "/about": "About",
-  "/donate": "Support",
+// Map paths to translation keys
+const PAGE_TITLE_KEYS: Record<string, string> = {
+  "/chat": "seek",
+  "/explore": "explore",
+  "/paths": "study",
+  "/search": "search",
+  "/about": "about",
+  "/donate": "support",
 };
 
 export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearch, showNewSearch }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const isDashboard = pathname === "/";
+  const t = useTranslations();
 
   // Get page title for non-dashboard pages
-  const pageTitle = PAGE_TITLES[pathname] ||
-    (pathname.startsWith("/paths/") ? "Study" : "");
+  const pageTitleKey = PAGE_TITLE_KEYS[pathname] ||
+    (pathname.startsWith("/paths/") ? "study" : "");
+  const pageTitle = pageTitleKey ? t(`nav.${pageTitleKey}`) : "";
 
   return (
     <header className="light-header relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-3 px-4 border-b border-[var(--lo1-gold)]/20">
@@ -44,9 +47,9 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
             >
               <UnityIcon className="w-8 h-8 text-[var(--lo1-gold)] starburst" />
               <div className="text-left">
-                <h1 className="text-lg font-semibold tracking-wide">Law of One Study Companion</h1>
+                <h1 className="text-lg font-semibold tracking-wide">{t("header.appTitle")}</h1>
                 <p className="text-xs text-[var(--lo1-stardust)] tracking-wider uppercase hidden sm:block">
-                  The Ra Material
+                  {t("header.subtitle")}
                 </p>
               </div>
             </Link>
@@ -56,7 +59,7 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
               <button
                 onClick={() => router.push("/")}
                 className="flex items-center justify-center w-10 h-10 -ml-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 transition-colors cursor-pointer"
-                aria-label="Go to home"
+                aria-label={t("header.goToHome")}
               >
                 <BackIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
               </button>
@@ -72,10 +75,10 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
             <button
               onClick={onNewChat}
               className="flex items-center gap-1.5 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 cursor-pointer"
-              aria-label="Start new conversation"
+              aria-label={t("header.startNewConversation")}
             >
               <PlusIcon className="w-4 h-4" />
-              <span className="hidden sm:inline">New</span>
+              <span className="hidden sm:inline">{t("buttons.new")}</span>
             </button>
           )}
 
@@ -84,10 +87,10 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
             <button
               onClick={onNewSearch}
               className="flex items-center gap-1.5 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 cursor-pointer"
-              aria-label="Start new search"
+              aria-label={t("header.startNewSearch")}
             >
               <PlusIcon className="w-4 h-4" />
-              <span className="hidden sm:inline">New</span>
+              <span className="hidden sm:inline">{t("buttons.new")}</span>
             </button>
           )}
 
@@ -95,7 +98,7 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
           <button
             onClick={onMenuClick}
             className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[var(--lo1-gold)]/10 transition-colors cursor-pointer"
-            aria-label="Open menu"
+            aria-label={t("header.openMenu")}
             aria-expanded="false"
           >
             <MenuIcon className="w-5 h-5 text-[var(--lo1-gold)]" />

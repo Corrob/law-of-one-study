@@ -26,5 +26,66 @@
     "language": "Language",
     "theme": "Theme",
     "loading": "Loading..."
+  },
+  "nav": {
+    "home": "Home",
+    "seek": "Seek",
+    "explore": "Explore",
+    "study": "Study",
+    "search": "Search",
+    "about": "About",
+    "support": "Support"
+  },
+  "header": {
+    "appTitle": "Law of One Study Companion",
+    "subtitle": "The Ra Material",
+    "goToHome": "Go to home",
+    "startNewConversation": "Start new conversation",
+    "startNewSearch": "Start new search",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "navigationMenu": "Navigation menu"
+  },
+  "welcome": {
+    "greetings": {
+      "seeker": "Welcome, seeker.",
+      "loveLight": "In love and light.",
+      "journey": "The journey continues.",
+      "serve": "How may I serve?",
+      "wanderer": "Greetings, wanderer."
+    },
+    "orExplore": "Or explore:",
+    "disclaimer": "This AI companion provides helpful explanations, but only the highlighted quote cards contain authentic passages from the Ra Material.",
+    "learnMore": "Learn more"
+  },
+  "dashboard": {
+    "dailyWisdom": "Daily Wisdom",
+    "exploreThis": "Explore this",
+    "readOnLawOfOneInfo": "Read {reference} on lawofone.info",
+    "newReflectionTomorrow": "A new reflection awaits tomorrow"
+  },
+  "features": {
+    "seek": {
+      "title": "Seek",
+      "description": "Chat with AI guide"
+    },
+    "explore": {
+      "title": "Explore",
+      "description": "Explore Ra's concepts"
+    },
+    "study": {
+      "title": "Study",
+      "description": "Study guided lessons"
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search for any quote"
+    }
+  },
+  "thinkingMode": {
+    "label": "Thinking mode",
+    "description": "Slower, more thoughtful",
+    "tooltip": "Slower, more thoughtful responses",
+    "whatIs": "What is thinking mode?"
   }
 }

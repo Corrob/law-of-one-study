@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
 import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon } from "./icons";
@@ -9,35 +10,33 @@ import { getDailyQuote } from "@/lib/daily-quote";
 import { formatQuoteWithAttribution } from "@/lib/quote-utils";
 import { type DailyQuote } from "@/data/daily-quotes";
 
+// Feature card configuration with translation keys
 const FEATURES = [
   {
     href: "/chat",
     icon: ChatIcon,
-    title: "Seek",
-    description: "Chat with AI guide",
+    titleKey: "seek",
   },
   {
     href: "/explore",
     icon: ExploreIcon,
-    title: "Explore",
-    description: "Explore Ra's concepts",
+    titleKey: "explore",
   },
   {
     href: "/paths",
     icon: BookIcon,
-    title: "Study",
-    description: "Study guided lessons",
+    titleKey: "study",
   },
   {
     href: "/search",
     icon: SearchIcon,
-    title: "Search",
-    description: "Search for any quote",
+    titleKey: "search",
   },
 ];
 
 export default function Dashboard() {
   const [quote, setQuote] = useState<DailyQuote | null>(null);
+  const t = useTranslations();
 
   useEffect(() => {
     // Get quote on client to avoid hydration mismatch
@@ -58,7 +57,7 @@ export default function Dashboard() {
         <div className="max-w-xl mx-auto text-center space-y-3">
           {/* Header */}
           <h2 className="animate-quote-header text-sm uppercase tracking-widest text-[var(--lo1-gold)]/80">
-            Daily Wisdom
+            {t("dashboard.dailyWisdom")}
           </h2>
 
           {/* Quote Card */}
@@ -66,7 +65,7 @@ export default function Dashboard() {
             <div
               role="link"
               tabIndex={0}
-              aria-label={`Read ${quote.reference} on lawofone.info`}
+              aria-label={t("dashboard.readOnLawOfOneInfo", { reference: quote.reference })}
               onClick={() =>
                 window.open(quote.url, "_blank", "noopener,noreferrer")
               }
@@ -91,7 +90,7 @@ export default function Dashboard() {
                   className="animate-quote-reference text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  Explore this &rarr;
+                  {t("dashboard.exploreThis")} &rarr;
                 </Link>
                 <div className="flex items-center gap-2 animate-quote-reference">
                   <CopyButton textToCopy={copyText} size="md" />
@@ -105,7 +104,7 @@ export default function Dashboard() {
 
           {/* Footer */}
           <p className="animate-quote-footer text-xs text-[var(--lo1-stardust)]/60">
-            A new reflection awaits tomorrow
+            {t("dashboard.newReflectionTomorrow")}
           </p>
         </div>
       )}
@@ -117,8 +116,8 @@ export default function Dashboard() {
             key={feature.href}
             href={feature.href}
             icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
+            title={t(`features.${feature.titleKey}.title`)}
+            description={t(`features.${feature.titleKey}.description`)}
             index={index}
           />
         ))}
@@ -135,7 +134,7 @@ export default function Dashboard() {
             className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
           >
             <InfoIcon className="w-4 h-4" />
-            <span>About</span>
+            <span>{t("nav.about")}</span>
           </Link>
           <span className="text-[var(--lo1-celestial)]/40">·</span>
           <Link
@@ -143,7 +142,7 @@ export default function Dashboard() {
             className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
           >
             <HeartIcon className="w-4 h-4" />
-            <span>Support</span>
+            <span>{t("nav.support")}</span>
           </Link>
         </div>
       </footer>

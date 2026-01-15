@@ -1,17 +1,18 @@
 "use client";
 
-import { useEffect, useState, ReactNode } from "react";
+import { useEffect, useState, ReactNode, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { getRandomStarters } from "@/data/starters";
 import ThinkingModeToggle from "./ThinkingModeToggle";
 
-// Warm, spiritual greetings (statements to complement question-style placeholders)
-const GREETINGS = [
-  "Welcome, seeker.",
-  "In love and light.",
-  "The journey continues.",
-  "How may I serve?",
-  "Greetings, wanderer.",
-];
+// Greeting keys that map to translations
+const GREETING_KEYS = [
+  "seeker",
+  "loveLight",
+  "journey",
+  "serve",
+  "wanderer",
+] as const;
 
 interface WelcomeScreenProps {
   onSelectStarter: (starter: string) => void;
@@ -21,14 +22,21 @@ interface WelcomeScreenProps {
 }
 
 export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingMode = false, onThinkingModeChange }: WelcomeScreenProps) {
-  const [greeting, setGreeting] = useState<string | null>(null);
+  const [greetingKey, setGreetingKey] = useState<typeof GREETING_KEYS[number] | null>(null);
   const [starters, setStarters] = useState<string[]>([]);
+  const t = useTranslations("welcome");
 
   useEffect(() => {
     // Only run on client to avoid hydration mismatch
-    setGreeting(GREETINGS[Math.floor(Math.random() * GREETINGS.length)]);
+    setGreetingKey(GREETING_KEYS[Math.floor(Math.random() * GREETING_KEYS.length)]);
     setStarters(getRandomStarters(3));
   }, []);
+
+  // Get the translated greeting
+  const greeting = useMemo(() => {
+    if (!greetingKey) return null;
+    return t(`greetings.${greetingKey}`);
+  }, [greetingKey, t]);
 
   return (
     <div className="flex flex-col items-center justify-center flex-1 px-4 py-8">
@@ -59,7 +67,7 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
       {/* Conversation Starters */}
       <div className="w-full max-w-2xl">
         <p className="light-explore-label text-[var(--lo1-starlight)]/70 text-sm font-medium mb-4 text-center tracking-wide animate-starter-0">
-          Or explore:
+          {t("orExplore")}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {starters.map((starter, index) => (
@@ -84,13 +92,12 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
       {/* Disclaimer */}
       <div className="w-full max-w-2xl mt-8 animate-starter-0">
         <p className="text-[var(--lo1-stardust)]/60 text-xs text-center leading-relaxed">
-          This AI companion provides helpful explanations, but only the highlighted quote cards
-          contain authentic passages from the Ra Material.{" "}
+          {t("disclaimer")}{" "}
           <a
             href="/support"
             className="text-[var(--lo1-gold)]/70 hover:text-[var(--lo1-gold)] underline transition-colors"
           >
-            Learn more
+            {t("learnMore")}
           </a>
         </p>
       </div>

@@ -26,5 +26,66 @@
     "language": "Idioma",
     "theme": "Tema",
     "loading": "Cargando..."
+  },
+  "nav": {
+    "home": "Inicio",
+    "seek": "Buscar",
+    "explore": "Explorar",
+    "study": "Estudiar",
+    "search": "Buscar",
+    "about": "Acerca de",
+    "support": "Apoyar"
+  },
+  "header": {
+    "appTitle": "Compañero de Estudio de la Ley del Uno",
+    "subtitle": "El Material de Ra",
+    "goToHome": "Ir al inicio",
+    "startNewConversation": "Iniciar nueva conversación",
+    "startNewSearch": "Iniciar nueva búsqueda",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "navigationMenu": "Menú de navegación"
+  },
+  "welcome": {
+    "greetings": {
+      "seeker": "Bienvenido, buscador.",
+      "loveLight": "En amor y luz.",
+      "journey": "El viaje continúa.",
+      "serve": "¿Cómo puedo servir?",
+      "wanderer": "Saludos, errante."
+    },
+    "orExplore": "O explora:",
+    "disclaimer": "Este compañero de IA proporciona explicaciones útiles, pero solo las tarjetas de citas resaltadas contienen pasajes auténticos del Material de Ra.",
+    "learnMore": "Saber más"
+  },
+  "dashboard": {
+    "dailyWisdom": "Sabiduría Diaria",
+    "exploreThis": "Explorar esto",
+    "readOnLawOfOneInfo": "Leer {reference} en lawofone.info",
+    "newReflectionTomorrow": "Una nueva reflexión te espera mañana"
+  },
+  "features": {
+    "seek": {
+      "title": "Buscar",
+      "description": "Chatea con guía IA"
+    },
+    "explore": {
+      "title": "Explorar",
+      "description": "Explora los conceptos de Ra"
+    },
+    "study": {
+      "title": "Estudiar",
+      "description": "Estudia lecciones guiadas"
+    },
+    "search": {
+      "title": "Buscar",
+      "description": "Busca cualquier cita"
+    }
+  },
+  "thinkingMode": {
+    "label": "Modo pensamiento",
+    "description": "Más lento, más reflexivo",
+    "tooltip": "Respuestas más lentas y reflexivas",
+    "whatIs": "¿Qué es el modo pensamiento?"
   }
 }

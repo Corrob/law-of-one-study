@@ -1,6 +1,19 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import ThinkingModeToggle from "../ThinkingModeToggle";
 
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      label: "Thinking mode",
+      description: "Slower, more thoughtful",
+      tooltip: "Slower, more thoughtful responses",
+      whatIs: "What is thinking mode?",
+    };
+    return translations[key] || key;
+  },
+}));
+
 describe("ThinkingModeToggle", () => {
   const mockOnChange = jest.fn();
 

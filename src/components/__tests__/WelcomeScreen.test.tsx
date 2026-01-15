@@ -1,6 +1,23 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import WelcomeScreen from "../WelcomeScreen";
 
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      "greetings.seeker": "Welcome, seeker.",
+      "greetings.loveLight": "In love and light.",
+      "greetings.journey": "The journey continues.",
+      "greetings.serve": "How may I serve?",
+      "greetings.wanderer": "Greetings, wanderer.",
+      "orExplore": "Or explore:",
+      "disclaimer": "This AI companion provides helpful explanations, but only the highlighted quote cards contain authentic passages from the Ra Material.",
+      "learnMore": "Learn more",
+    };
+    return translations[key] || key;
+  },
+}));
+
 // Mock the data module
 jest.mock("@/data/starters", () => ({
   getRandomStarters: jest.fn(() => [
