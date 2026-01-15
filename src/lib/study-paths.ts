@@ -1,36 +1,56 @@
 /**
  * Utilities for loading and managing study paths.
+ * Supports multiple languages with fallback to English.
  */
 
 import type { StudyPath, StudyPathMeta } from "@/lib/schemas/study-paths";
 import { parseStudyPath, extractPathMeta } from "@/lib/schemas/study-paths";
 
-// Import study path data directly
-// In a larger app, this might be fetched from an API
-import densitiesData from "@/data/study-paths/densities.json";
-import polarityData from "@/data/study-paths/polarity.json";
-import energyCentersData from "@/data/study-paths/energy-centers.json";
+// Import English study path data (default/fallback)
+import densitiesDataEn from "@/data/study-paths/densities.json";
+import polarityDataEn from "@/data/study-paths/polarity.json";
+import energyCentersDataEn from "@/data/study-paths/energy-centers.json";
+
+// Import Spanish study path data
+import densitiesDataEs from "@/data/study-paths/es/densities.json";
+import polarityDataEs from "@/data/study-paths/es/polarity.json";
+import energyCentersDataEs from "@/data/study-paths/es/energy-centers.json";
 
 /**
- * All available study paths.
- * Add new paths here as they are created.
+ * Study paths data organized by language.
  */
-const STUDY_PATHS_DATA: unknown[] = [densitiesData, polarityData, energyCentersData];
+const STUDY_PATHS_BY_LANGUAGE: Record<string, unknown[]> = {
+  en: [densitiesDataEn, polarityDataEn, energyCentersDataEn],
+  es: [densitiesDataEs, polarityDataEs, energyCentersDataEs],
+};
 
 /**
- * Parsed and validated study paths.
+ * Available languages for study paths.
  */
-let cachedPaths: StudyPath[] | null = null;
+export const AVAILABLE_LANGUAGES = Object.keys(STUDY_PATHS_BY_LANGUAGE);
 
 /**
- * Get all validated study paths.
+ * Parsed and validated study paths cache by language.
  */
-export function getAllStudyPaths(): StudyPath[] {
-  if (cachedPaths) return cachedPaths;
+const cachedPathsByLanguage: Record<string, StudyPath[]> = {};
+
+/**
+ * Get all validated study paths for a specific language.
+ * Falls back to English if the requested language is not available.
+ */
+export function getAllStudyPaths(language: string = "en"): StudyPath[] {
+  // Normalize language and fallback to English if not available
+  const lang = STUDY_PATHS_BY_LANGUAGE[language] ? language : "en";
+
+  // Return cached paths if available
+  if (cachedPathsByLanguage[lang]) {
+    return cachedPathsByLanguage[lang];
+  }
 
   const paths: StudyPath[] = [];
+  const pathsData = STUDY_PATHS_BY_LANGUAGE[lang];
 
-  for (const data of STUDY_PATHS_DATA) {
+  for (const data of pathsData) {
     const result = parseStudyPath(data);
     if (result.success) {
       paths.push(result.data);
@@ -39,22 +59,22 @@ export function getAllStudyPaths(): StudyPath[] {
     }
   }
 
-  cachedPaths = paths;
+  cachedPathsByLanguage[lang] = paths;
   return paths;
 }
 
 /**
  * Get metadata for all study paths (for list display).
  */
-export function getAllPathMetas(): StudyPathMeta[] {
-  return getAllStudyPaths().map(extractPathMeta);
+export function getAllPathMetas(language: string = "en"): StudyPathMeta[] {
+  return getAllStudyPaths(language).map(extractPathMeta);
 }
 
 /**
  * Get a specific study path by ID.
  */
-export function getStudyPath(pathId: string): StudyPath | null {
-  const paths = getAllStudyPaths();
+export function getStudyPath(pathId: string, language: string = "en"): StudyPath | null {
+  const paths = getAllStudyPaths(language);
   return paths.find((p) => p.id === pathId) || null;
 }
 
@@ -63,9 +83,10 @@ export function getStudyPath(pathId: string): StudyPath | null {
  */
 export function getLesson(
   pathId: string,
-  lessonId: string
+  lessonId: string,
+  language: string = "en"
 ): { path: StudyPath; lesson: StudyPath["lessons"][number]; lessonIndex: number } | null {
-  const path = getStudyPath(pathId);
+  const path = getStudyPath(pathId, language);
   if (!path) return null;
 
   const lessonIndex = path.lessons.findIndex((l) => l.id === lessonId);

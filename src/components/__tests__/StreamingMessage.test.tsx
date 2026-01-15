@@ -94,7 +94,7 @@ describe("StreamingMessage", () => {
     quote: {
       text: `Quote text for ${reference}`,
       reference,
-      url: `https://lawofone.info/s/${reference}`,
+      url: `https://www.llresearch.org/channeling/ra-contact/${reference}`,
     },
   });
 

@@ -1,7 +1,10 @@
 "use client";
 
 import { memo, useMemo } from "react";
+import { useLocale } from "next-intl";
 import type { QuoteSection as QuoteSectionType } from "@/lib/schemas/study-paths";
+import { getRaMaterialUrlFromReference } from "@/lib/quote-utils";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 interface QuoteSectionProps {
   section: QuoteSectionType;
@@ -43,26 +46,19 @@ function highlightText(text: string, highlights: string[] | undefined): React.Re
 }
 
 /**
- * Get URL for a Ra Material reference.
- */
-function getQuoteUrl(reference: string): string {
-  // Reference format: "13.5" -> session 13, question 5
-  const match = reference.match(/(\d+)\.(\d+)/);
-  if (!match) return `https://lawofone.info`;
-  const [, session, question] = match;
-  return `https://lawofone.info/s/${session}#${question}`;
-}
-
-/**
  * Renders a Ra Material quote with styling, highlighting, and context.
  * Features:
  * - Gold left border styling
  * - Highlighted key phrases
  * - Optional context explanation
- * - Link to lawofone.info
+ * - Link to llresearch.org
  */
 const QuoteSection = memo(function QuoteSection({ section }: QuoteSectionProps) {
-  const url = useMemo(() => getQuoteUrl(section.reference), [section.reference]);
+  const locale = useLocale() as AvailableLanguage;
+  const url = useMemo(
+    () => getRaMaterialUrlFromReference(section.reference, locale),
+    [section.reference, locale]
+  );
   const highlightedText = useMemo(
     () => highlightText(section.text, section.highlight),
     [section.text, section.highlight]

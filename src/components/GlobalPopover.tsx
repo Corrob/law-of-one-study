@@ -4,7 +4,9 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { usePopoverContext } from "@/contexts/PopoverContext";
 import { findConceptByTerm, findConceptById } from "@/lib/concept-graph";
 import type { GraphConcept } from "@/lib/types-graph";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { getRaMaterialUrl } from "@/lib/quote-utils";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 interface ConceptData {
   term: string;
@@ -12,6 +14,7 @@ interface ConceptData {
 }
 
 export default function GlobalPopover() {
+  const locale = useLocale() as AvailableLanguage;
   const tAi = useTranslations("aiCompanion");
   const tConcept = useTranslations("concept");
   const { openPopover, close, setHoveringPopover } = usePopoverContext();
@@ -167,7 +170,7 @@ export default function GlobalPopover() {
                 {keySessions.map((s, i) => (
                   <a
                     key={s}
-                    href={`https://lawofone.info/s/${s}`}
+                    href={getRaMaterialUrl(s, undefined, locale)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="concept-popover-session-link"

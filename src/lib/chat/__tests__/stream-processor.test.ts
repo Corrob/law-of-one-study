@@ -28,9 +28,9 @@ describe("chat/stream-processor", () => {
   let sentEvents: Array<{ event: string; data: object }>;
 
   const mockQuotes: Quote[] = [
-    { text: "Ra: I am Ra. First quote text.", reference: "1.1", url: "https://lawofone.info/s/1#1" },
-    { text: "Ra: I am Ra. Second quote text.", reference: "2.5", url: "https://lawofone.info/s/2#5" },
-    { text: "Ra: I am Ra. Third quote with many sentences. Sentence two. Sentence three. Sentence four. Sentence five.", reference: "3.10", url: "https://lawofone.info/s/3#10" },
+    { text: "Ra: I am Ra. First quote text.", reference: "1.1", url: "https://www.llresearch.org/channeling/ra-contact/1#1" },
+    { text: "Ra: I am Ra. Second quote text.", reference: "2.5", url: "https://www.llresearch.org/channeling/ra-contact/2#5" },
+    { text: "Ra: I am Ra. Third quote with many sentences. Sentence two. Sentence three. Sentence four. Sentence five.", reference: "3.10", url: "https://www.llresearch.org/channeling/ra-contact/3#10" },
   ];
 
   beforeEach(() => {

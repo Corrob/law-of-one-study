@@ -258,7 +258,7 @@ describe("ConceptPanel", () => {
 
     const links = screen.getAllByRole("link");
     const passageLinks = links.filter((link) =>
-      link.getAttribute("href")?.includes("lawofone.info")
+      link.getAttribute("href")?.includes("llresearch.org")
     );
 
     expect(passageLinks.length).toBeGreaterThan(0);

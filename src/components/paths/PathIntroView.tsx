@@ -2,6 +2,7 @@
 
 import { memo } from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { titleVariants, fadeWithDelay, staggerContainer, staggerChild } from "@/lib/animations";
 import type { StudyPath } from "@/lib/schemas/study-paths";
 
@@ -36,6 +37,8 @@ const PathIntroView = memo(function PathIntroView({
   path,
   onStart,
 }: PathIntroViewProps) {
+  const t = useTranslations("studyPaths");
+
   return (
     <div className="max-w-2xl mx-auto py-8">
       {/* Header */}
@@ -63,14 +66,14 @@ const PathIntroView = memo(function PathIntroView({
         <span
           className={`px-3 py-1 rounded-full text-sm border ${getDifficultyStyle(path.difficulty)}`}
         >
-          {path.difficulty.charAt(0).toUpperCase() + path.difficulty.slice(1)}
+          {t(`difficulty.${path.difficulty}`)}
         </span>
         <span className="text-[var(--lo1-text-light)]/60 text-sm">
-          ~{path.estimatedMinutes} minutes
+          {t("minutes", { count: path.estimatedMinutes })}
         </span>
         <span className="text-[var(--lo1-text-light)]/40">·</span>
         <span className="text-[var(--lo1-text-light)]/60 text-sm">
-          {path.lessons.length} lessons
+          {t("lessons", { count: path.lessons.length })}
         </span>
       </motion.div>
 
@@ -82,7 +85,7 @@ const PathIntroView = memo(function PathIntroView({
         animate="visible"
       >
         <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-5">
-          What You&apos;ll Learn
+          {t("whatYoullLearn")}
         </h2>
         <motion.ol
           className="space-y-1"
@@ -113,7 +116,7 @@ const PathIntroView = memo(function PathIntroView({
                 </span>
                 {lesson.estimatedMinutes && (
                   <span className="ml-2 text-xs text-[var(--lo1-text-light)]/40">
-                    ~{lesson.estimatedMinutes} min
+                    {t("minRead", { count: lesson.estimatedMinutes })}
                   </span>
                 )}
               </div>
@@ -131,7 +134,7 @@ const PathIntroView = memo(function PathIntroView({
           animate="visible"
         >
           <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-3 text-center">
-            Key Concepts
+            {t("keyConcepts")}
           </h2>
           <div className="flex flex-wrap justify-center gap-2">
             {path.concepts.map((concept) => (
@@ -157,7 +160,7 @@ const PathIntroView = memo(function PathIntroView({
           onClick={onStart}
           className="px-8 py-3 rounded-lg font-medium text-lg bg-[var(--lo1-gold)] text-[var(--lo1-space)] hover:bg-[var(--lo1-gold-light)] transition-colors cursor-pointer"
         >
-          Start Path
+          {t("startPath")}
         </button>
       </motion.div>
     </div>

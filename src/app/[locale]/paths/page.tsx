@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { motion } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { PathCard } from "@/components/paths";
 import { SparkleIcon } from "@/components/icons";
@@ -46,8 +47,10 @@ function categorizePaths(
 }
 
 export default function PathsPage() {
+  const locale = useLocale();
+  const t = useTranslations("studyPaths");
   const { progress, isLoaded } = useStudyProgress();
-  const allPaths = useMemo(() => getAllPathMetas(), []);
+  const allPaths = useMemo(() => getAllPathMetas(locale), [locale]);
   const { inProgress, notStarted, completed } = useMemo(
     () => categorizePaths(allPaths, progress),
     [allPaths, progress]
@@ -64,7 +67,7 @@ export default function PathsPage() {
           <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-2xl font-semibold text-[var(--lo1-starlight)] mb-6">
-                Study Paths
+                {t("title")}
               </h1>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 {[1, 2, 3].map((i) => (
@@ -97,10 +100,10 @@ export default function PathsPage() {
               animate="visible"
             >
               <h1 className="text-2xl font-semibold text-[var(--lo1-starlight)] mb-2">
-                Study Paths
+                {t("title")}
               </h1>
               <p className="text-[var(--lo1-text-light)]/70">
-                Guided journeys through the Ra Material with interactive lessons and reflections.
+                {t("subtitle")}
               </p>
             </motion.div>
 
@@ -113,7 +116,7 @@ export default function PathsPage() {
                 animate="visible"
               >
                 <h2 className="text-lg font-medium text-[var(--lo1-starlight)] mb-4">
-                  Continue Your Journey
+                  {t("continueJourney")}
                 </h2>
                 <motion.div
                   className="space-y-5"
@@ -133,8 +136,7 @@ export default function PathsPage() {
                 </motion.div>
                 {inProgress.length > MAX_CONTINUE_PATHS && (
                   <p className="text-sm text-[var(--lo1-text-light)]/60 mt-3">
-                    + {inProgress.length - MAX_CONTINUE_PATHS} more path
-                    {inProgress.length - MAX_CONTINUE_PATHS > 1 ? "s" : ""} in progress
+                    {t("moreInProgress", { count: inProgress.length - MAX_CONTINUE_PATHS })}
                   </p>
                 )}
               </motion.section>
@@ -148,7 +150,7 @@ export default function PathsPage() {
                 animate="visible"
               >
                 <h2 className="text-lg font-medium text-[var(--lo1-starlight)] mb-4">
-                  Available Paths
+                  {t("availablePaths")}
                 </h2>
                 <motion.div
                   className="grid grid-cols-1 md:grid-cols-2 gap-5"
@@ -173,10 +175,10 @@ export default function PathsPage() {
               <section className="text-center py-12 rounded-lg bg-[var(--lo1-gold)]/5 border border-[var(--lo1-gold)]/20">
                 <SparkleIcon className="w-12 h-12 mx-auto mb-4 text-[var(--lo1-gold)]" />
                 <h3 className="text-lg font-semibold text-[var(--lo1-gold)] mb-2">
-                  You&apos;ve completed all available study paths!
+                  {t("allCompleted")}
                 </h3>
                 <p className="text-[var(--lo1-text-light)]/70">
-                  More paths coming soon. Keep exploring the Ra Material.
+                  {t("moreComingSoon")}
                 </p>
               </section>
             )}
@@ -185,10 +187,10 @@ export default function PathsPage() {
             {allPaths.length === 0 && (
               <section className="text-center py-12 rounded-lg bg-[var(--lo1-space)]/30 border border-[var(--lo1-celestial)]/10">
                 <p className="text-[var(--lo1-text-light)]/60 mb-2">
-                  Study paths coming soon
+                  {t("comingSoon")}
                 </p>
                 <p className="text-sm text-[var(--lo1-text-light)]/40">
-                  We&apos;re preparing guided journeys through the Ra Material.
+                  {t("preparingJourneys")}
                 </p>
               </section>
             )}
@@ -205,7 +207,7 @@ export default function PathsPage() {
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Completed Paths
+                  {t("completedPaths")}
                 </h2>
                 <motion.div
                   className="grid grid-cols-1 md:grid-cols-2 gap-5"

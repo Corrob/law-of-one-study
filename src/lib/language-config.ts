@@ -9,10 +9,15 @@
  * 5. Scrape/translate the Ra Material to public/sections/{lang}/
  */
 
+import { z } from "zod";
+
 // Languages that have Ra Material translations available
 // Only add languages here once their data is in public/sections/{lang}/
 export const AVAILABLE_LANGUAGES = ['en', 'es'] as const;
 export type AvailableLanguage = typeof AVAILABLE_LANGUAGES[number];
+
+// Zod schema for language validation - use this for runtime validation
+export const AvailableLanguageSchema = z.enum(AVAILABLE_LANGUAGES);
 
 // Display names for language selector UI
 export const LANGUAGE_DISPLAY_NAMES: Record<AvailableLanguage, string> = {

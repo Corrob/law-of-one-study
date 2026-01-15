@@ -79,16 +79,16 @@ describe("CitationLink", () => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
 
-    it("should have link to lawofone.info in modal", () => {
+    it("should have link to llresearch.org in modal", () => {
       renderWithProvider(<CitationLink session={50} question={7} displayText="(Ra 50.7)" />);
 
       // Open modal
       const button = screen.getByRole("button", { name: "(Ra 50.7)" });
       fireEvent.click(button);
 
-      // Reference link goes to lawofone.info
+      // Reference link goes to llresearch.org
       const externalLink = screen.getByRole("link", { name: "50.7" });
-      expect(externalLink).toHaveAttribute("href", "https://lawofone.info/s/50#7");
+      expect(externalLink).toHaveAttribute("href", "https://www.llresearch.org/channeling/ra-contact/50#7");
       expect(externalLink).toHaveAttribute("target", "_blank");
       expect(externalLink).toHaveAttribute("rel", "noopener noreferrer");
     });
@@ -102,7 +102,7 @@ describe("CitationLink", () => {
       fireEvent.click(button);
 
       const externalLink = screen.getByRole("link", { name: "1.1" });
-      expect(externalLink).toHaveAttribute("href", "https://lawofone.info/s/1#1");
+      expect(externalLink).toHaveAttribute("href", "https://www.llresearch.org/channeling/ra-contact/1#1");
     });
 
     it("should handle three-digit session", () => {
@@ -112,7 +112,7 @@ describe("CitationLink", () => {
       fireEvent.click(button);
 
       const externalLink = screen.getByRole("link", { name: "106.23" });
-      expect(externalLink).toHaveAttribute("href", "https://lawofone.info/s/106#23");
+      expect(externalLink).toHaveAttribute("href", "https://www.llresearch.org/channeling/ra-contact/106#23");
     });
   });
 });

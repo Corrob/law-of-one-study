@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { LessonView, PathIntroView, PathCelebration, PathHeader } from "@/components/paths";
@@ -15,8 +16,10 @@ interface PathDetailPageProps {
 
 export default function PathDetailPage({ params }: PathDetailPageProps) {
   const { pathId } = use(params);
+  const locale = useLocale();
+  const t = useTranslations("studyPaths");
 
-  const path = useMemo(() => getStudyPath(pathId), [pathId]);
+  const path = useMemo(() => getStudyPath(pathId, locale), [pathId, locale]);
   const {
     isLoaded,
     getPathProgress,
@@ -136,16 +139,16 @@ export default function PathDetailPage({ params }: PathDetailPageProps) {
           <div className="flex-1 overflow-hidden relative z-10 flex items-center justify-center">
             <div className="text-center px-4">
               <h2 className="text-xl font-semibold text-[var(--lo1-starlight)] mb-2">
-                Path Not Found
+                {t("pathNotFound")}
               </h2>
               <p className="text-[var(--lo1-stardust)] mb-4">
-                The study path &quot;{pathId}&quot; doesn&apos;t exist.
+                {t("pathNotFoundDescription", { pathId })}
               </p>
               <Link
                 href="/paths"
                 className="text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] underline cursor-pointer"
               >
-                ← Back to Study Paths
+                {t("backToPaths")}
               </Link>
             </div>
           </div>

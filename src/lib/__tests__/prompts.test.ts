@@ -136,7 +136,7 @@ describe("prompts", () => {
         {
           text: "Ra: I am Ra. Love is unity.",
           reference: "Ra 50.12",
-          url: "https://lawofone.info/s/50#12",
+          url: "https://www.llresearch.org/channeling/ra-contact/50#12",
         },
       ];
 

@@ -66,14 +66,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { query, limit, mode } = validationResult.data;
+    const { query, limit, mode, language } = validationResult.data;
 
     // Create embedding for the search query
     const embedding = await createEmbedding(query);
 
     // Mode-specific search - query only the selected index
     if (mode === "sentence") {
-      const sentenceResults = await searchSentences(embedding, limit);
+      const sentenceResults = await searchSentences(embedding, limit, language);
 
       console.log(`[Search] Sentence mode: ${sentenceResults.length} results`);
 
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Passage mode (default)
-    const passageResults = await searchRaMaterial(embedding, { topK: limit });
+    const passageResults = await searchRaMaterial(embedding, { topK: limit, language });
 
     console.log(`[Search] Passage mode: ${passageResults.length} results`);
 

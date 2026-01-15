@@ -103,14 +103,14 @@ describe("formatQuoteForShare", () => {
     const quote = {
       text: "Test quote text",
       reference: "Ra 1.7",
-      url: "https://lawofone.info/s/1#7",
+      url: "https://www.llresearch.org/channeling/ra-contact/s/1#7",
     };
 
     const formatted = formatQuoteForShare(quote);
 
     expect(formatted).toContain('"Test quote text"');
     expect(formatted).toContain("— Ra 1.7");
-    expect(formatted).toContain("https://lawofone.info/s/1#7");
+    expect(formatted).toContain("https://www.llresearch.org/channeling/ra-contact/s/1#7");
     // URL should be on its own line (separated by double newline)
     expect(formatted).toMatch(/— Ra 1\.7\n\nhttps:\/\//);
   });
@@ -119,7 +119,7 @@ describe("formatQuoteForShare", () => {
     const quote = {
       text: "Quote with \"inner quotes\" and newlines",
       reference: "Ra 10.14",
-      url: "https://lawofone.info/s/10#14",
+      url: "https://www.llresearch.org/channeling/ra-contact/s/10#14",
     };
 
     const formatted = formatQuoteForShare(quote);
@@ -140,7 +140,7 @@ describe("dailyQuotes data", () => {
       expect(quote.text).toBeTruthy();
       expect(quote.reference).toBeTruthy();
       expect(quote.url).toBeTruthy();
-      expect(quote.url).toMatch(/^https:\/\/lawofone\.info/);
+      expect(quote.url).toMatch(/^https:\/\/www\.llresearch\.org\/channeling\/ra-contact\//);
     });
   });
 

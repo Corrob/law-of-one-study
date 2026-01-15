@@ -21,7 +21,7 @@ const mockResult = {
   reference: "Ra 1.7",
   session: 1,
   question: 7,
-  url: "https://lawofone.info/s/1#7",
+  url: "https://llresearch.org/s/1#7",
 };
 
 describe("SearchResultCard", () => {
@@ -70,14 +70,14 @@ describe("SearchResultCard", () => {
     expect(mockOnAskAbout).toHaveBeenCalledTimes(1);
   });
 
-  it("links to lawofone.info", () => {
+  it("links to llresearch.org", () => {
     render(
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
     const links = screen.getAllByRole("link");
     const lawOfOneLinks = links.filter(link =>
-      link.getAttribute("href")?.includes("lawofone.info")
+      link.getAttribute("href")?.includes("llresearch.org")
     );
 
     expect(lawOfOneLinks.length).toBeGreaterThan(0);

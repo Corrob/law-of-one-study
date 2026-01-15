@@ -220,7 +220,7 @@ export default function DonatePage() {
                 </p>
                 <footer className="text-sm text-[var(--lo1-stardust)]/60">
                   <a
-                    href="https://lawofone.info/s/1#7"
+                    href="https://www.llresearch.org/channeling/ra-contact/1#7"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-[var(--lo1-gold)] transition-colors"

@@ -733,7 +733,7 @@ export default function SupportPage() {
                 Law of One.&rdquo;
               </p>
               <a
-                href="https://www.lawofone.info/s/1#7"
+                href="https://www.llresearch.org/channeling/ra-contact/1#7"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors rounded focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"

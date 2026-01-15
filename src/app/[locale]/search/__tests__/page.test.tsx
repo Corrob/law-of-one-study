@@ -152,7 +152,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "sentence" }),
+            body: JSON.stringify({ query: "love", limit: 20, mode: "sentence", language: "en" }),
           })
         );
       });
@@ -173,7 +173,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "passage" }),
+            body: JSON.stringify({ query: "love", limit: 20, mode: "passage", language: "en" }),
           })
         );
       });
@@ -250,7 +250,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "sentence" }),
+            body: JSON.stringify({ query: "love", limit: 20, mode: "sentence", language: "en" }),
           })
         );
       });
@@ -270,7 +270,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence" }),
+            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", language: "en" }),
           })
         );
       });
@@ -366,7 +366,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: suggestionText, limit: 20, mode: "passage" }),
+            body: JSON.stringify({ query: suggestionText, limit: 20, mode: "passage", language: "en" }),
           })
         );
       });

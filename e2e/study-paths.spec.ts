@@ -73,7 +73,7 @@ test.describe("Study Paths", () => {
 
       // Should see the path intro content
       await expect(page.getByText("Understanding Densities")).toBeVisible();
-      await expect(page.getByRole("button", { name: /Start Path/i })).toBeVisible();
+      await expect(page.getByRole("button", { name: /Begin Journey/i })).toBeVisible();
 
       // Should see lesson overview
       await expect(page.getByText("What Are Densities?")).toBeVisible();
@@ -83,7 +83,7 @@ test.describe("Study Paths", () => {
       await page.goto("/paths/densities");
 
       // Click begin button
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Should now see lesson content
       await expect(page.getByText("What Are Densities?")).toBeVisible();
@@ -103,7 +103,7 @@ test.describe("Study Paths", () => {
       await page.goto("/paths/densities");
 
       // Start the path
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Should be on first lesson
       await expect(page.getByText("Lesson 1 of")).toBeVisible();
@@ -120,7 +120,7 @@ test.describe("Study Paths", () => {
       await page.goto("/paths/densities");
 
       // Start path and go to second lesson
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
       await page.getByRole("button", { name: "Complete & Continue" }).click();
 
       // Verify we're on lesson 2
@@ -138,7 +138,7 @@ test.describe("Study Paths", () => {
       await page.goto("/paths/densities");
 
       // Start and advance
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
       await page.getByRole("button", { name: "Complete & Continue" }).click();
 
       // Verify on lesson 2
@@ -155,7 +155,7 @@ test.describe("Study Paths", () => {
   test.describe("Multiple Choice Quiz", () => {
     test("should allow selecting and submitting quiz answer", async ({ page }) => {
       await page.goto("/paths/densities");
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Find the quiz question
       await expect(page.getByText("According to Ra, what is the best analogy")).toBeVisible();
@@ -175,7 +175,7 @@ test.describe("Study Paths", () => {
 
     test("should show feedback for incorrect answer", async ({ page }) => {
       await page.goto("/paths/densities");
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Select wrong answer
       await page.getByText("Layers of an onion").click();
@@ -187,7 +187,7 @@ test.describe("Study Paths", () => {
 
     test("should persist quiz response", async ({ page }) => {
       await page.goto("/paths/densities");
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Answer quiz
       await page.getByText("Musical octaves").click();
@@ -204,7 +204,7 @@ test.describe("Study Paths", () => {
   test.describe("Reflection Section", () => {
     test("should save reflection text", async ({ page }) => {
       await page.goto("/paths/densities");
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Find reflection textarea
       const textarea = page.getByPlaceholder(/What brings you/i);
@@ -225,7 +225,7 @@ test.describe("Study Paths", () => {
 
     test("should persist reflection across reload", async ({ page }) => {
       await page.goto("/paths/densities");
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Save a reflection
       const textarea = page.getByPlaceholder(/What brings you/i);
@@ -336,7 +336,7 @@ test.describe("Study Paths", () => {
   test.describe("Progress Indicator", () => {
     test("should show reading progress bar container", async ({ page }) => {
       await page.goto("/paths/densities");
-      await page.getByRole("button", { name: /Start Path/i }).click();
+      await page.getByRole("button", { name: /Begin Journey/i }).click();
 
       // Progress bar should exist in the DOM (it starts at 0% width so may not be "visible")
       const progressBar = page.getByRole("progressbar", { name: /Reading progress/i });

@@ -1,0 +1,667 @@
+{
+  "id": "energy-centers",
+  "title": "Exploración de los Centros de Energía",
+  "description": "Viaje a través de los siete centros de energía (chakras) como lo describe Ra. Comprender estos centros es esencial para el desarrollo espiritual, ya que forman el camino a través del cual la conciencia evoluciona y la energía inteligente fluye.",
+  "difficulty": "beginner",
+  "estimatedMinutes": 50,
+  "concepts": [
+    "chakra",
+    "energy-center",
+    "kundalini",
+    "balancing",
+    "activation",
+    "crystallization"
+  ],
+  "lessons": [
+    {
+      "id": "introduction",
+      "title": "¿Qué Son los Centros de Energía?",
+      "estimatedMinutes": 5,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "A lo largo de la historia, las tradiciones espirituales han reconocido que el cuerpo humano contiene centros de energía vital. En el Este, estos se llaman chakras (sánscrito para 'rueda'). Ra se refiere a ellos como 'centros de energía' o 'rayos', y enseña que comprenderlos es fundamental para el desarrollo espiritual. Estos centros no son meramente físicos; existen en la intersección del cuerpo, la mente y el espíritu."
+        },
+        {
+          "type": "quote",
+          "reference": "15.12",
+          "text": "Los pasos son solo uno; es decir, una comprensión de los centros de energía que componen el complejo mente/cuerpo/espíritu. Esta comprensión puede resumirse brevemente. El primer equilibrio es del Malkuth, o Tierra, complejo de energía vibratoria, llamado el complejo del rayo rojo. Una comprensión y aceptación de esta energía es fundamental.",
+          "context": "Ra explica que el trabajo en los centros de energía es el paso esencial en el desarrollo espiritual.",
+          "highlight": [
+            "comprensión de los centros de energía",
+            "fundamental"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Ra describe dos corrientes de energía que se encuentran dentro de nosotros. La primera es la **luz interior**, nuestra verdadera naturaleza como seres del Creador, que fluye hacia abajo desde la corona. La segunda es la **energía de luz universal** que entra a través de la base de la columna vertebral desde el cosmos y se espiraliza hacia arriba. El desarrollo espiritual implica elevar el punto de encuentro de estas dos energías más alto a través de los centros."
+        },
+        {
+          "type": "quote",
+          "reference": "49.5",
+          "text": "El concepto más importante a comprender sobre el campo de energía es que el polo inferior o negativo atraerá la energía universal hacia sí mismo desde el cosmos. Desde allí, se moverá hacia arriba para ser encontrado y reaccionado por la energía positiva en espiral que desciende desde dentro. La medida del nivel de actividad del rayo de una entidad es el lugar donde la energía exterior del polo sur ha sido encontrada por la energía positiva en espiral interna.",
+          "context": "Ra describe cómo fluye la energía a través del cuerpo.",
+          "highlight": [
+            "atraer la energía universal hacia sí mismo",
+            "moverse hacia arriba para ser encontrado",
+            "medida del nivel de actividad del rayo de una entidad"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Hay **siete centros de energía primarios**, cada uno correspondiente a un color del espectro:\n\n1. **Rayo Rojo** (base) - Supervivencia, fundamento físico\n2. **Rayo Naranja** (abdomen inferior) - Identidad personal, relaciones individuales\n3. **Rayo Amarillo** (plexo solar) - Yo social, relaciones grupales\n4. **Rayo Verde** (corazón) - Amor universal, compasión\n5. **Rayo Azul** (garganta) - Comunicación, co-creación\n6. **Rayo Índigo** (tercer ojo) - Puerta al infinito inteligente\n7. **Rayo Violeta** (cabeza) - La suma total de la entidad\n\nLa energía debe fluir hacia arriba a través de cada centro en secuencia. Los bloqueos en los centros inferiores restringen el flujo hacia los superiores, por lo que Ra enfatiza comenzar con el rayo rojo y trabajar hacia arriba."
+        },
+        {
+          "type": "multiple-choice",
+          "question": "Según Ra, ¿cuál es la clave para el desarrollo espiritual en relación con los centros de energía?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Enfocándose solo en los centros espirituales superiores",
+              "isCorrect": false,
+              "explanation": "Ra enseña que todos los centros son importantes y deben estar equilibrados desde la base hacia arriba. Saltarse los centros inferiores crea un desequilibrio.",
+              "relatedPassage": "15.12"
+            },
+            {
+              "id": "b",
+              "text": "Comprender y equilibrar los centros de energía secuencialmente",
+              "isCorrect": true,
+              "explanation": "Ra afirma que entender los centros de energía es 'los pasos son solo uno' - el camino esencial. Esto comienza con el rayo rojo y se mueve hacia arriba.",
+              "relatedPassage": "15.12"
+            },
+            {
+              "id": "c",
+              "text": "Forzar la energía kundalini a elevarse rápidamente",
+              "isCorrect": false,
+              "explanation": "Ra advierte que intentar elevar la energía sin una comprensión adecuada \"es invitar a un gran desequilibrio.\" El proceso debe ser orgánico y estar fundamentado.",
+              "relatedPassage": "49.6"
+            },
+            {
+              "id": "d",
+              "text": "Eliminando las energías físicas inferiores",
+              "isCorrect": false,
+              "explanation": "Los rayos inferiores no deben ser eliminados, sino equilibrados e integrados. El rayo rojo se llama el 'rayo de fundación' para todas las densidades.",
+              "relatedPassage": "15.12"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "Antes de explorar cada centro en detalle, tómate un momento para sentir tu propio complejo mente/cuerpo/espíritu. ¿Dónde te sientes más vivo u abierto? ¿Dónde sientes tensión o restricción? No hay respuestas incorrectas, solo observa.",
+          "guidingThoughts": [
+            "El cuerpo guarda una sabiduría más allá de la mente.",
+            "La conciencia es el primer paso hacia el equilibrio.",
+            "Cada centro tiene su propia inteligencia."
+          ],
+          "placeholder": "Nota tu cuerpo de energía..."
+        }
+      ]
+    },
+    {
+      "id": "red-ray",
+      "title": "Rayo Rojo: La Fundación",
+      "estimatedMinutes": 6,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El rayo rojo es la base sobre la cual se construye todo el trabajo energético. Ubicado en la base de la columna vertebral, este centro se ocupa de la supervivencia, la vitalidad física y la fuerza vital básica. Ra enfatiza que este rayo nunca debe ser desestimado como 'menos espiritual', porque sin una base sólida, los centros superiores no pueden funcionar adecuadamente."
+        },
+        {
+          "type": "quote",
+          "reference": "39.10",
+          "text": "La energía básica del llamado rayo rojo. Este rayo puede entenderse como el rayo básico de fortalecimiento para cada densidad. Nunca debe ser menospreciado como menos importante o productivo de evolución espiritual, pues es el rayo fundamental.",
+          "context": "Ra enfatiza la importancia fundamental del rayo rojo.",
+          "highlight": [
+            "rayo básico de fortalecimiento",
+            "rayo fundamental"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Los bloqueos del rayo rojo pueden manifestarse como problemas con la supervivencia física, la sexualidad o una falta fundamental de disposición para estar encarnado. Cuando este centro está abierto y equilibrado, uno se siente arraigado, seguro en su existencia física y capaz de involucrarse plenamente con la vida."
+        },
+        {
+          "type": "quote",
+          "reference": "15.12",
+          "text": "El primer equilibrio es del Malkuth, o Tierra, complejo de energía vibratoria, llamado el complejo de rayo rojo. La comprensión y aceptación de esta energía es fundamental.",
+          "context": "Ra describe la importancia de comenzar el trabajo energético con el rayo rojo.",
+          "highlight": [
+            "comprensión y aceptación",
+            "fundamental"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "Según Ra, ¿cómo deberíamos ver el centro de energía del rayo rojo?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Como primitivo y que debe ser trascendido rápidamente.",
+              "isCorrect": false,
+              "explanation": "Ra advierte explícitamente en contra de menospreciar el rayo rojo como menos importante. Es la base que sostiene todo el desarrollo superior.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "b",
+              "text": "Como el rayo fundamental esencial para todas las densidades",
+              "isCorrect": true,
+              "explanation": "Ra afirma que el rayo rojo es \"el rayo básico de fortalecimiento para cada densidad\" y nunca debe ser menospreciado en comparación con los rayos superiores.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "c",
+              "text": "Como solo relevante en la primera densidad",
+              "isCorrect": false,
+              "explanation": "El rayo rojo sigue siendo importante a lo largo de todas las densidades como la energía fundamental que sostiene todo el sistema.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "d",
+              "text": "Como separado del desarrollo espiritual",
+              "isCorrect": false,
+              "explanation": "Ra afirma que el rayo rojo es productivo de la evolución espiritual. Lo físico y lo espiritual no son separados; el cuerpo es el templo.",
+              "relatedPassage": "39.10"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "¿Cuál es tu relación con tu cuerpo físico y tus necesidades básicas de supervivencia? ¿Te sientes arraigado y seguro en tu existencia, o hay resistencia a estar completamente encarnado?",
+          "guidingThoughts": [
+            "El cuerpo no es una prisión, sino un vehículo.",
+            "La conexión a la tierra permite el vuelo espiritual.",
+            "Honrar el cuerpo honra al Creador."
+          ],
+          "placeholder": "Reflexiona sobre tu fundamento..."
+        }
+      ]
+    },
+    {
+      "id": "orange-ray",
+      "title": "Rayo Naranja: Identidad Personal",
+      "estimatedMinutes": 6,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El rayo naranja gobierna la identidad personal, la autoaceptación y cómo nos relacionamos con los demás como individuos. Ubicado en la parte inferior del abdomen, este centro es donde desarrollamos nuestro sentido del yo como distinto de los demás. A diferencia del rayo amarillo (que trata sobre grupos y sociedad), el rayo naranja se ocupa de la comprensión del yo sobre sí mismo y de las interacciones uno a uno con otros individuos."
+        },
+        {
+          "type": "quote",
+          "reference": "41.14",
+          "text": "La conciencia del inicio de la segunda densidad es primitiva y el uso del rayo naranja está limitado a la expresión del yo, que puede ser vista como movimiento y supervivencia. En la tercera densidad, en este momento, aquellos que se aferran al rayo naranja tienen un sistema de distorsiones mucho más complejo a través del cual se manifiesta el rayo naranja.",
+          "context": "Ra explica cómo el rayo naranja evoluciona de la segunda a la tercera densidad.",
+          "highlight": [
+            "expresión del yo",
+            "movimiento y supervivencia"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Los bloqueos del rayo naranja a menudo se manifiestan en relaciones uno a uno, donde tratamos a los demás como extensiones de nosotros mismos en lugar de como seres soberanos. Esto puede aparecer como posesividad, incapacidad para ver la perspectiva del otro, o el uso de las relaciones puramente para la auto-gratificación."
+        },
+        {
+          "type": "quote",
+          "reference": "32.2",
+          "text": "El rayo naranja es esa influencia o patrón vibratorio en el cual el complejo mente/cuerpo/espíritu expresa su poder de manera individual. Así, el poder sobre los individuos puede ser visto como rayo naranja. Este rayo ha sido bastante intenso entre su pueblo de manera individual.",
+          "context": "Ra describe la naturaleza de la energía del rayo naranja.",
+          "highlight": [
+            "expresa su poder de manera individual",
+            "poder sobre los individuos"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Cuál es el dominio principal de la energía del rayo naranja?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Supervivencia y vitalidad física",
+              "isCorrect": false,
+              "explanation": "La supervivencia y la vitalidad física son principalmente funciones del rayo rojo. El rayo naranja va más allá de la mera supervivencia.",
+              "relatedPassage": "41.14"
+            },
+            {
+              "id": "b",
+              "text": "Expresión individual y relaciones uno a uno",
+              "isCorrect": true,
+              "explanation": "El rayo naranja gobierna la expresión del yo como individuo y cómo nos relacionamos con los demás en una base personal, uno a uno.",
+              "relatedPassage": "32.2"
+            },
+            {
+              "id": "c",
+              "text": "Dinámicas de grupo y sociedad",
+              "isCorrect": false,
+              "explanation": "Las relaciones grupales y sociales son territorio del rayo amarillo. El rayo naranja se ocupa de los individuos, no de los grupos.",
+              "relatedPassage": "32.2"
+            },
+            {
+              "id": "d",
+              "text": "amor universal y compasión",
+              "isCorrect": false,
+              "explanation": "El amor y la compasión universales son cualidades del rayo verde. El rayo naranja se preocupa más por la identidad personal y el poder individual.",
+              "relatedPassage": "32.2"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "Considera tus relaciones más cercanas uno a uno. ¿Ves a los demás como seres verdaderamente separados con su propia voluntad soberana, o a veces los tratas como extensiones de ti mismo?",
+          "guidingThoughts": [
+            "Cada ser es una expresión única del Creador.",
+            "La verdadera relación honra tanto al yo como al otro.",
+            "Los límites personales permiten una conexión más profunda."
+          ],
+          "placeholder": "Reflexiona sobre tus relaciones individuales..."
+        }
+      ]
+    },
+    {
+      "id": "yellow-ray",
+      "title": "Rayo Amarillo: El Yo Social",
+      "estimatedMinutes": 6,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El rayo amarillo, ubicado en el plexo solar, rige nuestra relación con grupos, la sociedad y las estructuras sociales. Mientras que el rayo naranja se ocupa del yo y los individuos, el rayo amarillo concierne a nuestro lugar en el colectivo: familia, comunidad, lugar de trabajo, nación y humanidad. Este es el rayo del ego en su sentido social. Se le llama el rayo del 'gran peldaño' porque impulsa a la entidad hacia el centro del corazón."
+        },
+        {
+          "type": "quote",
+          "reference": "39.10",
+          "text": "El siguiente rayo fundamental es el amarillo. Este es el gran rayo de piedra de paso. En este rayo, el complejo mente/cuerpo se potencia a su máximo equilibrio. La fuerte tríada roja/naranja/amarilla impulsa a la entidad hacia el rayo central de verde.",
+          "context": "Ra describe el papel del rayo amarillo en el desarrollo espiritual.",
+          "highlight": [
+            "gran rayo de piedra de paso",
+            "impulsa a la entidad hacia el rayo central de verde"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Los problemas del rayo amarillo se manifiestan en cómo nos relacionamos con los grupos y las estructuras de poder. El deseo de controlar grupos, o por el contrario, de ser controlados por ellos, son distorsiones del rayo amarillo. Un rayo amarillo equilibrado nos permite participar en la sociedad mientras mantenemos nuestra individualidad."
+        },
+        {
+          "type": "quote",
+          "reference": "34.9",
+          "text": "Las interacciones sociales y personales se concentran con mayor frecuencia en los segundos y terceros centros de energía. Así, aquellos que están más activos en intentar rehacer o alterar la sociedad son aquellos que trabajan desde sentimientos de estar en lo correcto personalmente o de tener respuestas que pondrán el poder en una configuración más correcta.",
+          "context": "Ra explica cómo los rayos naranja y amarillo se relacionan con la acción social.",
+          "highlight": [
+            "interacciones sociales y personales",
+            "intentar rehacer o alterar la sociedad"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Por qué Ra llama al rayo amarillo la 'gran piedra de paso'?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Porque es el rayo más importante.",
+              "isCorrect": false,
+              "explanation": "Todos los rayos son importantes. El rayo amarillo se llama la piedra de toque porque proporciona el punto de lanzamiento hacia el rayo verde, no porque sea superior a los otros rayos.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "b",
+              "text": "Porque los rayos inferiores equilibrados impulsan hacia el centro del corazón.",
+              "isCorrect": true,
+              "explanation": "Ra afirma que la fuerte tríada roja/naranja/amarilla 'lanza a la entidad hacia el rayo central de verde.' El rayo amarillo completa la base necesaria para la apertura del corazón.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "c",
+              "text": "Porque la sociedad es el objetivo más alto.",
+              "isCorrect": false,
+              "explanation": "La sociedad no es el objetivo; es el dominio de la experiencia del rayo amarillo. El objetivo es avanzar a través del amarillo hacia el corazón y más allá.",
+              "relatedPassage": "34.9"
+            },
+            {
+              "id": "d",
+              "text": "Porque el ego debe ser eliminado.",
+              "isCorrect": false,
+              "explanation": "El ego no se elimina, sino que se equilibra. Un rayo amarillo saludable apoya el compromiso social mientras se mantiene en el centro.",
+              "relatedPassage": "39.10"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "¿Cómo te relacionas con grupos, instituciones y estructuras sociales? ¿Buscas controlarlos, someterte a ellos o encontrar una manera equilibrada de participar mientras mantienes tu centro?",
+          "guidingThoughts": [
+            "El equilibrio entre la conformidad y la rebelión sirve al crecimiento.",
+            "Los grupos pueden amplificar tanto el amor como la distorsión.",
+            "Tu papel en la sociedad es exclusivamente tuyo para descubrir."
+          ],
+          "placeholder": "Considera tu relación con los grupos..."
+        }
+      ]
+    },
+    {
+      "id": "green-ray",
+      "title": "Rayo Verde: El Centro del Corazón",
+      "estimatedMinutes": 7,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El centro del corazón del rayo verde es el punto pivotal en el desarrollo espiritual humano. Ubicado en el corazón, este centro es donde surge el amor universal, la compasión y la aceptación de todos los seres. Es el primer centro donde comienza el verdadero trabajo espiritual, y su activación es el requisito mínimo para una cosecha positiva hacia la cuarta densidad. (Notablemente, el camino negativo hacia la cuarta densidad elude completamente el rayo verde, trabajando en su lugar a través de distorsiones intensificadas de los rayos naranja y amarillo.)"
+        },
+        {
+          "type": "quote",
+          "reference": "39.10",
+          "text": "Este es el recurso para el trabajo espiritual. Cuando el rayo verde ha sido activado, encontramos que el tercer rayo primario puede comenzar la potenciación. Este es el primer verdadero rayo espiritual en el sentido de que todas las transferencias son de una naturaleza integrada del complejo mente/cuerpo/espíritu.",
+          "context": "Ra describe la significancia espiritual del rayo verde.",
+          "highlight": [
+            "recurso para el trabajo espiritual",
+            "primer verdadero rayo espiritual"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "El amor del rayo verde es incondicional. No depende del comportamiento o la valía de los demás. Ve al Creador en todos los seres, independientemente de sus acciones. Sin embargo, Ra señala que el ente de rayo verde puede ser 'ineficaz ante el bloqueo de otros-yos' porque el amor universal aún no tiene la sabiduría para navegar todas las situaciones."
+        },
+        {
+          "type": "quote",
+          "reference": "41.25",
+          "text": "El rayo verde es el movimiento a través de diversas experiencias de intercambios de energía relacionados con la compasión y el amor que todo lo perdona hacia el rayo azul primario, que es el primer rayo de radiación del yo sin importar las acciones de otro. La entidad del rayo verde es ineficaz ante el bloqueo de otros-yos. La entidad del rayo azul es un co-Creador.",
+          "context": "Ra contrasta las capacidades del rayo verde y del rayo azul.",
+          "highlight": [
+            "compasión y amor que todo lo perdona",
+            "ineficaz ante el bloqueo"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Qué hace que el rayo verde sea el 'primer verdadero rayo espiritual'?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Es más importante que los rayos inferiores.",
+              "isCorrect": false,
+              "explanation": "Los rayos inferiores son fundamentos esenciales. El rayo verde es 'espiritual' porque implica una transferencia de energía integrada mente/cuerpo/espíritu, no porque supere a los rayos inferiores.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "b",
+              "text": "Todas las transferencias de energía se integran en el complejo mente/cuerpo/espíritu.",
+              "isCorrect": true,
+              "explanation": "Ra afirma que en el rayo verde, \"todas las transferencias son de una naturaleza integrada mente/cuerpo/espíritu.\" Esta totalidad marca el comienzo de un verdadero trabajo espiritual.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "c",
+              "text": "Los rayos inferiores son físicos, el verde es espiritual.",
+              "isCorrect": false,
+              "explanation": "Todos los rayos son parte del desarrollo espiritual. La distinción es que el rayo verde integra todos los aspectos del ser: mente, cuerpo y espíritu juntos.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "d",
+              "text": "Solo el rayo verde conduce a la cosecha.",
+              "isCorrect": false,
+              "explanation": "Mientras que la activación del rayo verde es necesaria para una cosecha positiva, todo el sistema de rayos contribuye al desarrollo espiritual.",
+              "relatedPassage": "39.10"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "¿Puedes recordar un momento en el que experimentaste amor incondicional, ya sea dándolo o recibiéndolo? ¿Qué significaría sostener a todos los seres en ese amor, independientemente de sus acciones?",
+          "guidingThoughts": [
+            "El corazón no conoce extraños.",
+            "El amor no se gana, sino que se reconoce.",
+            "La compasión comienza con la aceptación del yo."
+          ],
+          "placeholder": "Abre tu corazón a la sabiduría..."
+        }
+      ]
+    },
+    {
+      "id": "blue-ray",
+      "title": "Rayo Azul: Comunicación y Co-Creación",
+      "estimatedMinutes": 7,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El rayo azul, ubicado en la garganta, rige la comunicación, la expresión y la capacidad de irradiar el ser de uno sin importar las circunstancias externas. Mientras que el rayo verde puede ser bloqueado por la resistencia de otros, el rayo azul da y expresa libremente sin necesidad de aceptación. Ra llama a la entidad de rayo azul un 'co-Creador'."
+        },
+        {
+          "type": "quote",
+          "reference": "41.25",
+          "text": "El ente del rayo verde es ineficaz ante el bloqueo de otros-yos. El ente del rayo azul es un co-Creador.",
+          "context": "Ra distingue la capacidad única del rayo azul.",
+          "highlight": [
+            "el ente del rayo azul es un co-Creador"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "El rayo azul implica una comunicación honesta y la radiación de la verdad auténtica de uno, sin importar cómo sea recibida. Es el primer rayo de 'radiación', que da de sí mismo sin requerir nada a cambio. Enseñar, inspirar y comunicar la verdad son actividades del rayo azul."
+        },
+        {
+          "type": "quote",
+          "reference": "39.10",
+          "text": "El rayo azul asienta el aprendizaje/enseñanzas del espíritu en cada densidad dentro del complejo mente/cuerpo, animando el todo, comunicando a otros esta totalidad del ser.",
+          "context": "Ra describe la función del rayo azul.",
+          "highlight": [
+            "asienta el aprendizaje/enseñanzas del espíritu",
+            "comunicando a otros esta totalidad del ser"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Qué distingue el rayo azul del rayo verde?",
+          "options": [
+            {
+              "id": "a",
+              "text": "El rayo azul es más amoroso.",
+              "isCorrect": false,
+              "explanation": "El rayo verde es el centro del amor universal. El rayo azul añade comunicación y la capacidad de expresar sin importar la recepción, pero no es 'más amoroso'.",
+              "relatedPassage": "41.25"
+            },
+            {
+              "id": "b",
+              "text": "El rayo azul puede irradiar libremente incluso cuando otros resisten.",
+              "isCorrect": true,
+              "explanation": "Ra afirma que el rayo verde es 'ineficaz ante el bloqueo de otros-sí mismos', mientras que el ente del rayo azul es un 'co-Creador' que puede dar y expresar sin importar la recepción.",
+              "relatedPassage": "41.25"
+            },
+            {
+              "id": "c",
+              "text": "El rayo azul no necesita los rayos inferiores.",
+              "isCorrect": false,
+              "explanation": "El rayo azul se basa en todos los rayos inferiores. Sin una base equilibrada a través del rayo verde, el rayo azul no puede funcionar correctamente.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "d",
+              "text": "El rayo azul es solo para maestros.",
+              "isCorrect": false,
+              "explanation": "Mientras que la enseñanza es una actividad del rayo azul, todos los seres pueden desarrollar el rayo azul a través de la comunicación honesta y la libre expresión de su ser.",
+              "relatedPassage": "39.10"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "¿Qué tan libremente expresas tu verdad? ¿Retienes tu yo auténtico cuando temes las reacciones de los demás, o puedes irradiar tu ser sin importar la recepción?",
+          "guidingThoughts": [
+            "La expresión auténtica es un regalo para todos.",
+            "La libertad otorgada a otros libera al que da.",
+            "La verdad hablada en amor crea"
+          ],
+          "placeholder": "Considera tu expresión auténtica..."
+        }
+      ]
+    },
+    {
+      "id": "indigo-ray",
+      "title": "Rayo Índigo: La Puerta",
+      "estimatedMinutes": 7,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El rayo índigo, ubicado en el tercer ojo o frente, es la puerta de entrada al infinito inteligente. Este centro es trabajado principalmente por el adepto, aquel que ha equilibrado sustancialmente los centros inferiores. A través del rayo índigo, el practicante accede a las infinitas posibilidades que se encuentran más allá del mundo manifiesto."
+        },
+        {
+          "type": "quote",
+          "reference": "39.10",
+          "text": "El rayo índigo, aunque precioso, es aquel rayo sobre el cual solo trabaja el adepto, como ustedes lo llamarían. Es la puerta al infinito inteligente que trae energía inteligente a través de ella. Este es el centro de energía trabajado en aquellas enseñanzas consideradas internas, ocultas y esotéricas, pues este rayo es aquel que es infinito en sus posibilidades.",
+          "context": "Ra describe la naturaleza avanzada del trabajo del rayo índigo.",
+          "highlight": [
+            "puerta al infinito inteligente",
+            "infinito en sus posibilidades"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "El rayo índigo está asociado con la conciencia del yo como Creador. Aquellos que sanan, enseñan y trabajan para el Creador de maneras radiantes y equilibradas están trabajando a través del rayo índigo. Sin embargo, Ra advierte que este trabajo requiere una preparación sustancial en los centros inferiores."
+        },
+        {
+          "type": "quote",
+          "reference": "32.14",
+          "text": "El rayo índigo se abre únicamente a través de una considerable disciplina y práctica, que tiene mucho que ver con la aceptación de uno mismo, no solo como el yo polarizado y equilibrado, sino como el Creador, como una entidad de valor infinito.",
+          "context": "Ra explica cómo se activa el rayo índigo.",
+          "highlight": [
+            "aceptación de uno mismo",
+            "como el Creador, como una entidad de valor infinito"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Qué se requiere para abrir el rayo índigo?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Rituales o iniciaciones especiales",
+              "isCorrect": false,
+              "explanation": "Mientras que los rituales pueden apoyar el trabajo, Ra enfatiza que la apertura del rayo índigo requiere 'aceptación del yo como el Creador', un reconocimiento interno, no un ritual externo.",
+              "relatedPassage": "32.14"
+            },
+            {
+              "id": "b",
+              "text": "Aceptación del yo como el Creador",
+              "isCorrect": true,
+              "explanation": "Ra afirma que el rayo índigo requiere 'aceptación del yo, no solo como el yo polarizado y equilibrado, sino como el Creador, como una entidad de valor infinito.'",
+              "relatedPassage": "32.14"
+            },
+            {
+              "id": "c",
+              "text": "Dominio de los poderes psíquicos",
+              "isCorrect": false,
+              "explanation": "Las habilidades psíquicas pueden acompañar el trabajo índigo, pero no son un requisito. El requisito fundamental es la autoaceptación en el nivel más profundo.",
+              "relatedPassage": "32.14"
+            },
+            {
+              "id": "d",
+              "text": "Dejando el cuerpo físico",
+              "isCorrect": false,
+              "explanation": "El trabajo del rayo índigo se realiza mientras se está encarnado. La puerta se abre a través de la conciencia, no abandonando el cuerpo.",
+              "relatedPassage": "39.10"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "¿Puedes aceptarte a ti mismo no solo como un ser espiritual, sino como el Creador mismo experimentando a través de esta perspectiva única? ¿Cómo se sentiría la plena autoaceptación?",
+          "guidingThoughts": [
+            "Eres el Creador explorándose a sí mismo.",
+            "El valor infinito es tu derecho de nacimiento.",
+            "La puerta se abre hacia adentro, no hacia afuera."
+          ],
+          "placeholder": "Contempla tu naturaleza infinita..."
+        }
+      ]
+    },
+    {
+      "id": "violet-ray",
+      "title": "Rayo Violeta: La Suma Total",
+      "estimatedMinutes": 6,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El rayo violeta, en la corona de la cabeza, es único entre los centros de energía. A diferencia de los demás, no se activa ni se trabaja. Simplemente es la suma y el registro de todo lo que eres. Tu lectura del rayo violeta en cualquier momento refleja el equilibrio total y la vibración de tu ser entero."
+        },
+        {
+          "type": "quote",
+          "reference": "39.10",
+          "text": "El rayo violeta es constante y no se incluye en una discusión sobre las funciones de la activación de los rayos, ya que es la marca, el registro, la identidad, la verdadera vibración de un ente.",
+          "context": "Ra explica la naturaleza única del rayo violeta.",
+          "highlight": [
+            "marca, el registro, la identidad",
+            "verdadera vibración de un ente"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Porque el rayo violeta es la suma de todos los demás rayos, rodea e informa todas las acciones. No puede ser trabajado directamente; simplemente refleja el trabajo realizado en todos los otros centros. Ra afirma que la existencia del rayo violeta es 'mucho más indicativa del verdadero yo' que cualquier don o habilidad particular."
+        },
+        {
+          "type": "quote",
+          "reference": "32.7",
+          "text": "El rayo violeta, siendo la suma y sustancia del complejo mente/cuerpo/espíritu, rodea e informa cualquier acción de un complejo mente/cuerpo/espíritu.",
+          "context": "Ra describe cómo el rayo violeta permea toda acción.",
+          "highlight": [
+            "suma y sustancia",
+            "rodea e informa cualquier acción"
+          ]
+        },
+        {
+          "type": "quote",
+          "reference": "38.5",
+          "text": "En la entidad completamente potenciada, los rayos se montan uno sobre el otro con igual brillantez vibratoria y un resplandor centelleante hasta que el color circundante es blanco. Esto es lo que podrías llamar equilibrio potenciado en la tercera densidad.",
+          "context": "Ra describe el estado ideal de todos los rayos en equilibrio.",
+          "highlight": [
+            "igual brillantez vibratoria",
+            "color circundante es blanco"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Cómo se 'trabaja' en el rayo violeta?",
+          "options": [
+            {
+              "id": "a",
+              "text": "A través de meditaciones especiales del chakra de la corona",
+              "isCorrect": false,
+              "explanation": "El rayo violeta no puede ser trabajado directamente. Es el registro de todo otro trabajo. Meditaciones específicas de la corona trabajan en otros aspectos.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "b",
+              "text": "Al equilibrar todos los demás centros de energía",
+              "isCorrect": true,
+              "explanation": "El rayo violeta refleja la suma total de todos los demás rayos. No cambia a través del trabajo directo, sino como resultado de equilibrar todos los demás centros.",
+              "relatedPassage": "39.10"
+            },
+            {
+              "id": "c",
+              "text": "A través de experiencias de iluminación",
+              "isCorrect": false,
+              "explanation": "Las experiencias cumbre pueden cambiar temporalmente el rayo violeta, pero el cambio duradero proviene del trabajo sostenido en todos los centros.",
+              "relatedPassage": "38.5"
+            },
+            {
+              "id": "d",
+              "text": "El rayo violeta no puede ser cambiado.",
+              "isCorrect": false,
+              "explanation": "El rayo violeta sí cambia; refleja tu estado actual. Cambia como resultado del trabajo en todos los otros centros, pero no a través del trabajo directo en sí mismo.",
+              "relatedPassage": "38.5"
+            }
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "**Uniéndolo Todo:** Has recorrido el sistema completo de centros de energía tal como lo describe Ra. Desde la base del rayo rojo de la supervivencia y la existencia física, pasando por la identidad personal del rayo naranja, el yo social del rayo amarillo, y llegando al corazón del rayo verde donde comienza el verdadero trabajo espiritual. Más allá del corazón, el rayo azul permite la expresión auténtica, el rayo índigo abre la puerta a la infinitud, y el rayo violeta registra la suma de todo tu trabajo. Recuerda que la energía fluye hacia arriba; los bloqueos en los centros inferiores restringen el flujo hacia los superiores. El camino no es trascender los centros inferiores, sino equilibrarlos e integrarlos a todos."
+        },
+        {
+          "type": "reflection",
+          "prompt": "A medida que completes esta exploración de los centros de energía, considera: ¿Cómo se siente tu vibración general en este momento? ¿Qué centros piden atención? ¿Cómo se sentiría un mayor equilibrio?",
+          "guidingThoughts": [
+            "El equilibrio no es perfección, sino integración.",
+            "Cada centro sirve al todo.",
+            "El viaje continúa momento a momento."
+          ],
+          "placeholder": "Siente tu estado energético general..."
+        }
+      ]
+    }
+  ]
+}

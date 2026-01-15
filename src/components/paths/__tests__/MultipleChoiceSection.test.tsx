@@ -2,6 +2,28 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import MultipleChoiceSection from "../MultipleChoiceSection";
 import type { MultipleChoiceSection as MultipleChoiceSectionType } from "@/lib/schemas/study-paths";
 
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
+    const translations: Record<string, string> = {
+      "hint": "Hint:",
+      "hideHint": "Hide",
+      "needHint": "Need a hint?",
+      "submitAnswer": "Submit Answer",
+      "thatsRight": "That's right!",
+      "notQuite": "Not quite, but let's explore this",
+      "answerIs": `The answer is: "${params?.answer || ""}"`,
+      "dontWorry": "Don't worry, this is about learning, not testing. Take a moment to absorb this before continuing.",
+      "tryAgain": "Try Again",
+      "readMore": `Read more: ${params?.reference || ""}`,
+      "hideOther": "Hide other explanations",
+      "whyWrong": "Why were the others wrong?",
+    };
+    return translations[key] || key;
+  },
+  useLocale: () => "en",
+}));
+
 const mockSection: MultipleChoiceSectionType = {
   type: "multiple-choice",
   question: "What is the best way to serve others?",

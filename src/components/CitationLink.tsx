@@ -14,7 +14,7 @@ interface CitationLinkProps {
  *
  * Citations like (Ra 50.7) are parsed from AI responses and wrapped
  * with this component. Clicking opens a modal that shows the full quote
- * with an option to view on lawofone.info.
+ * with an option to view on llresearch.org.
  *
  * Modal state is managed by CitationModalContext to persist across
  * re-renders when new content streams in.

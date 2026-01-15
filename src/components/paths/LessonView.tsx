@@ -2,6 +2,7 @@
 
 import { memo, useCallback } from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type {
   StudyPath,
   PathProgress,
@@ -110,6 +111,7 @@ const LessonView = memo(function LessonView({
   onNextLesson,
   onPreviousLesson,
 }: LessonViewProps) {
+  const t = useTranslations("studyPaths");
   const isFirstLesson = lessonIndex === 0;
   const isLastLesson = lessonIndex === path.lessons.length - 1;
   const isLessonComplete = progress?.lessonsCompleted.includes(lesson.id) ?? false;
@@ -148,7 +150,7 @@ const LessonView = memo(function LessonView({
         </h1>
         {lesson.estimatedMinutes && (
           <p className="text-sm text-[var(--lo1-text-light)]/50 mt-1">
-            ~{lesson.estimatedMinutes} min read
+            {t("minRead", { count: lesson.estimatedMinutes })}
           </p>
         )}
       </motion.header>
@@ -167,11 +169,11 @@ const LessonView = memo(function LessonView({
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          {isFirstLesson ? "First" : "Previous"}
+          {isFirstLesson ? t("first") : t("previous")}
         </button>
 
         <span className="text-sm text-[var(--lo1-gold)]">
-          Lesson {lessonIndex + 1} of {path.lessons.length}
+          {t("lessonOf", { current: lessonIndex + 1, total: path.lessons.length })}
         </span>
 
         <button
@@ -183,7 +185,7 @@ const LessonView = memo(function LessonView({
               : "text-[var(--lo1-text-light)]/70 hover:text-[var(--lo1-starlight)] cursor-pointer"
           }`}
         >
-          {isLastLesson ? "Last" : "Next"}
+          {isLastLesson ? t("last") : t("next")}
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
@@ -223,7 +225,7 @@ const LessonView = memo(function LessonView({
             onClick={handleCompleteAndContinue}
             className="px-8 py-3 rounded-lg font-medium bg-[var(--lo1-gold)] text-[var(--lo1-space)] hover:bg-[var(--lo1-gold-light)] transition-colors cursor-pointer inline-flex items-center gap-2"
           >
-            {isLastLesson ? "Complete Path" : "Complete & Continue"}
+            {isLastLesson ? t("completePath") : t("completeAndContinue")}
             {!isLastLesson && (
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -235,7 +237,7 @@ const LessonView = memo(function LessonView({
             onClick={onNextLesson}
             className="px-8 py-3 rounded-lg font-medium bg-[var(--lo1-gold)] text-[var(--lo1-space)] hover:bg-[var(--lo1-gold-light)] transition-colors cursor-pointer inline-flex items-center gap-2"
           >
-            Next Lesson
+            {t("nextLesson")}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
@@ -245,7 +247,7 @@ const LessonView = memo(function LessonView({
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
-            Path Complete
+            {t("pathComplete")}
           </span>
         )}
       </footer>

@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, RefObject } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 interface PathHeaderProps {
@@ -21,6 +22,8 @@ const PathHeader = memo(function PathHeader({
   showProgressBar = false,
   progressBarRef,
 }: PathHeaderProps) {
+  const t = useTranslations("studyPaths");
+
   return (
     <div
       className={`sticky top-0 bg-[var(--lo1-space)]/95 backdrop-blur-sm z-20 ${
@@ -35,7 +38,7 @@ const PathHeader = memo(function PathHeader({
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Study Paths
+          {t("title")}
         </Link>
 
         {title ? (

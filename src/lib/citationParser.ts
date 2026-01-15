@@ -1,5 +1,7 @@
 // Parser utility to detect and transform Ra Material citations into clickable links
 
+import { type AvailableLanguage } from "./language-config";
+
 export type CitationSegment =
   | { type: "text"; content: string }
   | { type: "citation"; session: number; question: number; displayText: string; url: string };
@@ -8,17 +10,25 @@ export type CitationSegment =
 export const CITATION_REGEX = /\(Ra\s+(\d+)\.(\d+)\)/g;
 
 /**
- * Build lawofone.info URL from session and question numbers
+ * Build L/L Research URL from session and question numbers
  */
-export function buildCitationUrl(session: number, question: number): string {
-  return `https://lawofone.info/s/${session}#${question}`;
+export function buildCitationUrl(
+  session: number,
+  question: number,
+  locale: AvailableLanguage = "en"
+): string {
+  const localePath = locale === "en" ? "" : `/${locale}`;
+  return `https://www.llresearch.org${localePath}/channeling/ra-contact/${session}#${question}`;
 }
 
 /**
  * Parse text and identify Ra Material citations for linking
  * Returns array of segments: plain text and citation links
  */
-export function parseCitationsInText(text: string): CitationSegment[] {
+export function parseCitationsInText(
+  text: string,
+  locale: AvailableLanguage = "en"
+): CitationSegment[] {
   const segments: CitationSegment[] = [];
   const regex = new RegExp(CITATION_REGEX.source, "g");
 
@@ -43,7 +53,7 @@ export function parseCitationsInText(text: string): CitationSegment[] {
       session,
       question,
       displayText: match[0],
-      url: buildCitationUrl(session, question),
+      url: buildCitationUrl(session, question, locale),
     });
 
     lastIndex = match.index + match[0].length;

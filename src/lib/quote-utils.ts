@@ -3,6 +3,49 @@
 import { debug } from "@/lib/debug";
 import { type AvailableLanguage } from "./language-config";
 
+/**
+ * Generate a URL to the Ra Material on L/L Research website.
+ * Uses locale-aware paths for translated content.
+ *
+ * @param session - Session number (1-106)
+ * @param question - Question number within the session
+ * @param locale - Language locale (defaults to 'en')
+ * @returns URL to the specific passage on llresearch.org
+ *
+ * @example
+ * getRaMaterialUrl(20, 1, 'en') // https://www.llresearch.org/channeling/ra-contact/20#1
+ * getRaMaterialUrl(20, 1, 'es') // https://www.llresearch.org/es/channeling/ra-contact/20#1
+ */
+export function getRaMaterialUrl(
+  session: number | string,
+  question?: number | string,
+  locale: AvailableLanguage = "en"
+): string {
+  const localePath = locale === "en" ? "" : `/${locale}`;
+  const questionHash = question ? `#${question}` : "";
+  return `https://www.llresearch.org${localePath}/channeling/ra-contact/${session}${questionHash}`;
+}
+
+/**
+ * Generate a URL from a reference string (e.g., "20.1" or "Ra 20.1").
+ *
+ * @param reference - Reference string like "20.1" or "Ra 20.1"
+ * @param locale - Language locale (defaults to 'en')
+ * @returns URL to the specific passage, or base URL if parsing fails
+ */
+export function getRaMaterialUrlFromReference(
+  reference: string,
+  locale: AvailableLanguage = "en"
+): string {
+  const match = reference.match(/(\d+)\.(\d+)/);
+  if (!match) {
+    const localePath = locale === "en" ? "" : `/${locale}`;
+    return `https://www.llresearch.org${localePath}/channeling/ra-contact`;
+  }
+  const [, session, question] = match;
+  return getRaMaterialUrl(session, question, locale);
+}
+
 // Result of parsing a session/question reference from user query
 export interface SessionQuestionRef {
   session: number;
@@ -18,16 +61,26 @@ export interface SessionQuestionRef {
  * - "show me 5.1" → { session: 5, question: 1 }
  * - "s5q1" or "s5" → { session: 5, question: 1 } or { session: 5 }
  * - lawofone.info/s/5#1 → { session: 5, question: 1 }
+ * - llresearch.org/channeling/ra-contact/5#1 → { session: 5, question: 1 }
  */
 export function parseSessionQuestionReference(query: string): SessionQuestionRef | null {
   const normalized = query.toLowerCase().trim();
 
-  // Pattern 1: URL format - lawofone.info/s/SESSION#QUESTION
-  const urlMatch = normalized.match(/lawofone\.info\/s\/(\d+)(?:#(\d+))?/);
-  if (urlMatch) {
+  // Pattern 1a: URL format - lawofone.info/s/SESSION#QUESTION (legacy)
+  const lawofoneUrlMatch = normalized.match(/lawofone\.info\/s\/(\d+)(?:#(\d+))?/);
+  if (lawofoneUrlMatch) {
     return {
-      session: parseInt(urlMatch[1], 10),
-      question: urlMatch[2] ? parseInt(urlMatch[2], 10) : undefined,
+      session: parseInt(lawofoneUrlMatch[1], 10),
+      question: lawofoneUrlMatch[2] ? parseInt(lawofoneUrlMatch[2], 10) : undefined,
+    };
+  }
+
+  // Pattern 1b: URL format - llresearch.org/channeling/ra-contact/SESSION#QUESTION
+  const llresearchUrlMatch = normalized.match(/llresearch\.org(?:\/[a-z]{2})?\/channeling\/ra-contact\/(\d+)(?:#(\d+))?/);
+  if (llresearchUrlMatch) {
+    return {
+      session: parseInt(llresearchUrlMatch[1], 10),
+      question: llresearchUrlMatch[2] ? parseInt(llresearchUrlMatch[2], 10) : undefined,
     };
   }
 
@@ -379,7 +432,7 @@ export function formatQuoteForCopy(text: string): string {
  * "{quote text}"
  * — Ra {session.question}
  *
- * https://lawofone.info/s/{session}#{question}
+ * https://www.llresearch.org/channeling/ra-contact/{session}#{question}
  */
 export function formatQuoteWithAttribution(
   text: string,

@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useState, useCallback, useEffect } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import type {
   ReflectionSection as ReflectionSectionType,
   SavedReflection,
@@ -22,10 +23,10 @@ type ViewState =
 /**
  * Format a date string for display.
  */
-function formatDate(isoDate: string): string {
+function formatDate(isoDate: string, locale: string): string {
   try {
     const date = new Date(isoDate);
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", {
       month: "short",
       day: "numeric",
     });
@@ -47,6 +48,8 @@ const ReflectionSection = memo(function ReflectionSection({
   savedReflection,
   onSave,
 }: ReflectionSectionProps) {
+  const locale = useLocale();
+  const t = useTranslations("studyPaths.reflection");
   // Start in editing mode to show textarea directly (reduces friction)
   const [viewState, setViewState] = useState<ViewState>({ type: "editing", text: "" });
   const [isSaving, setIsSaving] = useState(false);
@@ -140,15 +143,15 @@ const ReflectionSection = memo(function ReflectionSection({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <span className="text-[var(--lo1-gold)]">✦</span>
-          <h4 className="text-[var(--lo1-starlight)] font-medium">Reflection</h4>
+          <h4 className="text-[var(--lo1-starlight)] font-medium">{t("title")}</h4>
         </div>
         {isSaved && (
           <span className="text-xs text-[var(--lo1-text-light)]/60">
-            Saved {formatDate(viewState.updatedAt || viewState.savedAt)}
+            {t("saved", { date: formatDate(viewState.updatedAt || viewState.savedAt, locale) })}
           </span>
         )}
         {viewState.type === "editing_saved" && (
-          <span className="text-xs text-[var(--lo1-gold)]">Editing...</span>
+          <span className="text-xs text-[var(--lo1-gold)]">{t("editing")}</span>
         )}
       </div>
 
@@ -175,17 +178,17 @@ const ReflectionSection = memo(function ReflectionSection({
           <textarea
             value={currentText}
             onChange={handleTextChange}
-            placeholder={section.placeholder || "Take a moment to reflect..."}
+            placeholder={section.placeholder || t("placeholder")}
             className="w-full h-32 p-3 rounded-lg bg-[var(--lo1-space)] border border-[var(--lo1-celestial)]/30
                        text-[var(--lo1-text-light)] placeholder-[var(--lo1-text-light)]/40
                        focus:outline-none focus:border-[var(--lo1-gold)]/50 focus:ring-1 focus:ring-[var(--lo1-gold)]/20
                        resize-none"
-            aria-label="Your reflection"
+            aria-label={t("title")}
           />
 
           {showMinLengthWarning && section.minLength && (
             <p className="text-xs text-[var(--lo1-celestial)] mt-2">
-              Consider expanding your thoughts a bit more ({section.minLength - currentText.length} more characters suggested)
+              {t("expandThoughts", { count: section.minLength - currentText.length })}
             </p>
           )}
 
@@ -196,7 +199,7 @@ const ReflectionSection = memo(function ReflectionSection({
                 onClick={handleCancelEdit}
                 className="px-4 py-2 rounded-lg text-sm text-[var(--lo1-text-light)] hover:text-[var(--lo1-starlight)] transition-colors cursor-pointer"
               >
-                Cancel
+                {t("cancel")}
               </button>
             )}
             <button
@@ -211,7 +214,7 @@ const ReflectionSection = memo(function ReflectionSection({
                 }
               `}
             >
-              {isSaving ? "Saving..." : viewState.type === "editing_saved" ? "Save Changes" : "Save Reflection"}
+              {isSaving ? t("saving") : viewState.type === "editing_saved" ? t("saveChanges") : t("saveReflection")}
             </button>
           </div>
         </>
@@ -221,7 +224,7 @@ const ReflectionSection = memo(function ReflectionSection({
       {isSaved && (
         <>
           <div className="p-4 rounded-lg bg-[var(--lo1-indigo)]/30 border border-[var(--lo1-gold)]/20">
-            <p className="text-sm text-[var(--lo1-text-light)]/60 mb-2">Your previous reflection:</p>
+            <p className="text-sm text-[var(--lo1-text-light)]/60 mb-2">{t("previousReflection")}</p>
             <p className="text-[var(--lo1-starlight)] whitespace-pre-wrap leading-relaxed">
               &ldquo;{viewState.text}&rdquo;
             </p>
@@ -232,7 +235,7 @@ const ReflectionSection = memo(function ReflectionSection({
               onClick={handleEdit}
               className="px-4 py-2 rounded-lg text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline transition-colors cursor-pointer"
             >
-              Edit Reflection
+              {t("editReflection")}
             </button>
           </div>
         </>

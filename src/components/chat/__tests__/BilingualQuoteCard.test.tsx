@@ -45,7 +45,7 @@ jest.mock("@/lib/analytics", () => ({
 const mockQuote = {
   text: "Ra: I am Ra. This is a test quote.",
   reference: "1.7",
-  url: "https://lawofone.info/s/1#7",
+  url: "https://www.llresearch.org/channeling/ra-contact/1#7",
 };
 
 describe("BilingualQuoteCard", () => {
@@ -97,7 +97,7 @@ describe("BilingualQuoteCard", () => {
     render(<BilingualQuoteCard quote={mockQuote} targetLanguage="es" />);
 
     const link = screen.getByRole("link", { name: "1.7" });
-    expect(link).toHaveAttribute("href", "https://lawofone.info/s/1#7");
+    expect(link).toHaveAttribute("href", "https://www.llresearch.org/channeling/ra-contact/1#7");
     expect(link).toHaveAttribute("target", "_blank");
   });
 

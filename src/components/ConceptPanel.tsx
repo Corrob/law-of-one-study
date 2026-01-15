@@ -1,11 +1,14 @@
 "use client";
 
 import { useRouter } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import { motion, useDragControls } from "framer-motion";
 import type { GraphConcept } from "@/lib/graph/types";
 import { findConceptById } from "@/lib/concept-graph";
 import { CATEGORY_LABELS, CATEGORY_COLORS } from "@/lib/graph/layout";
 import { CloseIcon, ChatIcon } from "@/components/icons";
+import { getRaMaterialUrlFromReference } from "@/lib/quote-utils";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 interface ConceptPanelProps {
   concept: GraphConcept;
@@ -18,6 +21,7 @@ export default function ConceptPanel({
   onClose,
   onSelectConcept,
 }: ConceptPanelProps) {
+  const locale = useLocale() as AvailableLanguage;
   const router = useRouter();
   const dragControls = useDragControls();
 
@@ -57,6 +61,7 @@ export default function ConceptPanel({
           concept={concept}
           categoryColor={categoryColor}
           relatedConcepts={relatedConcepts}
+          locale={locale}
           onClose={onClose}
           onSelectConcept={onSelectConcept}
           onExploreInChat={handleExploreInChat}
@@ -96,6 +101,7 @@ export default function ConceptPanel({
             concept={concept}
             categoryColor={categoryColor}
             relatedConcepts={relatedConcepts}
+            locale={locale}
             onClose={onClose}
             onSelectConcept={onSelectConcept}
             onExploreInChat={handleExploreInChat}
@@ -120,6 +126,7 @@ function PanelContent({
   concept,
   categoryColor,
   relatedConcepts,
+  locale,
   onClose,
   onSelectConcept,
   onExploreInChat,
@@ -127,6 +134,7 @@ function PanelContent({
   concept: GraphConcept;
   categoryColor: string;
   relatedConcepts: GraphConcept[];
+  locale: AvailableLanguage;
   onClose: () => void;
   onSelectConcept: (conceptId: string) => void;
   onExploreInChat: () => void;
@@ -197,7 +205,7 @@ function PanelContent({
                     &ldquo;{passage.excerpt}&rdquo;
                   </p>
                   <a
-                    href={`https://lawofone.info/s/${passage.reference.split(".")[0]}#${passage.reference.split(".")[1]}`}
+                    href={getRaMaterialUrlFromReference(passage.reference, locale)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs text-[var(--lo1-gold)] hover:underline mt-1 inline-block cursor-pointer"

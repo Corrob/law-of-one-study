@@ -2,8 +2,9 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import type { AvailableLanguage } from "@/lib/language-config";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import SearchInput from "@/components/SearchInput";
@@ -20,6 +21,7 @@ const SENTENCE_SUGGESTION_COUNT = 52;
 const SEARCH_LIMIT = 20;
 
 export default function SearchPage() {
+  const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("search");
   const tPassageSuggestions = useTranslations("searchSuggestions.passage");
   const tSentenceSuggestions = useTranslations("searchSuggestions.sentence");
@@ -85,7 +87,7 @@ export default function SearchPage() {
       const response = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: trimmed, limit: SEARCH_LIMIT, mode: searchMode }),
+        body: JSON.stringify({ query: trimmed, limit: SEARCH_LIMIT, mode: searchMode, language: locale }),
       });
 
       if (!response.ok) {
@@ -103,7 +105,7 @@ export default function SearchPage() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [locale]);
 
   // Handle search: update URL and perform search
   const handleSearch = useCallback((searchQuery: string) => {

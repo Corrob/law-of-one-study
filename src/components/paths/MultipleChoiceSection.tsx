@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useState, useCallback, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import type {
   MultipleChoiceSection as MultipleChoiceSectionType,
   QuizResponse,
@@ -36,6 +37,7 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
   savedResponse,
   onAnswer,
 }: MultipleChoiceSectionProps) {
+  const t = useTranslations("studyPaths.quiz");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>({ type: "unanswered", previousAttempts: 0 });
 
@@ -159,12 +161,12 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
       {/* Hint display */}
       {section.hint && showingHint && !isAnswered && (
         <div className="mt-4 text-sm text-[var(--lo1-celestial)] bg-[var(--lo1-celestial)]/10 p-3 rounded-lg">
-          <span className="font-medium">Hint:</span> {section.hint}
+          <span className="font-medium">{t("hint")}</span> {section.hint}
           <button
             onClick={handleHideHint}
             className="ml-2 text-[var(--lo1-text-light)] hover:text-[var(--lo1-starlight)] underline cursor-pointer"
           >
-            Hide
+            {t("hideHint")}
           </button>
         </div>
       )}
@@ -177,7 +179,7 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
               onClick={handleShowHint}
               className="text-sm text-[var(--lo1-text-light)]/60 hover:text-[var(--lo1-celestial)] transition-colors cursor-pointer"
             >
-              Need a hint?
+              {t("needHint")}
             </button>
           ) : (
             <div />
@@ -194,7 +196,7 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
               }
             `}
           >
-            Submit Answer
+            {t("submitAnswer")}
           </button>
         </div>
       )}
