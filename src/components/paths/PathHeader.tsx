@@ -1,7 +1,7 @@
 "use client";
 
 import { memo, RefObject } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 interface PathHeaderProps {
   /** Path title to display (optional - not shown on intro) */

@@ -72,11 +72,11 @@ describe("WelcomeScreen", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render disclaimer link to support page", () => {
+    it("should render disclaimer link to donate page", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
       const learnMoreLink = screen.getByText("Learn more");
-      expect(learnMoreLink).toHaveAttribute("href", "/support");
+      expect(learnMoreLink).toHaveAttribute("href", "/donate");
     });
   });
 

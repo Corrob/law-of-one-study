@@ -10,6 +10,8 @@ const customJestConfig = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
+    // Map all @/ imports to src/ directory
+    // Individual test files mock @/i18n/navigation as needed
     "^@/(.*)$": "<rootDir>/src/$1",
   },
   // Transform D3 and related ESM modules (and next-intl)

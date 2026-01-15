@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import SearchInput from "@/components/SearchInput";

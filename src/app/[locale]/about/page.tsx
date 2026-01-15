@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { titleVariants, staggerContainer, staggerChild } from "@/lib/animations";

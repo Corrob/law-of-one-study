@@ -1,13 +1,17 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "../ThemeProvider";
 
-// Mock next/navigation
+// Mock @/i18n/navigation (locale-aware navigation)
 const mockPathname = jest.fn(() => "/");
 const mockBack = jest.fn();
 const mockPush = jest.fn();
-jest.mock("next/navigation", () => ({
+const mockReplace = jest.fn();
+jest.mock("@/i18n/navigation", () => ({
   usePathname: () => mockPathname(),
-  useRouter: () => ({ back: mockBack, push: mockPush }),
+  useRouter: () => ({ back: mockBack, push: mockPush, replace: mockReplace }),
+  Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
 }));
 
 // Mock framer-motion

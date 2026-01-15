@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useCallback, useRef } from "react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { usePathname, Link } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import {

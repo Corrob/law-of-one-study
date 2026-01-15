@@ -1,13 +1,11 @@
 import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-// Mock next/navigation
+// Mock next/navigation for useSearchParams
 let mockUrlQuery = "";
 let mockUrlMode: string | null = null;
-const mockPush = jest.fn();
 
 jest.mock("next/navigation", () => ({
-  useRouter: () => ({ push: mockPush }),
   useSearchParams: () => ({
     get: (key: string) => {
       if (key === "q") return mockUrlQuery;
@@ -15,6 +13,16 @@ jest.mock("next/navigation", () => ({
       return null;
     },
   }),
+}));
+
+// Mock @/i18n/navigation for useRouter
+const mockPush = jest.fn();
+jest.mock("@/i18n/navigation", () => ({
+  useRouter: () => ({ push: mockPush }),
+  usePathname: () => "/search",
+  Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
 }));
 
 // Mock NavigationWrapper to simplify testing

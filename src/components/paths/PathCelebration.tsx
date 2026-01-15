@@ -2,7 +2,7 @@
 
 import { memo, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { StudyPath } from "@/lib/schemas/study-paths";
 
 interface PathCelebrationProps {

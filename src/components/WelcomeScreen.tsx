@@ -2,6 +2,7 @@
 
 import { useEffect, useState, ReactNode, useMemo } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { getRandomStarters } from "@/data/starters";
 import ThinkingModeToggle from "./ThinkingModeToggle";
 
@@ -93,12 +94,12 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
       <div className="w-full max-w-2xl mt-8 animate-starter-0">
         <p className="text-[var(--lo1-stardust)]/60 text-xs text-center leading-relaxed">
           {t("disclaimer")}{" "}
-          <a
-            href="/support"
+          <Link
+            href="/donate"
             className="text-[var(--lo1-gold)]/70 hover:text-[var(--lo1-gold)] underline transition-colors"
           >
             {t("learnMore")}
-          </a>
+          </Link>
         </p>
       </div>
 

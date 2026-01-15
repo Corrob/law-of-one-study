@@ -27,12 +27,16 @@ jest.mock("@/lib/graph/layout", () => ({
   },
 }));
 
-// Mock next/navigation
+// Mock @/i18n/navigation for locale-aware routing
 const mockPush = jest.fn();
-jest.mock("next/navigation", () => ({
+jest.mock("@/i18n/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
   }),
+  usePathname: () => "/explore",
+  Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
 }));
 
 // Mock concept-graph to return a related concept

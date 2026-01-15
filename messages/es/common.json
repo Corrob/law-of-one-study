@@ -29,7 +29,7 @@
   },
   "nav": {
     "home": "Inicio",
-    "seek": "Buscar",
+    "seek": "Consultar",
     "explore": "Explorar",
     "study": "Estudiar",
     "search": "Buscar",
@@ -66,8 +66,8 @@
   },
   "features": {
     "seek": {
-      "title": "Buscar",
-      "description": "Chatea con guía IA"
+      "title": "Consultar",
+      "description": "Conversa con un guía de IA"
     },
     "explore": {
       "title": "Explorar",

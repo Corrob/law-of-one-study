@@ -1,12 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Cormorant_Garamond } from "next/font/google";
 import { headers } from "next/headers";
+import { getLocale } from "next-intl/server";
 import "./globals.css";
-import { PostHogProvider } from "@/providers/PostHogProvider";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { PopoverProvider } from "@/contexts/PopoverContext";
-import { CitationModalProvider } from "@/contexts/CitationModalContext";
-import { LanguageProvider } from "@/contexts/LanguageContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -72,14 +68,17 @@ export const viewport = {
   viewportFit: "cover",
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
+interface RootLayoutProps {
   children: React.ReactNode;
-}>) {
+}
+
+export default async function RootLayout({ children }: RootLayoutProps) {
   // Get nonce from middleware for CSP
   const headersList = await headers();
   const nonce = headersList.get("x-nonce") ?? undefined;
+
+  // Get locale from next-intl (set by middleware based on URL)
+  const locale = await getLocale();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -98,11 +97,11 @@ export default async function RootLayout({
       price: "0",
       priceCurrency: "USD",
     },
-    inLanguage: "en-US",
+    inLanguage: locale === "es" ? "es" : "en-US",
   };
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         {/* suppressHydrationWarning needed because browsers strip nonce from DOM after execution */}
         <script
@@ -130,15 +129,7 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${cormorant.variable} antialiased`}>
-        <PostHogProvider>
-          <ThemeProvider>
-            <LanguageProvider>
-              <PopoverProvider>
-                <CitationModalProvider>{children}</CitationModalProvider>
-              </PopoverProvider>
-            </LanguageProvider>
-          </ThemeProvider>
-        </PostHogProvider>
+        {children}
       </body>
     </html>
   );

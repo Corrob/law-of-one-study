@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { motion, useDragControls } from "framer-motion";
 import type { GraphConcept } from "@/lib/graph/types";
 import { findConceptById } from "@/lib/concept-graph";

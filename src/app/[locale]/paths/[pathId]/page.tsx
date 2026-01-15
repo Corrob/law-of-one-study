@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useEffect, useState, useCallback, useMemo, useRef } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { LessonView, PathIntroView, PathCelebration, PathHeader } from "@/components/paths";
 import { useStudyProgress } from "@/hooks/useStudyProgress";

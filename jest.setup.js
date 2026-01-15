@@ -1,6 +1,51 @@
 // Learn more: https://github.com/testing-library/jest-dom
 import "@testing-library/jest-dom";
 
+// Mock next-intl modules to avoid ESM issues
+jest.mock("next-intl/routing", () => ({
+  defineRouting: (config) => config,
+}));
+
+// Create persistent mock functions for router
+const mockRouterPush = jest.fn();
+const mockRouterReplace = jest.fn();
+const mockRouterBack = jest.fn();
+const mockRouterForward = jest.fn();
+const mockRouterRefresh = jest.fn();
+const mockRouterPrefetch = jest.fn();
+
+jest.mock("next-intl/navigation", () => ({
+  createNavigation: () => ({
+    Link: ({ href, children, ...props }) => {
+      const React = require("react");
+      return React.createElement("a", { href, ...props }, children);
+    },
+    redirect: (pathname) => {
+      throw new Error(`NEXT_REDIRECT: ${pathname}`);
+    },
+    usePathname: () => "/",
+    useRouter: () => ({
+      push: mockRouterPush,
+      replace: mockRouterReplace,
+      back: mockRouterBack,
+      forward: mockRouterForward,
+      refresh: mockRouterRefresh,
+      prefetch: mockRouterPrefetch,
+    }),
+    getPathname: ({ href }) => href,
+  }),
+}));
+
+// Clear router mocks before each test
+beforeEach(() => {
+  mockRouterPush.mockClear();
+  mockRouterReplace.mockClear();
+  mockRouterBack.mockClear();
+  mockRouterForward.mockClear();
+  mockRouterRefresh.mockClear();
+  mockRouterPrefetch.mockClear();
+});
+
 // Mock environment variables
 process.env.NEXT_PUBLIC_POSTHOG_KEY = "test-key";
 process.env.NEXT_PUBLIC_POSTHOG_HOST = "https://test.posthog.com";
