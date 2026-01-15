@@ -37,6 +37,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   const [initialTranslation, setInitialTranslation] = useState<string | null>(null);
   const [isLoadingInitial, setIsLoadingInitial] = useState(false);
   const [isFallbackToEnglish, setIsFallbackToEnglish] = useState(false);
+  const [translationAttempted, setTranslationAttempted] = useState(false);
 
   debug.log("[BilingualQuoteCard] Rendering quote:", {
     reference: quote.reference,
@@ -53,8 +54,9 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
 
   // Fetch translated quote on mount
   useEffect(() => {
-    if (targetLanguage === 'en' || initialTranslation || isLoadingInitial) return;
+    if (targetLanguage === 'en' || translationAttempted || isLoadingInitial) return;
 
+    setTranslationAttempted(true);
     setIsLoadingInitial(true);
     debug.log("[BilingualQuoteCard] Fetching initial translation:", quote.reference, targetLanguage);
 
@@ -74,7 +76,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
       .finally(() => {
         setIsLoadingInitial(false);
       });
-  }, [quote.reference, targetLanguage, initialTranslation, isLoadingInitial]);
+  }, [quote.reference, targetLanguage, translationAttempted, isLoadingInitial]);
 
   // Track quote display on mount
   useEffect(() => {

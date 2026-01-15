@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import { usePopoverContext } from "@/contexts/PopoverContext";
+import { useTranslations } from "next-intl";
 
 const POPOVER_ID = "ai-companion-badge";
 
@@ -16,6 +17,7 @@ function SparkleIcon({ className }: { className?: string }) {
 }
 
 export default function AICompanionBadge() {
+  const t = useTranslations("aiCompanion");
   const { openPopover, open, close, requestClose, cancelClose } = usePopoverContext();
   const [canHover, setCanHover] = useState(false);
   const badgeRef = useRef<HTMLButtonElement>(null);
@@ -92,11 +94,11 @@ export default function AICompanionBadge() {
       >
         <SparkleIcon className="w-3.5 h-3.5 text-[var(--lo1-gold)]" />
         <span className="text-[var(--lo1-gold)] uppercase tracking-wide font-medium">
-          AI Companion
+          {t("badge")}
         </span>
         <span className="text-[var(--lo1-stardust)]">·</span>
         <span className="text-[var(--lo1-stardust)] italic">
-          Trust your resonance
+          {t("trustResonance")}
         </span>
       </button>
     </div>

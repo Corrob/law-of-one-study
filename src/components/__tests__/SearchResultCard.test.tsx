@@ -7,6 +7,13 @@ jest.mock("@/lib/quote-utils", () => ({
   formatWholeQuote: (text: string) => text,
   formatQuoteWithAttribution: (text: string, reference: string, url: string) =>
     `"${text}"\n— ${reference}\n\n${url}`,
+  // Mock fetchBilingualQuote to return null (no translation available)
+  fetchBilingualQuote: jest.fn().mockResolvedValue(null),
+}));
+
+// Mock useLanguage to return English by default
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: () => ({ language: "en", setLanguage: jest.fn() }),
 }));
 
 const mockResult = {

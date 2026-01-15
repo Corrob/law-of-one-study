@@ -37,6 +37,7 @@ export default function AnimatedQuoteCard({
   // State for translated quote (loaded on mount for non-English)
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
+  const [translationAttempted, setTranslationAttempted] = useState(false);
 
   // Keep onComplete ref updated
   useEffect(() => {
@@ -45,7 +46,8 @@ export default function AnimatedQuoteCard({
 
   // Fetch translated quote on mount if language is not English
   useEffect(() => {
-    if (language !== 'en' && !translatedText && !isLoadingTranslation) {
+    if (language !== 'en' && !translationAttempted && !isLoadingTranslation) {
+      setTranslationAttempted(true);
       setIsLoadingTranslation(true);
 
       fetchFullQuote(quote.reference, language as AvailableLanguage)
@@ -62,7 +64,7 @@ export default function AnimatedQuoteCard({
           setIsLoadingTranslation(false);
         });
     }
-  }, [language, quote.reference, translatedText, isLoadingTranslation]);
+  }, [language, quote.reference, translationAttempted, isLoadingTranslation]);
 
   // Handle fade-in animation
   useEffect(() => {

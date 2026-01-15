@@ -92,7 +92,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - ingest (PostHog proxy)
+     * - sections (static JSON files for Ra Material quotes)
      */
-    "/((?!api|_next/static|_next/image|favicon.ico|ingest).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|ingest|sections).*)",
   ],
 };
