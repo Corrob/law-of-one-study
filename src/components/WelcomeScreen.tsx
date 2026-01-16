@@ -110,7 +110,7 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
         <p className="text-[var(--lo1-stardust)]/60 text-xs text-center leading-relaxed">
           {t("disclaimer")}{" "}
           <Link
-            href="/donate"
+            href="/about"
             className="text-[var(--lo1-gold)]/70 hover:text-[var(--lo1-gold)] underline transition-colors"
           >
             {t("learnMore")}

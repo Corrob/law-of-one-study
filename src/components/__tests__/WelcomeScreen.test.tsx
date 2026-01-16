@@ -95,11 +95,11 @@ describe("WelcomeScreen", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render disclaimer link to donate page", () => {
+    it("should render disclaimer link to about page", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
       const learnMoreLink = screen.getByText("Learn more");
-      expect(learnMoreLink).toHaveAttribute("href", "/donate");
+      expect(learnMoreLink).toHaveAttribute("href", "/about");
     });
   });
 
