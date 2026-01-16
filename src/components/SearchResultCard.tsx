@@ -349,8 +349,26 @@ export default function SearchResultCard({
             {/* Show English original sentence if toggled */}
             {showEnglishOriginal && translatedSentence && result.sentence && (
               <div className="mt-3 pt-3 border-t border-[var(--lo1-celestial)]/20">
-                <p className="text-xs text-[var(--lo1-celestial)]/70 mb-1">{tQuote("englishOriginal")}</p>
-                <p className="text-[14px] leading-relaxed text-[var(--lo1-stardust)]">
+                {result.speaker && (
+                  <div className="mb-1">
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider ${
+                        result.speaker === "ra"
+                          ? "text-[var(--lo1-gold)]/70"
+                          : "text-[var(--lo1-celestial)]/70"
+                      }`}
+                    >
+                      {result.speaker === "ra" ? "Ra" : "Questioner"}
+                    </span>
+                  </div>
+                )}
+                <p
+                  className={`text-[14px] leading-relaxed opacity-80 ${
+                    result.speaker === "ra"
+                      ? "text-[var(--lo1-starlight)]"
+                      : "text-[var(--lo1-text-light)]"
+                  }`}
+                >
                   {result.sentence}
                 </p>
               </div>
@@ -407,10 +425,33 @@ export default function SearchResultCard({
             {/* Show English original if toggled */}
             {showEnglishOriginal && englishOriginalText && (
               <div className="mt-4 pt-4 border-t border-[var(--lo1-celestial)]/20">
-                <p className="text-xs text-[var(--lo1-celestial)]/70 mb-2">{tQuote("englishOriginal")}</p>
-                <p className="text-[14px] leading-relaxed text-[var(--lo1-stardust)] whitespace-pre-line">
-                  {formatWholeQuote(englishOriginalText)}
-                </p>
+                {parseRaMaterialText(formatWholeQuote(englishOriginalText)).map((segment, index) => (
+                  <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
+                    {segment.type === "questioner" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-celestial)]/70 uppercase tracking-wider">
+                          Questioner
+                        </span>
+                      </div>
+                    )}
+                    {segment.type === "ra" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-gold)]/70 uppercase tracking-wider">
+                          Ra
+                        </span>
+                      </div>
+                    )}
+                    <p
+                      className={`text-[14px] leading-relaxed whitespace-pre-line opacity-80 ${
+                        segment.type === "ra"
+                          ? "text-[var(--lo1-starlight)]"
+                          : "text-[var(--lo1-text-light)]"
+                      }`}
+                    >
+                      {highlightMatchedSentence(segment.content, result.sentence)}
+                    </p>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -477,10 +518,33 @@ export default function SearchResultCard({
             {/* Show English original if toggled in passage mode */}
             {showEnglishOriginal && passageEnglishOriginal && (
               <div className="mt-4 pt-4 border-t border-[var(--lo1-celestial)]/20">
-                <p className="text-xs text-[var(--lo1-celestial)]/70 mb-2">{tQuote("englishOriginal")}</p>
-                <p className="text-[14px] leading-relaxed text-[var(--lo1-stardust)] whitespace-pre-line">
-                  {formatWholeQuote(passageEnglishOriginal)}
-                </p>
+                {parseRaMaterialText(formatWholeQuote(passageEnglishOriginal)).map((segment, index) => (
+                  <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
+                    {segment.type === "questioner" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-celestial)]/70 uppercase tracking-wider">
+                          Questioner
+                        </span>
+                      </div>
+                    )}
+                    {segment.type === "ra" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-gold)]/70 uppercase tracking-wider">
+                          Ra
+                        </span>
+                      </div>
+                    )}
+                    <p
+                      className={`text-[14px] leading-relaxed whitespace-pre-line opacity-80 ${
+                        segment.type === "ra"
+                          ? "text-[var(--lo1-starlight)]"
+                          : "text-[var(--lo1-text-light)]"
+                      }`}
+                    >
+                      {segment.content}
+                    </p>
+                  </div>
+                ))}
               </div>
             )}
           </div>
