@@ -16,6 +16,9 @@ import { z } from "zod";
 export const AVAILABLE_LANGUAGES = ['en', 'es'] as const;
 export type AvailableLanguage = typeof AVAILABLE_LANGUAGES[number];
 
+// Default locale used throughout the codebase
+export const DEFAULT_LOCALE: AvailableLanguage = 'en';
+
 // Zod schema for language validation - use this for runtime validation
 export const AvailableLanguageSchema = z.enum(AVAILABLE_LANGUAGES);
 

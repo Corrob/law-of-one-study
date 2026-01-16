@@ -98,10 +98,10 @@ const PathCard = memo(function PathCard({
       className={`
         block rounded-xl transition-all overflow-hidden group
         ${isContinue
-          ? "bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 hover:border-[var(--lo1-gold)]/50"
-          : "bg-gradient-to-br from-[var(--lo1-space)]/80 to-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/20 hover:border-[var(--lo1-celestial)]/40"
+          ? "bg-[var(--lo1-card-bg)] border border-[var(--lo1-gold)]/30 hover:border-[var(--lo1-gold)]/50"
+          : "bg-[var(--lo1-card-bg)] border border-[var(--lo1-card-border)] hover:border-[var(--lo1-celestial)]/40"
         }
-        hover:shadow-lg hover:shadow-[var(--lo1-indigo)]/20
+        hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-[var(--lo1-indigo)]/20
       `}
     >
       {/* Subtle top accent bar */}
@@ -112,7 +112,7 @@ const PathCard = memo(function PathCard({
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3
             className={`
-              font-medium text-[var(--lo1-starlight)] group-hover:text-white transition-colors
+              font-medium text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors
               ${isContinue ? "text-lg" : "text-base"}
             `}
           >

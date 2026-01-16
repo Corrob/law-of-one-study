@@ -45,7 +45,7 @@ export default function Message({ message, onSearch, suggestions, isFirstAssista
           />
         ))
       ) : (
-        <MarkdownRenderer content={message.content} onSearch={onSearch} />
+        <MarkdownRenderer content={message.content} onSearch={onSearch} locale={language as AvailableLanguage} />
       )}
       {suggestions && suggestions.length > 0 && onSearch && (
         <SuggestionChips suggestions={suggestions} onSelect={onSearch} />
@@ -67,7 +67,7 @@ function SegmentRenderer({ segment, isFirst = false, onSearch, language }: Segme
 
     return (
       <div className={wrapperClass}>
-        <MarkdownRenderer content={segment.content} onSearch={onSearch} />
+        <MarkdownRenderer content={segment.content} onSearch={onSearch} locale={language as AvailableLanguage} />
       </div>
     );
   }

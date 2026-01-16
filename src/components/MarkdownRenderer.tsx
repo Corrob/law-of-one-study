@@ -7,13 +7,15 @@ import { parseCitationsInText } from "@/lib/citationParser";
 import ConceptPopover from "./ConceptPopover";
 import CitationLink from "./CitationLink";
 import { ReactNode } from "react";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 interface MarkdownRendererProps {
   content: string;
   onSearch?: (term: string) => void;
+  locale?: AvailableLanguage;
 }
 
-export default function MarkdownRenderer({ content, onSearch }: MarkdownRendererProps) {
+export default function MarkdownRenderer({ content, onSearch, locale = "en" }: MarkdownRendererProps) {
   // If no search handler, just render plain markdown
   if (!onSearch) {
     return (
@@ -30,10 +32,10 @@ export default function MarkdownRenderer({ content, onSearch }: MarkdownRenderer
   const componentsWithConcepts: Components = {
     ...markdownComponents,
     // Override text rendering to add concept linking
-    p: ({ children, ...props }) => <p className="mb-3 last:mb-0" {...props}>{processChildrenWithConcepts(children, onSearch)}</p>,
-    li: ({ children, ...props }) => <li {...props}>{processChildrenWithConcepts(children, onSearch)}</li>,
-    strong: ({ children, ...props }) => <strong className="font-semibold text-[var(--lo1-starlight)]" {...props}>{processChildrenWithConcepts(children, onSearch)}</strong>,
-    em: ({ children, ...props }) => <em className="italic" {...props}>{processChildrenWithConcepts(children, onSearch)}</em>,
+    p: ({ children, ...props }) => <p className="mb-3 last:mb-0" {...props}>{processChildrenWithConcepts(children, onSearch, locale)}</p>,
+    li: ({ children, ...props }) => <li {...props}>{processChildrenWithConcepts(children, onSearch, locale)}</li>,
+    strong: ({ children, ...props }) => <strong className="font-semibold text-[var(--lo1-starlight)]" {...props}>{processChildrenWithConcepts(children, onSearch, locale)}</strong>,
+    em: ({ children, ...props }) => <em className="italic" {...props}>{processChildrenWithConcepts(children, onSearch, locale)}</em>,
   };
 
   return (
@@ -47,15 +49,15 @@ export default function MarkdownRenderer({ content, onSearch }: MarkdownRenderer
 }
 
 // Process children nodes and add concept linking to text nodes
-function processChildrenWithConcepts(children: ReactNode, onSearch: (term: string) => void): ReactNode {
+function processChildrenWithConcepts(children: ReactNode, onSearch: (term: string) => void, locale: AvailableLanguage): ReactNode {
   if (typeof children === "string") {
-    return <LinkedText text={children} onSearch={onSearch} />;
+    return <LinkedText text={children} onSearch={onSearch} locale={locale} />;
   }
 
   if (Array.isArray(children)) {
     return children.map((child, i) => {
       if (typeof child === "string") {
-        return <LinkedText key={i} text={child} onSearch={onSearch} />;
+        return <LinkedText key={i} text={child} onSearch={onSearch} locale={locale} />;
       }
       return child;
     });
@@ -70,8 +72,8 @@ function isPunctuationOnly(text: string): boolean {
 }
 
 // Process text for concept linking (used for text segments after citation parsing)
-function processTextWithConcepts(text: string, onSearch: (term: string) => void, keyPrefix: string): ReactNode[] {
-  const segments = parseConceptsInText(text);
+function processTextWithConcepts(text: string, onSearch: (term: string) => void, keyPrefix: string, locale: AvailableLanguage): ReactNode[] {
+  const segments = parseConceptsInText(text, locale);
   const processedElements: ReactNode[] = [];
 
   for (let i = 0; i < segments.length; i++) {
@@ -112,7 +114,7 @@ function processTextWithConcepts(text: string, onSearch: (term: string) => void,
 
 // Extract citation and concept linking logic
 // First parses citations, then parses concepts within text segments
-function LinkedText({ text, onSearch }: { text: string; onSearch: (term: string) => void }) {
+function LinkedText({ text, onSearch, locale }: { text: string; onSearch: (term: string) => void; locale: AvailableLanguage }) {
   const citationSegments = parseCitationsInText(text);
   const processedElements: ReactNode[] = [];
 
@@ -131,7 +133,7 @@ function LinkedText({ text, onSearch }: { text: string; onSearch: (term: string)
       );
     } else {
       // Text segment - parse for concepts
-      const conceptElements = processTextWithConcepts(seg.content, onSearch, `text-${i}`);
+      const conceptElements = processTextWithConcepts(seg.content, onSearch, `text-${i}`, locale);
       processedElements.push(...conceptElements);
     }
   }

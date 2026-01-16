@@ -100,7 +100,7 @@ function ChunkRenderer({
     // After completion, render with concept linking and markdown
     return (
       <div className={wrapperClass}>
-        <MarkdownRenderer content={chunk.content} onSearch={onSearch} />
+        <MarkdownRenderer content={chunk.content} onSearch={onSearch} locale={language as AvailableLanguage} />
       </div>
     );
   }

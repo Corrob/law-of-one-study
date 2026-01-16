@@ -1,6 +1,6 @@
 import { dailyQuotes, type DailyQuote } from "@/data/daily-quotes";
 import { formatQuoteWithAttribution, getRaMaterialUrlFromReference } from "@/lib/quote-utils";
-import { type AvailableLanguage } from "@/lib/language-config";
+import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 
 /**
  * Localized daily quote with text in the requested language and locale-aware URL.
@@ -28,7 +28,7 @@ export function getDayOfYear(date: Date): number {
  * Quote changes at midnight in user's local timezone.
  * URL is generated dynamically based on locale.
  */
-export function getDailyQuote(locale: AvailableLanguage = "en"): LocalizedDailyQuote {
+export function getDailyQuote(locale: AvailableLanguage = DEFAULT_LOCALE): LocalizedDailyQuote {
   const today = new Date();
   const dayOfYear = getDayOfYear(today);
   const quote = dailyQuotes[dayOfYear % dailyQuotes.length];
@@ -43,7 +43,7 @@ export function getDailyQuote(locale: AvailableLanguage = "en"): LocalizedDailyQ
 /**
  * Get a specific day's quote in the specified locale (useful for testing or previewing).
  */
-export function getQuoteForDay(date: Date, locale: AvailableLanguage = "en"): LocalizedDailyQuote {
+export function getQuoteForDay(date: Date, locale: AvailableLanguage = DEFAULT_LOCALE): LocalizedDailyQuote {
   const dayOfYear = getDayOfYear(date);
   const quote = dailyQuotes[dayOfYear % dailyQuotes.length];
 

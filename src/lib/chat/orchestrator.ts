@@ -28,7 +28,7 @@ import { streamOffTopicResponse } from "./off-topic";
 import { performSearch } from "./search";
 import type { SSESender } from "./sse-encoder";
 
-import { LANGUAGE_NAMES_FOR_PROMPTS, isLanguageAvailable } from "@/lib/language-config";
+import { LANGUAGE_NAMES_FOR_PROMPTS, isLanguageAvailable, type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 
 /**
  * Parameters for executing a chat query.
@@ -68,7 +68,7 @@ function buildLLMMessages(
   quotesContext: string,
   quotesUsed: string[],
   promptContext: string,
-  targetLanguage: string = 'en'
+  targetLanguage: string = DEFAULT_LOCALE
 ): Array<{ role: "system" | "user" | "assistant"; content: string }> {
   const quoteExclusionBlock =
     quotesUsed.length > 0
@@ -78,7 +78,7 @@ function buildLLMMessages(
   const conceptContextBlock = promptContext ? `\n\n${promptContext}` : "";
 
   // Add language instruction for non-English responses
-  const languageInstruction = targetLanguage !== 'en' && isLanguageAvailable(targetLanguage)
+  const languageInstruction = targetLanguage !== DEFAULT_LOCALE && isLanguageAvailable(targetLanguage)
     ? `\n\nIMPORTANT: Respond in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. The user prefers ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Write your explanations, analysis, and connecting text in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Quote content will be provided in the appropriate language.`
     : '';
 
@@ -99,9 +99,12 @@ function buildLLMMessages(
 
 /**
  * Perform query augmentation with concept detection.
+ * @param message - The user's message
+ * @param targetLanguage - Language for concept detection (defaults to 'en')
  */
 async function performAugmentation(
-  message: string
+  message: string,
+  targetLanguage: string = DEFAULT_LOCALE
 ): Promise<AugmentationResult> {
   // Check for explicit session/question reference
   const sessionRef = parseSessionQuestionReference(message);
@@ -109,8 +112,9 @@ async function performAugmentation(
     debug.log("[Orchestrator] Detected session/question reference:", sessionRef);
   }
 
-  // Hybrid concept detection
-  const conceptResult = await detectConcepts(message);
+  // Hybrid concept detection - pass locale for regex matching
+  const locale = (isLanguageAvailable(targetLanguage) ? targetLanguage : DEFAULT_LOCALE) as AvailableLanguage;
+  const conceptResult = await detectConcepts(message, locale);
   const { detectedConcepts, searchTerms, promptContext } = conceptResult;
 
   // Query augmentation with concept context
@@ -234,7 +238,7 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
     const { turnCount, quotesUsed } = buildConversationContext(history);
 
     // Perform augmentation (concept detection + query expansion)
-    const augmentation = await performAugmentation(message);
+    const augmentation = await performAugmentation(message, targetLanguage);
     const { intent, augmentedQuery, confidence, sessionRef, detectedConcepts, promptContext } =
       augmentation;
 

@@ -5,6 +5,7 @@
 
 import type { StudyPath, StudyPathMeta } from "@/lib/schemas/study-paths";
 import { parseStudyPath, extractPathMeta } from "@/lib/schemas/study-paths";
+import { DEFAULT_LOCALE } from "@/lib/language-config";
 
 // Import English study path data (default/fallback)
 import densitiesDataEn from "@/data/study-paths/densities.json";
@@ -38,9 +39,9 @@ const cachedPathsByLanguage: Record<string, StudyPath[]> = {};
  * Get all validated study paths for a specific language.
  * Falls back to English if the requested language is not available.
  */
-export function getAllStudyPaths(language: string = "en"): StudyPath[] {
+export function getAllStudyPaths(language: string = DEFAULT_LOCALE): StudyPath[] {
   // Normalize language and fallback to English if not available
-  const lang = STUDY_PATHS_BY_LANGUAGE[language] ? language : "en";
+  const lang = STUDY_PATHS_BY_LANGUAGE[language] ? language : DEFAULT_LOCALE;
 
   // Return cached paths if available
   if (cachedPathsByLanguage[lang]) {
@@ -66,14 +67,14 @@ export function getAllStudyPaths(language: string = "en"): StudyPath[] {
 /**
  * Get metadata for all study paths (for list display).
  */
-export function getAllPathMetas(language: string = "en"): StudyPathMeta[] {
+export function getAllPathMetas(language: string = DEFAULT_LOCALE): StudyPathMeta[] {
   return getAllStudyPaths(language).map(extractPathMeta);
 }
 
 /**
  * Get a specific study path by ID.
  */
-export function getStudyPath(pathId: string, language: string = "en"): StudyPath | null {
+export function getStudyPath(pathId: string, language: string = DEFAULT_LOCALE): StudyPath | null {
   const paths = getAllStudyPaths(language);
   return paths.find((p) => p.id === pathId) || null;
 }
@@ -84,7 +85,7 @@ export function getStudyPath(pathId: string, language: string = "en"): StudyPath
 export function getLesson(
   pathId: string,
   lessonId: string,
-  language: string = "en"
+  language: string = DEFAULT_LOCALE
 ): { path: StudyPath; lesson: StudyPath["lessons"][number]; lessonIndex: number } | null {
   const path = getStudyPath(pathId, language);
   if (!path) return null;

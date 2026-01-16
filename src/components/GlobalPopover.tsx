@@ -18,6 +18,7 @@ export default function GlobalPopover() {
   const locale = useLocale() as AvailableLanguage;
   const tAi = useTranslations("aiCompanion");
   const tConcept = useTranslations("concept");
+  const tCategories = useTranslations("categories");
   const { openPopover, close, setHoveringPopover } = usePopoverContext();
   const [style, setStyle] = useState<React.CSSProperties>({});
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -156,7 +157,7 @@ export default function GlobalPopover() {
           <span className="concept-popover-header">
             <span className="concept-popover-term">{term}</span>
             {concept?.category && (
-              <span className="concept-popover-category">{concept.category}</span>
+              <span className="concept-popover-category">{tCategories(concept.category)}</span>
             )}
           </span>
           {definition && <span className="concept-popover-definition">{definition}</span>}

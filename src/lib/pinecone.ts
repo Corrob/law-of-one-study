@@ -8,7 +8,7 @@ import {
   parseSentenceMetadata,
   type SentenceSearchResult,
 } from "@/lib/schemas";
-import { type AvailableLanguage } from "./language-config";
+import { type AvailableLanguage, DEFAULT_LOCALE } from "./language-config";
 
 let pineconeClient: Pinecone | null = null;
 
@@ -36,7 +36,7 @@ export async function searchRaMaterial(
   embedding: number[],
   options: SearchOptions = {}
 ): Promise<PineconeMetadata[]> {
-  const { topK = 10, sessionFilter, language = "en" } = options;
+  const { topK = 10, sessionFilter, language = DEFAULT_LOCALE } = options;
   const pinecone = getPineconeClient();
   const index = pinecone.index(INDEX_NAME);
 

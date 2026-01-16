@@ -1,10 +1,13 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { titleVariants, fadeWithDelay, staggerContainer, staggerChild } from "@/lib/animations";
 import type { StudyPath } from "@/lib/schemas/study-paths";
+import { findConceptById } from "@/lib/concept-graph";
+import { getLocalizedText } from "@/lib/types-graph";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 interface PathIntroViewProps {
   /** The study path to display */
@@ -37,7 +40,18 @@ const PathIntroView = memo(function PathIntroView({
   path,
   onStart,
 }: PathIntroViewProps) {
+  const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("studyPaths");
+
+  // Get localized concept term from concept graph (memoized to avoid recreating on every render)
+  const getLocalizedConceptTerm = useCallback((conceptId: string): string => {
+    const concept = findConceptById(conceptId);
+    if (concept) {
+      return getLocalizedText(concept.term, locale);
+    }
+    // Fallback to the original ID if not found in graph
+    return conceptId;
+  }, [locale]);
 
   return (
     <div className="max-w-2xl mx-auto py-8">
@@ -137,12 +151,12 @@ const PathIntroView = memo(function PathIntroView({
             {t("keyConcepts")}
           </h2>
           <div className="flex flex-wrap justify-center gap-2">
-            {path.concepts.map((concept) => (
+            {path.concepts.map((conceptId) => (
               <span
-                key={concept}
+                key={conceptId}
                 className="px-3 py-1 rounded-full text-sm bg-[var(--lo1-indigo)]/40 text-[var(--lo1-stardust)] border border-[var(--lo1-celestial)]/10"
               >
-                {concept}
+                {getLocalizedConceptTerm(conceptId)}
               </span>
             ))}
           </div>

@@ -1,7 +1,7 @@
 // Utility functions for parsing and filtering Ra Material quotes
 
 import { debug } from "@/lib/debug";
-import { type AvailableLanguage } from "./language-config";
+import { type AvailableLanguage, DEFAULT_LOCALE } from "./language-config";
 
 /**
  * Generate a URL to the Ra Material on L/L Research website.
@@ -19,7 +19,7 @@ import { type AvailableLanguage } from "./language-config";
 export function getRaMaterialUrl(
   session: number | string,
   question?: number | string,
-  locale: AvailableLanguage = "en"
+  locale: AvailableLanguage = DEFAULT_LOCALE
 ): string {
   const localePath = locale === "en" ? "" : `/${locale}`;
   const questionHash = question ? `#${question}` : "";
@@ -35,7 +35,7 @@ export function getRaMaterialUrl(
  */
 export function getRaMaterialUrlFromReference(
   reference: string,
-  locale: AvailableLanguage = "en"
+  locale: AvailableLanguage = DEFAULT_LOCALE
 ): string {
   const match = reference.match(/(\d+)\.(\d+)/);
   if (!match) {
@@ -150,13 +150,13 @@ export type SupportedLanguage = import('./language-config').AvailableLanguage;
 // Language defaults to 'en' for backwards compatibility
 export async function fetchFullQuote(
   reference: string,
-  language: AvailableLanguage = 'en'
+  language: AvailableLanguage = DEFAULT_LOCALE
 ): Promise<string | null> {
   // Validate language - only allow known languages
   const validLanguages = ['en', 'es'] as const;
   if (!validLanguages.includes(language as typeof validLanguages[number])) {
     debug.log("[fetchFullQuote] Invalid language, defaulting to English:", language);
-    language = 'en';
+    language = DEFAULT_LOCALE;
   }
 
   // Extract session number from reference (e.g., "49.8" -> "49" or "Ra 49.8" -> "49")
@@ -181,9 +181,9 @@ export async function fetchFullQuote(
     const response = await fetch(path);
     if (!response.ok) {
       // If translation not available, fall back to English
-      if (language !== 'en') {
+      if (language !== DEFAULT_LOCALE) {
         debug.log("[fetchFullQuote] Translation not found, falling back to English");
-        return fetchFullQuote(reference, 'en');
+        return fetchFullQuote(reference, DEFAULT_LOCALE);
       }
       debug.error("[fetchFullQuote] HTTP error:", response.status, response.statusText);
       return null;
@@ -224,15 +224,15 @@ export async function fetchBilingualQuote(
   reference: string,
   language: AvailableLanguage
 ): Promise<{ text: string; originalText?: string } | null> {
-  if (language === 'en') {
-    const text = await fetchFullQuote(reference, 'en');
+  if (language === DEFAULT_LOCALE) {
+    const text = await fetchFullQuote(reference, DEFAULT_LOCALE);
     return text ? { text } : null;
   }
 
   // Fetch both translations in parallel
   const [translatedText, englishText] = await Promise.all([
     fetchFullQuote(reference, language),
-    fetchFullQuote(reference, 'en'),
+    fetchFullQuote(reference, DEFAULT_LOCALE),
   ]);
 
   if (!translatedText && !englishText) {

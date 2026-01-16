@@ -7,7 +7,7 @@ import type {
 } from "./types-graph";
 import { getLocalizedText, getLocalizedAliases } from "./types-graph";
 import { validateConceptGraph } from "./schemas/concept-graph";
-import { type AvailableLanguage } from "./language-config";
+import { type AvailableLanguage, DEFAULT_LOCALE } from "./language-config";
 
 // Import the concept graph data
 import conceptGraphData from "@/data/concept-graph.json";
@@ -17,6 +17,23 @@ const conceptGraph: ConceptGraph = validateConceptGraph(conceptGraphData);
 
 // Cache for compiled regex patterns per locale
 const _conceptRegexCache: Map<AvailableLanguage, RegExp> = new Map();
+
+/**
+ * Get the canonical term for a matched text (for use in search/display)
+ * @param matchedText - The text that was matched in content
+ * @param locale - Language to search in (defaults to 'en')
+ * @returns The canonical term in the requested locale, or the matched text if not found
+ */
+export function getCanonicalTerm(
+  matchedText: string,
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): string {
+  const concept = findConceptByTerm(matchedText, locale);
+  if (concept) {
+    return getLocalizedText(concept.term, locale);
+  }
+  return matchedText;
+}
 
 /**
  * Get the full concept graph
@@ -39,7 +56,7 @@ export function findConceptById(id: string): GraphConcept | undefined {
  */
 export function findConceptByTerm(
   term: string,
-  locale: AvailableLanguage = "en"
+  locale: AvailableLanguage = DEFAULT_LOCALE
 ): GraphConcept | undefined {
   const lower = term.toLowerCase();
 
@@ -61,7 +78,7 @@ export function findConceptByTerm(
  * Build regex pattern for matching all concepts in a given locale
  * @param locale - Language to build the regex for
  */
-function buildConceptRegex(locale: AvailableLanguage = "en"): RegExp {
+export function buildConceptRegex(locale: AvailableLanguage = DEFAULT_LOCALE): RegExp {
   const cached = _conceptRegexCache.get(locale);
   if (cached) return cached;
 
@@ -100,7 +117,7 @@ function buildConceptRegex(locale: AvailableLanguage = "en"): RegExp {
  */
 export function identifyConcepts(
   text: string,
-  locale: AvailableLanguage = "en"
+  locale: AvailableLanguage = DEFAULT_LOCALE
 ): GraphConcept[] {
   const regex = buildConceptRegex(locale);
   const matches = text.matchAll(regex);
@@ -221,7 +238,7 @@ export function buildSearchExpansion(concepts: GraphConcept[]): string[] {
  */
 export function buildConceptContextForPrompt(
   concepts: GraphConcept[],
-  locale: AvailableLanguage = "en"
+  locale: AvailableLanguage = DEFAULT_LOCALE
 ): string {
   if (concepts.length === 0) return "";
 

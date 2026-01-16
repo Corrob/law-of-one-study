@@ -10,6 +10,7 @@ import {
   parseSuggestionsEventData,
   parseErrorEventData,
 } from "@/lib/schemas/sse-events";
+import { DEFAULT_LOCALE } from "@/lib/language-config";
 
 /** Maximum number of messages to keep in memory (prevents unbounded growth) */
 const MAX_CONVERSATION_HISTORY = 30;
@@ -68,7 +69,7 @@ export function useChatStream(
   const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const sendMessage = useCallback(
-    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = 'en') => {
+    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = DEFAULT_LOCALE) => {
       const requestStartTime = Date.now();
 
       // Add user message

@@ -329,6 +329,8 @@
     "completeAndContinue": "Complete & Continue",
     "completePath": "Complete Path",
     "pathComplete": "Path Complete",
+    "pathCompleteTitle": "Path Complete!",
+    "exploreMorePaths": "Explore More Paths",
     "minutes": "{count} min",
     "minRead": "~{count} min read",
     "lessons": "{count} lessons",

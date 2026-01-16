@@ -25,6 +25,8 @@
   /* Card backgrounds for dark theme */
   --lo1-card: rgba(26, 31, 78, 0.6);
   --lo1-card-solid: #1a1f4e;
+  --lo1-card-bg: rgba(26, 31, 78, 0.4);
+  --lo1-card-border: rgba(74, 88, 153, 0.2);
   --lo1-user-message: #2a3366;
 
   /* Semantic */
@@ -89,6 +91,8 @@
   /* Card backgrounds for light theme */
   --lo1-card: rgba(245, 243, 238, 0.9);
   --lo1-card-solid: #f5f3ee;
+  --lo1-card-bg: #ffffff;
+  --lo1-card-border: rgba(0, 0, 0, 0.08);
   --lo1-user-message: #e8e4d9;
 
   /* Starter button specific */
