@@ -68,12 +68,14 @@ export default function ExplorePage() {
                 onExpandSubcluster={toggleSubcluster}
                 selectedConceptId={selectedConcept?.id}
                 expandedCategories={expandedCategories}
+                categoriesTitle={t("explorePage.categoriesTitle")}
+                getCategoryLabel={getCategoryLabel}
               />
 
               {/* Stats overlay - only show when concepts visible */}
               {stats.visibleConcepts > 0 && (
                 <div className="absolute top-4 left-4 text-xs text-[var(--lo1-stardust)] bg-[var(--lo1-space)]/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
-                  {stats.visibleConcepts} concepts &middot; {stats.totalLinks} connections
+                  {t("explorePage.stats", { concepts: stats.visibleConcepts, connections: stats.totalLinks })}
                 </div>
               )}
 
@@ -87,10 +89,10 @@ export default function ExplorePage() {
                       </svg>
                     </div>
                     <p className="text-[var(--lo1-starlight)] font-medium mb-2">
-                      Tap a category to explore
+                      {t("explorePage.tapCategory")}
                     </p>
                     <p className="text-sm text-[var(--lo1-stardust)]/70">
-                      Each circle contains related concepts from the Ra Material
+                      {t("explorePage.categoryHint")}
                     </p>
                   </div>
                 </div>

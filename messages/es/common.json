@@ -85,6 +85,12 @@
       "description": "Busca cualquier cita"
     }
   },
+  "explorePage": {
+    "tapCategory": "Toca una categoría para explorar",
+    "categoryHint": "Cada círculo contiene conceptos relacionados del Material de Ra",
+    "stats": "{concepts} conceptos · {connections} conexiones",
+    "categoriesTitle": "Categorías"
+  },
   "thinkingMode": {
     "label": "Modo pensamiento",
     "description": "Más lento, más reflexivo",

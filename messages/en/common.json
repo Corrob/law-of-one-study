@@ -85,6 +85,12 @@
       "description": "Search for any quote"
     }
   },
+  "explorePage": {
+    "tapCategory": "Tap a category to explore",
+    "categoryHint": "Each circle contains related concepts from the Ra Material",
+    "stats": "{concepts} concepts · {connections} connections",
+    "categoriesTitle": "Categories"
+  },
   "thinkingMode": {
     "label": "Thinking mode",
     "description": "Slower, more thoughtful",
