@@ -127,15 +127,16 @@ describe("concept-processing", () => {
       const concepts = [
         {
           id: "catalyst",
-          term: "catalyst",
-          definition: "Experience",
+          term: { en: "catalyst", es: "catalizador" },
+          definition: { en: "Experience", es: "Experiencia" },
           category: "core",
-          aliases: ["trigger"],
+          aliases: { en: ["trigger"], es: ["disparador"] },
           related: ["polarity"],
         },
       ];
 
-      const result = formatConceptsForMeta(concepts);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = formatConceptsForMeta(concepts as any);
 
       expect(result).toEqual([
         {

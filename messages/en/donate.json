@@ -1,0 +1,28 @@
+{
+  "title": "Support This Project",
+  "subtitle": "This tool is free for everyone, open source, and community-funded. Your support helps keep it that way.",
+  "buyMeACoffee": {
+    "title": "Buy Me a Coffee",
+    "description": "Support the project with a one-time or recurring contribution",
+    "linkText": "Visit buymeacoffee.com/lawofone.study"
+  },
+  "whatYourSupportEnables": {
+    "title": "What Your Support Enables",
+    "hosting": {
+      "title": "Hosting",
+      "description": "Server costs, AI API usage, database hosting, and infrastructure to keep the tool running 24/7."
+    },
+    "development": {
+      "title": "Development",
+      "description": "Continued development of new features, improvements, and bug fixes."
+    },
+    "freeAccess": {
+      "title": "Free Access",
+      "description": "Keeping this tool free and accessible for all seekers, without ads or paywalls."
+    }
+  },
+  "footerQuote": {
+    "text": "In truth there is no right or wrong. There is no polarity for all will be, as you would say, reconciled at some point in your dance through the mind/body/spirit complex which you amuse yourself by distorting in various ways at this time. This distortion is not in any case necessary. It is chosen by each of you as an alternative to understanding the complete unity of thought which binds all things.",
+    "attribution": "Ra, Session 1.7"
+  }
+}

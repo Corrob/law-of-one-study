@@ -12,6 +12,7 @@ import {
   getCategoryInfo,
 } from "../concept-graph";
 import type { GraphConcept, ConceptCategory } from "../types-graph";
+import { getLocalizedText, getLocalizedAliases } from "../types-graph";
 
 describe("concept-graph", () => {
   describe("getConceptGraph", () => {
@@ -68,19 +69,21 @@ describe("concept-graph", () => {
     it("should find concept by exact term", () => {
       const concepts = getAllConcepts();
       const firstConcept = concepts[0];
+      const term = getLocalizedText(firstConcept.term, "en");
 
-      const found = findConceptByTerm(firstConcept.term);
+      const found = findConceptByTerm(term);
 
       expect(found).toBeDefined();
-      expect(found?.term).toBe(firstConcept.term);
+      expect(found?.id).toBe(firstConcept.id);
     });
 
     it("should find concept by term case-insensitively", () => {
       const concepts = getAllConcepts();
       const firstConcept = concepts[0];
+      const term = getLocalizedText(firstConcept.term, "en");
 
-      const foundLower = findConceptByTerm(firstConcept.term.toLowerCase());
-      const foundUpper = findConceptByTerm(firstConcept.term.toUpperCase());
+      const foundLower = findConceptByTerm(term.toLowerCase());
+      const foundUpper = findConceptByTerm(term.toUpperCase());
 
       expect(foundLower).toBeDefined();
       expect(foundUpper).toBeDefined();
@@ -88,10 +91,13 @@ describe("concept-graph", () => {
 
     it("should find concept by alias", () => {
       const concepts = getAllConcepts();
-      const conceptWithAlias = concepts.find((c) => c.aliases.length > 0);
+      const conceptWithAlias = concepts.find(
+        (c) => getLocalizedAliases(c.aliases, "en").length > 0
+      );
 
       if (conceptWithAlias) {
-        const found = findConceptByTerm(conceptWithAlias.aliases[0]);
+        const aliases = getLocalizedAliases(conceptWithAlias.aliases, "en");
+        const found = findConceptByTerm(aliases[0]);
         expect(found).toBeDefined();
         expect(found?.id).toBe(conceptWithAlias.id);
       }
@@ -108,7 +114,7 @@ describe("concept-graph", () => {
     it("should identify concepts in text", () => {
       const concepts = getAllConcepts();
       // Use a real term from the graph
-      const testTerm = concepts[0].term;
+      const testTerm = getLocalizedText(concepts[0].term, "en");
       const text = `This text discusses ${testTerm} in detail.`;
 
       const found = identifyConcepts(text);
@@ -118,7 +124,7 @@ describe("concept-graph", () => {
 
     it("should return unique concepts only", () => {
       const concepts = getAllConcepts();
-      const testTerm = concepts[0].term;
+      const testTerm = getLocalizedText(concepts[0].term, "en");
       const text = `${testTerm} and ${testTerm} again and ${testTerm} once more.`;
 
       const found = identifyConcepts(text);
@@ -282,7 +288,7 @@ describe("concept-graph", () => {
       const context = buildConceptContextForPrompt(concepts);
 
       expect(context).toContain("CONCEPT CONTEXT:");
-      expect(context).toContain(concepts[0].term);
+      expect(context).toContain(getLocalizedText(concepts[0].term, "en"));
     });
 
     it("should limit to 5 concepts", () => {

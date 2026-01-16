@@ -5,7 +5,9 @@ import type {
   GraphConcept,
   ConceptCategory,
 } from "./types-graph";
+import { getLocalizedText, getLocalizedAliases } from "./types-graph";
 import { validateConceptGraph } from "./schemas/concept-graph";
+import { type AvailableLanguage, DEFAULT_LOCALE } from "./language-config";
 
 // Import the concept graph data
 import conceptGraphData from "@/data/concept-graph.json";
@@ -13,8 +15,25 @@ import conceptGraphData from "@/data/concept-graph.json";
 // Validate and type the graph at module load time
 const conceptGraph: ConceptGraph = validateConceptGraph(conceptGraphData);
 
-// Cache for the compiled regex pattern
-let _conceptRegex: RegExp | null = null;
+// Cache for compiled regex patterns per locale
+const _conceptRegexCache: Map<AvailableLanguage, RegExp> = new Map();
+
+/**
+ * Get the canonical term for a matched text (for use in search/display)
+ * @param matchedText - The text that was matched in content
+ * @param locale - Language to search in (defaults to 'en')
+ * @returns The canonical term in the requested locale, or the matched text if not found
+ */
+export function getCanonicalTerm(
+  matchedText: string,
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): string {
+  const concept = findConceptByTerm(matchedText, locale);
+  if (concept) {
+    return getLocalizedText(concept.term, locale);
+  }
+  return matchedText;
+}
 
 /**
  * Get the full concept graph
@@ -32,15 +51,20 @@ export function findConceptById(id: string): GraphConcept | undefined {
 
 /**
  * Find a concept by term or alias (case-insensitive)
+ * @param term - The term to search for
+ * @param locale - Language to search in (defaults to 'en')
  */
-export function findConceptByTerm(term: string): GraphConcept | undefined {
+export function findConceptByTerm(
+  term: string,
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): GraphConcept | undefined {
   const lower = term.toLowerCase();
 
   for (const concept of Object.values(conceptGraph.concepts)) {
-    if (concept.term.toLowerCase() === lower) {
+    if (getLocalizedText(concept.term, locale).toLowerCase() === lower) {
       return concept;
     }
-    for (const alias of concept.aliases) {
+    for (const alias of getLocalizedAliases(concept.aliases, locale)) {
       if (alias.toLowerCase() === lower) {
         return concept;
       }
@@ -51,16 +75,19 @@ export function findConceptByTerm(term: string): GraphConcept | undefined {
 }
 
 /**
- * Build regex pattern for matching all concepts
+ * Build regex pattern for matching all concepts in a given locale
+ * @param locale - Language to build the regex for
  */
-function buildConceptRegex(): RegExp {
-  if (_conceptRegex) return _conceptRegex;
+export function buildConceptRegex(locale: AvailableLanguage = DEFAULT_LOCALE): RegExp {
+  const cached = _conceptRegexCache.get(locale);
+  if (cached) return cached;
 
   const allTerms: string[] = [];
 
   for (const concept of Object.values(conceptGraph.concepts)) {
-    if (concept.term) allTerms.push(concept.term);
-    allTerms.push(...concept.aliases);
+    const term = getLocalizedText(concept.term, locale);
+    if (term) allTerms.push(term);
+    allTerms.push(...getLocalizedAliases(concept.aliases, locale));
   }
 
   // Remove duplicates and empty strings
@@ -76,23 +103,29 @@ function buildConceptRegex(): RegExp {
 
   // Build pattern with word boundaries
   const pattern = `\\b(${escapedTerms.join("|")})\\b`;
-  _conceptRegex = new RegExp(pattern, "gi");
+  const regex = new RegExp(pattern, "gi");
 
-  return _conceptRegex;
+  _conceptRegexCache.set(locale, regex);
+  return regex;
 }
 
 /**
  * Identify concepts mentioned in text
  * Returns unique concepts found, in order of first appearance
+ * @param text - The text to search for concepts
+ * @param locale - Language to search in (defaults to 'en')
  */
-export function identifyConcepts(text: string): GraphConcept[] {
-  const regex = buildConceptRegex();
+export function identifyConcepts(
+  text: string,
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): GraphConcept[] {
+  const regex = buildConceptRegex(locale);
   const matches = text.matchAll(regex);
   const foundIds = new Set<string>();
   const result: GraphConcept[] = [];
 
   for (const match of matches) {
-    const concept = findConceptByTerm(match[1]);
+    const concept = findConceptByTerm(match[1], locale);
     if (concept && !foundIds.has(concept.id)) {
       foundIds.add(concept.id);
       result.push(concept);
@@ -174,22 +207,23 @@ export function getConceptsBySession(sessionNumber: number): GraphConcept[] {
 
 /**
  * Build augmentation context from identified concepts
- * Returns search terms to expand the query
+ * Returns search terms to expand the query.
+ * Always uses English terms since embeddings are in English.
  */
 export function buildSearchExpansion(concepts: GraphConcept[]): string[] {
   const terms = new Set<string>();
 
   for (const concept of concepts) {
-    // Add the concept's search terms
+    // Add the concept's search terms (always English for embeddings)
     for (const term of concept.searchTerms) {
       terms.add(term);
     }
 
-    // Add related concept terms (one level)
+    // Add related concept terms (one level) - use English for search
     const related = getRelatedConcepts([concept.id], 1);
     for (const rel of related.slice(0, 3)) {
       // Limit to top 3 related
-      terms.add(rel.term);
+      terms.add(getLocalizedText(rel.term, "en"));
     }
   }
 
@@ -199,9 +233,12 @@ export function buildSearchExpansion(concepts: GraphConcept[]): string[] {
 /**
  * Build concept context for LLM prompt injection
  * Provides relationship awareness to the model
+ * @param concepts - Concepts to include in context
+ * @param locale - Language for localized content (defaults to 'en')
  */
 export function buildConceptContextForPrompt(
-  concepts: GraphConcept[]
+  concepts: GraphConcept[],
+  locale: AvailableLanguage = DEFAULT_LOCALE
 ): string {
   if (concepts.length === 0) return "";
 
@@ -209,15 +246,19 @@ export function buildConceptContextForPrompt(
 
   for (const concept of concepts.slice(0, 5)) {
     // Limit to top 5 concepts
-    lines.push(`\n"${concept.term}" (${concept.category}):`);
-    lines.push(`  Definition: ${concept.definition}`);
+    const term = getLocalizedText(concept.term, locale);
+    const definition = getLocalizedText(concept.definition, locale);
+    const aliases = getLocalizedAliases(concept.aliases, locale);
+
+    lines.push(`\n"${term}" (${concept.category}):`);
+    lines.push(`  Definition: ${definition}`);
 
     // Show alternative names (especially important for archetypes with tarot names)
-    if (concept.aliases.length > 0) {
+    if (aliases.length > 0) {
       // Filter to show meaningful aliases (skip lowercase duplicates of term)
-      const meaningfulAliases = concept.aliases.filter(
+      const meaningfulAliases = aliases.filter(
         (alias) =>
-          alias.toLowerCase() !== concept.term.toLowerCase() &&
+          alias.toLowerCase() !== term.toLowerCase() &&
           !alias.match(/^(card|arcanum|archetype) \d+$/i)
       );
       if (meaningfulAliases.length > 0) {

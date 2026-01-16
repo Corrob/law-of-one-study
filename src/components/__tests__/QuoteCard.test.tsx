@@ -8,6 +8,29 @@ jest.mock("@/lib/analytics", () => ({
   analytics: {
     quoteDisplayed: jest.fn(),
     quoteLinkClicked: jest.fn(),
+    quoteCopied: jest.fn(),
+  },
+}));
+
+// Mock LanguageContext
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: jest.fn(() => ({
+    language: "en",
+    setLanguage: jest.fn(),
+  })),
+}));
+
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      questioner: "Questioner",
+      ra: "Ra",
+      collapse: "Collapse",
+      expand: "Show more",
+      loading: "Loading...",
+    };
+    return translations[key] || key;
   },
 }));
 
@@ -15,7 +38,7 @@ describe("QuoteCard", () => {
   const mockQuote: Quote = {
     text: "Questioner: What is love? Ra: I am Ra. Love is the first distortion.",
     reference: "Ra 50.12",
-    url: "https://lawofone.info/s/50#12",
+    url: "https://www.llresearch.org/channeling/ra-contact/50#12",
     metadata: {},
   };
 

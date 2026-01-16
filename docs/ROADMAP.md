@@ -30,12 +30,14 @@
 - Dark and light theme support
 - Onboarding modal for new users
 - About page
+- **Spanish language support** — Full UI and Ra Material translations with bilingual quotes
 
 **Phase 1 Features (Shipped):**
 - Semantic Search — search by sentence or passage across all 106 sessions
 - Concept Explorer — interactive graph of 100+ concepts with relationships
 - Guided Study Paths — curated lessons with quizzes and reflections
 - Daily Quote — rotating wisdom on the home page
+- Multilingual Support — Spanish (`/es/`) with bilingual quote display
 
 ---
 

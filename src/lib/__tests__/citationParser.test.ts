@@ -8,15 +8,15 @@ import {
 describe("citationParser", () => {
   describe("buildCitationUrl", () => {
     it("should build correct URL from session and question", () => {
-      expect(buildCitationUrl(50, 7)).toBe("https://lawofone.info/s/50#7");
+      expect(buildCitationUrl(50, 7)).toBe("https://www.llresearch.org/channeling/ra-contact/50#7");
     });
 
     it("should handle single-digit session and question", () => {
-      expect(buildCitationUrl(1, 1)).toBe("https://lawofone.info/s/1#1");
+      expect(buildCitationUrl(1, 1)).toBe("https://www.llresearch.org/channeling/ra-contact/1#1");
     });
 
     it("should handle three-digit session", () => {
-      expect(buildCitationUrl(106, 23)).toBe("https://lawofone.info/s/106#23");
+      expect(buildCitationUrl(106, 23)).toBe("https://www.llresearch.org/channeling/ra-contact/106#23");
     });
   });
 
@@ -71,7 +71,7 @@ describe("citationParser", () => {
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
-        url: "https://lawofone.info/s/50#7",
+        url: "https://www.llresearch.org/channeling/ra-contact/50#7",
       });
       expect(result[2]).toEqual({
         type: "text",
@@ -92,14 +92,14 @@ describe("citationParser", () => {
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
-        url: "https://lawofone.info/s/50#7",
+        url: "https://www.llresearch.org/channeling/ra-contact/50#7",
       });
       expect(citations[1]).toEqual({
         type: "citation",
         session: 51,
         question: 3,
         displayText: "(Ra 51.3)",
-        url: "https://lawofone.info/s/51#3",
+        url: "https://www.llresearch.org/channeling/ra-contact/51#3",
       });
     });
 
@@ -113,7 +113,7 @@ describe("citationParser", () => {
         session: 1,
         question: 1,
         displayText: "(Ra 1.1)",
-        url: "https://lawofone.info/s/1#1",
+        url: "https://www.llresearch.org/channeling/ra-contact/1#1",
       });
       expect(result[1]).toEqual({
         type: "text",
@@ -135,7 +135,7 @@ describe("citationParser", () => {
         session: 83,
         question: 17,
         displayText: "(Ra 83.17)",
-        url: "https://lawofone.info/s/83#17",
+        url: "https://www.llresearch.org/channeling/ra-contact/83#17",
       });
     });
 
@@ -150,14 +150,14 @@ describe("citationParser", () => {
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
-        url: "https://lawofone.info/s/50#7",
+        url: "https://www.llresearch.org/channeling/ra-contact/50#7",
       });
       expect(result[2]).toEqual({
         type: "citation",
         session: 51,
         question: 3,
         displayText: "(Ra 51.3)",
-        url: "https://lawofone.info/s/51#3",
+        url: "https://www.llresearch.org/channeling/ra-contact/51#3",
       });
       expect(result[3]).toEqual({ type: "text", content: " for more." });
     });
@@ -172,7 +172,7 @@ describe("citationParser", () => {
         session: 106,
         question: 23,
         displayText: "(Ra 106.23)",
-        url: "https://lawofone.info/s/106#23",
+        url: "https://www.llresearch.org/channeling/ra-contact/106#23",
       });
     });
 
@@ -191,7 +191,7 @@ describe("citationParser", () => {
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
-        url: "https://lawofone.info/s/50#7",
+        url: "https://www.llresearch.org/channeling/ra-contact/50#7",
       });
     });
 

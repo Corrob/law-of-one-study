@@ -26,6 +26,10 @@ interface ConceptGraphProps {
   onExpandSubcluster: (subcategory: ArchetypeSubcategory) => void;
   selectedConceptId?: string;
   expandedCategories: Set<ConceptCategory>;
+  /** Translated title for the category legend */
+  categoriesTitle?: string;
+  /** Function to get translated category label */
+  getCategoryLabel?: (category: ConceptCategory) => string;
 }
 
 export default function ConceptGraph({
@@ -36,6 +40,8 @@ export default function ConceptGraph({
   onExpandSubcluster,
   selectedConceptId,
   expandedCategories,
+  categoriesTitle = "Categories",
+  getCategoryLabel,
 }: ConceptGraphProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -323,7 +329,13 @@ export default function ConceptGraph({
       </svg>
 
       <ZoomControls svgRef={svgRef} zoomRef={zoomRef} />
-      <CategoryLegend expandedCategories={expandedCategories} />
+      {getCategoryLabel && (
+        <CategoryLegend
+          expandedCategories={expandedCategories}
+          title={categoriesTitle}
+          getCategoryLabel={getCategoryLabel}
+        />
+      )}
     </div>
   );
 }

@@ -1,54 +1,59 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
 import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon } from "./icons";
-import { getDailyQuote } from "@/lib/daily-quote";
-import { formatQuoteWithAttribution } from "@/lib/quote-utils";
+import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
+import { type AvailableLanguage } from "@/lib/language-config";
 
+// Feature card configuration with translation keys
 const FEATURES = [
   {
     href: "/chat",
     icon: ChatIcon,
-    title: "Seek",
-    description: "Chat with AI guide",
+    titleKey: "seek",
   },
   {
     href: "/explore",
     icon: ExploreIcon,
-    title: "Explore",
-    description: "Explore Ra's concepts",
+    titleKey: "explore",
   },
   {
     href: "/paths",
     icon: BookIcon,
-    title: "Study",
-    description: "Study guided lessons",
+    titleKey: "study",
   },
   {
     href: "/search",
     icon: SearchIcon,
-    title: "Search",
-    description: "Search for any quote",
+    titleKey: "search",
   },
 ];
 
 export default function Dashboard() {
-  const [quote, setQuote] = useState<DailyQuote | null>(null);
+  const locale = useLocale() as AvailableLanguage;
+  const [quote, setQuote] = useState<LocalizedDailyQuote | null>(null);
+  const [bilingualQuote, setBilingualQuote] = useState<DailyQuote | null>(null);
+  const [showOriginal, setShowOriginal] = useState(false);
+  const t = useTranslations();
 
   useEffect(() => {
     // Get quote on client to avoid hydration mismatch
     // Deterministic: same quote for all users on same day
-    setQuote(getDailyQuote());
-  }, []);
+    // Locale-aware: shows Spanish text for Spanish users
+    const today = new Date();
+    setQuote(getDailyQuote(locale));
+    setBilingualQuote(getRawQuoteForDay(today));
+  }, [locale]);
 
   // Compute formatted copy text
   const copyText = useMemo(() => {
     if (!quote) return "";
-    return formatQuoteWithAttribution(quote.text, quote.reference, quote.url);
+    return formatQuoteForShare(quote);
   }, [quote]);
 
   return (
@@ -58,7 +63,7 @@ export default function Dashboard() {
         <div className="max-w-xl mx-auto text-center space-y-3">
           {/* Header */}
           <h2 className="animate-quote-header text-sm uppercase tracking-widest text-[var(--lo1-gold)]/80">
-            Daily Wisdom
+            {t("dashboard.dailyWisdom")}
           </h2>
 
           {/* Quote Card */}
@@ -66,7 +71,7 @@ export default function Dashboard() {
             <div
               role="link"
               tabIndex={0}
-              aria-label={`Read ${quote.reference} on lawofone.info`}
+              aria-label={t("dashboard.readOnLawOfOneInfo", { reference: quote.reference })}
               onClick={() =>
                 window.open(quote.url, "_blank", "noopener,noreferrer")
               }
@@ -87,11 +92,11 @@ export default function Dashboard() {
               </p>
               <div className="flex items-center justify-between gap-4">
                 <Link
-                  href={`/chat?q=${encodeURIComponent(`Help me explore "${quote.text}" from ${quote.reference}`)}`}
+                  href={`/chat?q=${encodeURIComponent(t("dashboard.exploreQuoteQuery", { quote: quote.text, reference: quote.reference }))}`}
                   className="animate-quote-reference text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  Explore this &rarr;
+                  {t("dashboard.exploreThis")} &rarr;
                 </Link>
                 <div className="flex items-center gap-2 animate-quote-reference">
                   <CopyButton textToCopy={copyText} size="md" />
@@ -100,12 +105,40 @@ export default function Dashboard() {
                   </span>
                 </div>
               </div>
+
+              {/* Show English original toggle (for non-English locales) */}
+              {locale !== "en" && bilingualQuote && (
+                <div className="mt-4 pt-3 border-t border-[var(--lo1-celestial)]/20">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowOriginal(!showOriginal);
+                    }}
+                    className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-starlight)] cursor-pointer"
+                    aria-expanded={showOriginal}
+                  >
+                    {showOriginal ? `↑ ${t("quote.hideEnglishOriginal")}` : `↓ ${t("quote.showEnglishOriginal")}`}
+                  </button>
+
+                  {/* English original text */}
+                  {showOriginal && (
+                    <div className="mt-3 pl-3 border-l-2 border-[var(--lo1-celestial)]/30">
+                      <div className="text-xs text-[var(--lo1-celestial)]/70 mb-2 uppercase tracking-wide">
+                        {t("quote.englishOriginal")}
+                      </div>
+                      <p className="font-[family-name:var(--font-cormorant)] italic text-lg text-[var(--lo1-starlight)]/80 leading-relaxed">
+                        &ldquo;{bilingualQuote.text.en}&rdquo;
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Footer */}
           <p className="animate-quote-footer text-xs text-[var(--lo1-stardust)]/60">
-            A new reflection awaits tomorrow
+            {t("dashboard.newReflectionTomorrow")}
           </p>
         </div>
       )}
@@ -117,8 +150,8 @@ export default function Dashboard() {
             key={feature.href}
             href={feature.href}
             icon={feature.icon}
-            title={feature.title}
-            description={feature.description}
+            title={t(`features.${feature.titleKey}.title`)}
+            description={t(`features.${feature.titleKey}.description`)}
             index={index}
           />
         ))}
@@ -135,7 +168,7 @@ export default function Dashboard() {
             className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
           >
             <InfoIcon className="w-4 h-4" />
-            <span>About</span>
+            <span>{t("nav.about")}</span>
           </Link>
           <span className="text-[var(--lo1-celestial)]/40">·</span>
           <Link
@@ -143,7 +176,7 @@ export default function Dashboard() {
             className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
           >
             <HeartIcon className="w-4 h-4" />
-            <span>Support</span>
+            <span>{t("nav.support")}</span>
           </Link>
         </div>
       </footer>

@@ -18,22 +18,31 @@ jest.mock("@/lib/graph/layout", () => ({
     "social-structures": "#98D8C8",
     metaphysics: "#F7DC6F",
   },
-  CATEGORY_LABELS: {
-    densities: "Densities",
-    archetypes: "Archetypes",
-    "energy-centers": "Energy Centers",
-    polarities: "Polarities",
-    cosmology: "Cosmology",
-    "spiritual-practices": "Spiritual Practices",
-    "social-structures": "Social Structures",
-    metaphysics: "Metaphysics",
-  },
 }));
+
+// Mock category labels for testing
+const CATEGORY_LABELS: Record<string, string> = {
+  densities: "Densities",
+  archetypes: "Archetypes",
+  "energy-centers": "Energy Centers",
+  polarities: "Polarities",
+  cosmology: "Cosmology",
+  "spiritual-practices": "Spiritual Practices",
+  "social-structures": "Social Structures",
+  metaphysics: "Metaphysics",
+};
+
+const mockGetCategoryLabel = (category: ConceptCategory) => CATEGORY_LABELS[category] || category;
+const defaultTitle = "Categories";
 
 describe("CategoryLegend", () => {
   it("returns null when no categories are expanded", () => {
     const { container } = render(
-      <CategoryLegend expandedCategories={new Set<ConceptCategory>()} />
+      <CategoryLegend
+        expandedCategories={new Set<ConceptCategory>()}
+        title={defaultTitle}
+        getCategoryLabel={mockGetCategoryLabel}
+      />
     );
 
     expect(container.firstChild).toBeNull();
@@ -41,14 +50,26 @@ describe("CategoryLegend", () => {
 
   it("renders when categories are expanded", () => {
     const expandedCategories = new Set<ConceptCategory>(["densities"]);
-    render(<CategoryLegend expandedCategories={expandedCategories} />);
+    render(
+      <CategoryLegend
+        expandedCategories={expandedCategories}
+        title={defaultTitle}
+        getCategoryLabel={mockGetCategoryLabel}
+      />
+    );
 
     expect(screen.getByText("Categories")).toBeInTheDocument();
   });
 
   it("displays category labels for expanded categories", () => {
     const expandedCategories = new Set<ConceptCategory>(["densities", "archetypes"]);
-    render(<CategoryLegend expandedCategories={expandedCategories} />);
+    render(
+      <CategoryLegend
+        expandedCategories={expandedCategories}
+        title={defaultTitle}
+        getCategoryLabel={mockGetCategoryLabel}
+      />
+    );
 
     expect(screen.getByText("Densities")).toBeInTheDocument();
     expect(screen.getByText("Archetypes")).toBeInTheDocument();
@@ -56,7 +77,13 @@ describe("CategoryLegend", () => {
 
   it("renders color indicators for each category", () => {
     const expandedCategories = new Set<ConceptCategory>(["densities"]);
-    const { container } = render(<CategoryLegend expandedCategories={expandedCategories} />);
+    const { container } = render(
+      <CategoryLegend
+        expandedCategories={expandedCategories}
+        title={defaultTitle}
+        getCategoryLabel={mockGetCategoryLabel}
+      />
+    );
 
     const colorIndicator = container.querySelector(".rounded-full");
     expect(colorIndicator).toBeInTheDocument();
@@ -68,7 +95,13 @@ describe("CategoryLegend", () => {
       "archetypes",
       "energy-centers",
     ]);
-    render(<CategoryLegend expandedCategories={expandedCategories} />);
+    render(
+      <CategoryLegend
+        expandedCategories={expandedCategories}
+        title={defaultTitle}
+        getCategoryLabel={mockGetCategoryLabel}
+      />
+    );
 
     expect(screen.getByText("Densities")).toBeInTheDocument();
     expect(screen.getByText("Archetypes")).toBeInTheDocument();
@@ -77,9 +110,28 @@ describe("CategoryLegend", () => {
 
   it("has correct container styling", () => {
     const expandedCategories = new Set<ConceptCategory>(["densities"]);
-    const { container } = render(<CategoryLegend expandedCategories={expandedCategories} />);
+    const { container } = render(
+      <CategoryLegend
+        expandedCategories={expandedCategories}
+        title={defaultTitle}
+        getCategoryLabel={mockGetCategoryLabel}
+      />
+    );
 
     const legendContainer = container.firstChild as HTMLElement;
     expect(legendContainer).toHaveClass("absolute", "bottom-4", "left-4");
+  });
+
+  it("uses custom title when provided", () => {
+    const expandedCategories = new Set<ConceptCategory>(["densities"]);
+    render(
+      <CategoryLegend
+        expandedCategories={expandedCategories}
+        title="Categorías"
+        getCategoryLabel={mockGetCategoryLabel}
+      />
+    );
+
+    expect(screen.getByText("Categorías")).toBeInTheDocument();
   });
 });

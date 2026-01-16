@@ -49,7 +49,7 @@ jest.mock("../search", () => ({
       {
         text: "Test quote from Ra",
         reference: "1.1",
-        url: "https://lawofone.info/s/1#1",
+        url: "https://www.llresearch.org/channeling/ra-contact/1#1",
       },
     ],
   }),

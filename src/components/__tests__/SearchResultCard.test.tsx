@@ -1,12 +1,27 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SearchResultCard from "../SearchResultCard";
+
+// Store mock function reference for test manipulation
+const mockFetchBilingualQuote = jest.fn().mockResolvedValue(null);
 
 // Mock quote-utils to return text as-is for testing
 jest.mock("@/lib/quote-utils", () => ({
   formatWholeQuote: (text: string) => text,
   formatQuoteWithAttribution: (text: string, reference: string, url: string) =>
     `"${text}"\n— ${reference}\n\n${url}`,
+  fetchBilingualQuote: (...args: unknown[]) => mockFetchBilingualQuote(...args),
+  // Include the real splitIntoSentences for bilingual tests
+  splitIntoSentences: (text: string) => {
+    const normalized = text.replace(/\.(?=[A-Z])/g, ". ");
+    return normalized.split(/(?<=[.!?])\s+/).filter(s => s.trim());
+  },
+}));
+
+// Mock language - will be overridden in specific tests
+let mockLanguage = "en";
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: () => ({ language: mockLanguage, setLanguage: jest.fn() }),
 }));
 
 const mockResult = {
@@ -14,7 +29,7 @@ const mockResult = {
   reference: "Ra 1.7",
   session: 1,
   question: 7,
-  url: "https://lawofone.info/s/1#7",
+  url: "https://llresearch.org/s/1#7",
 };
 
 describe("SearchResultCard", () => {
@@ -22,6 +37,8 @@ describe("SearchResultCard", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLanguage = "en"; // Reset to English
+    mockFetchBilingualQuote.mockResolvedValue(null);
   });
 
   it("renders the result reference", () => {
@@ -37,8 +54,9 @@ describe("SearchResultCard", () => {
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
-    expect(screen.getByText("Questioner")).toBeInTheDocument();
-    expect(screen.getByText("Ra")).toBeInTheDocument();
+    // Translation keys are returned by mock
+    expect(screen.getByText("quote.questioner")).toBeInTheDocument();
+    expect(screen.getByText("quote.ra")).toBeInTheDocument();
   });
 
   it("renders action buttons", () => {
@@ -46,8 +64,9 @@ describe("SearchResultCard", () => {
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
-    expect(screen.getByText("Read full passage")).toBeInTheDocument();
-    expect(screen.getByText("Ask about this")).toBeInTheDocument();
+    // Translation keys are returned by mock
+    expect(screen.getByText("search.readFullPassage")).toBeInTheDocument();
+    expect(screen.getByText("search.askAboutThis")).toBeInTheDocument();
   });
 
   it("calls onAskAbout when Ask button is clicked", async () => {
@@ -56,19 +75,19 @@ describe("SearchResultCard", () => {
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
-    await user.click(screen.getByText("Ask about this"));
+    await user.click(screen.getByText("search.askAboutThis"));
 
     expect(mockOnAskAbout).toHaveBeenCalledTimes(1);
   });
 
-  it("links to lawofone.info", () => {
+  it("links to llresearch.org", () => {
     render(
       <SearchResultCard result={mockResult} query="law" onAskAbout={mockOnAskAbout} />
     );
 
     const links = screen.getAllByRole("link");
     const lawOfOneLinks = links.filter(link =>
-      link.getAttribute("href")?.includes("lawofone.info")
+      link.getAttribute("href")?.includes("llresearch.org")
     );
 
     expect(lawOfOneLinks.length).toBeGreaterThan(0);
@@ -117,5 +136,131 @@ describe("SearchResultCard", () => {
     const highlightedTexts = Array.from(marks).map(m => m.textContent?.toLowerCase());
 
     expect(highlightedTexts).not.toContain("flaw");
+  });
+
+  describe("bilingual sentence matching", () => {
+    const sentenceResult = {
+      reference: "Ra 10.14",
+      session: 10,
+      question: 14,
+      url: "https://llresearch.org/s/10#14",
+      sentence: "See the Creator.",
+      sentenceIndex: 2,
+      speaker: "ra" as const,
+      score: 0.95,
+    };
+
+    it("displays Spanish translation when language is Spanish", async () => {
+      mockLanguage = "es";
+      mockFetchBilingualQuote.mockResolvedValue({
+        text: "Ra: Soy Ra. Ve al Creador. Mira la creación que te rodea.",
+        originalText: "Ra: I am Ra. See the Creator. Gaze at the creation around you.",
+      });
+
+      render(
+        <SearchResultCard result={sentenceResult} query="creator" onAskAbout={mockOnAskAbout} />
+      );
+
+      // Wait for translation to load
+      await waitFor(() => {
+        expect(screen.getByText("Ve al Creador.")).toBeInTheDocument();
+      });
+    });
+
+    it("filters out 'I am Ra' / 'Soy Ra' greeting sentences", async () => {
+      mockLanguage = "es";
+      mockFetchBilingualQuote.mockResolvedValue({
+        text: "Ra: Soy Ra. La creación entera es del Único Creador.",
+        originalText: "Ra: I am Ra. The entire creation is of the One Creator.",
+      });
+
+      const resultWithGreeting = {
+        ...sentenceResult,
+        sentence: "The entire creation is of the One Creator.",
+        sentenceIndex: 1,
+      };
+
+      render(
+        <SearchResultCard result={resultWithGreeting} query="creator" onAskAbout={mockOnAskAbout} />
+      );
+
+      // Should show the content sentence, not "Soy Ra"
+      await waitFor(() => {
+        expect(screen.getByText("La creación entera es del Único Creador.")).toBeInTheDocument();
+      });
+
+      // "Soy Ra" should not appear as the matched sentence
+      expect(screen.queryByText("Ra: Soy Ra.")).not.toBeInTheDocument();
+    });
+
+    it("uses position-based matching for multi-sentence passages", async () => {
+      mockLanguage = "es";
+      mockFetchBilingualQuote.mockResolvedValue({
+        text: "Ra: Soy Ra. Primera oración. Segunda oración. Tercera oración.",
+        originalText: "Ra: I am Ra. First sentence. Second sentence. Third sentence.",
+      });
+
+      const resultWithThirdSentence = {
+        ...sentenceResult,
+        sentence: "Third sentence.",
+        sentenceIndex: 3,
+      };
+
+      render(
+        <SearchResultCard result={resultWithThirdSentence} query="sentence" onAskAbout={mockOnAskAbout} />
+      );
+
+      // Should find "Third sentence" at position 2/3 in English (after filtering "I am Ra")
+      // and map to position 2/3 in Spanish = "Tercera oración"
+      await waitFor(() => {
+        expect(screen.getByText("Tercera oración.")).toBeInTheDocument();
+      });
+    });
+
+    it("handles punctuation differences in matching", async () => {
+      mockLanguage = "es";
+      mockFetchBilingualQuote.mockResolvedValue({
+        text: "Ra: Soy Ra. El amor es la luz, la luz es el amor.",
+        originalText: "Ra: I am Ra. Love is light; light is love.",
+      });
+
+      const resultWithPunctuation = {
+        ...sentenceResult,
+        sentence: "Love is light; light is love.",
+        sentenceIndex: 1,
+      };
+
+      render(
+        <SearchResultCard result={resultWithPunctuation} query="love" onAskAbout={mockOnAskAbout} />
+      );
+
+      // Should match despite punctuation differences
+      await waitFor(() => {
+        expect(screen.getByText("El amor es la luz, la luz es el amor.")).toBeInTheDocument();
+      });
+    });
+
+    it("falls back to first content sentence when match not found", async () => {
+      mockLanguage = "es";
+      mockFetchBilingualQuote.mockResolvedValue({
+        text: "Ra: Soy Ra. Esta es la primera oración de contenido.",
+        originalText: "Ra: I am Ra. Completely different text here.",
+      });
+
+      const resultWithNoMatch = {
+        ...sentenceResult,
+        sentence: "This text does not exist in the original.",
+        sentenceIndex: 5,
+      };
+
+      render(
+        <SearchResultCard result={resultWithNoMatch} query="text" onAskAbout={mockOnAskAbout} />
+      );
+
+      // Should fall back to first content sentence (not "Soy Ra")
+      await waitFor(() => {
+        expect(screen.getByText("Esta es la primera oración de contenido.")).toBeInTheDocument();
+      });
+    });
   });
 });

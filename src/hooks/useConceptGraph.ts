@@ -6,6 +6,7 @@ import {
   getConceptsByCategory,
   getCategoryInfo,
 } from "@/lib/concept-graph";
+import { getLocalizedText } from "@/lib/types-graph";
 import type {
   GraphNode,
   GraphLink,
@@ -17,7 +18,7 @@ import type {
   GraphConcept,
   RelationshipType,
 } from "@/lib/graph/types";
-import { CATEGORY_LABELS } from "@/lib/graph/layout";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 // Labels for archetype subcategories (7 positions)
 const SUBCATEGORY_LABELS: Record<ArchetypeSubcategory, string> = {
@@ -54,7 +55,11 @@ const ALL_CATEGORIES: ConceptCategory[] = [
 ];
 
 // Create a cluster node for a category
-function createClusterNode(category: ConceptCategory): ClusterNode {
+function createClusterNode(
+  category: ConceptCategory,
+  getCategoryLabel: (category: ConceptCategory) => string,
+  locale: AvailableLanguage
+): ClusterNode {
   const info = getCategoryInfo(category);
   const concepts = getConceptsByCategory(category);
 
@@ -62,9 +67,9 @@ function createClusterNode(category: ConceptCategory): ClusterNode {
     id: `cluster-${category}`,
     type: "cluster",
     category,
-    label: CATEGORY_LABELS[category],
+    label: getCategoryLabel(category),
     count: concepts.length,
-    description: info?.description || "",
+    description: info ? getLocalizedText(info.description, locale) : "",
   };
 }
 
@@ -84,14 +89,17 @@ function createSubClusterNode(
 }
 
 // Create a concept node from a GraphConcept
-function createConceptNode(concept: GraphConcept): ConceptNode {
+function createConceptNode(
+  concept: GraphConcept,
+  locale: AvailableLanguage
+): ConceptNode {
   return {
     id: concept.id,
     type: "concept",
     concept,
     category: concept.category,
     teachingLevel: concept.teachingLevel,
-    label: concept.term,
+    label: getLocalizedText(concept.term, locale),
   };
 }
 
@@ -176,6 +184,11 @@ function buildLinks(
   return links;
 }
 
+export interface UseConceptGraphOptions {
+  locale: AvailableLanguage;
+  getCategoryLabel: (category: ConceptCategory) => string;
+}
+
 export interface UseConceptGraphReturn {
   nodes: GraphNode[];
   links: GraphLink[];
@@ -194,7 +207,10 @@ export interface UseConceptGraphReturn {
   };
 }
 
-export function useConceptGraph(): UseConceptGraphReturn {
+export function useConceptGraph({
+  locale,
+  getCategoryLabel,
+}: UseConceptGraphOptions): UseConceptGraphReturn {
   const [expandedCategories, setExpandedCategories] = useState<
     Set<ConceptCategory>
   >(new Set());
@@ -215,7 +231,7 @@ export function useConceptGraph(): UseConceptGraphReturn {
     for (const category of ALL_CATEGORIES) {
       if (!expandedCategories.has(category)) {
         // Category is collapsed - show cluster node
-        nodeList.push(createClusterNode(category));
+        nodeList.push(createClusterNode(category, getCategoryLabel, locale));
         continue;
       }
 
@@ -245,7 +261,7 @@ export function useConceptGraph(): UseConceptGraphReturn {
           if (expandedSubcategories.has(subcategory)) {
             // Sub-cluster is expanded - show individual concepts
             for (const concept of concepts) {
-              nodeList.push(createConceptNode(concept));
+              nodeList.push(createConceptNode(concept, locale));
               visibleConcepts.push(concept);
               visibleConceptIds.add(concept.id);
             }
@@ -258,7 +274,7 @@ export function useConceptGraph(): UseConceptGraphReturn {
 
         // Always show meta-concepts (archetypical-mind, tarot, etc.) when archetypes is expanded
         for (const concept of conceptsWithoutSubcategory) {
-          nodeList.push(createConceptNode(concept));
+          nodeList.push(createConceptNode(concept, locale));
           visibleConcepts.push(concept);
           visibleConceptIds.add(concept.id);
         }
@@ -266,7 +282,7 @@ export function useConceptGraph(): UseConceptGraphReturn {
         // Non-archetype categories - show all concepts directly
         const concepts = getConceptsByCategory(category);
         for (const concept of concepts) {
-          nodeList.push(createConceptNode(concept));
+          nodeList.push(createConceptNode(concept, locale));
           visibleConcepts.push(concept);
           visibleConceptIds.add(concept.id);
         }
@@ -285,7 +301,7 @@ export function useConceptGraph(): UseConceptGraphReturn {
         totalLinks: linkList.length,
       },
     };
-  }, [expandedCategories, expandedSubcategories, allConcepts]);
+  }, [expandedCategories, expandedSubcategories, allConcepts, locale, getCategoryLabel]);
 
   const expandCluster = useCallback((category: ConceptCategory) => {
     setExpandedCategories((prev) => {

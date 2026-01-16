@@ -1,12 +1,17 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ThemeProvider } from "../ThemeProvider";
 
-// Mock next/navigation
+// Mock @/i18n/navigation (locale-aware navigation)
 const mockPathname = jest.fn(() => "/");
 const mockBack = jest.fn();
-jest.mock("next/navigation", () => ({
+const mockPush = jest.fn();
+const mockReplace = jest.fn();
+jest.mock("@/i18n/navigation", () => ({
   usePathname: () => mockPathname(),
-  useRouter: () => ({ back: mockBack }),
+  useRouter: () => ({ back: mockBack, push: mockPush, replace: mockReplace }),
+  Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
 }));
 
 // Mock framer-motion
@@ -18,6 +23,44 @@ jest.mock("framer-motion", () => ({
   },
   AnimatePresence: ({ children }: React.PropsWithChildren) => <>{children}</>,
   LayoutGroup: ({ children }: React.PropsWithChildren) => <>{children}</>,
+}));
+
+// Mock LanguageContext for BurgerMenu's LanguageSelector
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: jest.fn(() => ({
+    language: "en",
+    setLanguage: jest.fn(),
+  })),
+  LANGUAGE_DISPLAY_NAMES: { en: "English", es: "Español" },
+  AVAILABLE_LANGUAGES: ["en", "es"],
+}));
+
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      "nav.home": "Home",
+      "nav.seek": "Seek",
+      "nav.explore": "Explore",
+      "nav.study": "Study",
+      "nav.search": "Search",
+      "nav.about": "About",
+      "nav.support": "Support",
+      "header.appTitle": "Law of One Study Companion",
+      "header.subtitle": "The Ra Material",
+      "header.goToHome": "Go to home",
+      "header.startNewConversation": "Start new conversation",
+      "header.startNewSearch": "Start new search",
+      "header.openMenu": "Open menu",
+      "header.closeMenu": "Close menu",
+      "header.navigationMenu": "Navigation menu",
+      "labels.menu": "Menu",
+      "labels.language": "Language",
+      "labels.theme": "Theme",
+      "buttons.new": "New",
+    };
+    return translations[key] || key;
+  },
 }));
 
 import Header from "../Header";

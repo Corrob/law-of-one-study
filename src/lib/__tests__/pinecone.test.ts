@@ -160,7 +160,7 @@ describe("pinecone", () => {
 
       const results = await searchRaMaterial(mockEmbedding);
 
-      expect(results[0].url).toBe("https://lawofone.info/s/50#7");
+      expect(results[0].url).toBe("https://www.llresearch.org/channeling/ra-contact/50#7");
     });
 
     it("should filter out results without valid metadata", async () => {

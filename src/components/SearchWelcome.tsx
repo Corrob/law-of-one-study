@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import ModeToggle from "./ModeToggle";
 import type { SearchMode } from "@/lib/schemas";
 
@@ -34,6 +35,7 @@ export default function SearchWelcome({
   onSuggestedSearch,
   inputElement,
 }: SearchWelcomeProps) {
+  const t = useTranslations("search");
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
       {/* Mode Toggle */}
@@ -72,8 +74,8 @@ export default function SearchWelcome({
         className="text-[var(--lo1-stardust)]/70 text-sm text-center mb-8 max-w-md"
       >
         {mode === "sentence"
-          ? "Search by meaning by describing a sentence you're looking for"
-          : "Search by meaning—describe what you seek"}
+          ? t("sentenceExplanation")
+          : t("passageExplanation")}
       </motion.p>
 
       {/* Suggestions */}
@@ -85,7 +87,7 @@ export default function SearchWelcome({
             transition={{ duration: 0.3, delay: 0.35 }}
             className="text-[var(--lo1-stardust)]/60 text-xs mb-3 text-center uppercase tracking-wider"
           >
-            Try these
+            {t("tryThese")}
           </motion.p>
           <div className="flex flex-wrap justify-center gap-2">
             {suggestions.map((suggestion, index) => (

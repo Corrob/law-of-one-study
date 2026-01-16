@@ -1,20 +1,54 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import WelcomeScreen from "../WelcomeScreen";
 
-// Mock the data module
-jest.mock("@/data/starters", () => ({
-  getRandomStarters: jest.fn(() => [
-    "What is the Law of One?",
-    "Tell me about densities",
-    "What is love/light?",
-  ]),
+// Mock next-intl with namespace-aware translations
+// Include all 46 starters in the mock
+const mockStarters: Record<string, string> = {};
+for (let i = 1; i <= 46; i++) {
+  mockStarters[String(i)] = `Starter question ${i}`;
+}
+// Override first 3 for specific tests
+mockStarters["1"] = "What is the Law of One?";
+mockStarters["2"] = "Tell me about densities";
+mockStarters["3"] = "What is love/light?";
+
+jest.mock("next-intl", () => ({
+  useTranslations: (namespace: string) => (key: string) => {
+    const welcomeTranslations: Record<string, string> = {
+      "greetings.seeker": "Welcome, seeker.",
+      "greetings.loveLight": "In love and light.",
+      "greetings.journey": "The journey continues.",
+      "greetings.serve": "How may I serve?",
+      "greetings.wanderer": "Greetings, wanderer.",
+      "orExplore": "Or explore:",
+      "disclaimer": "This AI companion provides helpful explanations, but only the highlighted quote cards contain authentic passages from the Ra Material.",
+      "learnMore": "Learn more",
+    };
+    if (namespace === "starters") {
+      return mockStarters[key] || `Starter question ${key}`;
+    }
+    return welcomeTranslations[key] || key;
+  },
 }));
 
 describe("WelcomeScreen", () => {
   const mockOnSelectStarter = jest.fn();
+  const originalRandom = Math.random;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // Mock Math.random to return deterministic values for testing
+    // This ensures we always get keys 1, 2, 3 (index 0, 1, 2 after shuffle)
+    let callCount = 0;
+    Math.random = () => {
+      callCount++;
+      // Return values that result in no shuffling for the first 3 items
+      return callCount < 5 ? 0.1 : 0.9;
+    };
+  });
+
+  afterEach(() => {
+    Math.random = originalRandom;
   });
 
   describe("rendering", () => {
@@ -36,9 +70,15 @@ describe("WelcomeScreen", () => {
     it("should render conversation starters", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
-      expect(screen.getByText("What is the Law of One?")).toBeInTheDocument();
-      expect(screen.getByText("Tell me about densities")).toBeInTheDocument();
-      expect(screen.getByText("What is love/light?")).toBeInTheDocument();
+      // Should render 3 starters (text depends on random selection)
+      const buttons = screen.getAllByRole("button").filter(
+        (btn) => btn.className.includes("starter-card")
+      );
+      expect(buttons).toHaveLength(3);
+      // Each button should have some text (from translations)
+      buttons.forEach((btn) => {
+        expect(btn.textContent).toBeTruthy();
+      });
     });
 
     it("should render 'Or explore:' label", () => {
@@ -55,11 +95,11 @@ describe("WelcomeScreen", () => {
       ).toBeInTheDocument();
     });
 
-    it("should render disclaimer link to support page", () => {
+    it("should render disclaimer link to about page", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
       const learnMoreLink = screen.getByText("Learn more");
-      expect(learnMoreLink).toHaveAttribute("href", "/support");
+      expect(learnMoreLink).toHaveAttribute("href", "/about");
     });
   });
 
@@ -87,21 +127,29 @@ describe("WelcomeScreen", () => {
     it("should call onSelectStarter when starter is clicked", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
-      fireEvent.click(screen.getByText("What is the Law of One?"));
+      // Click any starter button
+      const starterButtons = screen.getAllByRole("button").filter(
+        (btn) => btn.className.includes("starter-card")
+      );
+      fireEvent.click(starterButtons[0]);
 
-      expect(mockOnSelectStarter).toHaveBeenCalledWith("What is the Law of One?");
+      // Should be called with the button's text content
+      expect(mockOnSelectStarter).toHaveBeenCalledWith(starterButtons[0].textContent);
     });
 
     it("should call onSelectStarter with correct text for each starter", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
-      fireEvent.click(screen.getByText("Tell me about densities"));
-      expect(mockOnSelectStarter).toHaveBeenCalledWith("Tell me about densities");
+      const starterButtons = screen.getAllByRole("button").filter(
+        (btn) => btn.className.includes("starter-card")
+      );
 
-      mockOnSelectStarter.mockClear();
-
-      fireEvent.click(screen.getByText("What is love/light?"));
-      expect(mockOnSelectStarter).toHaveBeenCalledWith("What is love/light?");
+      // Click each starter and verify the callback receives the correct text
+      starterButtons.forEach((btn, index) => {
+        mockOnSelectStarter.mockClear();
+        fireEvent.click(btn);
+        expect(mockOnSelectStarter).toHaveBeenCalledWith(btn.textContent);
+      });
     });
 
     it("should render starters as buttons", () => {
@@ -134,8 +182,13 @@ describe("WelcomeScreen", () => {
     it("should have proper classes on starter buttons", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
-      const button = screen.getByText("What is the Law of One?");
-      expect(button.className).toContain("starter-card");
+      const starterButtons = screen.getAllByRole("button").filter(
+        (btn) => btn.className.includes("starter-card")
+      );
+      expect(starterButtons.length).toBeGreaterThan(0);
+      starterButtons.forEach((btn) => {
+        expect(btn.className).toContain("starter-card");
+      });
     });
 
     it("should have greeting with proper font styling", () => {

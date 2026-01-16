@@ -174,7 +174,7 @@ describe("useChatStream", () => {
               type: "quote",
               text: "Ra: I am Ra.",
               reference: "1.1",
-              url: "https://lawofone.info/s/1#1",
+              url: "https://www.llresearch.org/channeling/ra-contact/1#1",
             },
           },
           { type: "done", data: {} },
@@ -358,7 +358,7 @@ describe("useChatStream", () => {
         {
           id: "2",
           type: "quote",
-          quote: { text: "Ra: I am Ra.", reference: "1.1", url: "https://lawofone.info/s/1#1" },
+          quote: { text: "Ra: I am Ra.", reference: "1.1", url: "https://www.llresearch.org/channeling/ra-contact/1#1" },
         },
       ];
 

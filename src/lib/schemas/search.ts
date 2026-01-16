@@ -4,6 +4,7 @@
 
 import { z } from "zod";
 import { SpeakerSchema } from "./sentence";
+import { AvailableLanguageSchema } from "@/lib/language-config";
 
 /**
  * Schema for search mode.
@@ -21,6 +22,7 @@ export const SearchRequestSchema = z.object({
     .max(500, "Search query must be at most 500 characters"),
   limit: z.number().int().min(1).max(50).optional().default(20),
   mode: SearchModeSchema.optional().default("passage"),
+  language: AvailableLanguageSchema.optional().default("en"),
 });
 
 export type ValidatedSearchRequest = z.infer<typeof SearchRequestSchema>;

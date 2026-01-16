@@ -1,109 +1,41 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useTranslations } from "next-intl";
 
-const thinkingMessages = [
-  // Channeling & Communication
-  "Scanning the cosmic records...",
-  "Tuning the instrument...",
-  "Opening the narrow-band...",
-  "Adjusting the vibrational frequency...",
-  "Preparing the channel...",
-  "Clearing the distortions...",
-  "Aligning with the contact...",
-  "Establishing the link...",
-  "Synchronizing the vibrations...",
-
-  // Confederation & Ra
-  "Consulting the Confederation...",
-  "Channeling the Law of One...",
-  "Accessing Ra's wisdom...",
-  "Connecting to the social memory complex...",
-  "Reaching the sixth density...",
-  "Communing with those of Ra...",
-  "Invoking the Confederation's aid...",
-
-  // Seeking & Searching
-  "Seeking in the infinite...",
-  "Searching the Akashic records...",
-  "Exploring the inner planes...",
-  "Navigating the densities...",
-  "Traversing time/space...",
-  "Scanning the cosmic library...",
-  "Following the thread of seeking...",
-  "Illuminating the path...",
-
-  // Polarity & Balance
-  "Harmonizing polarities...",
-  "Balancing love and wisdom...",
-  "Integrating the shadow...",
-  "Aligning service to others...",
-  "Polarizing in consciousness...",
-  "Bridging the paths...",
-  "Unifying the opposites...",
-
-  // Energy & Light/Love
-  "Gathering light/love energy...",
-  "Weaving love/light patterns...",
-  "Opening the energy centers...",
-  "Activating the violet ray...",
-  "Channeling intelligent infinity...",
-  "Amplifying the heart chakra...",
-  "Radiating green-ray energy...",
-  "Flowing through the indigo ray...",
-
-  // Creation & Unity
-  "Accessing the One Infinite Creator...",
-  "Recognizing the unity...",
-  "Perceiving the original thought...",
-  "Dancing in the illusion...",
-  "Honoring the free will...",
-  "Embracing the paradox...",
-  "Dissolving separation...",
-  "Witnessing the hologram...",
-
-  // Concepts & Teachings
-  "Decoding the catalyst...",
-  "Processing the experience...",
-  "Transmuting the distortion...",
-  "Understanding the archetypes...",
-  "Contemplating the harvest...",
-  "Recognizing the wanderer...",
-  "Studying the densities...",
-  "Exploring the octave...",
-  "Examining the veil...",
-  "Comprehending the choice...",
-
-  // Meditation & Inner Work
-  "Entering the silence...",
-  "Balancing the mind/body/spirit...",
-  "Centering in the present...",
-  "Opening to guidance...",
-  "Quieting the distraction...",
-  "Deepening the meditation...",
-
-  // Mystical & Poetic
-  "Listening to the stars...",
-  "Reading the Book of Souls...",
-  "Consulting the infinite intelligence...",
-  "Attuning to the cosmic rhythm...",
-  "Spiraling through the densities...",
-  "Unveiling the mystery...",
-];
+// Total number of thinking messages in translations
+const THINKING_MESSAGE_COUNT = 69;
 
 export default function ThinkingIndicator() {
-  const [currentMessage, setCurrentMessage] = useState(() =>
-    thinkingMessages[Math.floor(Math.random() * thinkingMessages.length)]
+  const t = useTranslations("thinking");
+  const [messageKey, setMessageKey] = useState(() =>
+    String(Math.floor(Math.random() * THINKING_MESSAGE_COUNT) + 1)
   );
 
+  // Track if we're mounted to avoid state updates after unmount
+  const mountedRef = useRef(true);
+
+  const getRandomKey = useCallback(() => {
+    return String(Math.floor(Math.random() * THINKING_MESSAGE_COUNT) + 1);
+  }, []);
+
   useEffect(() => {
+    mountedRef.current = true;
+
     // Pick a random message every 3.5 seconds for variety
     const interval = setInterval(() => {
-      setCurrentMessage(thinkingMessages[Math.floor(Math.random() * thinkingMessages.length)]);
+      if (mountedRef.current) {
+        setMessageKey(getRandomKey());
+      }
     }, 3500);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      mountedRef.current = false;
+      clearInterval(interval);
+    };
+  }, [getRandomKey]);
+
+  const currentMessage = t(messageKey);
 
   return (
     <div className="mb-6" data-testid="thinking-indicator">

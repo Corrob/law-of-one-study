@@ -1,7 +1,8 @@
 "use client";
 
 import { memo } from "react";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { StudyPathMeta, PathProgress } from "@/lib/schemas/study-paths";
 
 interface PathCardProps {
@@ -41,21 +42,21 @@ function getProgressPercent(
 }
 
 /**
- * Format last accessed date.
+ * Get relative date info (returns diff data for translation).
  */
-function formatLastAccessed(isoDate: string): string {
+function getRelativeDateInfo(isoDate: string): { type: "today" | "yesterday" | "days" | "weeks" | "date"; count?: number; date?: Date } | null {
   try {
     const date = new Date(isoDate);
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "Yesterday";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    if (diffDays === 0) return { type: "today" };
+    if (diffDays === 1) return { type: "yesterday" };
+    if (diffDays < 7) return { type: "days", count: diffDays };
+    if (diffDays < 30) return { type: "weeks", count: Math.floor(diffDays / 7) };
+    return { type: "date", date };
   } catch {
-    return "";
+    return null;
   }
 }
 
@@ -71,7 +72,22 @@ const PathCard = memo(function PathCard({
   progress,
   variant = "default",
 }: PathCardProps) {
+  const locale = useLocale();
+  const t = useTranslations("studyPaths");
   const progressPercent = getProgressPercent(progress, path.lessonCount);
+
+  // Format last accessed date
+  const formatLastAccessed = (isoDate: string): string => {
+    const info = getRelativeDateInfo(isoDate);
+    if (!info) return "";
+    switch (info.type) {
+      case "today": return t("today");
+      case "yesterday": return t("yesterday");
+      case "days": return t("daysAgo", { count: info.count! });
+      case "weeks": return t("weeksAgo", { count: info.count! });
+      case "date": return info.date!.toLocaleDateString(locale === "es" ? "es-ES" : "en-US", { month: "short", day: "numeric" });
+    }
+  };
   const isStarted = progress && progress.status !== "not_started";
   const isCompleted = progress?.status === "completed";
   const isContinue = variant === "continue";
@@ -82,10 +98,10 @@ const PathCard = memo(function PathCard({
       className={`
         block rounded-xl transition-all overflow-hidden group
         ${isContinue
-          ? "bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 hover:border-[var(--lo1-gold)]/50"
-          : "bg-gradient-to-br from-[var(--lo1-space)]/80 to-[var(--lo1-indigo)]/40 border border-[var(--lo1-celestial)]/20 hover:border-[var(--lo1-celestial)]/40"
+          ? "bg-[var(--lo1-card-bg)] border border-[var(--lo1-gold)]/30 hover:border-[var(--lo1-gold)]/50"
+          : "bg-[var(--lo1-card-bg)] border border-[var(--lo1-card-border)] hover:border-[var(--lo1-celestial)]/40"
         }
-        hover:shadow-lg hover:shadow-[var(--lo1-indigo)]/20
+        hover:shadow-lg hover:shadow-black/5 dark:hover:shadow-[var(--lo1-indigo)]/20
       `}
     >
       {/* Subtle top accent bar */}
@@ -96,7 +112,7 @@ const PathCard = memo(function PathCard({
         <div className="flex items-start justify-between gap-3 mb-3">
           <h3
             className={`
-              font-medium text-[var(--lo1-starlight)] group-hover:text-white transition-colors
+              font-medium text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors
               ${isContinue ? "text-lg" : "text-base"}
             `}
           >
@@ -121,19 +137,19 @@ const PathCard = memo(function PathCard({
           <span
             className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getDifficultyColor(path.difficulty)}`}
           >
-            {path.difficulty.charAt(0).toUpperCase() + path.difficulty.slice(1)}
+            {t(`difficulty.${path.difficulty}`)}
           </span>
           <span className="text-[var(--lo1-text-light)]/60 flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            {path.estimatedMinutes} min
+            {t("minutes", { count: path.estimatedMinutes })}
           </span>
           <span className="text-[var(--lo1-text-light)]/60 flex items-center gap-1">
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            {path.lessonCount} lessons
+            {t("lessons", { count: path.lessonCount })}
           </span>
         </div>
 
@@ -142,7 +158,7 @@ const PathCard = memo(function PathCard({
           <div className="pt-3 border-t border-[var(--lo1-celestial)]/10">
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs font-medium text-[var(--lo1-stardust)]">
-                Progress
+                {t("progress")}
               </span>
               <span className="text-xs font-semibold text-[var(--lo1-gold)]">
                 {progressPercent}%
@@ -156,7 +172,7 @@ const PathCard = memo(function PathCard({
             </div>
             <div className="flex justify-between items-center mt-2">
               <span className="text-xs text-[var(--lo1-text-light)]/60">
-                {progress?.lessonsCompleted.length} of {path.lessonCount} lessons complete
+                {t("lessonsComplete", { completed: progress?.lessonsCompleted.length, total: path.lessonCount })}
               </span>
               {progress?.lastAccessed && (
                 <span className="text-xs text-[var(--lo1-text-light)]/50">
@@ -172,10 +188,10 @@ const PathCard = memo(function PathCard({
           <div className="pt-3 border-t border-[var(--lo1-celestial)]/10 flex items-center justify-between">
             <span className="text-xs text-[var(--lo1-text-light)]/50 flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[var(--lo1-celestial)]/30" />
-              Not started
+              {t("notStarted")}
             </span>
             <span className="text-xs text-[var(--lo1-gold)] opacity-0 group-hover:opacity-100 transition-opacity">
-              Start learning →
+              {t("startLearning")}
             </span>
           </div>
         )}
@@ -185,7 +201,7 @@ const PathCard = memo(function PathCard({
           <div className="pt-3 border-t border-[var(--lo1-celestial)]/10 flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[var(--lo1-gold)]" />
             <span className="text-xs font-medium text-[var(--lo1-gold)]">
-              Completed
+              {t("completed")}
             </span>
           </div>
         )}
@@ -194,7 +210,7 @@ const PathCard = memo(function PathCard({
         {isContinue && isStarted && !isCompleted && (
           <div className="mt-4 flex justify-end">
             <span className="px-5 py-2.5 rounded-lg text-sm font-medium bg-[var(--lo1-gold)] text-[var(--lo1-space)]">
-              Continue
+              {t("continueButton")}
             </span>
           </div>
         )}

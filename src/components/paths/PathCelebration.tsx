@@ -2,7 +2,8 @@
 
 import { memo, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import type { StudyPath } from "@/lib/schemas/study-paths";
 
 interface PathCelebrationProps {
@@ -31,6 +32,7 @@ const PathCelebration = memo(function PathCelebration({
   path,
   onClose,
 }: PathCelebrationProps) {
+  const t = useTranslations("studyPaths");
   const [particles] = useState(() => generateParticles(20));
   const [isVisible, setIsVisible] = useState(false);
 
@@ -136,7 +138,7 @@ const PathCelebration = memo(function PathCelebration({
               transition={{ delay: 0.5, duration: 0.5 }}
               className="text-3xl font-semibold text-[var(--lo1-starlight)] mb-2"
             >
-              Path Complete!
+              {t("pathCompleteTitle")}
             </motion.h2>
 
             {/* Path name */}
@@ -172,7 +174,7 @@ const PathCelebration = memo(function PathCelebration({
                 onClick={onClose}
                 className="inline-block px-8 py-3 rounded-lg font-medium bg-[var(--lo1-gold)] text-[var(--lo1-space)] hover:bg-[var(--lo1-gold-light)] transition-colors cursor-pointer"
               >
-                Explore More Paths
+                {t("exploreMorePaths")}
               </Link>
             </motion.div>
           </div>

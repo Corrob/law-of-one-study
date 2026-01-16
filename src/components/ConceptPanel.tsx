@@ -1,11 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { motion, useDragControls } from "framer-motion";
 import type { GraphConcept } from "@/lib/graph/types";
 import { findConceptById } from "@/lib/concept-graph";
-import { CATEGORY_LABELS, CATEGORY_COLORS } from "@/lib/graph/layout";
+import { getLocalizedText } from "@/lib/types-graph";
+import { CATEGORY_COLORS } from "@/lib/graph/layout";
 import { CloseIcon, ChatIcon } from "@/components/icons";
+import { getRaMaterialUrlFromReference } from "@/lib/quote-utils";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 interface ConceptPanelProps {
   concept: GraphConcept;
@@ -18,11 +22,14 @@ export default function ConceptPanel({
   onClose,
   onSelectConcept,
 }: ConceptPanelProps) {
+  const locale = useLocale() as AvailableLanguage;
   const router = useRouter();
   const dragControls = useDragControls();
+  const t = useTranslations();
 
   const handleExploreInChat = () => {
-    const query = `Help me understand ${concept.term}`;
+    const term = getLocalizedText(concept.term, locale);
+    const query = t("concept.exploreConceptQuery", { concept: term });
     router.push(`/chat?q=${encodeURIComponent(query)}`);
   };
 
@@ -57,6 +64,8 @@ export default function ConceptPanel({
           concept={concept}
           categoryColor={categoryColor}
           relatedConcepts={relatedConcepts}
+          locale={locale}
+          t={t}
           onClose={onClose}
           onSelectConcept={onSelectConcept}
           onExploreInChat={handleExploreInChat}
@@ -96,6 +105,8 @@ export default function ConceptPanel({
             concept={concept}
             categoryColor={categoryColor}
             relatedConcepts={relatedConcepts}
+            locale={locale}
+            t={t}
             onClose={onClose}
             onSelectConcept={onSelectConcept}
             onExploreInChat={handleExploreInChat}
@@ -120,6 +131,8 @@ function PanelContent({
   concept,
   categoryColor,
   relatedConcepts,
+  locale,
+  t,
   onClose,
   onSelectConcept,
   onExploreInChat,
@@ -127,27 +140,34 @@ function PanelContent({
   concept: GraphConcept;
   categoryColor: string;
   relatedConcepts: GraphConcept[];
+  locale: AvailableLanguage;
+  t: ReturnType<typeof useTranslations>;
   onClose: () => void;
   onSelectConcept: (conceptId: string) => void;
   onExploreInChat: () => void;
 }) {
+  // Get localized text
+  const term = getLocalizedText(concept.term, locale);
+  const definition = getLocalizedText(concept.definition, locale);
+  const extendedDefinition = getLocalizedText(concept.extendedDefinition, locale);
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
       <div className="flex items-start justify-between p-4 border-b border-[var(--lo1-celestial)]/10">
         <div className="flex-1 min-w-0">
           <h2 className="text-xl font-semibold text-[var(--lo1-starlight)] truncate">
-            {concept.term}
+            {term}
           </h2>
           <div className="flex items-center gap-2 mt-1">
             <span
               className="px-2 py-0.5 rounded-full text-xs font-medium"
               style={{ backgroundColor: `${categoryColor}30`, color: categoryColor }}
             >
-              {CATEGORY_LABELS[concept.category]}
+              {t(`categories.${concept.category}`)}
             </span>
-            <span className="text-xs text-[var(--lo1-stardust)] capitalize">
-              {concept.teachingLevel}
+            <span className="text-xs text-[var(--lo1-stardust)]">
+              {t(`concept.teachingLevel.${concept.teachingLevel}`)}
             </span>
           </div>
         </div>
@@ -165,18 +185,18 @@ function PanelContent({
         {/* Definition */}
         <div>
           <h3 className="text-sm font-medium text-[var(--lo1-stardust)] mb-1">
-            Definition
+            {t("concept.definition")}
           </h3>
           <p className="text-[var(--lo1-starlight)] text-sm leading-relaxed">
-            {concept.definition}
+            {definition}
           </p>
         </div>
 
         {/* Extended definition */}
-        {concept.extendedDefinition && (
+        {extendedDefinition && (
           <div>
             <p className="text-[var(--lo1-text-light)] text-sm leading-relaxed">
-              {concept.extendedDefinition}
+              {extendedDefinition}
             </p>
           </div>
         )}
@@ -185,7 +205,7 @@ function PanelContent({
         {concept.keyPassages.length > 0 && (
           <div>
             <h3 className="text-sm font-medium text-[var(--lo1-stardust)] mb-2">
-              Key Passages
+              {t("concept.keyPassages")}
             </h3>
             <div className="space-y-2">
               {concept.keyPassages.slice(0, 2).map((passage, idx) => (
@@ -194,10 +214,10 @@ function PanelContent({
                   className="p-3 rounded-lg bg-[var(--lo1-indigo)]/30 border border-[var(--lo1-celestial)]/10"
                 >
                   <p className="text-sm text-[var(--lo1-starlight)] italic leading-relaxed">
-                    &ldquo;{passage.excerpt}&rdquo;
+                    &ldquo;{getLocalizedText(passage.excerpt, locale)}&rdquo;
                   </p>
                   <a
-                    href={`https://lawofone.info/s/${passage.reference.split(".")[0]}#${passage.reference.split(".")[1]}`}
+                    href={getRaMaterialUrlFromReference(passage.reference, locale)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs text-[var(--lo1-gold)] hover:underline mt-1 inline-block cursor-pointer"
@@ -214,7 +234,7 @@ function PanelContent({
         {relatedConcepts.length > 0 && (
           <div>
             <h3 className="text-sm font-medium text-[var(--lo1-stardust)] mb-2">
-              Related Concepts
+              {t("concept.relatedConcepts")}
             </h3>
             <div className="flex flex-wrap gap-2">
               {relatedConcepts.map((related) => (
@@ -225,7 +245,7 @@ function PanelContent({
                            bg-[var(--lo1-celestial)]/10 text-[var(--lo1-text-light)]
                            hover:bg-[var(--lo1-celestial)]/20 transition-colors"
                 >
-                  {related.term}
+                  {getLocalizedText(related.term, locale)}
                 </button>
               ))}
             </div>
@@ -242,7 +262,7 @@ function PanelContent({
                    font-medium hover:bg-[var(--lo1-gold-light)] transition-colors"
         >
           <ChatIcon className="w-5 h-5" />
-          Explore this concept
+          {t("concept.explore")}
         </button>
       </div>
     </div>

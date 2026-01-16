@@ -1,7 +1,10 @@
 "use client";
 
 import { memo, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import type { MultipleChoiceSection } from "@/lib/schemas/study-paths";
+import { getRaMaterialUrlFromReference } from "@/lib/quote-utils";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 type Option = MultipleChoiceSection["options"][number];
 
@@ -13,16 +16,6 @@ interface QuizFeedbackProps {
   correctOption: Option | undefined;
   allOptions: Option[];
   onRetry: () => void;
-}
-
-/**
- * Get URL for a Ra Material reference.
- */
-function getQuoteUrl(reference: string): string {
-  const match = reference.match(/(\d+)\.(\d+)/);
-  if (!match) return `https://lawofone.info`;
-  const [, session, question] = match;
-  return `https://lawofone.info/s/${session}#${question}`;
 }
 
 /**
@@ -38,6 +31,8 @@ const QuizFeedback = memo(function QuizFeedback({
   allOptions,
   onRetry,
 }: QuizFeedbackProps) {
+  const locale = useLocale() as AvailableLanguage;
+  const t = useTranslations("studyPaths.quiz");
   const [showOtherExplanations, setShowOtherExplanations] = useState(false);
 
   // Determine container styling based on state (theme-aware)
@@ -63,11 +58,11 @@ const QuizFeedback = memo(function QuizFeedback({
   // Get header message
   let headerMessage = "";
   if (isCorrect) {
-    headerMessage = "That's right!";
+    headerMessage = t("thatsRight");
   } else if (!showCorrectAnswer) {
-    headerMessage = "Not quite, but let's explore this";
+    headerMessage = t("notQuite");
   } else {
-    headerMessage = `The answer is: "${correctOption?.text}"`;
+    headerMessage = t("answerIs", { answer: correctOption?.text || "" });
   }
 
   const wrongOptions = allOptions.filter((o) => !o.isCorrect);
@@ -89,7 +84,7 @@ const QuizFeedback = memo(function QuizFeedback({
 
       {showCorrectAnswer && (
         <p className="text-sm text-[var(--lo1-text-light)]/70 mt-3 italic">
-          Don&apos;t worry, this is about learning, not testing. Take a moment to absorb this before continuing.
+          {t("dontWorry")}
         </p>
       )}
 
@@ -100,18 +95,18 @@ const QuizFeedback = memo(function QuizFeedback({
             onClick={onRetry}
             className="px-4 py-2 rounded-lg text-sm font-medium bg-amber-600/30 text-amber-200 hover:bg-amber-600/40 transition-colors cursor-pointer"
           >
-            Try Again
+            {t("tryAgain")}
           </button>
         )}
 
         {explanationOption.relatedPassage && (
           <a
-            href={getQuoteUrl(explanationOption.relatedPassage)}
+            href={getRaMaterialUrlFromReference(explanationOption.relatedPassage, locale)}
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 rounded-lg text-sm font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline inline-flex items-center gap-1 cursor-pointer"
           >
-            Read more: {explanationOption.relatedPassage}
+            {t("readMore", { reference: explanationOption.relatedPassage })}
             <svg
               className="w-3 h-3"
               fill="none"
@@ -144,7 +139,7 @@ const QuizFeedback = memo(function QuizFeedback({
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-            {showOtherExplanations ? "Hide other explanations" : "Why were the others wrong?"}
+            {showOtherExplanations ? t("hideOther") : t("whyWrong")}
           </button>
 
           {showOtherExplanations && (

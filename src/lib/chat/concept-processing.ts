@@ -15,8 +15,10 @@ import {
   findConceptById,
 } from "@/lib/concept-graph";
 import type { GraphConcept } from "@/lib/types-graph";
+import { getLocalizedText } from "@/lib/types-graph";
 import { SEARCH_CONFIG } from "@/lib/config";
 import { debug } from "@/lib/debug";
+import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 
 export interface ConceptDetectionResult {
   /** All detected concepts (merged from regex and embedding) */
@@ -38,10 +40,16 @@ export interface ConceptDetectionResult {
  *
  * Uses both regex-based detection (instant, free) and
  * embedding-based detection (semantic) for comprehensive coverage.
+ *
+ * @param message - The user's message to analyze
+ * @param locale - Language for regex-based concept matching (defaults to 'en')
  */
-export async function detectConcepts(message: string): Promise<ConceptDetectionResult> {
-  // A) Regex-based detection (instant, free)
-  const regexConcepts = identifyConcepts(message);
+export async function detectConcepts(
+  message: string,
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): Promise<ConceptDetectionResult> {
+  // A) Regex-based detection (instant, free) - uses locale for matching
+  const regexConcepts = identifyConcepts(message, locale);
 
   // B) Embedding-based detection (semantic, ~$0.00001)
   const conceptEmbedding = await createEmbedding(message);
@@ -90,7 +98,8 @@ export async function detectConcepts(message: string): Promise<ConceptDetectionR
 }
 
 /**
- * Formats detected concepts for the meta event
+ * Formats detected concepts for the meta event.
+ * Uses English text for API response consistency.
  */
 export function formatConceptsForMeta(concepts: GraphConcept[]): Array<{
   id: string;
@@ -100,8 +109,8 @@ export function formatConceptsForMeta(concepts: GraphConcept[]): Array<{
 }> {
   return concepts.map((c) => ({
     id: c.id,
-    term: c.term,
-    definition: c.definition,
+    term: getLocalizedText(c.term, "en"),
+    definition: getLocalizedText(c.definition, "en"),
     category: c.category,
   }));
 }

@@ -59,12 +59,12 @@ jest.mock("@/lib/pinecone", () => ({
     {
       text: "Ra: I am Ra. The Law of One states that all things are one.",
       reference: "1.1",
-      url: "https://lawofone.info/s/1#1",
+      url: "https://www.llresearch.org/channeling/ra-contact/1#1",
     },
     {
       text: "Ra: I am Ra. Love is the great healer.",
       reference: "2.1",
-      url: "https://lawofone.info/s/2#1",
+      url: "https://www.llresearch.org/channeling/ra-contact/2#1",
     },
   ]),
   searchConcepts: jest.fn().mockResolvedValue([]),

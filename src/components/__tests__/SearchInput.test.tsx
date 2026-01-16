@@ -15,7 +15,8 @@ describe("SearchInput", () => {
       <SearchInput value="" onChange={mockOnChange} onSearch={mockOnSearch} />
     );
 
-    expect(screen.getByPlaceholderText("Search the Ra Material...")).toBeInTheDocument();
+    // Translation key is returned by mock
+    expect(screen.getByPlaceholderText("search.placeholder")).toBeInTheDocument();
   });
 
   it("renders with custom placeholder", () => {
@@ -73,7 +74,8 @@ describe("SearchInput", () => {
       <SearchInput value="test" onChange={mockOnChange} onSearch={mockOnSearch} />
     );
 
-    expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
+    // Translation key is returned by mock
+    expect(screen.getByRole("button", { name: "search.searchButton" })).toBeInTheDocument();
   });
 
   it("hides Search button when value is empty", () => {
@@ -81,7 +83,8 @@ describe("SearchInput", () => {
       <SearchInput value="" onChange={mockOnChange} onSearch={mockOnSearch} />
     );
 
-    expect(screen.queryByRole("button", { name: "Search" })).not.toBeInTheDocument();
+    // Translation key is returned by mock
+    expect(screen.queryByRole("button", { name: "search.searchButton" })).not.toBeInTheDocument();
   });
 
   it("calls onSearch when Search button is clicked", async () => {
@@ -90,7 +93,7 @@ describe("SearchInput", () => {
       <SearchInput value="test" onChange={mockOnChange} onSearch={mockOnSearch} />
     );
 
-    await user.click(screen.getByRole("button", { name: "Search" }));
+    await user.click(screen.getByRole("button", { name: "search.searchButton" }));
 
     expect(mockOnSearch).toHaveBeenCalledTimes(1);
   });
@@ -100,7 +103,8 @@ describe("SearchInput", () => {
       <SearchInput value="a" onChange={mockOnChange} onSearch={mockOnSearch} />
     );
 
-    expect(screen.getByRole("button", { name: "Search" })).toBeDisabled();
+    // Translation key is returned by mock
+    expect(screen.getByRole("button", { name: "search.searchButton" })).toBeDisabled();
   });
 
   it("enables Search button when value is long enough", () => {
@@ -108,7 +112,8 @@ describe("SearchInput", () => {
       <SearchInput value="ab" onChange={mockOnChange} onSearch={mockOnSearch} />
     );
 
-    expect(screen.getByRole("button", { name: "Search" })).not.toBeDisabled();
+    // Translation key is returned by mock
+    expect(screen.getByRole("button", { name: "search.searchButton" })).not.toBeDisabled();
   });
 
   it("disables Search button when loading", () => {

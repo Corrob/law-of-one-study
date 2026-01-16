@@ -1,6 +1,6 @@
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeMetadata } from "./types";
-import { SessionQuestionRef } from "./quote-utils";
+import { SessionQuestionRef, getRaMaterialUrl } from "./quote-utils";
 import { debug } from "@/lib/debug";
 import {
   parsePineconeMetadata,
@@ -8,6 +8,7 @@ import {
   parseSentenceMetadata,
   type SentenceSearchResult,
 } from "@/lib/schemas";
+import { type AvailableLanguage, DEFAULT_LOCALE } from "./language-config";
 
 let pineconeClient: Pinecone | null = null;
 
@@ -28,13 +29,14 @@ const INDEX_NAME = process.env.PINECONE_INDEX || "law-of-one";
 export interface SearchOptions {
   topK?: number;
   sessionFilter?: SessionQuestionRef;
+  language?: AvailableLanguage;
 }
 
 export async function searchRaMaterial(
   embedding: number[],
   options: SearchOptions = {}
 ): Promise<PineconeMetadata[]> {
-  const { topK = 10, sessionFilter } = options;
+  const { topK = 10, sessionFilter, language = DEFAULT_LOCALE } = options;
   const pinecone = getPineconeClient();
   const index = pinecone.index(INDEX_NAME);
 
@@ -71,11 +73,11 @@ export async function searchRaMaterial(
           debug.log("[Pinecone] Invalid metadata structure, skipping:", match.id);
           return null;
         }
-        // Ensure URL is correct format
+        // Generate URL at runtime to support multiple locales without re-indexing Pinecone
         if (metadata.session && metadata.question !== undefined) {
           return {
             ...metadata,
-            url: `https://lawofone.info/s/${metadata.session}#${metadata.question}`,
+            url: getRaMaterialUrl(metadata.session, metadata.question, language),
           };
         }
         return metadata;
@@ -129,7 +131,8 @@ export async function searchConcepts(
  */
 export async function searchSentences(
   embedding: number[],
-  topK: number = 10
+  topK: number = 10,
+  language: AvailableLanguage = "en"
 ): Promise<SentenceSearchResult[]> {
   const pinecone = getPineconeClient();
   const index = pinecone.index(INDEX_NAME);
@@ -156,7 +159,8 @@ export async function searchSentences(
           sentenceIndex: metadata.sentenceIndex,
           speaker: metadata.speaker,
           reference: metadata.reference,
-          url: metadata.url,
+          // Generate URL at runtime to support multiple locales without re-indexing Pinecone
+          url: getRaMaterialUrl(metadata.session, metadata.question, language),
           score: m.score ?? 0,
         };
       })

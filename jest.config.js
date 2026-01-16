@@ -10,11 +10,13 @@ const customJestConfig = {
   setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
   testEnvironment: "jest-environment-jsdom",
   moduleNameMapper: {
+    // Map all @/ imports to src/ directory
+    // Individual test files mock @/i18n/navigation as needed
     "^@/(.*)$": "<rootDir>/src/$1",
   },
-  // Transform D3 and related ESM modules
+  // Transform D3 and related ESM modules (and next-intl)
   transformIgnorePatterns: [
-    "/node_modules/(?!(d3|d3-.*|d3dag|internmap|delaunator|robust-predicates)/)",
+    "/node_modules/(?!(d3|d3-.*|d3dag|internmap|delaunator|robust-predicates|next-intl|use-intl)/)",
   ],
   collectCoverageFrom: [
     "src/**/*.{js,jsx,ts,tsx}",

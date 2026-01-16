@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { type SearchResult } from "@/lib/schemas";
-import { formatWholeQuote, formatQuoteWithAttribution } from "@/lib/quote-utils";
+import { formatWholeQuote, formatQuoteWithAttribution, fetchBilingualQuote, splitIntoSentences } from "@/lib/quote-utils";
+import { type AvailableLanguage } from "@/lib/language-config";
 import {
   getHighlightTerms,
   parseRaMaterialText,
@@ -91,10 +94,22 @@ export default function SearchResultCard({
   query,
   onAskAbout,
 }: SearchResultCardProps) {
+  const t = useTranslations("search");
+  const tQuote = useTranslations("quote");
+  const { language } = useLanguage();
   const [expandedSegments, setExpandedSegments] = useState<Set<number>>(new Set());
   const [showFullPassage, setShowFullPassage] = useState(false);
   const [fullPassageText, setFullPassageText] = useState<string | null>(null);
+  const [englishOriginalText, setEnglishOriginalText] = useState<string | null>(null);
+  const [showEnglishOriginal, setShowEnglishOriginal] = useState(false);
   const [loadingPassage, setLoadingPassage] = useState(false);
+
+  // State for bilingual initial content
+  const [translatedSentence, setTranslatedSentence] = useState<string | null>(null);
+  const [translatedPassage, setTranslatedPassage] = useState<string | null>(null);
+  const [passageEnglishOriginal, setPassageEnglishOriginal] = useState<string | null>(null);
+  const [loadingTranslation, setLoadingTranslation] = useState(false);
+  const [translationAttempted, setTranslationAttempted] = useState(false);
 
   // Determine if this result has a sentence match (from hybrid search)
   const hasSentenceMatch = hasSentence(result);
@@ -105,8 +120,17 @@ export default function SearchResultCard({
   // Extract short reference (e.g., "49.8" from "Ra 49.8")
   const shortRef = result.reference.match(/(\d+\.\d+)/)?.[1] || result.reference;
 
-  // Get text content - for sentence mode, use sentence; for passage mode, use text
-  const displayText = hasSentenceMatch ? result.sentence : result.text;
+  // Get text content - always show translated version when available
+  // The "Show English original" toggle controls the separate English section below
+  const displayText = useMemo(() => {
+    if (hasSentenceMatch) {
+      // Sentence mode: use translated sentence if available, fall back to English
+      return translatedSentence || result.sentence;
+    } else {
+      // Passage mode: use translated passage if available, fall back to English
+      return translatedPassage || result.text;
+    }
+  }, [hasSentenceMatch, translatedSentence, translatedPassage, result.sentence, result.text]);
 
   // Format text with proper paragraph breaks
   const formattedText = useMemo(
@@ -132,28 +156,99 @@ export default function SearchResultCard({
     return null;
   }, [fullPassageText]);
 
+  // Fetch translated content on mount for non-English languages
+  useEffect(() => {
+    // Only attempt translation once per result
+    if (language !== 'en' && !translationAttempted && !loadingTranslation) {
+      setTranslationAttempted(true);
+      setLoadingTranslation(true);
+
+      const reference = `${result.session}.${result.question}`;
+
+      fetchBilingualQuote(reference, language as AvailableLanguage)
+        .then((data) => {
+          if (data?.text) {
+            if (hasSentenceMatch && result.sentence && data.originalText) {
+              // Sentence mode: find corresponding Spanish sentence by position
+              // We can't use sentenceIndex directly because English and Spanish
+              // have different sentence counts due to translation differences.
+
+              // Filter helper: skip greeting "I am Ra" / "Soy Ra" and short sentences
+              const isContentSentence = (s: string) =>
+                s.length >= 10 &&
+                !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i);
+
+              const englishSentences = splitIntoSentences(data.originalText)
+                .filter(isContentSentence);
+              const spanishSentences = splitIntoSentences(data.text)
+                .filter(isContentSentence);
+
+              // Normalize text for comparison (remove punctuation, lowercase)
+              const normalize = (s: string) =>
+                s.toLowerCase().replace(/[^\w\s]/g, '').trim();
+              const normalizedTarget = normalize(result.sentence!);
+
+              // Find which English sentence matches result.sentence
+              const englishIndex = englishSentences.findIndex(s => {
+                const normalizedSentence = normalize(s);
+                return normalizedSentence.includes(normalizedTarget) ||
+                       normalizedTarget.includes(normalizedSentence);
+              });
+
+              if (englishIndex !== -1 && spanishSentences.length > 0) {
+                // Map English position to Spanish position proportionally
+                const relativePosition = englishIndex / Math.max(englishSentences.length, 1);
+                const spanishIndex = Math.min(
+                  Math.round(relativePosition * spanishSentences.length),
+                  spanishSentences.length - 1
+                );
+                setTranslatedSentence(spanishSentences[spanishIndex].trim());
+              } else if (spanishSentences.length > 0) {
+                // Fallback: use first content sentence if we can't find the match
+                setTranslatedSentence(spanishSentences[0].trim());
+              }
+            } else if (hasSentenceMatch) {
+              // Sentence mode without English original - use first content sentence
+              const spanishSentences = splitIntoSentences(data.text)
+                .filter(s => s.length >= 10 && !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i));
+              if (spanishSentences.length > 0) {
+                setTranslatedSentence(spanishSentences[0].trim());
+              }
+            } else {
+              // Passage mode: use the full translated passage
+              setTranslatedPassage(data.text);
+            }
+            if (data.originalText) {
+              setPassageEnglishOriginal(data.originalText);
+            }
+          }
+        })
+        .finally(() => setLoadingTranslation(false));
+    }
+  }, [language, translationAttempted, loadingTranslation, hasSentenceMatch, result.session, result.question, result.sentenceIndex, result.sentence]);
+
   // Load full passage when user expands in sentence mode
   useEffect(() => {
     if (showFullPassage && !fullPassageText && !loadingPassage) {
-      // Inline the fetch logic to avoid dependency issues
-      const fetchPassage = async () => {
-        setLoadingPassage(true);
-        try {
-          const response = await fetch(`/sections/${result.session}.json`);
-          if (response.ok) {
-            const data = await response.json();
-            const key = `${result.session}.${result.question}`;
-            setFullPassageText(data[key] || null);
+      setLoadingPassage(true);
+      const reference = `${result.session}.${result.question}`;
+
+      // Fetch bilingual content for non-English, just target language for English
+      fetchBilingualQuote(reference, language as AvailableLanguage)
+        .then((data) => {
+          if (data) {
+            setFullPassageText(data.text);
+            if (data.originalText) {
+              setEnglishOriginalText(data.originalText);
+            }
           }
-        } catch {
+        })
+        .catch(() => {
           // Silently fail - user can still click the link
-        } finally {
-          setLoadingPassage(false);
-        }
-      };
-      fetchPassage();
+        })
+        .finally(() => setLoadingPassage(false));
     }
-  }, [showFullPassage, fullPassageText, loadingPassage, result.session, result.question]);
+  }, [showFullPassage, fullPassageText, loadingPassage, result.session, result.question, language]);
 
   const toggleSegment = (index: number) => {
     setExpandedSegments((prev) => {
@@ -170,9 +265,9 @@ export default function SearchResultCard({
   // Get speaker label for sentence mode
   const speakerLabel = hasSentenceMatch
     ? result.speaker === "ra"
-      ? "Ra"
+      ? tQuote("ra")
       : result.speaker === "questioner"
-        ? "Questioner"
+        ? tQuote("questioner")
         : null
     : null;
 
@@ -200,7 +295,7 @@ export default function SearchResultCard({
             </span>
           ) : (
             <span className="text-xs font-medium text-[var(--lo1-celestial)]/80 uppercase tracking-wider">
-              Questioner
+              {tQuote("questioner")}
             </span>
           )}
           <a
@@ -217,6 +312,7 @@ export default function SearchResultCard({
         {/* Sentence mode: show matched sentence prominently */}
         {hasSentenceMatch && !showFullPassage && (
           <div className="space-y-4">
+            {/* Show translated sentence if available, otherwise show original */}
             <p
               className={`text-[16px] leading-relaxed ${
                 result.speaker === "ra"
@@ -224,14 +320,59 @@ export default function SearchResultCard({
                   : "text-[var(--lo1-text-light)]/90"
               }`}
             >
-              {highlightText(result.sentence!, highlightTerms)}
+              {loadingTranslation ? (
+                <span className="text-[var(--lo1-stardust)]">...</span>
+              ) : (
+                highlightText(
+                  translatedSentence || result.sentence!,
+                  highlightTerms
+                )
+              )}
             </p>
-            <button
-              onClick={() => setShowFullPassage(true)}
-              className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
-            >
-              {loadingPassage ? "Loading..." : "↓ View in context"}
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowFullPassage(true)}
+                className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
+              >
+                {loadingPassage ? t("loadingPassage") : `↓ ${t("viewInContext")}`}
+              </button>
+              {/* English original toggle for non-English users */}
+              {language !== 'en' && translatedSentence && (
+                <button
+                  onClick={() => setShowEnglishOriginal(!showEnglishOriginal)}
+                  className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-celestial-light)] cursor-pointer"
+                >
+                  {showEnglishOriginal ? tQuote("hideEnglishOriginal") : tQuote("showEnglishOriginal")}
+                </button>
+              )}
+            </div>
+            {/* Show English original sentence if toggled */}
+            {showEnglishOriginal && translatedSentence && result.sentence && (
+              <div className="mt-3 pt-3 border-t border-[var(--lo1-celestial)]/20">
+                {result.speaker && (
+                  <div className="mb-1">
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider ${
+                        result.speaker === "ra"
+                          ? "text-[var(--lo1-gold)]/70"
+                          : "text-[var(--lo1-celestial)]/70"
+                      }`}
+                    >
+                      {result.speaker === "ra" ? "Ra" : "Questioner"}
+                    </span>
+                  </div>
+                )}
+                <p
+                  className={`text-[14px] leading-relaxed opacity-80 ${
+                    result.speaker === "ra"
+                      ? "text-[var(--lo1-starlight)]"
+                      : "text-[var(--lo1-text-light)]"
+                  }`}
+                >
+                  {result.sentence}
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -245,7 +386,7 @@ export default function SearchResultCard({
                     {segment.type === "ra" && (
                       <div className="mb-2">
                         <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wider">
-                          Ra
+                          {tQuote("ra")}
                         </span>
                       </div>
                     )}
@@ -256,27 +397,74 @@ export default function SearchResultCard({
                           : "text-[var(--lo1-text-light)]/90"
                       }`}
                     >
-                      {highlightMatchedSentence(segment.content, result.sentence)}
+                      {highlightMatchedSentence(segment.content, translatedSentence || result.sentence)}
                     </p>
                   </div>
                 );
               })
             ) : (
-              <p className="text-[var(--lo1-stardust)] text-sm">Loading passage...</p>
+              <p className="text-[var(--lo1-stardust)] text-sm">{t("loadingPassage")}</p>
             )}
-            <button
-              onClick={() => setShowFullPassage(false)}
-              className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
-            >
-              ↑ Show less
-            </button>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setShowFullPassage(false)}
+                className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
+              >
+                ↑ {t("showLess")}
+              </button>
+              {/* English original toggle for non-English users */}
+              {language !== 'en' && englishOriginalText && (
+                <button
+                  onClick={() => setShowEnglishOriginal(!showEnglishOriginal)}
+                  className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-celestial-light)] cursor-pointer"
+                >
+                  {showEnglishOriginal ? tQuote("hideEnglishOriginal") : tQuote("showEnglishOriginal")}
+                </button>
+              )}
+            </div>
+            {/* Show English original if toggled */}
+            {showEnglishOriginal && englishOriginalText && (
+              <div className="mt-4 pt-4 border-t border-[var(--lo1-celestial)]/20">
+                {parseRaMaterialText(formatWholeQuote(englishOriginalText)).map((segment, index) => (
+                  <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
+                    {segment.type === "questioner" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-celestial)]/70 uppercase tracking-wider">
+                          Questioner
+                        </span>
+                      </div>
+                    )}
+                    {segment.type === "ra" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-gold)]/70 uppercase tracking-wider">
+                          Ra
+                        </span>
+                      </div>
+                    )}
+                    <p
+                      className={`text-[14px] leading-relaxed whitespace-pre-line opacity-80 ${
+                        segment.type === "ra"
+                          ? "text-[var(--lo1-starlight)]"
+                          : "text-[var(--lo1-text-light)]"
+                      }`}
+                    >
+                      {highlightMatchedSentence(segment.content, result.sentence)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
         {/* Passage mode: show segments as before */}
         {!hasSentenceMatch && (
           <div className="space-y-4">
-            {segments.map((segment, index) => {
+            {/* Loading indicator for translation */}
+            {loadingTranslation && (
+              <p className="text-[var(--lo1-stardust)] text-sm">...</p>
+            )}
+            {!loadingTranslation && segments.map((segment, index) => {
               const isExpanded = expandedSegments.has(index);
               const { content, needsButton } = getSegmentDisplayContent(
                 segment.type,
@@ -291,7 +479,7 @@ export default function SearchResultCard({
                   {segment.type === "ra" && (
                     <div className="mb-2">
                       <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wider">
-                        Ra
+                        {tQuote("ra")}
                       </span>
                     </div>
                   )}
@@ -310,12 +498,55 @@ export default function SearchResultCard({
                       onClick={() => toggleSegment(index)}
                       className="mt-2 text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
                     >
-                      {isExpanded ? "↑ Show less" : "↓ Show more"}
+                      {isExpanded ? `↑ ${t("showLess")}` : `↓ ${t("showMore")}`}
                     </button>
                   )}
                 </div>
               );
             })}
+            {/* English original toggle for non-English users in passage mode */}
+            {language !== 'en' && passageEnglishOriginal && (
+              <div className="mt-2">
+                <button
+                  onClick={() => setShowEnglishOriginal(!showEnglishOriginal)}
+                  className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-celestial-light)] cursor-pointer"
+                >
+                  {showEnglishOriginal ? tQuote("hideEnglishOriginal") : tQuote("showEnglishOriginal")}
+                </button>
+              </div>
+            )}
+            {/* Show English original if toggled in passage mode */}
+            {showEnglishOriginal && passageEnglishOriginal && (
+              <div className="mt-4 pt-4 border-t border-[var(--lo1-celestial)]/20">
+                {parseRaMaterialText(formatWholeQuote(passageEnglishOriginal)).map((segment, index) => (
+                  <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
+                    {segment.type === "questioner" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-celestial)]/70 uppercase tracking-wider">
+                          Questioner
+                        </span>
+                      </div>
+                    )}
+                    {segment.type === "ra" && (
+                      <div className="mb-1">
+                        <span className="text-xs font-semibold text-[var(--lo1-gold)]/70 uppercase tracking-wider">
+                          Ra
+                        </span>
+                      </div>
+                    )}
+                    <p
+                      className={`text-[14px] leading-relaxed whitespace-pre-line opacity-80 ${
+                        segment.type === "ra"
+                          ? "text-[var(--lo1-starlight)]"
+                          : "text-[var(--lo1-text-light)]"
+                      }`}
+                    >
+                      {segment.content}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -331,7 +562,7 @@ export default function SearchResultCard({
                        hover:border-[var(--lo1-celestial)]/50 hover:bg-[var(--lo1-celestial)]/5
                        transition-all duration-200"
           >
-            Read full passage
+            {t("readFullPassage")}
           </a>
           <button
             onClick={onAskAbout}
@@ -340,7 +571,7 @@ export default function SearchResultCard({
                        text-[var(--lo1-gold)] hover:bg-[var(--lo1-gold)]/20
                        transition-all duration-200 cursor-pointer"
           >
-            Ask about this
+            {t("askAboutThis")}
           </button>
           <div className="ml-auto">
             <CopyButton textToCopy={copyText} size="sm" />

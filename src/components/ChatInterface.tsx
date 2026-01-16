@@ -2,13 +2,17 @@
 
 import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
+import { useTranslations } from "next-intl";
 import MessageInput from "./MessageInput";
 import MessageList from "./MessageList";
 import WelcomeScreen from "./WelcomeScreen";
 import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
-import { getPlaceholder, defaultPlaceholder } from "@/data/placeholders";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+const INITIAL_PLACEHOLDER_COUNT = 4;
+const FOLLOWUP_PLACEHOLDER_COUNT = 6;
 
 export interface ChatInterfaceRef {
   reset: () => void;
@@ -39,15 +43,31 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   { onMessagesChange, initialQuery },
   ref
 ) {
-  const [placeholder, setPlaceholder] = useState(defaultPlaceholder);
+  const t = useTranslations("chat");
+  const [placeholderKey, setPlaceholderKey] = useState("1");
+  const [isFollowUp, setIsFollowUp] = useState(false);
   const [thinkingMode, setThinkingMode] = useState(false);
   // Use ref to track initial query sent (avoids StrictMode double-send)
   const initialQuerySentRef = useRef(false);
 
+  // Get current language setting
+  const { language } = useLanguage();
+
+  // Helper to get random placeholder key
+  const getRandomPlaceholderKey = useCallback((forFollowUp: boolean) => {
+    const count = forFollowUp ? FOLLOWUP_PLACEHOLDER_COUNT : INITIAL_PLACEHOLDER_COUNT;
+    return String(Math.floor(Math.random() * count) + 1);
+  }, []);
+
   // Randomize placeholder after hydration (client-side only)
   useEffect(() => {
-    setPlaceholder(getPlaceholder(0));
-  }, []);
+    setPlaceholderKey(getRandomPlaceholderKey(false));
+  }, [getRandomPlaceholderKey]);
+
+  // Get the translated placeholder
+  const placeholder = isFollowUp
+    ? t(`followUpPlaceholders.${placeholderKey}`)
+    : t(`initialPlaceholders.${placeholderKey}`);
 
   // Chat stream management
   const {
@@ -58,7 +78,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     sendMessage,
     finalizeMessage,
     reset: resetChat,
-  } = useChatStream((depth) => setPlaceholder(getPlaceholder(depth)));
+  } = useChatStream((depth) => {
+    const forFollowUp = depth > 0;
+    setIsFollowUp(forFollowUp);
+    setPlaceholderKey(getRandomPlaceholderKey(forFollowUp));
+  });
 
   // Animation queue for streaming messages
   const {
@@ -117,9 +141,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     async (content: string) => {
       resetQueue();
       setTimeout(() => scrollToBottom("smooth"), 50);
-      await sendMessage(content, addChunk, thinkingMode);
+      await sendMessage(content, addChunk, thinkingMode, language);
     },
-    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode]
+    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode, language]
   );
 
   // Finalize message when stream is done AND all animations are complete
@@ -142,8 +166,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   const handleReset = useCallback(() => {
     resetChat();
     resetQueue();
-    setPlaceholder(getPlaceholder(0));
-  }, [resetChat, resetQueue]);
+    setIsFollowUp(false);
+    setPlaceholderKey(getRandomPlaceholderKey(false));
+  }, [resetChat, resetQueue, getRandomPlaceholderKey]);
 
   // Expose reset function to parent via ref
   useImperativeHandle(

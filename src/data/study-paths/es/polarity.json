@@ -1,0 +1,434 @@
+{
+  "id": "polarity",
+  "title": "La Elección: Servicio a Otros vs Servicio al Yo",
+  "description": "Explora la elección fundamental que define la existencia en tercera densidad: el camino del servicio a otros o el servicio al yo. Este concepto fundamental moldea toda evolución espiritual y es la clave para la cosecha.",
+  "difficulty": "beginner",
+  "estimatedMinutes": 25,
+  "concepts": [
+    "polarity",
+    "service-to-others",
+    "service-to-self",
+    "harvest",
+    "free-will"
+  ],
+  "lessons": [
+    {
+      "id": "fundamental-choice",
+      "title": "La Elección Fundamental",
+      "estimatedMinutes": 5,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "La tercera densidad es única entre todas las densidades porque es donde la conciencia se da cuenta por primera vez de la posibilidad de elegir un camino. Esta elección entre el servicio a otros y el servicio al yo no es meramente una preferencia filosófica; es la característica definitoria de tu existencia aquí y determina la trayectoria de tu evolución a través de las densidades restantes."
+        },
+        {
+          "type": "quote",
+          "reference": "30.1",
+          "text": "Las polaridades comienzan a ser exploradas solo en el momento en que un entidad de tercera densidad se vuelve consciente de la posibilidad de elección entre el concepto o distorsión de servicio a sí mismo o servicio a otros. Esto marca el final de lo que ustedes pueden llamar la fase inconsciente o inocente de la conciencia consciente.",
+          "context": "Ra explica cuándo comienza la polaridad en el viaje evolutivo.",
+          "highlight": [
+            "consciente de la posibilidad de elección",
+            "fase inconsciente o inocente"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Antes de que esta conciencia despierte, los seres existen en un estado inocente, ni positivo ni negativo. En el momento en que reconoces que puedes elegir cómo orientar tu conciencia, has comenzado el camino de la evolución espiritual propiamente dicha."
+        },
+        {
+          "type": "quote",
+          "reference": "93.3",
+          "text": "Uno podría considerar las polaridades con la naturaleza literal disfrutada por la polaridad física del imán. Lo negativo y lo positivo, con sus características eléctricas, pueden verse de la misma manera que en el sentido físico. Cabe señalar en este contexto que es completamente imposible juzgar la polaridad de un acto o de una entidad, así como es imposible juzgar la bondad relativa de los polos negativo y positivo del imán.",
+          "context": "Ra ofrece el imán como una analogía para entender la polaridad sin juicio.",
+          "highlight": [
+            "imposible juzgar la polaridad",
+            "imposible juzgar la bondad relativa"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "Según Ra, ¿cuándo comienzan a explorarse las polaridades?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Al nacer en la tercera densidad",
+              "isCorrect": false,
+              "explanation": "La polarización no comienza automáticamente al nacer. Muchos seres pasan un tiempo considerable en la fase 'inocente' antes de hacerse conscientes de la elección.",
+              "relatedPassage": "30.1"
+            },
+            {
+              "id": "b",
+              "text": "Cuando uno se da cuenta de la posibilidad de elección",
+              "isCorrect": true,
+              "explanation": "Ra afirma que las polaridades comienzan a ser exploradas solo cuando una entidad se da cuenta de la posibilidad de elegir entre el servicio al yo o el servicio a otros. Esta conciencia marca el final de la fase inocente.",
+              "relatedPassage": "30.1"
+            },
+            {
+              "id": "c",
+              "text": "Cuando uno alcanza una cierta edad",
+              "isCorrect": false,
+              "explanation": "La elección no está ligada a la edad física, sino a la conciencia espiritual. Algunos pueden despertar a esta elección temprano en la vida, otros mucho más tarde, y algunos no lo hacen en absoluto en una encarnación dada.",
+              "relatedPassage": "30.1"
+            },
+            {
+              "id": "d",
+              "text": "Cuando uno comienza la práctica espiritual formal",
+              "isCorrect": false,
+              "explanation": "Mientras que la práctica espiritual puede ayudar a clarificar la elección, la conciencia de la polaridad puede surgir a través de muchos medios. Lo que importa es el reconocimiento de la elección en sí, no cómo se llega a ella.",
+              "relatedPassage": "30.1"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "¿Cuándo te diste cuenta por primera vez de que tenías una elección en cómo orientar tu vida, hacia el servicio a otros o hacia el servicio al yo? ¿Qué despertó esta conciencia en ti?",
+          "guidingThoughts": [
+            "La conciencia misma es un hito en la evolución.",
+            "No hay un 'momento correcto' para este despertar.",
+            "Tu presencia aquí sugiere que la elección ya ha comenzado a aclararse."
+          ],
+          "placeholder": "Reflexiona sobre tu propio despertar a la elección..."
+        }
+      ]
+    },
+    {
+      "id": "service-to-others",
+      "title": "Servicio a Otros",
+      "estimatedMinutes": 5,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El camino de servicio a otros, también llamado el camino positivo o el camino de lo que es, se caracteriza por la radiación en lugar de la absorción. Aquellos en este camino ven al Creador en todos los seres y buscan compartir amor, luz y compasión con los demás. Esto no se trata de auto-sacrificio o martirio, sino de reconocer la unidad de toda la existencia."
+        },
+        {
+          "type": "quote",
+          "reference": "17.30",
+          "text": "La mejor manera de servicio a otros es el constante intento de buscar compartir el amor del Creador tal como es conocido por el yo interior. Esto implica el conocimiento de uno mismo y la capacidad de abrirse al otro-yo sin vacilación. Esto implica, digamos, irradiar aquello que es la esencia o el corazón del complejo mente/cuerpo/espíritu.",
+          "context": "Ra describe la esencia del servicio a otros.",
+          "highlight": [
+            "compartir el amor del Creador",
+            "irradiar aquello que es la esencia"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Observa que Ra enfatiza el autoconocimiento como esencial para el servicio. No puedes realmente servir a otros si no te conoces a ti mismo. El camino positivo no se trata de ignorar tus propias necesidades; se trata de entender que tu más profunda realización proviene de la conexión y la entrega."
+        },
+        {
+          "type": "quote",
+          "reference": "52.11",
+          "text": "Recordemos que todos somos uno. Esta es la gran enseñanza. En esta unidad reside el amor. Esta es una gran enseñanza. En esta unidad reside la luz. Esta es la enseñanza fundamental de todos los planos de existencia en la materialización. Unidad, amor, luz y alegría; este es el corazón de la evolución del espíritu.",
+          "context": "Ra habla sobre la verdad fundamental que subyace en el camino positivo.",
+          "highlight": [
+            "todos somos uno",
+            "Unidad, amor, luz y alegría"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "Según Ra, ¿cuál es la 'mejor manera' de servir a otros?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Siguiendo un estricto conjunto de reglas sobre ayudar a otros",
+              "isCorrect": false,
+              "explanation": "Mientras Ra describe el corazón del servicio (irradiando amor), Ra también afirma en el mismo pasaje que para métodos específicos, 'No hay el mejor. No hay generalización.' Cada entidad debe encontrar su propia manera única de servir.",
+              "relatedPassage": "17.30"
+            },
+            {
+              "id": "b",
+              "text": "Sacrificar tus propias necesidades por los demás",
+              "isCorrect": false,
+              "explanation": "Ra enfatiza el autoconocimiento como esencial para el servicio. El verdadero servicio proviene de la plenitud, no de la depleción. El martirio no es el camino positivo.",
+              "relatedPassage": "17.30"
+            },
+            {
+              "id": "c",
+              "text": "Radiando el amor del Creador a través del conocimiento del yo",
+              "isCorrect": true,
+              "explanation": "Ra describe el servicio como 'irradiar aquello que es la esencia o el corazón del complejo mente/cuerpo/espíritu.' Esto requiere conocerse a uno mismo y ser capaz de abrirse a los demás sin vacilación.",
+              "relatedPassage": "17.30"
+            },
+            {
+              "id": "d",
+              "text": "Convertir a otros a tus creencias",
+              "isCorrect": false,
+              "explanation": "El camino positivo respeta el libre albedrío absolutamente. Se trata de compartir amor, no de imponer opiniones. El propio enfoque de Ra (esperando ser llamado) ejemplifica esto.",
+              "relatedPassage": "73.3"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "Piensa en un momento en el que irradiabas amor o compasión de manera natural hacia otro sin esperar nada a cambio. ¿Cómo se sintió eso? ¿Qué lo hizo posible?",
+          "guidingThoughts": [
+            "El verdadero servicio a otros a menudo se siente sin esfuerzo.",
+            "El autoconocimiento permite una entrega auténtica.",
+            "El Creador sirve al Creador a través de ti."
+          ],
+          "placeholder": "Recuerda un momento de servicio natural y fluido..."
+        }
+      ]
+    },
+    {
+      "id": "service-to-self",
+      "title": "Servicio al Yo",
+      "estimatedMinutes": 5,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "El camino del servicio al yo, también llamado el camino negativo o el camino de lo que no es, se caracteriza por la absorción en lugar de la radiación. Aquellos en este camino buscan separarse de los demás, viendo a los otros yo como herramientas u obstáculos en lugar de como expresiones compañeras del Creador. Este camino requiere una disciplina y dedicación tremendas."
+        },
+        {
+          "type": "quote",
+          "reference": "54.19",
+          "text": "La entidad orientada negativamente programará para una separación máxima de y control sobre todas aquellas cosas y entidades conscientes que percibe como diferentes del sí mismo.",
+          "context": "Ra describe la orientación central del camino negativo.",
+          "highlight": [
+            "separación máxima",
+            "control sobre"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "Es importante entender este camino sin juicio moral. Ambos caminos conducen eventualmente al Creador, aunque el camino negativo simplemente toma una ruta más larga, ya que la ilusión de separación debe ser finalmente entregada en la sexta densidad. Ra señala que es 'bastante imposible juzgar la polaridad de un acto o entidad.'"
+        },
+        {
+          "type": "quote",
+          "reference": "100.9",
+          "text": "La polaridad negativa depende más fuertemente de la separación ilusoria entre el yo y todos los demás complejos mente/cuerpo/espíritu. La polaridad positiva intenta ver a través de la ilusión al Creador en cada complejo mente/cuerpo/espíritu.",
+          "context": "Ra contrasta cómo cada polaridad se relaciona con el velo de separación.",
+          "highlight": [
+            "separación ilusoria",
+            "ver a través de la ilusión"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Cuál es la orientación central del camino de servicio al yo?",
+          "options": [
+            {
+              "id": "a",
+              "text": "egoísmo simple o codicia",
+              "isCorrect": false,
+              "explanation": "El camino negativo es mucho más disciplinado que la mera egoísmo. Requiere una dedicación tremenda y la elección consciente de separarse y controlar. El egoísmo casual cae en el 'sumidero de la indiferencia.'",
+              "relatedPassage": "17.33"
+            },
+            {
+              "id": "b",
+              "text": "Máxima separación de y control sobre otros",
+              "isCorrect": true,
+              "explanation": "Ra afirma que la entidad negativa programa para 'la máxima separación de y control sobre todas aquellas cosas y entidades conscientes que percibe como diferentes del yo.'",
+              "relatedPassage": "54.19"
+            },
+            {
+              "id": "c",
+              "text": "Comportamiento maligno o inmoral",
+              "isCorrect": false,
+              "explanation": "Ra declara explícitamente que es imposible juzgar la polaridad de un acto o entidad. El camino negativo no es 'malvado'; es otra forma de explorar al Creador, aunque eventualmente debe ser abandonado.",
+              "relatedPassage": "93.3"
+            },
+            {
+              "id": "d",
+              "text": "Rechazar todo crecimiento espiritual",
+              "isCorrect": false,
+              "explanation": "El camino negativo ES un camino de crecimiento espiritual, solo que orientado de manera diferente. Las entidades negativas pueden estar altamente desarrolladas espiritualmente; simplemente utilizan su desarrollo para la separación y el control en lugar de la unidad.",
+              "relatedPassage": "47.5"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "Sin juicio, ¿puedes reconocer momentos en los que has actuado desde la separación y el control? ¿Qué impulsó esas elecciones? Comprender esto ayuda a clarificar tu propio camino.",
+          "guidingThoughts": [
+            "La conciencia de ambos caminos trae claridad.",
+            "La mayoría de los seres han experimentado ambas orientaciones.",
+            "La comprensión no significa respaldar."
+          ],
+          "placeholder": "Reflexiona sobre la naturaleza de la separación..."
+        }
+      ]
+    },
+    {
+      "id": "harvest-thresholds",
+      "title": "Los Umbrales del 51%/95%",
+      "estimatedMinutes": 5,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "Ra proporciona umbrales específicos para la cosecha hacia la cuarta densidad. Para el camino positivo, una entidad debe estar orientada al servicio a otros al menos en un 51%. Para el camino negativo, el requisito es mucho más estricto: 95% de servicio al yo. Esta asimetría revela algo profundo sobre la naturaleza de los dos caminos."
+        },
+        {
+          "type": "quote",
+          "reference": "17.33",
+          "text": "Alcanzar un cincuenta y uno por ciento de dedicación al bienestar de los otros-yos es tan difícil como alcanzar un cinco por ciento de dedicación a los otros-yos. El, digamos, pozo de indiferencia se encuentra entre esos dos.",
+          "context": "Ra explica por qué ambos umbrales representan un compromiso genuino.",
+          "highlight": [
+            "cincuenta y uno por ciento",
+            "cinco por ciento",
+            "pozo de indiferencia"
+          ]
+        },
+        {
+          "type": "quote",
+          "reference": "17.32",
+          "text": "La entidad que desea seguir el camino del servicio a sí mismo debe alcanzar un grado de cinco, es decir, cinco por ciento de servicio a otros, noventa y cinco por ciento de servicio a sí mismo. Debe acercarse a la totalidad. El camino negativo es bastante difícil de alcanzar en cuanto a cosechabilidad y requiere una gran dedicación.",
+          "context": "Ra explica el estándar mucho más alto para la cosecha negativa.",
+          "highlight": [
+            "noventa y cinco por ciento de servicio a sí mismo",
+            "requiere una gran dedicación"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "¿Por qué requisitos tan diferentes? Entre estos umbrales se encuentra la vasta área gris donde habita la mayor parte de la humanidad, ni claramente positiva ni negativa, y por lo tanto no cosechable. Ambos caminos requieren un compromiso genuino para escapar de este terreno intermedio."
+        },
+        {
+          "type": "content",
+          "markdown": "**Una nota sobre la interpretación:** Los porcentajes que proporciona Ra son probablemente metafóricos en lugar de mediciones literales. No hay una calculadora cósmica contabilizando nuestro servicio. En cambio, estos umbrales apuntan a algo más profundo sobre los requisitos metafísicos de cada camino.\n\n*Las siguientes son teorías exploradas por estudiantes del material, no expresadas explícitamente por Ra:*\n\nUna perspectiva señala que el 73% es exactamente el punto medio entre el 51 y el 95. Las entidades que emergen de la segunda densidad pueden comenzar naturalmente cerca de este punto, ya que los animales deben estar principalmente enfocados en sí mismos para sobrevivir antes de que existan estructuras sociales. Desde el 73%, moverse al 51% de servicio a otros requiere el mismo cambio de 22 puntos que moverse al 95% de servicio al yo. Esto podría explicar por qué Ra dice que ambos umbrales son igualmente difíciles de alcanzar.\n\nOtra consideración involucra la formación del complejo de memoria social. La cuarta densidad positiva requiere que las entidades fusionen su conciencia con otras, lo que demanda una orientación fundamental hacia la unidad. El umbral del 51% puede representar la compatibilidad vibracional mínima para esta experiencia colectiva. El requisito del 95% del camino negativo podría reflejar cómo la conciencia basada en la separación lucha por mantener la coherencia a menos que sea casi absoluta.\n\nEstas teorías nos ayudan a contemplar el 'por qué' detrás de los números, incluso si no podemos saber con certeza."
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Qué significa Ra con el 'sumidero de la indiferencia'?",
+          "options": [
+            {
+              "id": "a",
+              "text": "Un reino negativo donde las almas apáticas son castigadas.",
+              "isCorrect": false,
+              "explanation": "Ra no describe reinos de castigo. El agujero de hundimiento es simplemente el estado no polarizado entre los dos umbrales de cosecha, no un lugar de castigo.",
+              "relatedPassage": "17.33"
+            },
+            {
+              "id": "b",
+              "text": "El vasto terreno intermedio donde las entidades no son cosechables ni positivas ni negativas.",
+              "isCorrect": true,
+              "explanation": "El hundimiento de la indiferencia se encuentra entre el 51% de servicio a otros y el 95% de servicio al yo. La mayor parte de la humanidad habita aquí, sin estar lo suficientemente comprometida con ninguno de los dos caminos como para ser cosechable.",
+              "relatedPassage": "17.33"
+            },
+            {
+              "id": "c",
+              "text": "Un estado temporal por el que todas las entidades pasan durante la cosecha.",
+              "isCorrect": false,
+              "explanation": "El hundimiento no es una etapa de cosecha, sino más bien el estado de estar insuficientemente polarizado. Las entidades en este estado repiten la tercera densidad en lugar de progresar.",
+              "relatedPassage": "17.33"
+            },
+            {
+              "id": "d",
+              "text": "La sensación de vacío espiritual antes del despertar",
+              "isCorrect": false,
+              "explanation": "Mientras que la vacuidad espiritual puede acompañar a la indiferencia, Ra utiliza este término específicamente para describir la brecha de polaridad entre los dos umbrales de cosecha, no un estado emocional.",
+              "relatedPassage": "17.33"
+            }
+          ]
+        },
+        {
+          "type": "reflection",
+          "prompt": "El 'sumidero de la indiferencia' describe el estado de no ser claramente positivo ni negativo. ¿Dónde ves esto en tu propia vida o en el mundo que te rodea?",
+          "guidingThoughts": [
+            "La indiferencia es el verdadero opuesto del amor.",
+            "Incluso las pequeñas elecciones hacia el servicio son importantes.",
+            "La conciencia del hundimiento es el primer paso hacia afuera."
+          ],
+          "placeholder": "Considera la naturaleza de la indiferencia..."
+        }
+      ]
+    },
+    {
+      "id": "making-the-choice",
+      "title": "Tomando la Decisión",
+      "estimatedMinutes": 5,
+      "sections": [
+        {
+          "type": "content",
+          "markdown": "La elección no se hace una vez y se olvida. Se hace momento a momento, día a día. Cada interacción, cada pensamiento, cada respuesta al catalizador es una oportunidad para reforzar tu polaridad elegida. Para aquellos en el camino positivo, esto significa cultivar la conciencia del Creador en todos los seres y situaciones."
+        },
+        {
+          "type": "quote",
+          "reference": "73.20",
+          "text": "A esas cualidades puedes añadir el vivir día a día y momento a momento, pues el verdadero adepto vive cada vez más como es.",
+          "context": "Ra enfatiza que el desarrollo espiritual es momento a momento.",
+          "highlight": [
+            "vivir día a día y momento a momento",
+            "vive cada vez más como es"
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "El camino positivo no requiere perfección (recuerda, solo se necesita un 51%). Lo que requiere es una intención constante y un crecimiento gradual. Cada acto de amor genuino, compasión o servicio fortalece tu polaridad. Cada momento de reconocer al Creador en otro ser es importante."
+        },
+        {
+          "type": "content",
+          "markdown": "Ra proporciona orientación práctica sobre cómo cada camino procesa el catalizador de manera diferente. Cuando surgen emociones o situaciones difíciles, el camino positivo busca aceptar, entender e integrar estas experiencias con amor. El camino negativo busca aprovechar y controlar estas energías para obtener poder sobre uno mismo y sobre los demás. La clave de la diferencia radica en estas dos palabras: aceptación versus control."
+        },
+        {
+          "type": "quote",
+          "reference": "46.9",
+          "text": "El control es la clave para el uso negativamente polarizado del catalizador. La aceptación es la clave para el uso positivamente polarizado del catalizador. Entre estas polaridades se encuentra el potencial para que esta energía aleatoria y no dirigida cree un análogo del complejo corporal de lo que ustedes llaman el crecimiento canceroso de tejido.",
+          "context": "Ra resume la diferencia fundamental en cómo cada camino trabaja con el catalizador.",
+          "highlight": [
+            "El control es la clave",
+            "La aceptación es la clave"
+          ]
+        },
+        {
+          "type": "quote",
+          "reference": "71.2",
+          "text": "En esta densidad, un aumento en el servicio a otros o el servicio a sí mismo casi inevitablemente incrementará la capacidad de una entidad para disfrutar de una mayor intensidad de luz. Así, en esta densidad, podemos decir que es casi imposible polarizar sin aumentar la cosechabilidad.",
+          "context": "Ra explica el vínculo directo entre la polaridad y el progreso espiritual.",
+          "highlight": [
+            "aumento en el servicio",
+            "mayor intensidad de luz"
+          ]
+        },
+        {
+          "type": "multiple-choice",
+          "question": "¿Cómo se toma mejor la Elección, según las enseñanzas de Ra?",
+          "options": [
+            {
+              "id": "a",
+              "text": "A través de un único compromiso dramático",
+              "isCorrect": false,
+              "explanation": "Mientras que los momentos dramáticos pueden aclarar la intención, Ra enfatiza que el verdadero camino se recorre 'día a día y momento a momento.' La práctica diaria constante importa más que los gestos dramáticos.",
+              "relatedPassage": "73.20"
+            },
+            {
+              "id": "b",
+              "text": "A través de la adherencia perfecta a las reglas",
+              "isCorrect": false,
+              "explanation": "Ra afirma que no hay generalizaciones ni reglas fijas para el servicio. Cada entidad debe encontrar su propia manera única de expresar su polaridad a través del autoconocimiento y la discernimiento.",
+              "relatedPassage": "17.30"
+            },
+            {
+              "id": "c",
+              "text": "A través de una vida momento a momento y sirviendo",
+              "isCorrect": true,
+              "explanation": "Ra enseña que el verdadero adepto 'vive cada vez más como es,' tomando la decisión continuamente a través de la vida diaria. Cada momento de servicio o amor refuerza la polaridad positiva.",
+              "relatedPassage": "73.20"
+            },
+            {
+              "id": "d",
+              "text": "Al evitar todos los pensamientos negativos",
+              "isCorrect": false,
+              "explanation": "El objetivo no es la supresión, sino la transformación. Comprender y aceptar todas las partes del yo (incluidos los aspectos sombríos) es parte del autoconocimiento que permite un verdadero servicio.",
+              "relatedPassage": "17.30"
+            }
+          ]
+        },
+        {
+          "type": "content",
+          "markdown": "**Uniéndolo Todo:** Ahora has explorado la arquitectura fundamental de la evolución espiritual en tercera densidad. La elección entre servicio a otros y servicio al yo no es una filosofía abstracta; es el mecanismo por el cual la conciencia se polariza y se vuelve cosechable. Recuerda: el camino positivo requiere solo un 51% de orientación hacia otros, el camino negativo demanda un 95%, y entre ellos se encuentra el pozo de la indiferencia donde la mayoría permanece. Tu camino hacia adelante se recorre momento a momento, elección por elección, en los encuentros diarios de la vida ordinaria."
+        },
+        {
+          "type": "reflection",
+          "prompt": "A medida que completes este camino, considera: ¿Cuál es una pequeña manera en la que podrías aumentar tu servicio a otros en tu vida diaria? Recuerda, incluso las pequeñas elecciones consistentes construyen polaridad con el tiempo.",
+          "guidingThoughts": [
+            "Pequeños actos de amor se acumulan.",
+            "Tu forma única de servir espera ser descubierta.",
+            "El viaje de mil millas comienza con un solo paso."
+          ],
+          "placeholder": "Establece una intención para tu camino hacia adelante..."
+        }
+      ]
+    }
+  ]
+}

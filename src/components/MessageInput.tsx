@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, KeyboardEvent, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { useAutoGrowTextarea } from "@/hooks/useAutoGrowTextarea";
 
 interface MessageInputProps {
@@ -12,6 +13,7 @@ interface MessageInputProps {
 const MAX_MESSAGE_LENGTH = 5000;
 
 export default function MessageInput({ onSend, disabled, placeholder }: MessageInputProps) {
+  const t = useTranslations("chat");
   const [input, setInput] = useState("");
   const { textareaRef, maxHeight } = useAutoGrowTextarea({ value: input });
 
@@ -89,10 +91,10 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
-          placeholder={placeholder || "Ask about the Ra Material..."}
+          placeholder={placeholder || t("placeholder")}
           disabled={disabled}
           rows={1}
-          aria-label="Message input"
+          aria-label={t("messageInput")}
           aria-describedby={isNearLimit ? counterId : undefined}
           aria-invalid={isOverLimit}
           className="flex-1 resize-none bg-transparent px-3 sm:px-4 py-4 pr-12 sm:pr-14
@@ -113,7 +115,7 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
                        ? "bg-[var(--lo1-gold)] text-[var(--lo1-deep-space)] hover:bg-[var(--lo1-gold-light)] hover:shadow-[0_0_20px_rgba(212,168,83,0.4)] cursor-pointer"
                        : "bg-[var(--lo1-celestial)]/20 text-[var(--lo1-stardust)]/50 cursor-not-allowed"
                      }`}
-          aria-label="Send message"
+          aria-label={t("sendMessage")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -136,8 +138,8 @@ export default function MessageInput({ onSend, disabled, placeholder }: MessageI
           aria-atomic="true"
         >
           <span className={isOverLimit ? "text-[var(--lo1-error)]" : "text-[var(--lo1-stardust)]"}>
-            {characterCount.toLocaleString()} / {MAX_MESSAGE_LENGTH.toLocaleString()} characters
-            {isOverLimit && " (over limit)"}
+            {t("characterCount", { count: characterCount.toLocaleString(), max: MAX_MESSAGE_LENGTH.toLocaleString() })}
+            {isOverLimit && ` ${t("overLimit")}`}
           </span>
         </div>
       )}

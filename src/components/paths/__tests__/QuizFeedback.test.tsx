@@ -1,6 +1,24 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import QuizFeedback from "../QuizFeedback";
 
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
+    const translations: Record<string, string> = {
+      "thatsRight": "That's right!",
+      "notQuite": "Not quite, but let's explore this",
+      "answerIs": `The answer is: "${params?.answer || ""}"`,
+      "dontWorry": "Don't worry, this is about learning, not testing. Take a moment to absorb this before continuing.",
+      "tryAgain": "Try Again",
+      "readMore": `Read more: ${params?.reference || ""}`,
+      "hideOther": "Hide other explanations",
+      "whyWrong": "Why were the others wrong?",
+    };
+    return translations[key] || key;
+  },
+  useLocale: () => "en",
+}));
+
 const mockOptions = [
   {
     id: "a",
@@ -205,7 +223,7 @@ describe("QuizFeedback", () => {
       expect(screen.getByText(/Read more: 17.30/)).toBeInTheDocument();
     });
 
-    it("should link to correct lawofone.info URL", () => {
+    it("should link to correct llresearch.org URL", () => {
       render(
         <QuizFeedback
           isCorrect={true}
@@ -219,7 +237,7 @@ describe("QuizFeedback", () => {
       );
 
       const link = screen.getByRole("link");
-      expect(link).toHaveAttribute("href", "https://lawofone.info/s/17#30");
+      expect(link).toHaveAttribute("href", "https://www.llresearch.org/channeling/ra-contact/17#30");
     });
   });
 

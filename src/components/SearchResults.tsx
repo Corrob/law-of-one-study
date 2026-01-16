@@ -2,6 +2,7 @@
 
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import ModeToggle from "./ModeToggle";
 import SearchResultCard from "./SearchResultCard";
 import type { SearchResult, SearchMode } from "@/lib/schemas";
@@ -41,6 +42,7 @@ export default function SearchResults({
   onAskAbout,
   inputElement,
 }: SearchResultsProps) {
+  const t = useTranslations("search");
   return (
     <div className="flex-1 flex flex-col min-h-0">
       {/* Sticky Search Header */}
@@ -61,7 +63,7 @@ export default function SearchResults({
           {isLoading && (
             <div className="text-center py-12">
               <div className="text-[var(--lo1-stardust)] italic animate-pulse">
-                Searching the cosmic records...
+                {t("searching")}
               </div>
             </div>
           )}
@@ -85,7 +87,7 @@ export default function SearchResults({
               className="text-center py-12"
             >
               <p className="text-[var(--lo1-stardust)]">
-                No passages found. Try rephrasing your question or using different words.
+                {t("noResults")}
               </p>
             </motion.div>
           )}
@@ -99,7 +101,7 @@ export default function SearchResults({
                 transition={{ duration: 0.2 }}
                 className="text-sm text-[var(--lo1-stardust)]/60 pt-2"
               >
-                Closest {results.length} matches by meaning
+                {t("matchCount", { count: results.length })}
               </motion.p>
               {results.map((result, index) => (
                 <motion.div

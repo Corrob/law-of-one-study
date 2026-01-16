@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { fetchFullQuote, formatWholeQuote } from "@/lib/quote-utils";
-import { buildCitationUrl } from "@/lib/citationParser";
+import { useTranslations } from "next-intl";
+import { fetchBilingualQuote, formatWholeQuote, getRaMaterialUrl } from "@/lib/quote-utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { type AvailableLanguage } from "@/lib/language-config";
 
 interface CitationModalProps {
   isOpen: boolean;
@@ -50,35 +52,42 @@ export default function CitationModal({
   session,
   question,
 }: CitationModalProps) {
+  const t = useTranslations("quote");
+  const { language } = useLanguage();
   const modalRef = useRef<HTMLDivElement>(null);
   const [quoteText, setQuoteText] = useState<string | null>(null);
+  const [originalText, setOriginalText] = useState<string | null>(null);
+  const [showOriginal, setShowOriginal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const reference = `${session}.${question}`;
-  const url = buildCitationUrl(session, question);
+  const url = getRaMaterialUrl(session, question, language as AvailableLanguage);
 
   // Fetch quote when modal opens
   useEffect(() => {
     if (isOpen && !quoteText && !isLoading) {
       setIsLoading(true);
       setError(null);
-      fetchFullQuote(reference)
-        .then((text) => {
-          if (text) {
-            setQuoteText(formatWholeQuote(text));
+      fetchBilingualQuote(reference, language as AvailableLanguage)
+        .then((result) => {
+          if (result) {
+            setQuoteText(formatWholeQuote(result.text));
+            if (result.originalText) {
+              setOriginalText(formatWholeQuote(result.originalText));
+            }
           } else {
-            setError("Quote not found");
+            setError(t("quoteNotFound"));
           }
         })
         .catch(() => {
-          setError("Failed to load quote");
+          setError(t("loadError"));
         })
         .finally(() => {
           setIsLoading(false);
         });
     }
-  }, [isOpen, quoteText, isLoading, reference]);
+  }, [isOpen, quoteText, isLoading, reference, language, t]);
 
   // Escape key handler
   useEffect(() => {
@@ -130,6 +139,8 @@ export default function CitationModal({
   }, [onClose]);
 
   const segments = quoteText ? formatRaText(quoteText) : [];
+  const originalSegments = originalText ? formatRaText(originalText) : [];
+  const hasOriginal = language !== 'en' && originalText;
 
   // Use portal to render modal at document body level (avoids HTML nesting issues)
   const modalContent = (
@@ -188,7 +199,7 @@ export default function CitationModal({
             <div className="flex-1 overflow-y-auto pr-12">
               {isLoading && (
                 <div className="text-[var(--lo1-text-muted)] animate-pulse">
-                  Loading quote...
+                  {t("loading")}
                 </div>
               )}
               {error && (
@@ -202,14 +213,14 @@ export default function CitationModal({
                       {segment.type === "questioner" && (
                         <div className="mb-1">
                           <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-                            Questioner
+                            {t("questioner")}
                           </span>
                         </div>
                       )}
                       {segment.type === "ra" && (
                         <div className="mb-1">
                           <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide">
-                            Ra
+                            {t("ra")}
                           </span>
                         </div>
                       )}
@@ -224,6 +235,52 @@ export default function CitationModal({
                       </div>
                     </div>
                   ))}
+
+                  {/* Show English original toggle */}
+                  {hasOriginal && (
+                    <div className="mt-4 pt-3 border-t border-[var(--lo1-celestial)]/20">
+                      <button
+                        onClick={() => setShowOriginal(!showOriginal)}
+                        className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-starlight)] cursor-pointer"
+                        aria-expanded={showOriginal}
+                      >
+                        {showOriginal ? `↑ ${t("hideEnglishOriginal")}` : `↓ ${t("showEnglishOriginal")}`}
+                      </button>
+
+                      {showOriginal && (
+                        <div className="mt-3 pl-3 border-l-2 border-[var(--lo1-celestial)]/30">
+                          {originalSegments.map((segment, index) => (
+                            <div key={index} className={segment.type === "ra" ? "mt-2" : ""}>
+                              {/* Use hardcoded English labels for the English original */}
+                              {segment.type === "questioner" && (
+                                <div className="mb-1">
+                                  <span className="text-xs font-semibold text-[var(--lo1-celestial)]/70 uppercase tracking-wide">
+                                    Questioner
+                                  </span>
+                                </div>
+                              )}
+                              {segment.type === "ra" && (
+                                <div className="mb-1">
+                                  <span className="text-xs font-semibold text-[var(--lo1-gold)]/70 uppercase tracking-wide">
+                                    Ra
+                                  </span>
+                                </div>
+                              )}
+                              <div
+                                className={`whitespace-pre-line leading-relaxed text-sm opacity-80 ${
+                                  segment.type === "ra"
+                                    ? "text-[var(--lo1-starlight)]"
+                                    : "text-[var(--lo1-text-light)]"
+                                }`}
+                              >
+                                {segment.content}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

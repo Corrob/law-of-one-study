@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useCallback, useRef } from "react";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { usePathname, Link } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import {
   CloseIcon,
   HomeIcon,
@@ -15,6 +15,7 @@ import {
   HeartIcon,
 } from "./icons";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSelector } from "./LanguageSelector";
 
 interface BurgerMenuProps {
   isOpen: boolean;
@@ -23,25 +24,26 @@ interface BurgerMenuProps {
 
 interface NavItem {
   href: string;
-  label: string;
+  labelKey: string;
   icon: React.ComponentType<{ className?: string }>;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/", label: "Home", icon: HomeIcon },
-  { href: "/chat", label: "Seek", icon: ChatIcon },
-  { href: "/explore", label: "Explore", icon: ExploreIcon },
-  { href: "/paths", label: "Study", icon: BookIcon },
-  { href: "/search", label: "Search", icon: SearchIcon },
+  { href: "/", labelKey: "home", icon: HomeIcon },
+  { href: "/chat", labelKey: "seek", icon: ChatIcon },
+  { href: "/explore", labelKey: "explore", icon: ExploreIcon },
+  { href: "/paths", labelKey: "study", icon: BookIcon },
+  { href: "/search", labelKey: "search", icon: SearchIcon },
 ];
 
 const SECONDARY_ITEMS: NavItem[] = [
-  { href: "/about", label: "About", icon: InfoIcon },
-  { href: "/donate", label: "Support", icon: HeartIcon },
+  { href: "/about", labelKey: "about", icon: InfoIcon },
+  { href: "/donate", labelKey: "support", icon: HeartIcon },
 ];
 
 export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
   const pathname = usePathname();
+  const t = useTranslations();
 
   // Close on escape key
   const handleKeyDown = useCallback(
@@ -99,17 +101,17 @@ export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
             className="fixed right-0 top-0 bottom-0 z-50 w-72 max-w-[80vw] bg-[var(--lo1-void)] border-l border-[var(--lo1-gold)]/20 shadow-2xl"
             role="dialog"
             aria-modal="true"
-            aria-label="Navigation menu"
+            aria-label={t("header.navigationMenu")}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-[var(--lo1-gold)]/20">
               <span className="text-lg font-semibold text-[var(--lo1-starlight)]">
-                Menu
+                {t("labels.menu")}
               </span>
               <button
                 onClick={onClose}
                 className="flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[var(--lo1-gold)]/10 transition-colors cursor-pointer"
-                aria-label="Close menu"
+                aria-label={t("header.closeMenu")}
               >
                 <CloseIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
               </button>
@@ -136,7 +138,7 @@ export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         aria-current={isActive ? "page" : undefined}
                       >
                         <Icon className="w-5 h-5" />
-                        <span className="font-medium">{item.label}</span>
+                        <span className="font-medium">{t(`nav.${item.labelKey}`)}</span>
                       </Link>
                     </li>
                   );
@@ -165,18 +167,29 @@ export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
                         aria-current={isActive ? "page" : undefined}
                       >
                         <Icon className="w-5 h-5" />
-                        <span className="font-medium">{item.label}</span>
+                        <span className="font-medium">{t(`nav.${item.labelKey}`)}</span>
                       </Link>
                     </li>
                   );
                 })}
               </ul>
 
-              {/* Theme toggle */}
-              <div className="mt-4 px-4 py-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[var(--lo1-text-light)] font-medium">Theme</span>
-                  <ThemeToggle onThemeChange={onClose} />
+              {/* Settings section */}
+              <div className="mt-4 space-y-3">
+                {/* Language selector */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--lo1-text-light)] font-medium">{t("labels.language")}</span>
+                    <LanguageSelector />
+                  </div>
+                </div>
+
+                {/* Theme toggle */}
+                <div className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[var(--lo1-text-light)] font-medium">{t("labels.theme")}</span>
+                    <ThemeToggle onThemeChange={onClose} />
+                  </div>
                 </div>
               </div>
             </nav>

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type { SearchMode } from "@/lib/schemas";
 
 interface SearchModeSelectionProps {
@@ -32,6 +33,7 @@ const titleVariants = {
 };
 
 export default function SearchModeSelection({ onSelectMode }: SearchModeSelectionProps) {
+  const t = useTranslations("search");
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
       <motion.h2
@@ -40,7 +42,7 @@ export default function SearchModeSelection({ onSelectMode }: SearchModeSelectio
         animate="visible"
         className="font-[family-name:var(--font-cormorant)] text-2xl md:text-3xl text-[var(--lo1-starlight)] mb-8 text-center"
       >
-        How would you like to search?
+        {t("howToSearch")}
       </motion.h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl w-full">
         {/* Sentence Search Card */}
@@ -69,10 +71,10 @@ export default function SearchModeSelection({ onSelectMode }: SearchModeSelectio
             />
           </svg>
           <h3 className="font-[family-name:var(--font-cormorant)] text-xl text-[var(--lo1-starlight)] mb-2">
-            Sentence Search
+            {t("sentenceSearch")}
           </h3>
           <p className="text-sm text-[var(--lo1-stardust)]">
-            Find a specific quote by meaning
+            {t("sentenceDescription")}
           </p>
         </motion.button>
 
@@ -102,10 +104,10 @@ export default function SearchModeSelection({ onSelectMode }: SearchModeSelectio
             />
           </svg>
           <h3 className="font-[family-name:var(--font-cormorant)] text-xl text-[var(--lo1-starlight)] mb-2">
-            Passage Search
+            {t("passageSearch")}
           </h3>
           <p className="text-sm text-[var(--lo1-stardust)]">
-            Discover quotes by concept
+            {t("passageDescription")}
           </p>
         </motion.button>
       </div>

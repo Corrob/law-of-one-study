@@ -22,14 +22,14 @@ jest.mock("@/lib/pinecone", () => ({
       reference: "Ra 1.1",
       session: 1,
       question: 1,
-      url: "https://lawofone.info/s/1#1",
+      url: "https://www.llresearch.org/channeling/ra-contact/1#1",
     },
     {
       text: "Ra: I am Ra. Consider the nature of love.",
       reference: "Ra 1.2",
       session: 1,
       question: 2,
-      url: "https://lawofone.info/s/1#2",
+      url: "https://www.llresearch.org/channeling/ra-contact/1#2",
     },
   ]),
   searchSentences: jest.fn().mockResolvedValue([
@@ -40,7 +40,7 @@ jest.mock("@/lib/pinecone", () => ({
       sentenceIndex: 0,
       speaker: "ra",
       reference: "Ra 1.1",
-      url: "https://lawofone.info/s/1#1",
+      url: "https://www.llresearch.org/channeling/ra-contact/1#1",
       score: 0.9,
     },
   ]),
@@ -120,7 +120,7 @@ describe("POST /api/search", () => {
       });
       await POST(request);
 
-      expect(mockSearchSentences).toHaveBeenCalledWith(expect.any(Array), 15);
+      expect(mockSearchSentences).toHaveBeenCalledWith(expect.any(Array), 15, "en");
     });
 
     it("should pass limit to passage search", async () => {
@@ -133,6 +133,7 @@ describe("POST /api/search", () => {
 
       expect(mockSearchRaMaterial).toHaveBeenCalledWith(expect.any(Array), {
         topK: 15,
+        language: "en",
       });
     });
   });

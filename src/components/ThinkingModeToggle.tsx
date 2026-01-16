@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface ThinkingModeToggleProps {
   enabled: boolean;
@@ -9,6 +10,7 @@ interface ThinkingModeToggleProps {
 
 export default function ThinkingModeToggle({ enabled, onChange }: ThinkingModeToggleProps) {
   const [showTooltip, setShowTooltip] = useState(false);
+  const t = useTranslations("thinkingMode");
 
   return (
     <div className="flex items-center gap-1">
@@ -36,12 +38,12 @@ export default function ThinkingModeToggle({ enabled, onChange }: ThinkingModeTo
         </div>
         {/* Label */}
         <span className={`whitespace-nowrap ${enabled ? "text-[var(--lo1-gold)]" : "text-[var(--lo1-stardust)] group-hover:text-[var(--lo1-starlight)]"}`}>
-          Thinking mode
+          {t("label")}
         </span>
         {/* Full text on larger screens */}
         <span className="hidden sm:inline text-[var(--lo1-stardust)]/40">·</span>
         <span className="hidden sm:inline text-[var(--lo1-stardust)]/60">
-          Slower, more thoughtful
+          {t("description")}
         </span>
       </button>
 
@@ -51,7 +53,7 @@ export default function ThinkingModeToggle({ enabled, onChange }: ThinkingModeTo
           type="button"
           onClick={() => setShowTooltip(!showTooltip)}
           className="p-1.5 text-[var(--lo1-stardust)]/60 hover:text-[var(--lo1-stardust)] cursor-pointer"
-          aria-label="What is thinking mode?"
+          aria-label={t("whatIs")}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
             <circle cx="12" cy="12" r="10" />
@@ -66,7 +68,7 @@ export default function ThinkingModeToggle({ enabled, onChange }: ThinkingModeTo
               onClick={() => setShowTooltip(false)}
             />
             <div className="absolute right-0 bottom-full mb-2 z-[101] w-48 p-2 rounded-lg bg-[var(--lo1-indigo)] border border-[var(--lo1-celestial)]/40 shadow-lg text-xs text-[var(--lo1-stardust)]">
-              Slower, more thoughtful responses
+              {t("tooltip")}
             </div>
           </>
         )}

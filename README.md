@@ -35,6 +35,7 @@ An AI-powered study companion for the Ra Material (Law of One). Ask questions, e
 | AI Model      | OpenAI GPT-5-mini                              |
 | Vector Search | [Pinecone](https://www.pinecone.io/)           |
 | Embeddings    | OpenAI text-embedding-3-small                  |
+| i18n          | [next-intl](https://next-intl-docs.vercel.app/) |
 | Analytics     | [PostHog](https://posthog.com/)                |
 | Hosting       | [Vercel](https://vercel.com/)                  |
 
@@ -100,35 +101,36 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 law-of-one-study/
 ├── src/
 │   ├── app/                 # Next.js App Router
+│   │   ├── [locale]/        # Locale-specific routes (en, es)
 │   │   ├── api/chat/        # Streaming chat endpoint
-│   │   ├── globals.css      # Global styles & theme
-│   │   ├── layout.tsx       # Root layout with fonts
-│   │   └── page.tsx         # Home page
-│   ├── components/          # React components
+│   │   └── api/search/      # Semantic search endpoint
+│   ├── components/          # React components with co-located tests
 │   │   ├── ChatInterface.tsx
-│   │   ├── Message.tsx
-│   │   ├── StreamingMessage.tsx
 │   │   ├── QuoteCard.tsx
-│   │   ├── ConceptPopover.tsx
+│   │   ├── BilingualQuoteCard.tsx
 │   │   └── ...
+│   ├── contexts/            # React context providers
+│   │   ├── LanguageContext.tsx
+│   │   └── PopoverContext.tsx
 │   ├── data/
 │   │   ├── concepts.ts      # Law of One glossary (100+ terms)
-│   │   ├── starters.ts      # Welcome screen prompts
-│   │   └── placeholders.ts  # Input placeholders
+│   │   ├── concept-graph.json
+│   │   └── study-paths/     # Guided learning content
 │   ├── hooks/               # Custom React hooks
-│   │   ├── useAnimationQueue.ts
-│   │   └── useTypingAnimation.ts
-│   ├── providers/           # React context providers
-│   │   └── PostHogProvider.tsx
-│   └── lib/
-│       ├── openai.ts        # OpenAI client
-│       ├── pinecone.ts      # Vector search
-│       ├── prompts.ts       # AI system prompts
-│       └── types.ts         # TypeScript types
-├── scripts/
-│   └── index-ra.ts          # Pinecone indexing script
-├── public/sections/         # Ra Material source (106 JSON files)
-└── public/                  # Static assets
+│   ├── i18n/                # Internationalization config
+│   ├── lib/                 # Business logic and utilities
+│   │   ├── chat/            # Chat pipeline modules
+│   │   ├── prompts/         # LLM prompts
+│   │   └── schemas/         # Zod validation schemas
+│   └── providers/           # App-level providers (PostHog, Theme)
+├── messages/                # Translation files
+│   ├── en/                  # English translations
+│   └── es/                  # Spanish translations
+├── scripts/                 # Data processing scripts
+├── public/sections/         # Ra Material source
+│   ├── en/                  # English (106 JSON files)
+│   └── es/                  # Spanish translations
+└── e2e/                     # Playwright E2E tests
 ```
 
 ---
@@ -202,6 +204,33 @@ Colors are defined as CSS variables in `src/app/globals.css`:
 
 ---
 
+## Internationalization
+
+The app supports multiple languages with bilingual quote display.
+
+### Supported Languages
+
+- **English** — `/en/` (default)
+- **Spanish** — `/es/` (Español)
+
+### How It Works
+
+- **UI translations** are in `messages/{locale}/common.json`
+- **Ra Material translations** are in `public/sections/{locale}/`
+- **Bilingual quotes** show the translated text with an option to view the English original
+- **Semantic search** works cross-lingually (search in any language, find relevant quotes)
+
+### Adding a New Language
+
+1. Create translation files in `messages/{locale}/common.json`
+2. Add translated Ra Material to `public/sections/{locale}/`
+3. Update `src/i18n/config.ts` to include the new locale
+4. Add the locale to the middleware matcher
+
+See [docs/multilingual-implementation-plan.md](docs/multilingual-implementation-plan.md) for technical details.
+
+---
+
 ## Contributing
 
 Contributions are welcome! Please:
@@ -219,7 +248,8 @@ Contributions are welcome! Please:
 - [ ] Accessibility enhancements
 - [ ] Performance optimizations
 - [ ] Mobile experience
-- [ ] Internationalization
+- [x] Internationalization (Spanish live, more languages welcome!)
+- [ ] Additional language translations
 
 ---
 

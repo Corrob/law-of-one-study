@@ -28,6 +28,8 @@ import { streamOffTopicResponse } from "./off-topic";
 import { performSearch } from "./search";
 import type { SSESender } from "./sse-encoder";
 
+import { LANGUAGE_NAMES_FOR_PROMPTS, isLanguageAvailable, type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
+
 /**
  * Parameters for executing a chat query.
  */
@@ -38,6 +40,8 @@ export interface ExecuteChatParams {
   send: SSESender;
   /** When true, use higher reasoning effort for more thoughtful responses */
   thinkingMode?: boolean;
+  /** Target language for responses (ISO code, e.g., 'es' for Spanish) */
+  targetLanguage?: string;
 }
 
 /**
@@ -63,7 +67,8 @@ function buildLLMMessages(
   turnCount: number,
   quotesContext: string,
   quotesUsed: string[],
-  promptContext: string
+  promptContext: string,
+  targetLanguage: string = DEFAULT_LOCALE
 ): Array<{ role: "system" | "user" | "assistant"; content: string }> {
   const quoteExclusionBlock =
     quotesUsed.length > 0
@@ -72,8 +77,15 @@ function buildLLMMessages(
 
   const conceptContextBlock = promptContext ? `\n\n${promptContext}` : "";
 
+  // Add language instruction for non-English responses
+  const languageInstruction = targetLanguage !== DEFAULT_LOCALE && isLanguageAvailable(targetLanguage)
+    ? `\n\nIMPORTANT: Respond in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. The user prefers ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Write your explanations, analysis, and connecting text in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Quote content will be provided in the appropriate language.`
+    : '';
+
+  const systemPrompt = UNIFIED_RESPONSE_PROMPT + languageInstruction;
+
   return [
-    { role: "system" as const, content: UNIFIED_RESPONSE_PROMPT },
+    { role: "system" as const, content: systemPrompt },
     ...recentHistory.map((m) => ({
       role: m.role as "user" | "assistant",
       content: m.content,
@@ -87,9 +99,12 @@ function buildLLMMessages(
 
 /**
  * Perform query augmentation with concept detection.
+ * @param message - The user's message
+ * @param targetLanguage - Language for concept detection (defaults to 'en')
  */
 async function performAugmentation(
-  message: string
+  message: string,
+  targetLanguage: string = DEFAULT_LOCALE
 ): Promise<AugmentationResult> {
   // Check for explicit session/question reference
   const sessionRef = parseSessionQuestionReference(message);
@@ -97,8 +112,9 @@ async function performAugmentation(
     debug.log("[Orchestrator] Detected session/question reference:", sessionRef);
   }
 
-  // Hybrid concept detection
-  const conceptResult = await detectConcepts(message);
+  // Hybrid concept detection - pass locale for regex matching
+  const locale = (isLanguageAvailable(targetLanguage) ? targetLanguage : DEFAULT_LOCALE) as AvailableLanguage;
+  const conceptResult = await detectConcepts(message, locale);
   const { detectedConcepts, searchTerms, promptContext } = conceptResult;
 
   // Query augmentation with concept context
@@ -213,7 +229,7 @@ function trackAnalytics(
  * @throws Never - all errors are sent via SSE
  */
 export async function executeChatQuery(params: ExecuteChatParams): Promise<void> {
-  const { message, history, clientIp, send, thinkingMode = false } = params;
+  const { message, history, clientIp, send, thinkingMode = false, targetLanguage = 'en' } = params;
   const startTime = Date.now();
 
   try {
@@ -222,7 +238,7 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
     const { turnCount, quotesUsed } = buildConversationContext(history);
 
     // Perform augmentation (concept detection + query expansion)
-    const augmentation = await performAugmentation(message);
+    const augmentation = await performAugmentation(message, targetLanguage);
     const { intent, augmentedQuery, confidence, sessionRef, detectedConcepts, promptContext } =
       augmentation;
 
@@ -262,7 +278,8 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
       turnCount,
       quotesContext,
       quotesUsed,
-      promptContext
+      promptContext,
+      targetLanguage
     );
 
     // Stream LLM response

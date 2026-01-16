@@ -5,16 +5,6 @@ import type { GraphConcept } from "@/lib/graph/types";
 
 // Mock the layout module that imports D3
 jest.mock("@/lib/graph/layout", () => ({
-  CATEGORY_LABELS: {
-    cosmology: "Cosmology",
-    polarity: "Polarity",
-    "energy-work": "Energy Work",
-    incarnation: "Incarnation",
-    entities: "Entities",
-    metaphysics: "Metaphysics",
-    practice: "Practice",
-    archetypes: "Archetypes",
-  },
   CATEGORY_COLORS: {
     cosmology: "#4a5899",
     polarity: "#d4a853",
@@ -27,12 +17,51 @@ jest.mock("@/lib/graph/layout", () => ({
   },
 }));
 
-// Mock next/navigation
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useLocale: () => "en",
+  useTranslations: () => {
+    const translations: Record<string, string> = {
+      "categories.cosmology": "Cosmology",
+      "categories.polarity": "Polarity",
+      "categories.energy-work": "Energy Work",
+      "categories.incarnation": "Incarnation",
+      "categories.entities": "Entities",
+      "categories.metaphysics": "Metaphysics",
+      "categories.practice": "Practice",
+      "categories.archetypes": "Archetypes",
+      "concept.definition": "Definition",
+      "concept.keyPassages": "Key Passages",
+      "concept.relatedConcepts": "Related Concepts",
+      "concept.explore": "Explore this concept",
+      "concept.exploreConceptQuery": "Help me understand {concept}",
+      "concept.teachingLevel.foundational": "Foundational",
+      "concept.teachingLevel.intermediate": "Intermediate",
+      "concept.teachingLevel.advanced": "Advanced",
+    };
+    const t = (key: string, params?: Record<string, string>) => {
+      let result = translations[key] || key;
+      if (params) {
+        Object.entries(params).forEach(([k, v]) => {
+          result = result.replace(`{${k}}`, v);
+        });
+      }
+      return result;
+    };
+    return t;
+  },
+}));
+
+// Mock @/i18n/navigation for locale-aware routing
 const mockPush = jest.fn();
-jest.mock("next/navigation", () => ({
+jest.mock("@/i18n/navigation", () => ({
   useRouter: () => ({
     push: mockPush,
   }),
+  usePathname: () => "/explore",
+  Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+    <a href={href} {...props}>{children}</a>
+  ),
 }));
 
 // Mock concept-graph to return a related concept
@@ -41,16 +70,16 @@ jest.mock("@/lib/concept-graph", () => ({
     if (id === "related-concept") {
       return {
         id: "related-concept",
-        term: "Related Concept",
+        term: { en: "Related Concept", es: "Concepto Relacionado" },
         category: "metaphysics",
-        definition: "A related concept",
-        extendedDefinition: "",
+        definition: { en: "A related concept", es: "Un concepto relacionado" },
+        extendedDefinition: { en: "", es: "" },
         relationships: {},
         sessions: { primary: [], secondary: [] },
         keyPassages: [],
         searchTerms: [],
         teachingLevel: "foundational",
-        aliases: [],
+        aliases: { en: [], es: [] },
       };
     }
     return undefined;
@@ -81,11 +110,17 @@ jest.mock("framer-motion", () => ({
 
 const mockConcept: GraphConcept = {
   id: "test-concept",
-  term: "Test Concept",
-  aliases: ["alias1"],
+  term: { en: "Test Concept", es: "Concepto de Prueba" },
+  aliases: { en: ["alias1"], es: ["alias1"] },
   category: "cosmology",
-  definition: "This is a test concept definition.",
-  extendedDefinition: "This is an extended definition with more details.",
+  definition: {
+    en: "This is a test concept definition.",
+    es: "Esta es una definición de concepto de prueba.",
+  },
+  extendedDefinition: {
+    en: "This is an extended definition with more details.",
+    es: "Esta es una definición extendida con más detalles.",
+  },
   relationships: {
     related: ["related-concept"],
     leads_to: [],
@@ -98,8 +133,14 @@ const mockConcept: GraphConcept = {
   keyPassages: [
     {
       reference: "1.7",
-      excerpt: "This is a key passage from Ra.",
-      context: "Important context",
+      excerpt: {
+        en: "This is a key passage from Ra.",
+        es: "Este es un pasaje clave de Ra.",
+      },
+      context: {
+        en: "Important context",
+        es: "Contexto importante",
+      },
     },
   ],
   searchTerms: ["test", "concept"],
@@ -254,7 +295,7 @@ describe("ConceptPanel", () => {
 
     const links = screen.getAllByRole("link");
     const passageLinks = links.filter((link) =>
-      link.getAttribute("href")?.includes("lawofone.info")
+      link.getAttribute("href")?.includes("llresearch.org")
     );
 
     expect(passageLinks.length).toBeGreaterThan(0);

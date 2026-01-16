@@ -130,18 +130,21 @@ Ready to contribute code? Here's how:
 ```
 src/
 ├── app/                    # Next.js app router pages and API routes
+│   ├── [locale]/           # Locale-specific routes (en, es)
 │   └── api/chat/           # Chat API route
 ├── components/             # React components with co-located tests
-├── contexts/               # React context providers
+├── contexts/               # React context providers (Language, Popover)
 ├── hooks/                  # Custom React hooks with tests
+├── i18n/                   # Internationalization config
 ├── lib/                    # Business logic and utilities
 │   ├── chat/               # Chat pipeline modules
 │   ├── prompts/            # LLM prompts
 │   └── schemas/            # Zod validation schemas
 ├── providers/              # App-level providers (PostHog, Theme)
 ├── data/                   # Static data (concepts, study paths, etc.)
+messages/                   # UI translation files (en/, es/)
 scripts/                    # Data processing scripts
-public/sections/            # Ra Material source (106 JSON files)
+public/sections/            # Ra Material source (en/, es/)
 e2e/                        # Playwright E2E tests
 ```
 

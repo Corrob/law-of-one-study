@@ -1,9 +1,13 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { motion } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
 import { titleVariants, fadeWithDelay, staggerContainer, staggerChild } from "@/lib/animations";
 import type { StudyPath } from "@/lib/schemas/study-paths";
+import { findConceptById } from "@/lib/concept-graph";
+import { getLocalizedText } from "@/lib/types-graph";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 interface PathIntroViewProps {
   /** The study path to display */
@@ -36,6 +40,19 @@ const PathIntroView = memo(function PathIntroView({
   path,
   onStart,
 }: PathIntroViewProps) {
+  const locale = useLocale() as AvailableLanguage;
+  const t = useTranslations("studyPaths");
+
+  // Get localized concept term from concept graph (memoized to avoid recreating on every render)
+  const getLocalizedConceptTerm = useCallback((conceptId: string): string => {
+    const concept = findConceptById(conceptId);
+    if (concept) {
+      return getLocalizedText(concept.term, locale);
+    }
+    // Fallback to the original ID if not found in graph
+    return conceptId;
+  }, [locale]);
+
   return (
     <div className="max-w-2xl mx-auto py-8">
       {/* Header */}
@@ -63,14 +80,14 @@ const PathIntroView = memo(function PathIntroView({
         <span
           className={`px-3 py-1 rounded-full text-sm border ${getDifficultyStyle(path.difficulty)}`}
         >
-          {path.difficulty.charAt(0).toUpperCase() + path.difficulty.slice(1)}
+          {t(`difficulty.${path.difficulty}`)}
         </span>
         <span className="text-[var(--lo1-text-light)]/60 text-sm">
-          ~{path.estimatedMinutes} minutes
+          {t("minutes", { count: path.estimatedMinutes })}
         </span>
         <span className="text-[var(--lo1-text-light)]/40">·</span>
         <span className="text-[var(--lo1-text-light)]/60 text-sm">
-          {path.lessons.length} lessons
+          {t("lessons", { count: path.lessons.length })}
         </span>
       </motion.div>
 
@@ -82,7 +99,7 @@ const PathIntroView = memo(function PathIntroView({
         animate="visible"
       >
         <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-5">
-          What You&apos;ll Learn
+          {t("whatYoullLearn")}
         </h2>
         <motion.ol
           className="space-y-1"
@@ -113,7 +130,7 @@ const PathIntroView = memo(function PathIntroView({
                 </span>
                 {lesson.estimatedMinutes && (
                   <span className="ml-2 text-xs text-[var(--lo1-text-light)]/40">
-                    ~{lesson.estimatedMinutes} min
+                    {t("minRead", { count: lesson.estimatedMinutes })}
                   </span>
                 )}
               </div>
@@ -131,15 +148,15 @@ const PathIntroView = memo(function PathIntroView({
           animate="visible"
         >
           <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-text-light)]/50 mb-3 text-center">
-            Key Concepts
+            {t("keyConcepts")}
           </h2>
           <div className="flex flex-wrap justify-center gap-2">
-            {path.concepts.map((concept) => (
+            {path.concepts.map((conceptId) => (
               <span
-                key={concept}
+                key={conceptId}
                 className="px-3 py-1 rounded-full text-sm bg-[var(--lo1-indigo)]/40 text-[var(--lo1-stardust)] border border-[var(--lo1-celestial)]/10"
               >
-                {concept}
+                {getLocalizedConceptTerm(conceptId)}
               </span>
             ))}
           </div>
@@ -157,7 +174,7 @@ const PathIntroView = memo(function PathIntroView({
           onClick={onStart}
           className="px-8 py-3 rounded-lg font-medium text-lg bg-[var(--lo1-gold)] text-[var(--lo1-space)] hover:bg-[var(--lo1-gold-light)] transition-colors cursor-pointer"
         >
-          Start Path
+          {t("startPath")}
         </button>
       </motion.div>
     </div>

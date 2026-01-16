@@ -1,6 +1,37 @@
 import { render, screen, act } from "@testing-library/react";
 import ThinkingIndicator from "../ThinkingIndicator";
 
+// Mock thinking messages
+const mockThinkingMessages: Record<string, string> = {
+  "1": "Scanning the cosmic records...",
+  "2": "Tuning the instrument...",
+  "3": "Opening the narrow-band...",
+  "4": "Adjusting the vibrational frequency...",
+  "5": "Preparing the channel...",
+  "6": "Clearing the distortions...",
+  "7": "Aligning with the contact...",
+  "8": "Establishing the link...",
+  "9": "Synchronizing the vibrations...",
+  "10": "Consulting the Confederation...",
+  "11": "Channeling the Law of One...",
+  "12": "Accessing Ra's wisdom...",
+  "13": "Connecting to the social memory complex...",
+  "14": "Reaching the sixth density...",
+  "15": "Communing with those of Ra...",
+  "16": "Invoking the Confederation's aid...",
+  "17": "Seeking in the infinite...",
+  "18": "Searching the Akashic records...",
+  "19": "Exploring the inner planes...",
+  "20": "Navigating the densities...",
+};
+
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useTranslations: () => (key: string) => {
+    return mockThinkingMessages[key] || `Scanning the cosmic records...`;
+  },
+}));
+
 describe("ThinkingIndicator", () => {
   beforeEach(() => {
     jest.useFakeTimers();

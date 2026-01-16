@@ -1,3 +1,6 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { type SearchMode } from "@/lib/schemas";
 
 /**
@@ -10,6 +13,7 @@ export default function ModeToggle({
   mode: SearchMode;
   onChange: (mode: SearchMode) => void;
 }) {
+  const t = useTranslations("search.modeToggle");
   return (
     <div className="flex rounded-lg bg-[var(--lo1-deep-space)]/60 p-1 border border-[var(--lo1-celestial)]/20">
       <button
@@ -20,7 +24,7 @@ export default function ModeToggle({
             : "text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)] border border-transparent"
         }`}
       >
-        Sentence
+        {t("sentence")}
       </button>
       <button
         onClick={() => onChange("passage")}
@@ -30,7 +34,7 @@ export default function ModeToggle({
             : "text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)] border border-transparent"
         }`}
       >
-        Passage
+        {t("passage")}
       </button>
     </div>
   );

@@ -2,6 +2,11 @@ import { render, screen } from "@testing-library/react";
 import StreamingMessage from "../StreamingMessage";
 import { AnimationChunk, TextChunk, QuoteChunk } from "@/lib/types";
 
+// Mock the language context
+jest.mock("@/contexts/LanguageContext", () => ({
+  useLanguage: jest.fn(() => ({ language: "en", setLanguage: jest.fn() })),
+}));
+
 // Mock child components
 jest.mock("../QuoteCard", () => {
   return function MockQuoteCard({ quote }: { quote: { reference: string } }) {
@@ -20,6 +25,22 @@ jest.mock("../AnimatedQuoteCard", () => {
     return (
       <div data-testid="animated-quote-card" onClick={onComplete}>
         AnimatedQuoteCard: {quote.reference}
+      </div>
+    );
+  };
+});
+
+jest.mock("../chat/BilingualQuoteCard", () => {
+  return function MockBilingualQuoteCard({
+    quote,
+    targetLanguage,
+  }: {
+    quote: { reference: string };
+    targetLanguage: string;
+  }) {
+    return (
+      <div data-testid="bilingual-quote-card">
+        BilingualQuoteCard: {quote.reference} ({targetLanguage})
       </div>
     );
   };
@@ -73,7 +94,7 @@ describe("StreamingMessage", () => {
     quote: {
       text: `Quote text for ${reference}`,
       reference,
-      url: `https://lawofone.info/s/${reference}`,
+      url: `https://www.llresearch.org/channeling/ra-contact/${reference}`,
     },
   });
 
