@@ -29,7 +29,7 @@ export default function ConceptPanel({
 
   const handleExploreInChat = () => {
     const term = getLocalizedText(concept.term, locale);
-    const query = `Help me understand ${term}`;
+    const query = t("concept.exploreConceptQuery", { concept: term });
     router.push(`/chat?q=${encodeURIComponent(query)}`);
   };
 

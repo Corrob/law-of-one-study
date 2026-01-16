@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { titleVariants, staggerContainer, staggerChild } from "@/lib/animations";
+import { useTranslations } from "next-intl";
 
 // Feature icons for the Features section
 function SeekIcon({ className }: { className?: string }) {
@@ -44,6 +45,8 @@ function SearchIcon({ className }: { className?: string }) {
 }
 
 export default function SupportPage() {
+  const t = useTranslations("about");
+
   return (
     <NavigationWrapper>
       <main className="min-h-dvh flex flex-col cosmic-bg relative">
@@ -58,17 +61,17 @@ export default function SupportPage() {
               animate="visible"
             >
               <h1 className="text-4xl md:text-5xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-starlight)] mb-4">
-                About This Tool
+                {t("title")}
               </h1>
               <p className="text-[var(--lo1-stardust)] text-lg">
-                An AI-powered companion for exploring the Ra Material
+                {t("subtitle")}
               </p>
             </motion.div>
 
             {/* Features Section */}
             <section className="mb-16">
               <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6 text-center">
-                Features
+                {t("features.title")}
               </h2>
               <motion.div
                 className="grid md:grid-cols-2 gap-4"
@@ -87,11 +90,11 @@ export default function SupportPage() {
                         <SeekIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
                       </div>
                       <h3 className="text-xl font-semibold text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors">
-                        Seek
+                        {t("features.seek.title")}
                       </h3>
                     </div>
                     <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
-                      Ask questions and receive AI-powered answers with verified quotes from the Ra Material. Each response includes direct citations you can verify.
+                      {t("features.seek.description")}
                     </p>
                   </Link>
                 </motion.div>
@@ -107,11 +110,11 @@ export default function SupportPage() {
                         <ExploreIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
                       </div>
                       <h3 className="text-xl font-semibold text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors">
-                        Explore
+                        {t("features.explore.title")}
                       </h3>
                     </div>
                     <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
-                      Navigate an interactive concept graph showing relationships between key ideas in the Ra Material. Discover connections and explore related quotes.
+                      {t("features.explore.description")}
                     </p>
                   </Link>
                 </motion.div>
@@ -127,11 +130,11 @@ export default function SupportPage() {
                         <StudyIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
                       </div>
                       <h3 className="text-xl font-semibold text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors">
-                        Study
+                        {t("features.study.title")}
                       </h3>
                     </div>
                     <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
-                      Follow guided learning paths with structured lessons, reflection prompts, and quizzes. Track your progress as you deepen your understanding.
+                      {t("features.study.description")}
                     </p>
                   </Link>
                 </motion.div>
@@ -147,11 +150,11 @@ export default function SupportPage() {
                         <SearchIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
                       </div>
                       <h3 className="text-xl font-semibold text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors">
-                        Search
+                        {t("features.search.title")}
                       </h3>
                     </div>
                     <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
-                      Search the Ra Material by meaning. Find specific quotes with Sentence mode, or explore broader concepts with Passage mode.
+                      {t("features.search.description")}
                     </p>
                   </Link>
                 </motion.div>
@@ -161,10 +164,10 @@ export default function SupportPage() {
             {/* How It Works Section */}
             <section className="mb-20">
               <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-8 text-center">
-                How Seek Works
+                {t("howItWorks.title")}
               </h2>
               <p className="text-[var(--lo1-stardust)] text-center mb-10 max-w-2xl mx-auto">
-                When you ask a question in the Seek feature, here&apos;s what happens behind the scenes:
+                {t("howItWorks.subtitle")}
               </p>
 
             {/* Step Cards */}
@@ -173,15 +176,14 @@ export default function SupportPage() {
               <div className="bg-[var(--lo1-indigo)]/40 backdrop-blur-sm border border-[var(--lo1-celestial)]/40 rounded-2xl p-6 hover:border-[var(--lo1-gold)]/40 hover:shadow-[0_0_30px_rgba(212,168,83,0.1)] transition-all duration-300">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[var(--lo1-gold)]/20 flex items-center justify-center text-[var(--lo1-gold)] font-bold text-xl">
-                    1
+                    {t("howItWorks.step1.number")}
                   </div>
                   <h3 className="text-xl font-semibold text-[var(--lo1-starlight)]">
-                    Ask a Question
+                    {t("howItWorks.step1.title")}
                   </h3>
                 </div>
                 <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
-                  Type any question about the Law of One, concepts from the Ra Material, or
-                  spiritual topics covered in the sessions.
+                  {t("howItWorks.step1.description")}
                 </p>
               </div>
 
@@ -189,13 +191,12 @@ export default function SupportPage() {
               <div className="bg-[var(--lo1-indigo)]/40 backdrop-blur-sm border border-[var(--lo1-celestial)]/40 rounded-2xl p-6 hover:border-[var(--lo1-gold)]/40 hover:shadow-[0_0_30px_rgba(212,168,83,0.1)] transition-all duration-300">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[var(--lo1-gold)]/20 flex items-center justify-center text-[var(--lo1-gold)] font-bold text-xl">
-                    2
+                    {t("howItWorks.step2.number")}
                   </div>
-                  <h3 className="text-xl font-semibold text-[var(--lo1-starlight)]">AI Searches</h3>
+                  <h3 className="text-xl font-semibold text-[var(--lo1-starlight)]">{t("howItWorks.step2.title")}</h3>
                 </div>
                 <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
-                  Your question is converted into a mathematical representation and compared against
-                  all ~1,500 Q&A pairs from the 106 sessions.
+                  {t("howItWorks.step2.description")}
                 </p>
               </div>
 
@@ -203,27 +204,27 @@ export default function SupportPage() {
               <div className="bg-[var(--lo1-indigo)]/40 backdrop-blur-sm border border-[var(--lo1-celestial)]/40 rounded-2xl p-6 hover:border-[var(--lo1-gold)]/40 hover:shadow-[0_0_30px_rgba(212,168,83,0.1)] transition-all duration-300">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-[var(--lo1-gold)]/20 flex items-center justify-center text-[var(--lo1-gold)] font-bold text-xl">
-                    3
+                    {t("howItWorks.step3.number")}
                   </div>
                   <h3 className="text-xl font-semibold text-[var(--lo1-starlight)]">
-                    Get Response
+                    {t("howItWorks.step3.title")}
                   </h3>
                 </div>
                 <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed mb-3">
-                  Receive contextual explanations with:
+                  {t("howItWorks.step3.description")}
                 </p>
                 <ul className="text-[var(--lo1-stardust)] text-sm space-y-1">
                   <li className="flex items-start gap-2">
                     <span className="text-[var(--lo1-gold)] mt-1">•</span>
-                    <span>Direct quotes from Ra in highlighted cards</span>
+                    <span>{t("howItWorks.step3.bullets.quotes")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[var(--lo1-gold)] mt-1">•</span>
-                    <span>Contextual explanations</span>
+                    <span>{t("howItWorks.step3.bullets.explanations")}</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-[var(--lo1-gold)] mt-1">•</span>
-                    <span>Linked key concepts</span>
+                    <span>{t("howItWorks.step3.bullets.concepts")}</span>
                   </li>
                 </ul>
               </div>
@@ -249,12 +250,8 @@ export default function SupportPage() {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm text-[var(--lo1-starlight)] leading-relaxed">
-                    <strong className="text-[var(--lo1-gold)]">Important:</strong> The AI's
-                    explanatory text is meant to help you understand, but it should not be
-                    considered authoritative and may contain errors. Like all AI language models,
-                    this chatbot can sometimes "hallucinate" or generate inaccurate information.
-                    Only the direct quotes from Ra (shown in the highlighted quote cards) are
-                    authentic passages from the Ra Material.
+                    <strong className="text-[var(--lo1-gold)]">{t("howItWorks.warning.label")}</strong>{" "}
+                    {t("howItWorks.warning.text")}
                   </p>
                 </div>
               </div>
@@ -264,21 +261,18 @@ export default function SupportPage() {
           {/* About LL Research Section */}
           <section className="mb-16">
             <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">
-              About L/L Research
+              {t("llResearch.title")}
             </h2>
             <div className="bg-[var(--lo1-indigo)]/20 border border-[var(--lo1-celestial)]/30 rounded-2xl p-8">
               <p className="text-[var(--lo1-stardust)] leading-relaxed mb-4">
-                The Ra Material, also known as{" "}
-                <em className="text-[var(--lo1-starlight)]">The Law of One</em>, was channeled
-                between 1981 and 1984 through Carla Rueckert by the social memory complex Ra. The
-                sessions were facilitated by Don Elkins (questioner) and Jim McCarty (scribe).
+                {t.rich("llResearch.intro", {
+                  emphasis: (chunks) => <em className="text-[var(--lo1-starlight)]">{chunks}</em>
+                })}
               </p>
               <p className="text-[var(--lo1-stardust)] leading-relaxed mb-6">
-                <strong className="text-[var(--lo1-starlight)]">L/L Research</strong> is the
-                nonprofit organization that originally published the Ra Material and continues to
-                steward these teachings. Founded by Don Elkins, Carla Rueckert, and Jim McCarty, L/L
-                Research has dedicated itself to making the Law of One freely available to seekers
-                worldwide.
+                {t.rich("llResearch.description", {
+                  strong: (chunks) => <strong className="text-[var(--lo1-starlight)]">{chunks}</strong>
+                })}
               </p>
 
               {/* Resource Links */}
@@ -304,10 +298,10 @@ export default function SupportPage() {
                   </svg>
                   <div className="flex-1">
                     <div className="text-[var(--lo1-starlight)] font-medium group-hover:text-[var(--lo1-gold)] transition-colors">
-                      llresearch.org
+                      {t("llResearch.links.llresearch.title")}
                     </div>
                     <div className="text-xs text-[var(--lo1-stardust)]">
-                      Official L/L Research website
+                      {t("llResearch.links.llresearch.description")}
                     </div>
                   </div>
                   <svg
@@ -346,10 +340,10 @@ export default function SupportPage() {
                   </svg>
                   <div className="flex-1">
                     <div className="text-[var(--lo1-starlight)] font-medium group-hover:text-[var(--lo1-gold)] transition-colors">
-                      lawofone.info
+                      {t("llResearch.links.lawofoneinfo.title")}
                     </div>
                     <div className="text-xs text-[var(--lo1-stardust)]">
-                      Searchable archive (our source)
+                      {t("llResearch.links.lawofoneinfo.description")}
                     </div>
                   </div>
                   <svg
@@ -373,16 +367,15 @@ export default function SupportPage() {
           {/* Copyright Section */}
           <section className="mb-16">
             <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">
-              Copyright and Attribution
+              {t("copyright.title")}
             </h2>
             <div className="text-[var(--lo1-stardust)] space-y-4">
               <p className="leading-relaxed">
-                The Ra Contact (The Law of One) is copyrighted by L/L Research, which has generously
-                made the material available for free personal and non-commercial use.
+                {t("copyright.intro")}
               </p>
               <div className="bg-[var(--lo1-indigo)]/20 border border-[var(--lo1-celestial)]/30 rounded-xl p-6">
                 <p className="text-sm text-[var(--lo1-starlight)] mb-3">
-                  According to L/L Research's copyright guidelines:
+                  {t("copyright.guidelinesTitle")}
                 </p>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-3">
@@ -400,8 +393,7 @@ export default function SupportPage() {
                       />
                     </svg>
                     <span>
-                      The material may be freely quoted for personal, educational, and
-                      non-commercial purposes
+                      {t("copyright.guidelines.quote")}
                     </span>
                   </li>
                   <li className="flex items-start gap-3">
@@ -418,7 +410,7 @@ export default function SupportPage() {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span>Attribution should be given to L/L Research and the Law of One</span>
+                    <span>{t("copyright.guidelines.attribution")}</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <svg
@@ -434,21 +426,23 @@ export default function SupportPage() {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    <span>Commercial use requires explicit permission from L/L Research</span>
+                    <span>{t("copyright.guidelines.commercial")}</span>
                   </li>
                 </ul>
               </div>
               <p className="text-sm leading-relaxed">
-                All quotes displayed in this study companion link directly to the source at{" "}
-                <a
-                  href="https://www.lawofone.info"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[var(--lo1-gold)] hover:underline"
-                >
-                  lawofone.info
-                </a>{" "}
-                for verification and further study.
+                {t.rich("copyright.verification", {
+                  link: (chunks) => (
+                    <a
+                      href="https://www.lawofone.info"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[var(--lo1-gold)] hover:underline"
+                    >
+                      {chunks}
+                    </a>
+                  )
+                })}
               </p>
             </div>
           </section>
@@ -456,12 +450,11 @@ export default function SupportPage() {
           {/* Project Details */}
           <section className="mb-16">
             <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">
-              Project Details
+              {t("projectDetails.title")}
             </h2>
             <div className="bg-[var(--lo1-indigo)]/20 border border-[var(--lo1-celestial)]/30 rounded-2xl p-8">
               <p className="text-[var(--lo1-stardust)] leading-relaxed mb-6">
-                The Law of One Study Companion is an independent, open-source project created to
-                help students of the Ra Material explore and understand the teachings more easily.
+                {t("projectDetails.intro")}
               </p>
               <div className="grid md:grid-cols-2 gap-4 mb-6">
                 <div className="flex items-start gap-3">
@@ -480,10 +473,10 @@ export default function SupportPage() {
                   </svg>
                   <div>
                     <div className="text-[var(--lo1-starlight)] font-medium">
-                      Free and open source
+                      {t("projectDetails.features.openSource.title")}
                     </div>
                     <div className="text-sm text-[var(--lo1-stardust)]">
-                      Code publicly available on GitHub
+                      {t("projectDetails.features.openSource.description")}
                     </div>
                   </div>
                 </div>
@@ -502,9 +495,9 @@ export default function SupportPage() {
                     />
                   </svg>
                   <div>
-                    <div className="text-[var(--lo1-starlight)] font-medium">Community-funded</div>
+                    <div className="text-[var(--lo1-starlight)] font-medium">{t("projectDetails.features.communityFunded.title")}</div>
                     <div className="text-sm text-[var(--lo1-stardust)]">
-                      Built with love for seekers
+                      {t("projectDetails.features.communityFunded.description")}
                     </div>
                   </div>
                 </div>
@@ -524,10 +517,10 @@ export default function SupportPage() {
                   </svg>
                   <div>
                     <div className="text-[var(--lo1-starlight)] font-medium">
-                      Independent project
+                      {t("projectDetails.features.independent.title")}
                     </div>
                     <div className="text-sm text-[var(--lo1-stardust)]">
-                      Not affiliated with L/L Research
+                      {t("projectDetails.features.independent.description")}
                     </div>
                   </div>
                 </div>
@@ -547,26 +540,28 @@ export default function SupportPage() {
                   </svg>
                   <div>
                     <div className="text-[var(--lo1-starlight)] font-medium">
-                      Continuously improving
+                      {t("projectDetails.features.improving.title")}
                     </div>
                     <div className="text-sm text-[var(--lo1-stardust)]">
-                      Feedback and contributions welcome
+                      {t("projectDetails.features.improving.description")}
                     </div>
                   </div>
                 </div>
               </div>
               <div className="pt-4 border-t border-[var(--lo1-gold)]/20">
                 <p className="text-sm text-[var(--lo1-stardust)]">
-                  If you find this tool helpful, please consider{" "}
-                  <a
-                    href="https://www.llresearch.org/donate"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[var(--lo1-gold)] hover:underline font-medium"
-                  >
-                    supporting L/L Research directly
-                  </a>
-                  .
+                  {t.rich("projectDetails.supportNote", {
+                    link: (chunks) => (
+                      <a
+                        href="https://www.llresearch.org/donate"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[var(--lo1-gold)] hover:underline font-medium"
+                      >
+                        {chunks}
+                      </a>
+                    )
+                  })}
                 </p>
               </div>
             </div>
@@ -575,30 +570,30 @@ export default function SupportPage() {
           {/* Technical Details */}
           <section className="mb-16">
             <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">
-              Technical Details
+              {t("technical.title")}
             </h2>
             <div className="bg-[var(--lo1-indigo)]/20 border border-[var(--lo1-celestial)]/30 rounded-xl p-6">
               <p className="text-[var(--lo1-stardust)] text-sm mb-4">
-                For those interested in the technical implementation:
+                {t("technical.intro")}
               </p>
               <div className="grid sm:grid-cols-2 gap-3 text-sm">
                 <div className="flex items-center gap-3 p-3 bg-[var(--lo1-indigo)]/30 rounded-lg">
-                  <span className="text-[var(--lo1-stardust)]">AI Model:</span>
-                  <span className="text-[var(--lo1-starlight)] font-medium">OpenAI GPT-5-mini</span>
+                  <span className="text-[var(--lo1-stardust)]">{t("technical.labels.aiModel")}</span>
+                  <span className="text-[var(--lo1-starlight)] font-medium">{t("technical.values.aiModel")}</span>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-[var(--lo1-indigo)]/30 rounded-lg">
-                  <span className="text-[var(--lo1-stardust)]">Vector Search:</span>
-                  <span className="text-[var(--lo1-starlight)] font-medium">Pinecone</span>
+                  <span className="text-[var(--lo1-stardust)]">{t("technical.labels.vectorSearch")}</span>
+                  <span className="text-[var(--lo1-starlight)] font-medium">{t("technical.values.vectorSearch")}</span>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-[var(--lo1-indigo)]/30 rounded-lg">
-                  <span className="text-[var(--lo1-stardust)]">Embeddings:</span>
+                  <span className="text-[var(--lo1-stardust)]">{t("technical.labels.embeddings")}</span>
                   <span className="text-[var(--lo1-starlight)] font-medium">
-                    text-embedding-3-small
+                    {t("technical.values.embeddings")}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 p-3 bg-[var(--lo1-indigo)]/30 rounded-lg">
-                  <span className="text-[var(--lo1-stardust)]">Framework:</span>
-                  <span className="text-[var(--lo1-starlight)] font-medium">Next.js 16</span>
+                  <span className="text-[var(--lo1-stardust)]">{t("technical.labels.framework")}</span>
+                  <span className="text-[var(--lo1-starlight)] font-medium">{t("technical.values.framework")}</span>
                 </div>
               </div>
               <div className="mt-4 pt-4 border-t border-[var(--lo1-gold)]/20">
@@ -615,7 +610,7 @@ export default function SupportPage() {
                       clipRule="evenodd"
                     />
                   </svg>
-                  View source code on GitHub
+                  {t("technical.githubLink")}
                   <svg
                     className="w-4 h-4 group-hover:translate-x-1 transition-transform"
                     fill="none"
@@ -652,47 +647,43 @@ export default function SupportPage() {
                   />
                 </svg>
                 <h2 className="text-2xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)]">
-                  Important Disclaimer
+                  {t("disclaimer.title")}
                 </h2>
               </div>
               <div className="space-y-4 text-[var(--lo1-starlight)]">
                 <p className="leading-relaxed">
                   <strong className="text-[var(--lo1-gold)]">
-                    This tool is far from a primary study of the Ra Material and should only be used
-                    to supplement your study or for curiosity.
+                    {t("disclaimer.mainWarning")}
                   </strong>{" "}
-                  It is not a replacement for reading the original sessions directly.
+                  {t("disclaimer.notReplacement")}
                 </p>
                 <p className="leading-relaxed text-sm">
-                  Like all AI language models, this chatbot has limitations and can potentially
-                  provide inaccurate or misleading information. The AI may sometimes "hallucinate"
-                  (generate information that doesn't exist in the source material) or misinterpret
-                  Ra's teachings. Only the highlighted quote cards contain verified passages from
-                  the Ra Material—all other explanatory text is AI-generated interpretation that may
-                  contain errors.
+                  {t("disclaimer.limitations")}
                 </p>
                 <p className="leading-relaxed text-sm border-t border-[var(--lo1-gold)]/20 pt-4">
-                  <strong>Always verify important information</strong> by consulting the original Ra
-                  Material at{" "}
-                  <a
-                    href="https://www.lawofone.info"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[var(--lo1-gold)] hover:underline"
-                  >
-                    lawofone.info
-                  </a>{" "}
-                  or in the published books available from{" "}
-                  <a
-                    href="https://www.llresearch.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[var(--lo1-gold)] hover:underline"
-                  >
-                    L/L Research
-                  </a>
-                  . For serious study of the Law of One, there is no substitute for reading the
-                  primary source material.
+                  {t.rich("disclaimer.verification", {
+                    strong: (chunks) => <strong>{chunks}</strong>,
+                    lawofoneLink: (chunks) => (
+                      <a
+                        href="https://www.lawofone.info"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[var(--lo1-gold)] hover:underline"
+                      >
+                        {chunks}
+                      </a>
+                    ),
+                    llresearchLink: (chunks) => (
+                      <a
+                        href="https://www.llresearch.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[var(--lo1-gold)] hover:underline"
+                      >
+                        {chunks}
+                      </a>
+                    )
+                  })}
                 </p>
               </div>
             </div>
@@ -701,12 +692,11 @@ export default function SupportPage() {
           {/* Contact/Feedback */}
           <section className="mb-16">
             <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">
-              Feedback and Questions
+              {t("feedback.title")}
             </h2>
             <div className="bg-[var(--lo1-indigo)]/20 border border-[var(--lo1-celestial)]/30 rounded-xl p-6">
               <p className="text-[var(--lo1-stardust)] leading-relaxed mb-4">
-                This tool is continuously evolving based on user feedback. If you encounter issues
-                or have suggestions, we&apos;d love to hear from you:
+                {t("feedback.intro")}
               </p>
               <a
                 href="mailto:support@lawofone.study"
@@ -719,7 +709,7 @@ export default function SupportPage() {
                     d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
                   />
                 </svg>
-                support@lawofone.study
+                {t("feedback.email")}
               </a>
             </div>
           </section>
@@ -728,9 +718,7 @@ export default function SupportPage() {
           <div className="mt-20 pt-8 border-t border-[var(--lo1-gold)]/20 text-center">
             <div className="max-w-2xl mx-auto">
               <p className="text-2xl font-[family-name:var(--font-cormorant)] italic text-[var(--lo1-gold)] leading-relaxed mb-4">
-                &ldquo;You are every thing, every being, every emotion, every event, every situation.
-                You are unity. You are infinity. You are love/light, light/love. You are. This is the
-                Law of One.&rdquo;
+                &ldquo;{t("footerQuote.text")}&rdquo;
               </p>
               <a
                 href="https://www.llresearch.org/channeling/ra-contact/1#7"
@@ -738,7 +726,7 @@ export default function SupportPage() {
                 rel="noopener noreferrer"
                 className="text-sm text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors rounded focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"
               >
-                — Ra, Session 1.7
+                {t("footerQuote.attribution")}
               </a>
             </div>
           </div>

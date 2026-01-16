@@ -20,7 +20,7 @@ jest.mock("@/lib/graph/layout", () => ({
 // Mock next-intl
 jest.mock("next-intl", () => ({
   useLocale: () => "en",
-  useTranslations: () => (key: string) => {
+  useTranslations: () => {
     const translations: Record<string, string> = {
       "categories.cosmology": "Cosmology",
       "categories.polarity": "Polarity",
@@ -34,11 +34,21 @@ jest.mock("next-intl", () => ({
       "concept.keyPassages": "Key Passages",
       "concept.relatedConcepts": "Related Concepts",
       "concept.explore": "Explore this concept",
+      "concept.exploreConceptQuery": "Help me understand {concept}",
       "concept.teachingLevel.foundational": "Foundational",
       "concept.teachingLevel.intermediate": "Intermediate",
       "concept.teachingLevel.advanced": "Advanced",
     };
-    return translations[key] || key;
+    const t = (key: string, params?: Record<string, string>) => {
+      let result = translations[key] || key;
+      if (params) {
+        Object.entries(params).forEach(([k, v]) => {
+          result = result.replace(`{${k}}`, v);
+        });
+      }
+      return result;
+    };
+    return t;
   },
 }));
 

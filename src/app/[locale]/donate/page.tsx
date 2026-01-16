@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { titleVariants, staggerContainer, staggerChild } from "@/lib/animations";
+import { useTranslations } from "next-intl";
 
 function HeartIcon({ className }: { className?: string }) {
   return (
@@ -85,6 +86,8 @@ function GlobeIcon({ className }: { className?: string }) {
 }
 
 export default function DonatePage() {
+  const t = useTranslations("donate");
+
   return (
     <NavigationWrapper>
       <main className="min-h-dvh flex flex-col cosmic-bg relative">
@@ -104,10 +107,10 @@ export default function DonatePage() {
                 </div>
               </div>
               <h1 className="text-4xl md:text-5xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-starlight)] mb-4">
-                Support This Project
+                {t("title")}
               </h1>
               <p className="text-[var(--lo1-stardust)] text-lg max-w-xl mx-auto">
-                This tool is free for everyone, open source, and community-funded. Your support helps keep it that way.
+                {t("subtitle")}
               </p>
             </motion.div>
 
@@ -131,13 +134,13 @@ export default function DonatePage() {
                     </div>
                   </div>
                   <h2 className="text-2xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors mb-2">
-                    Buy Me a Coffee
+                    {t("buyMeACoffee.title")}
                   </h2>
                   <p className="text-[var(--lo1-stardust)] mb-4">
-                    Support the project with a one-time or recurring contribution
+                    {t("buyMeACoffee.description")}
                   </p>
                   <span className="inline-flex items-center gap-2 text-[var(--lo1-gold)] font-medium">
-                    Visit buymeacoffee.com/lawofone.study
+                    {t("buyMeACoffee.linkText")}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
                     </svg>
@@ -154,7 +157,7 @@ export default function DonatePage() {
               animate="visible"
             >
               <h2 className="text-2xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6 text-center">
-                What Your Support Enables
+                {t("whatYourSupportEnables.title")}
               </h2>
               <motion.div
                 className="grid md:grid-cols-3 gap-4"
@@ -168,10 +171,10 @@ export default function DonatePage() {
                     <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
                       <ServerIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
                     </div>
-                    <h3 className="font-semibold text-[var(--lo1-starlight)]">Hosting</h3>
+                    <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.hosting.title")}</h3>
                   </div>
                   <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
-                    Server costs, AI API usage, database hosting, and infrastructure to keep the tool running 24/7.
+                    {t("whatYourSupportEnables.hosting.description")}
                   </p>
                 </motion.div>
 
@@ -183,10 +186,10 @@ export default function DonatePage() {
                     <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
                       <CodeIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
                     </div>
-                    <h3 className="font-semibold text-[var(--lo1-starlight)]">Development</h3>
+                    <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.development.title")}</h3>
                   </div>
                   <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
-                    Continued development of new features, improvements, and bug fixes.
+                    {t("whatYourSupportEnables.development.description")}
                   </p>
                 </motion.div>
 
@@ -198,10 +201,10 @@ export default function DonatePage() {
                     <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
                       <GlobeIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
                     </div>
-                    <h3 className="font-semibold text-[var(--lo1-starlight)]">Free Access</h3>
+                    <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.freeAccess.title")}</h3>
                   </div>
                   <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
-                    Keeping this tool free and accessible for all seekers, without ads or paywalls.
+                    {t("whatYourSupportEnables.freeAccess.description")}
                   </p>
                 </motion.div>
               </motion.div>
@@ -216,7 +219,7 @@ export default function DonatePage() {
             >
               <blockquote className="max-w-2xl mx-auto">
                 <p className="font-[family-name:var(--font-cormorant)] italic text-xl text-[var(--lo1-stardust)] leading-relaxed mb-3">
-                  &ldquo;In truth there is no right or wrong. There is no polarity for all will be, as you would say, reconciled at some point in your dance through the mind/body/spirit complex which you amuse yourself by distorting in various ways at this time. This distortion is not in any case necessary. It is chosen by each of you as an alternative to understanding the complete unity of thought which binds all things.&rdquo;
+                  &ldquo;{t("footerQuote.text")}&rdquo;
                 </p>
                 <footer className="text-sm text-[var(--lo1-stardust)]/60">
                   <a
@@ -225,7 +228,7 @@ export default function DonatePage() {
                     rel="noopener noreferrer"
                     className="hover:text-[var(--lo1-gold)] transition-colors"
                   >
-                    Ra, Session 1.7
+                    {t("footerQuote.attribution")}
                   </a>
                 </footer>
               </blockquote>

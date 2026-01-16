@@ -61,6 +61,7 @@
   "dashboard": {
     "dailyWisdom": "Sabiduría Diaria",
     "exploreThis": "Explorar esto",
+    "exploreQuoteQuery": "Ayúdame a explorar \"{quote}\" de {reference}",
     "readOnLawOfOneInfo": "Leer {reference} en lawofone.info",
     "newReflectionTomorrow": "Una nueva reflexión te espera mañana"
   },
@@ -386,6 +387,7 @@
     "related": "Relacionados:",
     "keySessions": "Sesiones clave:",
     "explore": "Explorar este concepto",
+    "exploreConceptQuery": "Ayúdame a entender {concept}",
     "definition": "Definición",
     "extendedDefinition": "Definición Extendida",
     "keyPassages": "Pasajes Clave",

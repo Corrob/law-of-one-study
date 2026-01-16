@@ -1,0 +1,133 @@
+{
+  "title": "About This Tool",
+  "subtitle": "An AI-powered companion for exploring the Ra Material",
+  "features": {
+    "title": "Features",
+    "seek": {
+      "title": "Seek",
+      "description": "Ask questions and receive AI-powered answers with verified quotes from the Ra Material. Each response includes direct citations you can verify."
+    },
+    "explore": {
+      "title": "Explore",
+      "description": "Navigate an interactive concept graph showing relationships between key ideas in the Ra Material. Discover connections and explore related quotes."
+    },
+    "study": {
+      "title": "Study",
+      "description": "Follow guided learning paths with structured lessons, reflection prompts, and quizzes. Track your progress as you deepen your understanding."
+    },
+    "search": {
+      "title": "Search",
+      "description": "Search the Ra Material by meaning. Find specific quotes with Sentence mode, or explore broader concepts with Passage mode."
+    }
+  },
+  "howItWorks": {
+    "title": "How Seek Works",
+    "subtitle": "When you ask a question in the Seek feature, here's what happens behind the scenes:",
+    "step1": {
+      "number": "1",
+      "title": "Ask a Question",
+      "description": "Type any question about the Law of One, concepts from the Ra Material, or spiritual topics covered in the sessions."
+    },
+    "step2": {
+      "number": "2",
+      "title": "AI Searches",
+      "description": "Your question is converted into a mathematical representation and compared against all ~1,500 Q&A pairs from the 106 sessions."
+    },
+    "step3": {
+      "number": "3",
+      "title": "Get Response",
+      "description": "Receive contextual explanations with:",
+      "bullets": {
+        "quotes": "Direct quotes from Ra in highlighted cards",
+        "explanations": "Contextual explanations",
+        "concepts": "Linked key concepts"
+      }
+    },
+    "warning": {
+      "label": "Important:",
+      "text": "The AI's explanatory text is meant to help you understand, but it should not be considered authoritative and may contain errors. Like all AI language models, this chatbot can sometimes \"hallucinate\" or generate inaccurate information. Only the direct quotes from Ra (shown in the highlighted quote cards) are authentic passages from the Ra Material."
+    }
+  },
+  "llResearch": {
+    "title": "About L/L Research",
+    "intro": "The Ra Material, also known as <emphasis>The Law of One</emphasis>, was channeled between 1981 and 1984 through Carla Rueckert by the social memory complex Ra. The sessions were facilitated by Don Elkins (questioner) and Jim McCarty (scribe).",
+    "description": "<strong>L/L Research</strong> is the nonprofit organization that originally published the Ra Material and continues to steward these teachings. Founded by Don Elkins, Carla Rueckert, and Jim McCarty, L/L Research has dedicated itself to making the Law of One freely available to seekers worldwide.",
+    "links": {
+      "llresearch": {
+        "title": "llresearch.org",
+        "description": "Official L/L Research website"
+      },
+      "lawofoneinfo": {
+        "title": "lawofone.info",
+        "description": "Searchable archive (our source)"
+      }
+    }
+  },
+  "copyright": {
+    "title": "Copyright and Attribution",
+    "intro": "The Ra Contact (The Law of One) is copyrighted by L/L Research, which has generously made the material available for free personal and non-commercial use.",
+    "guidelinesTitle": "According to L/L Research's copyright guidelines:",
+    "guidelines": {
+      "quote": "The material may be freely quoted for personal, educational, and non-commercial purposes",
+      "attribution": "Attribution should be given to L/L Research and the Law of One",
+      "commercial": "Commercial use requires explicit permission from L/L Research"
+    },
+    "verification": "All quotes displayed in this study companion link directly to the source at <link>lawofone.info</link> for verification and further study."
+  },
+  "projectDetails": {
+    "title": "Project Details",
+    "intro": "The Law of One Study Companion is an independent, open-source project created to help students of the Ra Material explore and understand the teachings more easily.",
+    "features": {
+      "openSource": {
+        "title": "Free and open source",
+        "description": "Code publicly available on GitHub"
+      },
+      "communityFunded": {
+        "title": "Community-funded",
+        "description": "Built with love for seekers"
+      },
+      "independent": {
+        "title": "Independent project",
+        "description": "Not affiliated with L/L Research"
+      },
+      "improving": {
+        "title": "Continuously improving",
+        "description": "Feedback and contributions welcome"
+      }
+    },
+    "supportNote": "If you find this tool helpful, please consider <link>supporting L/L Research directly</link>."
+  },
+  "technical": {
+    "title": "Technical Details",
+    "intro": "For those interested in the technical implementation:",
+    "labels": {
+      "aiModel": "AI Model:",
+      "vectorSearch": "Vector Search:",
+      "embeddings": "Embeddings:",
+      "framework": "Framework:"
+    },
+    "values": {
+      "aiModel": "OpenAI GPT-5-mini",
+      "vectorSearch": "Pinecone",
+      "embeddings": "text-embedding-3-small",
+      "framework": "Next.js 16"
+    },
+    "githubLink": "View source code on GitHub"
+  },
+  "disclaimer": {
+    "title": "Important Disclaimer",
+    "mainWarning": "This tool is far from a primary study of the Ra Material and should only be used to supplement your study or for curiosity.",
+    "notReplacement": "It is not a replacement for reading the original sessions directly.",
+    "limitations": "Like all AI language models, this chatbot has limitations and can potentially provide inaccurate or misleading information. The AI may sometimes \"hallucinate\" (generate information that doesn't exist in the source material) or misinterpret Ra's teachings. Only the highlighted quote cards contain verified passages from the Ra Material—all other explanatory text is AI-generated interpretation that may contain errors.",
+    "verification": "<strong>Always verify important information</strong> by consulting the original Ra Material at <lawofoneLink>lawofone.info</lawofoneLink> or in the published books available from <llresearchLink>L/L Research</llresearchLink>. For serious study of the Law of One, there is no substitute for reading the primary source material."
+  },
+  "feedback": {
+    "title": "Feedback and Questions",
+    "intro": "This tool is continuously evolving based on user feedback. If you encounter issues or have suggestions, we'd love to hear from you:",
+    "email": "support@lawofone.study"
+  },
+  "footerQuote": {
+    "text": "You are every thing, every being, every emotion, every event, every situation. You are unity. You are infinity. You are love/light, light/love. You are. This is the Law of One.",
+    "attribution": "— Ra, Session 1.7"
+  }
+}

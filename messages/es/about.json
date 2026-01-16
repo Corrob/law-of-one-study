@@ -1,0 +1,133 @@
+{
+  "title": "Acerca de Esta Herramienta",
+  "subtitle": "Un compañero impulsado por IA para explorar el Material de Ra",
+  "features": {
+    "title": "Características",
+    "seek": {
+      "title": "Consultar",
+      "description": "Haz preguntas y recibe respuestas impulsadas por IA con citas verificadas del Material de Ra. Cada respuesta incluye citas directas que puedes verificar."
+    },
+    "explore": {
+      "title": "Explorar",
+      "description": "Navega por un gráfico interactivo de conceptos que muestra las relaciones entre ideas clave del Material de Ra. Descubre conexiones y explora citas relacionadas."
+    },
+    "study": {
+      "title": "Estudiar",
+      "description": "Sigue caminos de aprendizaje guiados con lecciones estructuradas, ejercicios de reflexión y cuestionarios. Sigue tu progreso mientras profundizas tu comprensión."
+    },
+    "search": {
+      "title": "Buscar",
+      "description": "Busca en el Material de Ra por significado. Encuentra citas específicas con el modo Frase, o explora conceptos más amplios con el modo Pasaje."
+    }
+  },
+  "howItWorks": {
+    "title": "Cómo Funciona Consultar",
+    "subtitle": "Cuando haces una pregunta en la función Consultar, esto es lo que sucede detrás de escena:",
+    "step1": {
+      "number": "1",
+      "title": "Haz una Pregunta",
+      "description": "Escribe cualquier pregunta sobre la Ley del Uno, conceptos del Material de Ra, o temas espirituales cubiertos en las sesiones."
+    },
+    "step2": {
+      "number": "2",
+      "title": "La IA Busca",
+      "description": "Tu pregunta se convierte en una representación matemática y se compara con los ~1,500 pares de preguntas y respuestas de las 106 sesiones."
+    },
+    "step3": {
+      "number": "3",
+      "title": "Obtén Respuesta",
+      "description": "Recibe explicaciones contextuales con:",
+      "bullets": {
+        "quotes": "Citas directas de Ra en tarjetas resaltadas",
+        "explanations": "Explicaciones contextuales",
+        "concepts": "Conceptos clave vinculados"
+      }
+    },
+    "warning": {
+      "label": "Importante:",
+      "text": "El texto explicativo de la IA está diseñado para ayudarte a comprender, pero no debe considerarse autoritativo y puede contener errores. Como todos los modelos de lenguaje de IA, este chatbot a veces puede \"alucinar\" o generar información inexacta. Solo las citas directas de Ra (mostradas en las tarjetas de citas resaltadas) son pasajes auténticos del Material de Ra."
+    }
+  },
+  "llResearch": {
+    "title": "Acerca de L/L Research",
+    "intro": "El Material de Ra, también conocido como <emphasis>La Ley del Uno</emphasis>, fue canalizado entre 1981 y 1984 a través de Carla Rueckert por el complejo de memoria social Ra. Las sesiones fueron facilitadas por Don Elkins (interrogador) y Jim McCarty (escriba).",
+    "description": "<strong>L/L Research</strong> es la organización sin fines de lucro que originalmente publicó el Material de Ra y continúa custodiando estas enseñanzas. Fundada por Don Elkins, Carla Rueckert y Jim McCarty, L/L Research se ha dedicado a hacer la Ley del Uno libremente disponible para buscadores en todo el mundo.",
+    "links": {
+      "llresearch": {
+        "title": "llresearch.org",
+        "description": "Sitio web oficial de L/L Research"
+      },
+      "lawofoneinfo": {
+        "title": "lawofone.info",
+        "description": "Archivo de búsqueda (nuestra fuente)"
+      }
+    }
+  },
+  "copyright": {
+    "title": "Derechos de Autor y Atribución",
+    "intro": "El Contacto Ra (La Ley del Uno) tiene derechos de autor de L/L Research, que generosamente ha puesto el material disponible para uso personal y no comercial gratuito.",
+    "guidelinesTitle": "Según las directrices de derechos de autor de L/L Research:",
+    "guidelines": {
+      "quote": "El material puede citarse libremente para propósitos personales, educativos y no comerciales",
+      "attribution": "Se debe dar atribución a L/L Research y la Ley del Uno",
+      "commercial": "El uso comercial requiere permiso explícito de L/L Research"
+    },
+    "verification": "Todas las citas mostradas en este compañero de estudio enlazan directamente a la fuente en <link>lawofone.info</link> para verificación y estudio adicional."
+  },
+  "projectDetails": {
+    "title": "Detalles del Proyecto",
+    "intro": "El Compañero de Estudio de la Ley del Uno es un proyecto independiente y de código abierto creado para ayudar a estudiantes del Material de Ra a explorar y comprender las enseñanzas más fácilmente.",
+    "features": {
+      "openSource": {
+        "title": "Gratuito y de código abierto",
+        "description": "Código disponible públicamente en GitHub"
+      },
+      "communityFunded": {
+        "title": "Financiado por la comunidad",
+        "description": "Construido con amor para buscadores"
+      },
+      "independent": {
+        "title": "Proyecto independiente",
+        "description": "No afiliado con L/L Research"
+      },
+      "improving": {
+        "title": "Mejorando continuamente",
+        "description": "Comentarios y contribuciones bienvenidos"
+      }
+    },
+    "supportNote": "Si encuentras útil esta herramienta, por favor considera <link>apoyar a L/L Research directamente</link>."
+  },
+  "technical": {
+    "title": "Detalles Técnicos",
+    "intro": "Para quienes estén interesados en la implementación técnica:",
+    "labels": {
+      "aiModel": "Modelo de IA:",
+      "vectorSearch": "Búsqueda Vectorial:",
+      "embeddings": "Embeddings:",
+      "framework": "Framework:"
+    },
+    "values": {
+      "aiModel": "OpenAI GPT-5-mini",
+      "vectorSearch": "Pinecone",
+      "embeddings": "text-embedding-3-small",
+      "framework": "Next.js 16"
+    },
+    "githubLink": "Ver código fuente en GitHub"
+  },
+  "disclaimer": {
+    "title": "Descargo de Responsabilidad Importante",
+    "mainWarning": "Esta herramienta está lejos de ser un estudio primario del Material de Ra y solo debe usarse para complementar tu estudio o por curiosidad.",
+    "notReplacement": "No es un reemplazo para leer las sesiones originales directamente.",
+    "limitations": "Como todos los modelos de lenguaje de IA, este chatbot tiene limitaciones y potencialmente puede proporcionar información inexacta o engañosa. La IA a veces puede \"alucinar\" (generar información que no existe en el material fuente) o malinterpretar las enseñanzas de Ra. Solo las tarjetas de citas resaltadas contienen pasajes verificados del Material de Ra—todo el resto del texto explicativo es interpretación generada por IA que puede contener errores.",
+    "verification": "<strong>Siempre verifica la información importante</strong> consultando el Material de Ra original en <lawofoneLink>lawofone.info</lawofoneLink> o en los libros publicados disponibles en <llresearchLink>L/L Research</llresearchLink>. Para un estudio serio de la Ley del Uno, no hay sustituto para leer el material fuente primario."
+  },
+  "feedback": {
+    "title": "Comentarios y Preguntas",
+    "intro": "Esta herramienta está evolucionando continuamente basándose en los comentarios de los usuarios. Si encuentras problemas o tienes sugerencias, nos encantaría saber de ti:",
+    "email": "support@lawofone.study"
+  },
+  "footerQuote": {
+    "text": "Eres cada cosa, cada ser, cada emoción, cada evento, cada situación. Eres unidad. Eres infinito. Eres amor/luz, luz/amor. Eres. Esta es la Ley del Uno.",
+    "attribution": "— Ra, Sesión 1.7"
+  }
+}

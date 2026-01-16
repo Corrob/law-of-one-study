@@ -92,7 +92,7 @@ export default function Dashboard() {
               </p>
               <div className="flex items-center justify-between gap-4">
                 <Link
-                  href={`/chat?q=${encodeURIComponent(`Help me explore "${quote.text}" from ${quote.reference}`)}`}
+                  href={`/chat?q=${encodeURIComponent(t("dashboard.exploreQuoteQuery", { quote: quote.text, reference: quote.reference }))}`}
                   className="animate-quote-reference text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors"
                   onClick={(e) => e.stopPropagation()}
                 >

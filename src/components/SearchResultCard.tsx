@@ -120,16 +120,17 @@ export default function SearchResultCard({
   // Extract short reference (e.g., "49.8" from "Ra 49.8")
   const shortRef = result.reference.match(/(\d+\.\d+)/)?.[1] || result.reference;
 
-  // Get text content - prioritize translations for non-English users
+  // Get text content - always show translated version when available
+  // The "Show English original" toggle controls the separate English section below
   const displayText = useMemo(() => {
     if (hasSentenceMatch) {
       // Sentence mode: use translated sentence if available, fall back to English
-      return (showEnglishOriginal ? result.sentence : translatedSentence) || result.sentence;
+      return translatedSentence || result.sentence;
     } else {
       // Passage mode: use translated passage if available, fall back to English
-      return (showEnglishOriginal ? result.text : translatedPassage) || result.text;
+      return translatedPassage || result.text;
     }
-  }, [hasSentenceMatch, showEnglishOriginal, translatedSentence, translatedPassage, result.sentence, result.text]);
+  }, [hasSentenceMatch, translatedSentence, translatedPassage, result.sentence, result.text]);
 
   // Format text with proper paragraph breaks
   const formattedText = useMemo(
@@ -284,7 +285,7 @@ export default function SearchResultCard({
                 <span className="text-[var(--lo1-stardust)]">...</span>
               ) : (
                 highlightText(
-                  showEnglishOriginal ? result.sentence! : (translatedSentence || result.sentence!),
+                  translatedSentence || result.sentence!,
                   highlightTerms
                 )
               )}
@@ -306,6 +307,15 @@ export default function SearchResultCard({
                 </button>
               )}
             </div>
+            {/* Show English original sentence if toggled */}
+            {showEnglishOriginal && translatedSentence && result.sentence && (
+              <div className="mt-3 pt-3 border-t border-[var(--lo1-celestial)]/20">
+                <p className="text-xs text-[var(--lo1-celestial)]/70 mb-1">{tQuote("englishOriginal")}</p>
+                <p className="text-[14px] leading-relaxed text-[var(--lo1-stardust)]">
+                  {result.sentence}
+                </p>
+              </div>
+            )}
           </div>
         )}
 

@@ -1,0 +1,28 @@
+{
+  "title": "Apoya Este Proyecto",
+  "subtitle": "Esta herramienta es gratuita para todos, de código abierto y financiada por la comunidad. Tu apoyo ayuda a mantenerla así.",
+  "buyMeACoffee": {
+    "title": "Invítame un Café",
+    "description": "Apoya el proyecto con una contribución única o recurrente",
+    "linkText": "Visita buymeacoffee.com/lawofone.study"
+  },
+  "whatYourSupportEnables": {
+    "title": "Lo Que Tu Apoyo Permite",
+    "hosting": {
+      "title": "Alojamiento",
+      "description": "Costos del servidor, uso de API de IA, alojamiento de base de datos e infraestructura para mantener la herramienta funcionando 24/7."
+    },
+    "development": {
+      "title": "Desarrollo",
+      "description": "Desarrollo continuo de nuevas funciones, mejoras y corrección de errores."
+    },
+    "freeAccess": {
+      "title": "Acceso Gratuito",
+      "description": "Mantener esta herramienta gratuita y accesible para todos los buscadores, sin anuncios ni muros de pago."
+    }
+  },
+  "footerQuote": {
+    "text": "En verdad no hay bien o mal. No hay polaridad porque todo será, como ustedes dirían, reconciliado en algún punto de su danza a través del complejo mente/cuerpo/espíritu que ustedes se divierten distorsionando de varias maneras en este momento. Esta distorsión no es en ningún caso necesaria. Es elegida por cada uno de ustedes como una alternativa a comprender la completa unidad de pensamiento que une todas las cosas.",
+    "attribution": "Ra, Sesión 1.7"
+  }
+}
