@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { type SearchResult } from "@/lib/schemas";
-import { formatWholeQuote, formatQuoteWithAttribution, fetchBilingualQuote } from "@/lib/quote-utils";
+import { formatWholeQuote, formatQuoteWithAttribution, fetchBilingualQuote, splitIntoSentences } from "@/lib/quote-utils";
 import { type AvailableLanguage } from "@/lib/language-config";
 import {
   getHighlightTerms,
@@ -168,12 +168,51 @@ export default function SearchResultCard({
       fetchBilingualQuote(reference, language as AvailableLanguage)
         .then((data) => {
           if (data?.text) {
-            if (hasSentenceMatch) {
-              // Sentence mode: extract the matching sentence by position
-              const sentences = data.text.split(/(?<=[.!?])\s+/);
-              const sentenceIndex = result.sentenceIndex ?? 0;
-              if (sentences[sentenceIndex]) {
-                setTranslatedSentence(sentences[sentenceIndex].trim());
+            if (hasSentenceMatch && result.sentence && data.originalText) {
+              // Sentence mode: find corresponding Spanish sentence by position
+              // We can't use sentenceIndex directly because English and Spanish
+              // have different sentence counts due to translation differences.
+
+              // Filter helper: skip greeting "I am Ra" / "Soy Ra" and short sentences
+              const isContentSentence = (s: string) =>
+                s.length >= 10 &&
+                !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i);
+
+              const englishSentences = splitIntoSentences(data.originalText)
+                .filter(isContentSentence);
+              const spanishSentences = splitIntoSentences(data.text)
+                .filter(isContentSentence);
+
+              // Normalize text for comparison (remove punctuation, lowercase)
+              const normalize = (s: string) =>
+                s.toLowerCase().replace(/[^\w\s]/g, '').trim();
+              const normalizedTarget = normalize(result.sentence!);
+
+              // Find which English sentence matches result.sentence
+              const englishIndex = englishSentences.findIndex(s => {
+                const normalizedSentence = normalize(s);
+                return normalizedSentence.includes(normalizedTarget) ||
+                       normalizedTarget.includes(normalizedSentence);
+              });
+
+              if (englishIndex !== -1 && spanishSentences.length > 0) {
+                // Map English position to Spanish position proportionally
+                const relativePosition = englishIndex / Math.max(englishSentences.length, 1);
+                const spanishIndex = Math.min(
+                  Math.round(relativePosition * spanishSentences.length),
+                  spanishSentences.length - 1
+                );
+                setTranslatedSentence(spanishSentences[spanishIndex].trim());
+              } else if (spanishSentences.length > 0) {
+                // Fallback: use first content sentence if we can't find the match
+                setTranslatedSentence(spanishSentences[0].trim());
+              }
+            } else if (hasSentenceMatch) {
+              // Sentence mode without English original - use first content sentence
+              const spanishSentences = splitIntoSentences(data.text)
+                .filter(s => s.length >= 10 && !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i));
+              if (spanishSentences.length > 0) {
+                setTranslatedSentence(spanishSentences[0].trim());
               }
             } else {
               // Passage mode: use the full translated passage
@@ -186,7 +225,7 @@ export default function SearchResultCard({
         })
         .finally(() => setLoadingTranslation(false));
     }
-  }, [language, translationAttempted, loadingTranslation, hasSentenceMatch, result.session, result.question, result.sentenceIndex]);
+  }, [language, translationAttempted, loadingTranslation, hasSentenceMatch, result.session, result.question, result.sentenceIndex, result.sentence]);
 
   // Load full passage when user expands in sentence mode
   useEffect(() => {
