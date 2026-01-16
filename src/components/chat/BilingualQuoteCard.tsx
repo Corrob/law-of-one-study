@@ -4,7 +4,7 @@ import { memo, useState, useEffect } from "react";
 import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { debug } from "@/lib/debug";
-import { fetchBilingualQuote, formatWholeQuote, formatQuoteWithAttribution } from "@/lib/quote-utils";
+import { fetchBilingualQuote, formatWholeQuote, formatQuoteWithAttribution, getRaMaterialUrl } from "@/lib/quote-utils";
 import { useTranslations } from "next-intl";
 import { type AvailableLanguage } from "@/lib/language-config";
 import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
@@ -35,6 +35,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
 
   // State for initial translation (fetched on mount)
   const [initialTranslation, setInitialTranslation] = useState<string | null>(null);
+  const [initialOriginal, setInitialOriginal] = useState<string | null>(null);
   const [isLoadingInitial, setIsLoadingInitial] = useState(false);
   const [isFallbackToEnglish, setIsFallbackToEnglish] = useState(false);
   const [translationAttempted, setTranslationAttempted] = useState(false);
@@ -52,6 +53,9 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   const sessionNumber = match ? parseInt(match[1]) : 0;
   const questionNumber = match ? parseInt(match[2]) : 0;
 
+  // Generate locale-aware URL for the quote link
+  const quoteUrl = getRaMaterialUrl(sessionNumber, questionNumber, targetLanguage);
+
   // Fetch translated quote on mount
   useEffect(() => {
     if (targetLanguage === 'en' || translationAttempted || isLoadingInitial) return;
@@ -64,6 +68,10 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
       .then((result) => {
         if (result) {
           setInitialTranslation(formatWholeQuote(result.text));
+          // Store original English text for toggle
+          if (result.originalText) {
+            setInitialOriginal(formatWholeQuote(result.originalText));
+          }
           // Check if we're showing English as fallback (no original means the text IS the original)
           // Note: We already guard for targetLanguage === 'en' at the top of this effect
           setIsFallbackToEnglish(!result.originalText);
@@ -143,14 +151,15 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
     : initialTranslation || content;
   const segments = parseRaText(displayText);
 
-  // Original text segments (English)
-  const originalSegments = showOriginal && fullTexts?.original
-    ? parseRaText(fullTexts.original)
+  // Original text segments (English) - use fullTexts when expanded, initialOriginal otherwise
+  const originalText = isExpanded ? fullTexts?.original : initialOriginal;
+  const originalSegments = showOriginal && originalText
+    ? parseRaText(originalText)
     : null;
 
   // Compute copy text
   const textToCopy = isExpanded && fullTexts ? fullTexts.translated : content;
-  const copyText = formatQuoteWithAttribution(textToCopy, quote.reference, quote.url);
+  const copyText = formatQuoteWithAttribution(textToCopy, quote.reference, quoteUrl);
 
   const handleCopyAnalytics = () => {
     analytics.quoteCopied({
@@ -162,7 +171,9 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
 
   const showEllipsis = !isExpanded && (hasLeading || hasTrailing);
   // Only show "Show English original" if we have a translation (not showing fallback)
-  const hasOriginal = targetLanguage !== 'en' && !isFallbackToEnglish && (fullTexts?.original || !isExpanded);
+  // Show toggle even without expansion if we have initialOriginal loaded
+  const hasOriginal = targetLanguage !== 'en' && !isFallbackToEnglish &&
+    (initialOriginal || fullTexts?.original);
 
   return (
     <div
@@ -182,7 +193,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
           )}
         </div>
         <a
-          href={quote.url}
+          href={quoteUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="text-xs font-medium text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline"
@@ -251,7 +262,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
       )}
 
       {/* Show original toggle (for non-English languages) */}
-      {hasOriginal && isExpanded && fullTexts?.original && (
+      {hasOriginal && (
         <div className="mt-4 pt-3 border-t border-[var(--lo1-celestial)]/20">
           <button
             onClick={() => setShowOriginal(!showOriginal)}
@@ -264,11 +275,16 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
           {/* Original English text */}
           {showOriginal && originalSegments && (
             <div className="mt-3 pl-3 border-l-2 border-[var(--lo1-celestial)]/30">
-              <div className="text-xs text-[var(--lo1-celestial)]/70 mb-2 uppercase tracking-wide">
-                {t("englishOriginal")}
-              </div>
               {originalSegments.map((segment, index) => (
                 <div key={index} className={segment.type === "ra" ? "mt-2" : ""}>
+                  {/* Use hardcoded English labels for the English original */}
+                  {segment.type === "questioner" && (
+                    <div className="mb-1">
+                      <span className="text-xs font-semibold text-[var(--lo1-celestial)]/70 uppercase tracking-wide">
+                        Questioner
+                      </span>
+                    </div>
+                  )}
                   {segment.type === "ra" && (
                     <div className="mb-1">
                       <span className="text-xs font-semibold text-[var(--lo1-gold)]/70 uppercase tracking-wide">

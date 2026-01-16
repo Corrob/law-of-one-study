@@ -5,6 +5,8 @@
     "collapse": "Colapsar",
     "expand": "Mostrar más",
     "loading": "Cargando...",
+    "loadError": "Error al cargar la cita",
+    "quoteNotFound": "Cita no encontrada",
     "showEnglishOriginal": "Mostrar original en inglés",
     "hideEnglishOriginal": "Ocultar original en inglés",
     "englishOriginal": "Original en Inglés",

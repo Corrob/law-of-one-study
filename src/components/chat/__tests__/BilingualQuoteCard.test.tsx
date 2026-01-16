@@ -31,6 +31,8 @@ jest.mock("@/lib/quote-utils", () => ({
   fetchBilingualQuote: (...args: unknown[]) => mockFetchBilingualQuote(...args),
   formatWholeQuote: (text: string) => text,
   formatQuoteWithAttribution: (text: string, ref: string) => `${text}\n\n- ${ref}`,
+  getRaMaterialUrl: (session: number, question: number, locale: string) =>
+    `https://www.llresearch.org${locale === 'en' ? '' : '/' + locale}/channeling/ra-contact/${session}#${question}`,
 }));
 
 // Mock analytics
@@ -88,7 +90,7 @@ describe("BilingualQuoteCard", () => {
     });
   });
 
-  it("renders reference link correctly", () => {
+  it("renders reference link correctly with locale", () => {
     mockFetchBilingualQuote.mockResolvedValue({
       text: "Ra: Soy Ra. Esta es una cita de prueba.",
       originalText: "Ra: I am Ra. This is a test quote.",
@@ -97,7 +99,8 @@ describe("BilingualQuoteCard", () => {
     render(<BilingualQuoteCard quote={mockQuote} targetLanguage="es" />);
 
     const link = screen.getByRole("link", { name: "1.7" });
-    expect(link).toHaveAttribute("href", "https://www.llresearch.org/channeling/ra-contact/1#7");
+    // URL should include Spanish locale
+    expect(link).toHaveAttribute("href", "https://www.llresearch.org/es/channeling/ra-contact/1#7");
     expect(link).toHaveAttribute("target", "_blank");
   });
 
@@ -189,13 +192,10 @@ describe("BilingualQuoteCard", () => {
     const showOriginalButton = screen.getByText(/Mostrar original en inglés/);
     await user.click(showOriginalButton);
 
-    // Should now show English original section
+    // Should now show hide button (indicating English original is visible)
     await waitFor(() => {
-      expect(screen.getByText("Original en Inglés")).toBeInTheDocument();
+      expect(screen.getByText(/Ocultar original en inglés/)).toBeInTheDocument();
     });
-
-    // Should show hide button
-    expect(screen.getByText(/Ocultar original en inglés/)).toBeInTheDocument();
   });
 
   it("does not show English original toggle when using fallback", async () => {

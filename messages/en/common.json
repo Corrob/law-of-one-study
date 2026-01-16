@@ -5,6 +5,8 @@
     "collapse": "Collapse",
     "expand": "Show more",
     "loading": "Loading...",
+    "loadError": "Failed to load quote",
+    "quoteNotFound": "Quote not found",
     "showEnglishOriginal": "Show English original",
     "hideEnglishOriginal": "Hide English original",
     "englishOriginal": "English Original",
