@@ -385,7 +385,32 @@
   "concept": {
     "related": "Relacionados:",
     "keySessions": "Sesiones clave:",
-    "explore": "Explorar este concepto"
+    "explore": "Explorar este concepto",
+    "definition": "Definición",
+    "extendedDefinition": "Definición Extendida",
+    "keyPassages": "Pasajes Clave",
+    "relatedConcepts": "Conceptos Relacionados",
+    "alsoKnownAs": "También conocido como:",
+    "sessions": "Sesiones:",
+    "prerequisite": "Requiere comprensión de:",
+    "leadsTo": "Abre comprensión de:",
+    "partOf": "Parte de:",
+    "contains": "Contiene:",
+    "teachingLevel": {
+      "foundational": "Fundamental",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzado"
+    }
+  },
+  "categories": {
+    "cosmology": "Cosmología y Estructura",
+    "polarity": "Polaridad y Servicio",
+    "energy-work": "Centros de Energía",
+    "incarnation": "Encarnación y Catalizador",
+    "entities": "Seres y Contactos",
+    "metaphysics": "Metafísica",
+    "practice": "Práctica Espiritual",
+    "archetypes": "Mente Arquetípica"
   },
   "thinking": {
     "1": "Escaneando los registros cósmicos...",

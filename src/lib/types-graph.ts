@@ -1,5 +1,41 @@
 // Law of One Concept Knowledge Graph Types
 
+import { type AvailableLanguage } from "./language-config";
+
+// Bilingual text field for internationalization
+export interface BilingualText {
+  en: string;
+  es: string;
+}
+
+// Bilingual aliases for concept matching in different languages
+export interface BilingualAliases {
+  en: string[];
+  es: string[];
+}
+
+/**
+ * Get localized text from a BilingualText object.
+ * Falls back to English if the requested locale is not available.
+ */
+export function getLocalizedText(
+  text: BilingualText,
+  locale: AvailableLanguage
+): string {
+  return text[locale] || text.en;
+}
+
+/**
+ * Get localized aliases from a BilingualAliases object.
+ * Falls back to English if the requested locale is not available.
+ */
+export function getLocalizedAliases(
+  aliases: BilingualAliases,
+  locale: AvailableLanguage
+): string[] {
+  return aliases[locale] || aliases.en;
+}
+
 // Relationship types between concepts
 export type RelationshipType =
   | "prerequisite" // Must understand this concept first
@@ -38,9 +74,9 @@ export type ArchetypeSubcategory =
 
 // Key passage from the Ra Material
 export interface KeyPassage {
-  reference: string; // e.g., "16.51"
-  excerpt: string; // Short quote (1-3 sentences)
-  context: string; // Why this passage is important
+  reference: string; // e.g., "16.51" - language-neutral identifier
+  excerpt: BilingualText; // Short quote (1-3 sentences) in both languages
+  context: BilingualText; // Why this passage is important, in both languages
 }
 
 // Session references for a concept
@@ -61,25 +97,25 @@ export interface ConceptRelationships {
 
 // Full concept with graph data
 export interface GraphConcept {
-  id: string; // Unique identifier (kebab-case)
-  term: string; // Canonical display name
-  aliases: string[]; // Alternative names/forms for matching
-  category: ConceptCategory;
+  id: string; // Unique identifier (kebab-case) - language-neutral
+  term: BilingualText; // Canonical display name in both languages
+  aliases: BilingualAliases; // Alternative names/forms for matching per language
+  category: ConceptCategory; // Language-neutral category ID
   subcategory?: ArchetypeSubcategory; // For archetypes: position grouping
-  definition: string; // Brief definition (for popover)
-  extendedDefinition: string; // Longer explanation
-  relationships: ConceptRelationships;
-  sessions: SessionReferences;
+  definition: BilingualText; // Brief definition (for popover) in both languages
+  extendedDefinition: BilingualText; // Longer explanation in both languages
+  relationships: ConceptRelationships; // Uses concept IDs (language-neutral)
+  sessions: SessionReferences; // Session numbers (language-neutral)
   keyPassages: KeyPassage[];
-  searchTerms: string[]; // Terms for query augmentation
+  searchTerms: string[]; // Terms for query augmentation (English for embedding)
   teachingLevel: TeachingLevel;
 }
 
 // Category metadata
 export interface CategoryInfo {
-  name: string;
-  description: string;
-  concepts: string[]; // Concept IDs in this category
+  name: BilingualText; // Category display name in both languages
+  description: BilingualText; // Category description in both languages
+  concepts: string[]; // Concept IDs in this category (language-neutral)
 }
 
 // Full graph structure

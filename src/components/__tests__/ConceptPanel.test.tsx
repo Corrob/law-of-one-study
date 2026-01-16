@@ -5,16 +5,6 @@ import type { GraphConcept } from "@/lib/graph/types";
 
 // Mock the layout module that imports D3
 jest.mock("@/lib/graph/layout", () => ({
-  CATEGORY_LABELS: {
-    cosmology: "Cosmology",
-    polarity: "Polarity",
-    "energy-work": "Energy Work",
-    incarnation: "Incarnation",
-    entities: "Entities",
-    metaphysics: "Metaphysics",
-    practice: "Practice",
-    archetypes: "Archetypes",
-  },
   CATEGORY_COLORS: {
     cosmology: "#4a5899",
     polarity: "#d4a853",
@@ -24,6 +14,31 @@ jest.mock("@/lib/graph/layout", () => ({
     metaphysics: "#60a5fa",
     practice: "#fbbf24",
     archetypes: "#a78bfa",
+  },
+}));
+
+// Mock next-intl
+jest.mock("next-intl", () => ({
+  useLocale: () => "en",
+  useTranslations: () => (key: string) => {
+    const translations: Record<string, string> = {
+      "categories.cosmology": "Cosmology",
+      "categories.polarity": "Polarity",
+      "categories.energy-work": "Energy Work",
+      "categories.incarnation": "Incarnation",
+      "categories.entities": "Entities",
+      "categories.metaphysics": "Metaphysics",
+      "categories.practice": "Practice",
+      "categories.archetypes": "Archetypes",
+      "concept.definition": "Definition",
+      "concept.keyPassages": "Key Passages",
+      "concept.relatedConcepts": "Related Concepts",
+      "concept.explore": "Explore this concept",
+      "concept.teachingLevel.foundational": "Foundational",
+      "concept.teachingLevel.intermediate": "Intermediate",
+      "concept.teachingLevel.advanced": "Advanced",
+    };
+    return translations[key] || key;
   },
 }));
 
@@ -45,16 +60,16 @@ jest.mock("@/lib/concept-graph", () => ({
     if (id === "related-concept") {
       return {
         id: "related-concept",
-        term: "Related Concept",
+        term: { en: "Related Concept", es: "Concepto Relacionado" },
         category: "metaphysics",
-        definition: "A related concept",
-        extendedDefinition: "",
+        definition: { en: "A related concept", es: "Un concepto relacionado" },
+        extendedDefinition: { en: "", es: "" },
         relationships: {},
         sessions: { primary: [], secondary: [] },
         keyPassages: [],
         searchTerms: [],
         teachingLevel: "foundational",
-        aliases: [],
+        aliases: { en: [], es: [] },
       };
     }
     return undefined;
@@ -85,11 +100,17 @@ jest.mock("framer-motion", () => ({
 
 const mockConcept: GraphConcept = {
   id: "test-concept",
-  term: "Test Concept",
-  aliases: ["alias1"],
+  term: { en: "Test Concept", es: "Concepto de Prueba" },
+  aliases: { en: ["alias1"], es: ["alias1"] },
   category: "cosmology",
-  definition: "This is a test concept definition.",
-  extendedDefinition: "This is an extended definition with more details.",
+  definition: {
+    en: "This is a test concept definition.",
+    es: "Esta es una definición de concepto de prueba.",
+  },
+  extendedDefinition: {
+    en: "This is an extended definition with more details.",
+    es: "Esta es una definición extendida con más detalles.",
+  },
   relationships: {
     related: ["related-concept"],
     leads_to: [],
@@ -102,8 +123,14 @@ const mockConcept: GraphConcept = {
   keyPassages: [
     {
       reference: "1.7",
-      excerpt: "This is a key passage from Ra.",
-      context: "Important context",
+      excerpt: {
+        en: "This is a key passage from Ra.",
+        es: "Este es un pasaje clave de Ra.",
+      },
+      context: {
+        en: "Important context",
+        es: "Contexto importante",
+      },
     },
   ],
   searchTerms: ["test", "concept"],

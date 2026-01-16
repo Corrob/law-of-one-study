@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { usePopoverContext } from "@/contexts/PopoverContext";
 import { findConceptByTerm, findConceptById } from "@/lib/concept-graph";
 import type { GraphConcept } from "@/lib/types-graph";
+import { getLocalizedText } from "@/lib/types-graph";
 import { useLocale, useTranslations } from "next-intl";
 import { getRaMaterialUrl } from "@/lib/quote-utils";
 import type { AvailableLanguage } from "@/lib/language-config";
@@ -119,14 +120,18 @@ export default function GlobalPopover() {
     const data = openPopover.data as ConceptData | undefined;
     if (!data) return null;
 
-    const concept = findConceptByTerm(data.term);
-    const definition = concept?.definition;
+    // Look up concept using the locale for matching
+    const concept = findConceptByTerm(data.term, locale);
+
+    // Get localized text for display
+    const term = concept ? getLocalizedText(concept.term, locale) : data.term;
+    const definition = concept ? getLocalizedText(concept.definition, locale) : undefined;
 
     const relatedConcepts = concept?.relationships.related
       ?.slice(0, 3)
       .map(id => findConceptById(id))
       .filter((c): c is GraphConcept => c !== undefined)
-      .map(c => c.term) || [];
+      .map(c => getLocalizedText(c.term, locale)) || [];
 
     const keySessions = concept?.sessions.primary.slice(0, 3) || [];
 
@@ -134,14 +139,14 @@ export default function GlobalPopover() {
       e.preventDefault();
       e.stopPropagation();
       close();
-      data.onSearch(`Please help me understand ${data.term}`);
+      data.onSearch(`Please help me understand ${term}`);
     };
 
     return (
       <div
         ref={popoverRef}
         role="dialog"
-        aria-label={`Definition of ${data.term}`}
+        aria-label={`Definition of ${term}`}
         className="concept-popover"
         style={style}
         onMouseEnter={handleMouseEnter}
@@ -149,7 +154,7 @@ export default function GlobalPopover() {
       >
         <span className="concept-popover-content">
           <span className="concept-popover-header">
-            <span className="concept-popover-term">{concept?.term || data.term}</span>
+            <span className="concept-popover-term">{term}</span>
             {concept?.category && (
               <span className="concept-popover-category">{concept.category}</span>
             )}

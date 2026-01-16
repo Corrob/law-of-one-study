@@ -15,6 +15,7 @@ import {
   findConceptById,
 } from "@/lib/concept-graph";
 import type { GraphConcept } from "@/lib/types-graph";
+import { getLocalizedText } from "@/lib/types-graph";
 import { SEARCH_CONFIG } from "@/lib/config";
 import { debug } from "@/lib/debug";
 
@@ -90,7 +91,8 @@ export async function detectConcepts(message: string): Promise<ConceptDetectionR
 }
 
 /**
- * Formats detected concepts for the meta event
+ * Formats detected concepts for the meta event.
+ * Uses English text for API response consistency.
  */
 export function formatConceptsForMeta(concepts: GraphConcept[]): Array<{
   id: string;
@@ -100,8 +102,8 @@ export function formatConceptsForMeta(concepts: GraphConcept[]): Array<{
 }> {
   return concepts.map((c) => ({
     id: c.id,
-    term: c.term,
-    definition: c.definition,
+    term: getLocalizedText(c.term, "en"),
+    definition: getLocalizedText(c.definition, "en"),
     category: c.category,
   }));
 }

@@ -8,6 +8,22 @@
 import { z } from "zod";
 
 /**
+ * Schema for bilingual text fields (en + es).
+ */
+export const BilingualTextSchema = z.object({
+  en: z.string(),
+  es: z.string(),
+});
+
+/**
+ * Schema for bilingual aliases (arrays per language).
+ */
+export const BilingualAliasesSchema = z.object({
+  en: z.array(z.string()),
+  es: z.array(z.string()),
+});
+
+/**
  * Schema for relationship types between concepts.
  */
 export const RelationshipTypeSchema = z.enum([
@@ -60,8 +76,8 @@ export const ArchetypeSubcategorySchema = z.enum([
  */
 export const KeyPassageSchema = z.object({
   reference: z.string(),
-  excerpt: z.string(),
-  context: z.string(),
+  excerpt: BilingualTextSchema,
+  context: BilingualTextSchema,
 });
 
 /**
@@ -89,12 +105,12 @@ export const ConceptRelationshipsSchema = z.object({
  */
 export const GraphConceptSchema = z.object({
   id: z.string(),
-  term: z.string(),
-  aliases: z.array(z.string()),
+  term: BilingualTextSchema,
+  aliases: BilingualAliasesSchema,
   category: ConceptCategorySchema,
   subcategory: ArchetypeSubcategorySchema.optional(),
-  definition: z.string(),
-  extendedDefinition: z.string(),
+  definition: BilingualTextSchema,
+  extendedDefinition: BilingualTextSchema,
   relationships: ConceptRelationshipsSchema,
   sessions: SessionReferencesSchema,
   keyPassages: z.array(KeyPassageSchema),
@@ -106,8 +122,8 @@ export const GraphConceptSchema = z.object({
  * Schema for category metadata.
  */
 export const CategoryInfoSchema = z.object({
-  name: z.string(),
-  description: z.string(),
+  name: BilingualTextSchema,
+  description: BilingualTextSchema,
   concepts: z.array(z.string()),
 });
 

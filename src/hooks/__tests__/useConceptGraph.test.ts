@@ -1,24 +1,29 @@
 import { renderHook, act } from "@testing-library/react";
 import { useConceptGraph } from "../useConceptGraph";
+import type { ConceptCategory } from "@/lib/graph/types";
 
-// Mock the layout module that imports D3
-jest.mock("@/lib/graph/layout", () => ({
-  CATEGORY_LABELS: {
-    cosmology: "Cosmology",
-    polarity: "Polarity",
-    "energy-work": "Energy Work",
-    incarnation: "Incarnation",
-    entities: "Entities",
-    metaphysics: "Metaphysics",
-    practice: "Practice",
-    archetypes: "Archetypes",
+// Test helper - default options for the hook
+const defaultOptions = {
+  locale: "en" as const,
+  getCategoryLabel: (category: ConceptCategory) => {
+    const labels: Record<ConceptCategory, string> = {
+      cosmology: "Cosmology",
+      polarity: "Polarity",
+      "energy-work": "Energy Work",
+      incarnation: "Incarnation",
+      entities: "Entities",
+      metaphysics: "Metaphysics",
+      practice: "Practice",
+      archetypes: "Archetypes",
+    };
+    return labels[category];
   },
-}));
+};
 
 describe("useConceptGraph", () => {
   describe("initial state", () => {
     it("should start with 8 cluster nodes (one per category)", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       expect(result.current.nodes).toHaveLength(8);
       expect(result.current.nodes.every((n) => n.type === "cluster")).toBe(
@@ -27,25 +32,25 @@ describe("useConceptGraph", () => {
     });
 
     it("should start with no links (clusters don't have links)", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       expect(result.current.links).toHaveLength(0);
     });
 
     it("should have no expanded categories initially", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       expect(result.current.expandedCategories.size).toBe(0);
     });
 
     it("should report 0 visible concepts initially", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       expect(result.current.stats.visibleConcepts).toBe(0);
     });
 
     it("should report total concepts count", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       // Should have all 120 concepts in total
       expect(result.current.stats.totalConcepts).toBeGreaterThan(100);
@@ -54,7 +59,7 @@ describe("useConceptGraph", () => {
 
   describe("cluster nodes", () => {
     it("should have correct category for each cluster", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       const categories = result.current.nodes.map((n) => {
         if (n.type === "cluster") return n.category;
@@ -72,7 +77,7 @@ describe("useConceptGraph", () => {
     });
 
     it("should have concept counts in cluster nodes", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       for (const node of result.current.nodes) {
         if (node.type === "cluster") {
@@ -84,7 +89,7 @@ describe("useConceptGraph", () => {
 
   describe("expandCluster", () => {
     it("should expand a category and show its concepts", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.expandCluster("polarity");
@@ -95,7 +100,7 @@ describe("useConceptGraph", () => {
     });
 
     it("should replace cluster node with concept nodes", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       const clusterCountBefore = result.current.nodes.filter(
         (n) => n.type === "cluster"
@@ -117,7 +122,7 @@ describe("useConceptGraph", () => {
     });
 
     it("should create links between visible concepts", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.expandCluster("polarity");
@@ -130,7 +135,7 @@ describe("useConceptGraph", () => {
 
   describe("collapseCluster", () => {
     it("should collapse an expanded category", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.expandCluster("polarity");
@@ -146,7 +151,7 @@ describe("useConceptGraph", () => {
     });
 
     it("should restore cluster node when collapsed", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.expandCluster("polarity");
@@ -164,7 +169,7 @@ describe("useConceptGraph", () => {
 
   describe("toggleCluster", () => {
     it("should expand collapsed category", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       expect(result.current.isExpanded("cosmology")).toBe(false);
 
@@ -176,7 +181,7 @@ describe("useConceptGraph", () => {
     });
 
     it("should collapse expanded category", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.toggleCluster("cosmology");
@@ -194,7 +199,7 @@ describe("useConceptGraph", () => {
 
   describe("multiple categories", () => {
     it("should allow multiple categories to be expanded", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.expandCluster("polarity");
@@ -207,7 +212,7 @@ describe("useConceptGraph", () => {
     });
 
     it("should create cross-category links when concepts reference each other", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       // Expand categories that have cross-references
       act(() => {
@@ -222,14 +227,14 @@ describe("useConceptGraph", () => {
 
   describe("isExpanded", () => {
     it("should return false for collapsed categories", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       expect(result.current.isExpanded("polarity")).toBe(false);
       expect(result.current.isExpanded("cosmology")).toBe(false);
     });
 
     it("should return true for expanded categories", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.expandCluster("polarity");
@@ -241,7 +246,7 @@ describe("useConceptGraph", () => {
 
   describe("stats", () => {
     it("should track visible concepts correctly", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       const initialVisible = result.current.stats.visibleConcepts;
 
@@ -255,7 +260,7 @@ describe("useConceptGraph", () => {
     });
 
     it("should track total links correctly", () => {
-      const { result } = renderHook(() => useConceptGraph());
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
 
       act(() => {
         result.current.expandCluster("polarity");

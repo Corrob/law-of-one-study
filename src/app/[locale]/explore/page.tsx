@@ -1,16 +1,27 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ConceptGraph from "@/components/ConceptGraph";
 import ConceptPanel from "@/components/ConceptPanel";
 import { useConceptGraph } from "@/hooks/useConceptGraph";
-import type { ConceptNode, GraphConcept } from "@/lib/graph/types";
+import type { ConceptNode, GraphConcept, ConceptCategory } from "@/lib/graph/types";
 import { findConceptById } from "@/lib/concept-graph";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 export default function ExplorePage() {
+  const locale = useLocale() as AvailableLanguage;
+  const t = useTranslations();
+
+  // Memoize getCategoryLabel to prevent unnecessary re-renders
+  const getCategoryLabel = useMemo(
+    () => (category: ConceptCategory) => t(`categories.${category}`),
+    [t]
+  );
+
   const {
     nodes,
     links,
@@ -18,7 +29,7 @@ export default function ExplorePage() {
     toggleSubcluster,
     stats,
     expandedCategories,
-  } = useConceptGraph();
+  } = useConceptGraph({ locale, getCategoryLabel });
 
   const [selectedConcept, setSelectedConcept] = useState<GraphConcept | null>(
     null
