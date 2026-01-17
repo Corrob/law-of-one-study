@@ -48,6 +48,12 @@
     "closeMenu": "Close menu",
     "navigationMenu": "Navigation menu"
   },
+  "confirmNewChat": {
+    "title": "Start a new conversation?",
+    "message": "Your current conversation will be cleared. This cannot be undone.",
+    "confirm": "Start New",
+    "cancel": "Keep Chatting"
+  },
   "welcome": {
     "greetings": {
       "seeker": "Welcome, seeker.",

@@ -48,6 +48,12 @@
     "closeMenu": "Menü schließen",
     "navigationMenu": "Navigationsmenü"
   },
+  "confirmNewChat": {
+    "title": "Ein neues Gespräch starten?",
+    "message": "Dein aktuelles Gespräch wird gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Neu Starten",
+    "cancel": "Weiter Chatten"
+  },
   "welcome": {
     "greetings": {
       "seeker": "Willkommen, Suchender.",

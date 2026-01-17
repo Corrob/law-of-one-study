@@ -48,6 +48,12 @@
     "closeMenu": "Cerrar menú",
     "navigationMenu": "Menú de navegación"
   },
+  "confirmNewChat": {
+    "title": "¿Iniciar una nueva conversación?",
+    "message": "Tu conversación actual será borrada. Esto no se puede deshacer.",
+    "confirm": "Iniciar Nueva",
+    "cancel": "Seguir Chateando"
+  },
   "welcome": {
     "greetings": {
       "seeker": "Bienvenido, buscador.",
