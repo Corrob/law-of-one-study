@@ -1,12 +1,22 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import ConceptGraph from "@/components/ConceptGraph";
 import ConceptPanel from "@/components/ConceptPanel";
+
+// Dynamic import for ConceptGraph - d3 is ~50KB+ and only needed on this page
+const ConceptGraph = dynamic(() => import("@/components/ConceptGraph"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="text-[var(--lo1-stardust)] animate-pulse">Loading graph...</div>
+    </div>
+  ),
+});
 import { useConceptGraph } from "@/hooks/useConceptGraph";
 import type { ConceptNode, GraphConcept, ConceptCategory } from "@/lib/graph/types";
 import { findConceptById } from "@/lib/concept-graph";

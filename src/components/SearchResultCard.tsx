@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { type SearchResult } from "@/lib/schemas";
-import { formatWholeQuote, formatQuoteWithAttribution, fetchBilingualQuote, splitIntoSentences } from "@/lib/quote-utils";
+import { formatWholeQuote, formatQuoteWithAttribution, splitIntoSentences } from "@/lib/quote-utils";
 import { type AvailableLanguage } from "@/lib/language-config";
 import {
   getHighlightTerms,
   parseRaMaterialText,
   getSegmentDisplayContent,
 } from "@/lib/search";
+import { useQuoteData } from "@/hooks/useBilingualQuote";
 import CopyButton from "./CopyButton";
 
 /**
@@ -18,6 +19,29 @@ import CopyButton from "./CopyButton";
  */
 function hasSentence(result: SearchResult): boolean {
   return typeof result.sentence === "string" && result.sentence.length > 0;
+}
+
+// Cache for highlight RegExp patterns - avoids recreation on each render
+const highlightRegexCache = new Map<string, RegExp>();
+
+/**
+ * Get or create a cached RegExp for highlighting terms.
+ * The cache key is the sorted, joined terms to ensure consistency.
+ */
+function getHighlightRegex(terms: string[]): RegExp {
+  const cacheKey = terms.slice().sort().join("|");
+  let regex = highlightRegexCache.get(cacheKey);
+  if (!regex) {
+    const escapedTerms = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\w*");
+    regex = new RegExp(`\\b(${escapedTerms.join("|")})`, "gi");
+    highlightRegexCache.set(cacheKey, regex);
+    // Limit cache size to prevent memory leaks
+    if (highlightRegexCache.size > 100) {
+      const firstKey = highlightRegexCache.keys().next().value;
+      if (firstKey) highlightRegexCache.delete(firstKey);
+    }
+  }
+  return regex;
 }
 
 export interface SearchResultCardProps {
@@ -60,14 +84,8 @@ function highlightMatchedSentence(
 function highlightText(text: string, terms: string[]): React.ReactNode {
   if (terms.length === 0) return text;
 
-  // Create regex pattern that matches term + rest of word
-  // \b(term\w*) matches "law" in "lawful" and captures the whole word
-  const escapedTerms = terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\w*");
-  const pattern = new RegExp(
-    `\\b(${escapedTerms.join("|")})`,
-    "gi"
-  );
-
+  // Use cached regex pattern for performance
+  const pattern = getHighlightRegex(terms);
   const parts = text.split(pattern);
 
   return parts.map((part, index) => {
@@ -99,20 +117,104 @@ export default function SearchResultCard({
   const { language } = useLanguage();
   const [expandedSegments, setExpandedSegments] = useState<Set<number>>(new Set());
   const [showFullPassage, setShowFullPassage] = useState(false);
-  const [fullPassageText, setFullPassageText] = useState<string | null>(null);
-  const [englishOriginalText, setEnglishOriginalText] = useState<string | null>(null);
   const [showEnglishOriginal, setShowEnglishOriginal] = useState(false);
-  const [loadingPassage, setLoadingPassage] = useState(false);
-
-  // State for bilingual initial content
-  const [translatedSentence, setTranslatedSentence] = useState<string | null>(null);
-  const [translatedPassage, setTranslatedPassage] = useState<string | null>(null);
-  const [passageEnglishOriginal, setPassageEnglishOriginal] = useState<string | null>(null);
-  const [loadingTranslation, setLoadingTranslation] = useState(false);
-  const [translationAttempted, setTranslationAttempted] = useState(false);
 
   // Determine if this result has a sentence match (from hybrid search)
   const hasSentenceMatch = hasSentence(result);
+
+  // Build reference for SWR
+  const reference = `${result.session}.${result.question}`;
+
+  // SWR handles fetching, caching, and deduplication across all SearchResultCards
+  // useQuoteData handles both English and non-English cases in a single hook
+  const { data: quoteData, isLoading: loadingTranslation } = useQuoteData(
+    reference,
+    language as AvailableLanguage
+  );
+
+  // For bilingual sentence matching, we need the original text (only for non-English)
+  const bilingualData = language !== 'en' ? quoteData : null;
+
+  // Derive translated content from SWR data with sentence matching logic
+  const { translatedSentence, translatedPassage, passageEnglishOriginal } = useMemo(() => {
+    if (!bilingualData?.text || language === 'en') {
+      return { translatedSentence: null, translatedPassage: null, passageEnglishOriginal: null };
+    }
+
+    const englishOriginal = bilingualData.originalText || null;
+
+    if (hasSentenceMatch && result.sentence && bilingualData.originalText) {
+      // Sentence mode: find corresponding translated sentence by position
+      // Filter helper: skip greeting "I am Ra" / "Soy Ra" and short sentences
+      const isContentSentence = (s: string) =>
+        s.length >= 10 &&
+        !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i);
+
+      const englishSentences = splitIntoSentences(bilingualData.originalText)
+        .filter(isContentSentence);
+      const translatedSentences = splitIntoSentences(bilingualData.text)
+        .filter(isContentSentence);
+
+      // Normalize text for comparison (remove punctuation, lowercase)
+      const normalize = (s: string) =>
+        s.toLowerCase().replace(/[^\w\s]/g, '').trim();
+      const normalizedTarget = normalize(result.sentence);
+
+      // Find which English sentence matches result.sentence
+      const englishIndex = englishSentences.findIndex(s => {
+        const normalizedSentence = normalize(s);
+        return normalizedSentence.includes(normalizedTarget) ||
+               normalizedTarget.includes(normalizedSentence);
+      });
+
+      if (englishIndex !== -1 && translatedSentences.length > 0) {
+        // Map English position to translated position proportionally
+        const relativePosition = englishIndex / Math.max(englishSentences.length, 1);
+        const translatedIndex = Math.min(
+          Math.round(relativePosition * translatedSentences.length),
+          translatedSentences.length - 1
+        );
+        return {
+          translatedSentence: translatedSentences[translatedIndex].trim(),
+          translatedPassage: null,
+          passageEnglishOriginal: englishOriginal,
+        };
+      } else if (translatedSentences.length > 0) {
+        // Fallback: use first content sentence if we can't find the match
+        return {
+          translatedSentence: translatedSentences[0].trim(),
+          translatedPassage: null,
+          passageEnglishOriginal: englishOriginal,
+        };
+      }
+    } else if (hasSentenceMatch) {
+      // Sentence mode without English original - use first content sentence
+      const translatedSentences = splitIntoSentences(bilingualData.text)
+        .filter(s => s.length >= 10 && !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i));
+      if (translatedSentences.length > 0) {
+        return {
+          translatedSentence: translatedSentences[0].trim(),
+          translatedPassage: null,
+          passageEnglishOriginal: englishOriginal,
+        };
+      }
+    }
+
+    // Passage mode: use the full translated passage
+    return {
+      translatedSentence: null,
+      translatedPassage: bilingualData.text,
+      passageEnglishOriginal: englishOriginal,
+    };
+  }, [bilingualData, language, hasSentenceMatch, result.sentence]);
+
+  // Full passage text and English original (from SWR data when expanded)
+  const fullPassageText = showFullPassage && quoteData?.text
+    ? formatWholeQuote(quoteData.text)
+    : null;
+  const englishOriginalText = showFullPassage && quoteData?.originalText
+    ? formatWholeQuote(quoteData.originalText)
+    : null;
 
   // Get highlight terms from query
   const highlightTerms = useMemo(() => getHighlightTerms(query), [query]);
@@ -155,100 +257,6 @@ export default function SearchResultCard({
     }
     return null;
   }, [fullPassageText]);
-
-  // Fetch translated content on mount for non-English languages
-  useEffect(() => {
-    // Only attempt translation once per result
-    if (language !== 'en' && !translationAttempted && !loadingTranslation) {
-      setTranslationAttempted(true);
-      setLoadingTranslation(true);
-
-      const reference = `${result.session}.${result.question}`;
-
-      fetchBilingualQuote(reference, language as AvailableLanguage)
-        .then((data) => {
-          if (data?.text) {
-            if (hasSentenceMatch && result.sentence && data.originalText) {
-              // Sentence mode: find corresponding Spanish sentence by position
-              // We can't use sentenceIndex directly because English and Spanish
-              // have different sentence counts due to translation differences.
-
-              // Filter helper: skip greeting "I am Ra" / "Soy Ra" and short sentences
-              const isContentSentence = (s: string) =>
-                s.length >= 10 &&
-                !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i);
-
-              const englishSentences = splitIntoSentences(data.originalText)
-                .filter(isContentSentence);
-              const spanishSentences = splitIntoSentences(data.text)
-                .filter(isContentSentence);
-
-              // Normalize text for comparison (remove punctuation, lowercase)
-              const normalize = (s: string) =>
-                s.toLowerCase().replace(/[^\w\s]/g, '').trim();
-              const normalizedTarget = normalize(result.sentence!);
-
-              // Find which English sentence matches result.sentence
-              const englishIndex = englishSentences.findIndex(s => {
-                const normalizedSentence = normalize(s);
-                return normalizedSentence.includes(normalizedTarget) ||
-                       normalizedTarget.includes(normalizedSentence);
-              });
-
-              if (englishIndex !== -1 && spanishSentences.length > 0) {
-                // Map English position to Spanish position proportionally
-                const relativePosition = englishIndex / Math.max(englishSentences.length, 1);
-                const spanishIndex = Math.min(
-                  Math.round(relativePosition * spanishSentences.length),
-                  spanishSentences.length - 1
-                );
-                setTranslatedSentence(spanishSentences[spanishIndex].trim());
-              } else if (spanishSentences.length > 0) {
-                // Fallback: use first content sentence if we can't find the match
-                setTranslatedSentence(spanishSentences[0].trim());
-              }
-            } else if (hasSentenceMatch) {
-              // Sentence mode without English original - use first content sentence
-              const spanishSentences = splitIntoSentences(data.text)
-                .filter(s => s.length >= 10 && !s.match(/^(Ra:\s*)?(I am Ra|Soy Ra)\.?$/i));
-              if (spanishSentences.length > 0) {
-                setTranslatedSentence(spanishSentences[0].trim());
-              }
-            } else {
-              // Passage mode: use the full translated passage
-              setTranslatedPassage(data.text);
-            }
-            if (data.originalText) {
-              setPassageEnglishOriginal(data.originalText);
-            }
-          }
-        })
-        .finally(() => setLoadingTranslation(false));
-    }
-  }, [language, translationAttempted, loadingTranslation, hasSentenceMatch, result.session, result.question, result.sentenceIndex, result.sentence]);
-
-  // Load full passage when user expands in sentence mode
-  useEffect(() => {
-    if (showFullPassage && !fullPassageText && !loadingPassage) {
-      setLoadingPassage(true);
-      const reference = `${result.session}.${result.question}`;
-
-      // Fetch bilingual content for non-English, just target language for English
-      fetchBilingualQuote(reference, language as AvailableLanguage)
-        .then((data) => {
-          if (data) {
-            setFullPassageText(data.text);
-            if (data.originalText) {
-              setEnglishOriginalText(data.originalText);
-            }
-          }
-        })
-        .catch(() => {
-          // Silently fail - user can still click the link
-        })
-        .finally(() => setLoadingPassage(false));
-    }
-  }, [showFullPassage, fullPassageText, loadingPassage, result.session, result.question, language]);
 
   const toggleSegment = (index: number) => {
     setExpandedSegments((prev) => {
@@ -334,7 +342,7 @@ export default function SearchResultCard({
                 onClick={() => setShowFullPassage(true)}
                 className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
               >
-                {loadingPassage ? t("loadingPassage") : `↓ ${t("viewInContext")}`}
+                {loadingTranslation ? t("loadingPassage") : `↓ ${t("viewInContext")}`}
               </button>
               {/* English original toggle for non-English users */}
               {language !== 'en' && translatedSentence && (

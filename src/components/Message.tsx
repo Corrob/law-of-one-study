@@ -22,7 +22,7 @@ export default function Message({ message, onSearch, suggestions, isFirstAssista
 
   if (isUser) {
     return (
-      <div className="flex justify-end mb-4" data-testid="user-message">
+      <div className="message-container flex justify-end mb-4" data-testid="user-message">
         <div className="max-w-[85%] rounded-2xl px-4 py-3 bg-[var(--lo1-user-message)] text-[var(--lo1-starlight)] border border-[var(--lo1-celestial)]/20">
           {message.content}
         </div>
@@ -32,7 +32,7 @@ export default function Message({ message, onSearch, suggestions, isFirstAssista
 
   // Assistant messages: no box, just text with concept linking
   return (
-    <div className="mb-6 text-[var(--lo1-text-light)] leading-relaxed" data-testid="assistant-message">
+    <div className="message-container mb-6 text-[var(--lo1-text-light)] leading-relaxed" data-testid="assistant-message">
       {isFirstAssistant && <AICompanionBadge />}
       {message.segments && message.segments.length > 0 ? (
         message.segments.map((segment, index) => (

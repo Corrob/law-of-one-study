@@ -3,11 +3,12 @@
 import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { useEffect, useState, useRef } from "react";
-import { fetchFullQuote, formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
+import { formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
 import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { type AvailableLanguage } from "@/lib/language-config";
 import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
+import { useQuoteText } from "@/hooks/useBilingualQuote";
 
 interface AnimatedQuoteCardProps {
   quote: Quote;
@@ -28,43 +29,21 @@ export default function AnimatedQuoteCard({
   const hasCompletedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
 
-  // State for expansion
+  // State for expansion and UI
   const [isExpanded, setIsExpanded] = useState(false);
-  const [fullQuoteText, setFullQuoteText] = useState<string | null>(null);
-  const [isLoadingFull, setIsLoadingFull] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
-  // State for translated quote (loaded on mount for non-English)
-  const [translatedText, setTranslatedText] = useState<string | null>(null);
-  const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
-  const [translationAttempted, setTranslationAttempted] = useState(false);
+  // SWR handles fetching, caching, and deduplication
+  // Fetch the full quote text in the current language
+  const { data: fullQuoteData } = useQuoteText(quote.reference, language as AvailableLanguage);
+
+  // Format the fetched text
+  const fullQuoteText = fullQuoteData ? formatWholeQuote(fullQuoteData) : null;
 
   // Keep onComplete ref updated
   useEffect(() => {
     onCompleteRef.current = onComplete;
   }, [onComplete]);
-
-  // Fetch translated quote on mount if language is not English
-  useEffect(() => {
-    if (language !== 'en' && !translationAttempted && !isLoadingTranslation) {
-      setTranslationAttempted(true);
-      setIsLoadingTranslation(true);
-
-      fetchFullQuote(quote.reference, language as AvailableLanguage)
-        .then((text) => {
-          if (text) {
-            const formatted = formatWholeQuote(text);
-            setTranslatedText(formatted);
-          }
-        })
-        .catch(() => {
-          // Fall back to English on error
-        })
-        .finally(() => {
-          setIsLoadingTranslation(false);
-        });
-    }
-  }, [language, quote.reference, translationAttempted, isLoadingTranslation]);
 
   // Handle fade-in animation
   useEffect(() => {
@@ -98,11 +77,10 @@ export default function AnimatedQuoteCard({
   const shortRef = getShortReference(quote.reference);
 
   // Determine what text to display
+  // Use full quote text from SWR when expanded or available, otherwise use the excerpt
   const displayContent = isExpanded && fullQuoteText
     ? fullQuoteText
-    : (language !== 'en' && translatedText)
-      ? translatedText
-      : fullTextWithoutEllipsis;
+    : fullQuoteText || fullTextWithoutEllipsis;
 
   // Format the text being displayed
   const segments = parseRaText(displayContent);
@@ -131,36 +109,20 @@ export default function AnimatedQuoteCard({
     });
   };
 
-  // Handle expand/collapse
-  const handleExpandClick = async (e: React.MouseEvent) => {
+  // Handle expand/collapse - SWR already has the data cached
+  const handleExpandClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    if (isExpanded) {
-      // Collapse
-      setIsExpanded(false);
-      return;
+    if (!isExpanded) {
+      // Track expansion
+      analytics.quoteLinkClicked({
+        sessionNumber,
+        questionNumber,
+        clickType: "ellipsis",
+      });
     }
 
-    // Expand - fetch full quote if not already loaded
-    if (!fullQuoteText) {
-      setIsLoadingFull(true);
-      const fullText = await fetchFullQuote(quote.reference, language as AvailableLanguage);
-      if (fullText) {
-        // Format with paragraph breaks
-        const formatted = formatWholeQuote(fullText);
-        setFullQuoteText(formatted);
-      }
-      setIsLoadingFull(false);
-    }
-
-    setIsExpanded(true);
-
-    // Track expansion
-    analytics.quoteLinkClicked({
-      sessionNumber,
-      questionNumber,
-      clickType: "ellipsis",
-    });
+    setIsExpanded(!isExpanded);
   };
 
   // Handle copy quote
@@ -217,9 +179,8 @@ export default function AnimatedQuoteCard({
           <button
             onClick={handleExpandClick}
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
-            disabled={isLoadingFull}
           >
-            {isLoadingFull ? t("loading") : "..."}
+            ...
           </button>
         )}
 
@@ -250,9 +211,8 @@ export default function AnimatedQuoteCard({
           <button
             onClick={handleExpandClick}
             className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
-            disabled={isLoadingFull}
           >
-            {isLoadingFull ? t("loading") : "..."}
+            ...
           </button>
         )}
 

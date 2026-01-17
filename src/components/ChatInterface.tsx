@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef } from "react";
+import { useState, useRef, useEffect, useCallback, useImperativeHandle, forwardRef, startTransition } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { useTranslations } from "next-intl";
 import MessageInput from "./MessageInput";
@@ -104,7 +104,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   // Scroll shadow state
   const [scrollShadow, setScrollShadow] = useState({ top: false, bottom: false });
 
-  // Handle scroll to update shadows
+  // Handle scroll to update shadows - wrapped in startTransition for non-blocking UI
   const handleScroll = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -114,18 +114,22 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     const atTop = scrollTop <= 10;
     const atBottom = scrollTop + clientHeight >= scrollHeight - 10;
 
-    setScrollShadow({
-      top: isScrollable && !atTop,
-      bottom: isScrollable && !atBottom,
+    // Use startTransition to mark shadow updates as non-urgent
+    // This prevents scroll tracking from blocking user input
+    startTransition(() => {
+      setScrollShadow({
+        top: isScrollable && !atTop,
+        bottom: isScrollable && !atBottom,
+      });
     });
   }, []);
 
-  // Set up scroll listener
+  // Set up scroll listener with passive option for better scroll performance
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
 
-    container.addEventListener("scroll", handleScroll);
+    container.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
     return () => container.removeEventListener("scroll", handleScroll);

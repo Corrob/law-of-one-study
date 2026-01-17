@@ -4,10 +4,11 @@ import { memo, useState, useEffect } from "react";
 import { Quote } from "@/lib/types";
 import { analytics } from "@/lib/analytics";
 import { debug } from "@/lib/debug";
-import { fetchBilingualQuote, formatWholeQuote, formatQuoteWithAttribution, getRaMaterialUrl } from "@/lib/quote-utils";
+import { formatWholeQuote, formatQuoteWithAttribution, getRaMaterialUrl } from "@/lib/quote-utils";
 import { useTranslations } from "next-intl";
 import { type AvailableLanguage } from "@/lib/language-config";
 import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
+import { useBilingualQuote } from "@/hooks/useBilingualQuote";
 import CopyButton from "../CopyButton";
 
 interface BilingualQuoteCardProps {
@@ -27,23 +28,22 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   const t = useTranslations("quote");
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
-  // State for expansion and bilingual loading
+  // UI state for expansion and showing original
   const [isExpanded, setIsExpanded] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
-  const [fullTexts, setFullTexts] = useState<{ translated: string; original?: string } | null>(null);
-  const [isLoadingFull, setIsLoadingFull] = useState(false);
 
-  // State for initial translation (fetched on mount)
-  const [initialTranslation, setInitialTranslation] = useState<string | null>(null);
-  const [initialOriginal, setInitialOriginal] = useState<string | null>(null);
-  const [isLoadingInitial, setIsLoadingInitial] = useState(false);
-  const [isFallbackToEnglish, setIsFallbackToEnglish] = useState(false);
-  const [translationAttempted, setTranslationAttempted] = useState(false);
+  // SWR handles fetching, caching, and deduplication across components
+  // Note: isLoading available but not displayed (instant fallback to content)
+  const { data: bilingualData } = useBilingualQuote(
+    quote.reference,
+    targetLanguage
+  );
 
   debug.log("[BilingualQuoteCard] Rendering quote:", {
     reference: quote.reference,
     targetLanguage,
     textLength: quote.text.length,
+    hasData: !!bilingualData,
   });
 
   const shortRef = getShortReference(quote.reference);
@@ -56,35 +56,11 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   // Generate locale-aware URL for the quote link
   const quoteUrl = getRaMaterialUrl(sessionNumber, questionNumber, targetLanguage);
 
-  // Fetch translated quote on mount
-  useEffect(() => {
-    if (targetLanguage === 'en' || translationAttempted || isLoadingInitial) return;
-
-    setTranslationAttempted(true);
-    setIsLoadingInitial(true);
-    debug.log("[BilingualQuoteCard] Fetching initial translation:", quote.reference, targetLanguage);
-
-    fetchBilingualQuote(quote.reference, targetLanguage)
-      .then((result) => {
-        if (result) {
-          setInitialTranslation(formatWholeQuote(result.text));
-          // Store original English text for toggle
-          if (result.originalText) {
-            setInitialOriginal(formatWholeQuote(result.originalText));
-          }
-          // Check if we're showing English as fallback (no original means the text IS the original)
-          // Note: We already guard for targetLanguage === 'en' at the top of this effect
-          setIsFallbackToEnglish(!result.originalText);
-          debug.log("[BilingualQuoteCard] Initial translation loaded, fallback:", !result.originalText);
-        }
-      })
-      .catch((err) => {
-        debug.error("[BilingualQuoteCard] Failed to fetch translation:", err);
-      })
-      .finally(() => {
-        setIsLoadingInitial(false);
-      });
-  }, [quote.reference, targetLanguage, translationAttempted, isLoadingInitial]);
+  // Derive formatted texts from SWR data
+  const initialTranslation = bilingualData?.text ? formatWholeQuote(bilingualData.text) : null;
+  const initialOriginal = bilingualData?.originalText ? formatWholeQuote(bilingualData.originalText) : null;
+  // Check if we're showing English as fallback (no original means the text IS the original)
+  const isFallbackToEnglish = targetLanguage !== 'en' && bilingualData && !bilingualData.originalText;
 
   // Track quote display on mount
   useEffect(() => {
@@ -105,60 +81,35 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
     });
   };
 
-  // Handle expand/collapse
-  const handleExpandClick = async (e: React.MouseEvent) => {
+  // Handle expand/collapse - SWR already has the data cached, just toggle UI
+  const handleExpandClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    if (isExpanded) {
-      setIsExpanded(false);
-      return;
+    if (!isExpanded) {
+      analytics.quoteLinkClicked({
+        sessionNumber,
+        questionNumber,
+        clickType: "ellipsis",
+      });
     }
 
-    // Fetch full quote if not already loaded
-    if (!fullTexts) {
-      setIsLoadingFull(true);
-      debug.log("[BilingualQuoteCard] Fetching bilingual quote:", quote.reference, targetLanguage);
-
-      const result = await fetchBilingualQuote(quote.reference, targetLanguage);
-
-      if (result) {
-        const formattedTranslated = formatWholeQuote(result.text);
-        const formattedOriginal = result.originalText
-          ? formatWholeQuote(result.originalText)
-          : undefined;
-
-        setFullTexts({
-          translated: formattedTranslated,
-          original: formattedOriginal,
-        });
-        debug.log("[BilingualQuoteCard] Loaded bilingual texts");
-      }
-      setIsLoadingFull(false);
-    }
-
-    setIsExpanded(true);
-    analytics.quoteLinkClicked({
-      sessionNumber,
-      questionNumber,
-      clickType: "ellipsis",
-    });
+    setIsExpanded(!isExpanded);
   };
 
   // Current display text (translated version)
-  // Priority: expanded fullTexts > initial translation > original content
-  const displayText = isExpanded && fullTexts
-    ? fullTexts.translated
+  // When expanded, use full translated text; otherwise use translated excerpt or original content
+  const displayText = isExpanded && initialTranslation
+    ? initialTranslation
     : initialTranslation || content;
   const segments = parseRaText(displayText);
 
-  // Original text segments (English) - use fullTexts when expanded, initialOriginal otherwise
-  const originalText = isExpanded ? fullTexts?.original : initialOriginal;
-  const originalSegments = showOriginal && originalText
-    ? parseRaText(originalText)
+  // Original text segments (English) for "Show English original" toggle
+  const originalSegments = showOriginal && initialOriginal
+    ? parseRaText(initialOriginal)
     : null;
 
-  // Compute copy text
-  const textToCopy = isExpanded && fullTexts ? fullTexts.translated : content;
+  // Compute copy text (use translated full text when available)
+  const textToCopy = initialTranslation || content;
   const copyText = formatQuoteWithAttribution(textToCopy, quote.reference, quoteUrl);
 
   const handleCopyAnalytics = () => {
@@ -171,9 +122,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
 
   const showEllipsis = !isExpanded && (hasLeading || hasTrailing);
   // Only show "Show English original" if we have a translation (not showing fallback)
-  // Show toggle even without expansion if we have initialOriginal loaded
-  const hasOriginal = targetLanguage !== 'en' && !isFallbackToEnglish &&
-    (initialOriginal || fullTexts?.original);
+  const hasOriginal = targetLanguage !== 'en' && !isFallbackToEnglish && initialOriginal;
 
   return (
     <div
@@ -208,11 +157,10 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
         <button
           onClick={handleExpandClick}
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
-          disabled={isLoadingFull}
           aria-expanded={isExpanded}
-          aria-label={isLoadingFull ? t("loading") : t("expand")}
+          aria-label={t("expand")}
         >
-          {isLoadingFull ? t("loading") : "..."}
+          ...
         </button>
       )}
 
@@ -241,11 +189,10 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
         <button
           onClick={handleExpandClick}
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
-          disabled={isLoadingFull}
           aria-expanded={isExpanded}
-          aria-label={isLoadingFull ? t("loading") : t("expand")}
+          aria-label={t("expand")}
         >
-          {isLoadingFull ? t("loading") : "..."}
+          ...
         </button>
       )}
 

@@ -4,9 +4,10 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { fetchBilingualQuote, formatWholeQuote, getRaMaterialUrl } from "@/lib/quote-utils";
+import { formatWholeQuote, getRaMaterialUrl } from "@/lib/quote-utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { type AvailableLanguage } from "@/lib/language-config";
+import { useQuoteData } from "@/hooks/useBilingualQuote";
 
 interface CitationModalProps {
   isOpen: boolean;
@@ -55,39 +56,20 @@ export default function CitationModal({
   const t = useTranslations("quote");
   const { language } = useLanguage();
   const modalRef = useRef<HTMLDivElement>(null);
-  const [quoteText, setQuoteText] = useState<string | null>(null);
-  const [originalText, setOriginalText] = useState<string | null>(null);
   const [showOriginal, setShowOriginal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const reference = `${session}.${question}`;
   const url = getRaMaterialUrl(session, question, language as AvailableLanguage);
 
-  // Fetch quote when modal opens
-  useEffect(() => {
-    if (isOpen && !quoteText && !isLoading) {
-      setIsLoading(true);
-      setError(null);
-      fetchBilingualQuote(reference, language as AvailableLanguage)
-        .then((result) => {
-          if (result) {
-            setQuoteText(formatWholeQuote(result.text));
-            if (result.originalText) {
-              setOriginalText(formatWholeQuote(result.originalText));
-            }
-          } else {
-            setError(t("quoteNotFound"));
-          }
-        })
-        .catch(() => {
-          setError(t("loadError"));
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }, [isOpen, quoteText, isLoading, reference, language, t]);
+  // SWR handles fetching, caching, and deduplication
+  // Pass empty reference when modal is closed to skip fetch
+  const conditionalRef = isOpen ? reference : "";
+  const { data, isLoading, error: fetchError } = useQuoteData(conditionalRef, language as AvailableLanguage);
+
+  // Derive formatted texts from SWR data
+  const quoteText = data?.text ? formatWholeQuote(data.text) : null;
+  const originalText = data?.originalText ? formatWholeQuote(data.originalText) : null;
+  const error = fetchError ? t("loadError") : (!isLoading && isOpen && !quoteText ? t("quoteNotFound") : null);
 
   // Escape key handler
   useEffect(() => {

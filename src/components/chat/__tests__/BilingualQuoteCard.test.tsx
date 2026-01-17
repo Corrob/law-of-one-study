@@ -26,13 +26,22 @@ jest.mock("next-intl", () => ({
 }));
 
 // Mock quote-utils
-const mockFetchBilingualQuote = jest.fn();
 jest.mock("@/lib/quote-utils", () => ({
-  fetchBilingualQuote: (...args: unknown[]) => mockFetchBilingualQuote(...args),
   formatWholeQuote: (text: string) => text,
   formatQuoteWithAttribution: (text: string, ref: string) => `${text}\n\n- ${ref}`,
   getRaMaterialUrl: (session: number, question: number, locale: string) =>
     `https://www.llresearch.org${locale === 'en' ? '' : '/' + locale}/channeling/ra-contact/${session}#${question}`,
+}));
+
+// Mock the SWR hook
+let mockBilingualData: { text: string; originalText?: string } | null = null;
+let mockIsLoading = false;
+jest.mock("@/hooks/useBilingualQuote", () => ({
+  useBilingualQuote: () => ({
+    data: mockBilingualData,
+    isLoading: mockIsLoading,
+    error: null,
+  }),
 }));
 
 // Mock analytics
@@ -53,48 +62,43 @@ const mockQuote = {
 describe("BilingualQuoteCard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockBilingualData = null;
+    mockIsLoading = false;
   });
 
-  it("renders quote with Spanish translation when available", async () => {
-    mockFetchBilingualQuote.mockResolvedValue({
+  it("renders quote with Spanish translation when available", () => {
+    mockBilingualData = {
       text: "Ra: Soy Ra. Esta es una cita de prueba.",
       originalText: "Ra: I am Ra. This is a test quote.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={mockQuote} targetLanguage="es" />);
 
-    // Initially shows the original quote text
-    expect(screen.getByText(/I am Ra/)).toBeInTheDocument();
-
-    // Wait for translation to load
-    await waitFor(() => {
-      expect(screen.getByText(/Soy Ra/)).toBeInTheDocument();
-    });
+    // Shows translated text
+    expect(screen.getByText(/Soy Ra/)).toBeInTheDocument();
 
     // Should not show fallback indicator
     expect(screen.queryByText(/no disponible/i)).not.toBeInTheDocument();
   });
 
-  it("shows fallback indicator when translation unavailable", async () => {
+  it("shows fallback indicator when translation unavailable", () => {
     // Return English text without originalText (indicating fallback)
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Ra: I am Ra. This is a test quote.",
       // No originalText means we're showing English as fallback
-    });
+    };
 
     render(<BilingualQuoteCard quote={mockQuote} targetLanguage="es" />);
 
-    // Wait for the fallback indicator
-    await waitFor(() => {
-      expect(screen.getByText(/Traducción no disponible/)).toBeInTheDocument();
-    });
+    // Should show the fallback indicator
+    expect(screen.getByText(/Traducción no disponible/)).toBeInTheDocument();
   });
 
   it("renders reference link correctly with locale", () => {
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Ra: Soy Ra. Esta es una cita de prueba.",
       originalText: "Ra: I am Ra. This is a test quote.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={mockQuote} targetLanguage="es" />);
 
@@ -105,26 +109,26 @@ describe("BilingualQuoteCard", () => {
   });
 
   it("shows Spanish UI label for questioner", () => {
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Ra: Soy Ra.",
       originalText: "Ra: I am Ra.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={mockQuote} targetLanguage="es" />);
 
     expect(screen.getByText("Interrogador")).toBeInTheDocument();
   });
 
-  it("shows expand button for partial quotes", async () => {
+  it("shows expand button for partial quotes", () => {
     const partialQuote = {
       ...mockQuote,
       text: "...Ra: I am Ra. This is a partial quote...",
     };
 
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Ra: Soy Ra. Esta es una cita parcial.",
       originalText: "Ra: I am Ra. This is a partial quote.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={partialQuote} targetLanguage="es" />);
 
@@ -140,17 +144,12 @@ describe("BilingualQuoteCard", () => {
       text: "...Ra: I am Ra...",
     };
 
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Interrogador: Pregunta completa. Ra: Soy Ra. Respuesta completa.",
       originalText: "Questioner: Full question. Ra: I am Ra. Full answer.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={partialQuote} targetLanguage="es" />);
-
-    // Wait for initial translation
-    await waitFor(() => {
-      expect(mockFetchBilingualQuote).toHaveBeenCalled();
-    });
 
     // Click expand button
     const expandButtons = screen.getAllByText("...");
@@ -169,17 +168,12 @@ describe("BilingualQuoteCard", () => {
       text: "...Ra: I am Ra...",
     };
 
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Interrogador: Pregunta. Ra: Soy Ra. Respuesta.",
       originalText: "Questioner: Question. Ra: I am Ra. Answer.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={partialQuote} targetLanguage="es" />);
-
-    // Expand the quote first
-    await waitFor(() => {
-      expect(mockFetchBilingualQuote).toHaveBeenCalled();
-    });
 
     const expandButtons = screen.getAllByText("...");
     await user.click(expandButtons[0]);
@@ -206,16 +200,11 @@ describe("BilingualQuoteCard", () => {
     };
 
     // Simulate fallback - no originalText
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Questioner: Question. Ra: I am Ra. Answer.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={partialQuote} targetLanguage="es" />);
-
-    // Expand the quote
-    await waitFor(() => {
-      expect(mockFetchBilingualQuote).toHaveBeenCalled();
-    });
 
     const expandButtons = screen.getAllByText("...");
     await user.click(expandButtons[0]);
@@ -230,10 +219,10 @@ describe("BilingualQuoteCard", () => {
   });
 
   it("renders with data-testid for testing", () => {
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockBilingualData = {
       text: "Ra: Soy Ra.",
       originalText: "Ra: I am Ra.",
-    });
+    };
 
     render(<BilingualQuoteCard quote={mockQuote} targetLanguage="es" />);
 

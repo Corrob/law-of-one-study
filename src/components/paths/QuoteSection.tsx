@@ -10,6 +10,32 @@ interface QuoteSectionProps {
   section: QuoteSectionType;
 }
 
+// Cache for highlight RegExp patterns - avoids recreation on each render
+const quoteHighlightCache = new Map<string, RegExp>();
+
+/**
+ * Get or create a cached RegExp for highlighting phrases.
+ */
+function getQuoteHighlightRegex(highlights: string[]): RegExp {
+  // Sort by length (longest first) for cache key consistency
+  const sorted = [...highlights].sort((a, b) => b.length - a.length);
+  const cacheKey = sorted.join("|");
+  let regex = quoteHighlightCache.get(cacheKey);
+  if (!regex) {
+    const pattern = sorted
+      .map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join("|");
+    regex = new RegExp(`(${pattern})`, "gi");
+    quoteHighlightCache.set(cacheKey, regex);
+    // Limit cache size
+    if (quoteHighlightCache.size > 50) {
+      const firstKey = quoteHighlightCache.keys().next().value;
+      if (firstKey) quoteHighlightCache.delete(firstKey);
+    }
+  }
+  return regex;
+}
+
 /**
  * Highlight specific phrases in quote text.
  * Returns JSX with highlighted spans.
@@ -22,12 +48,8 @@ function highlightText(text: string, highlights: string[] | undefined): React.Re
   // Sort highlights by length (longest first) to avoid partial matches
   const sortedHighlights = [...highlights].sort((a, b) => b.length - a.length);
 
-  // Build regex pattern (escape special chars)
-  const pattern = sortedHighlights
-    .map((h) => h.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
-    .join("|");
-  const regex = new RegExp(`(${pattern})`, "gi");
-
+  // Use cached regex for performance
+  const regex = getQuoteHighlightRegex(highlights);
   const parts = text.split(regex);
 
   return parts.map((part, index) => {

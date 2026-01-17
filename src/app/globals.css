@@ -304,12 +304,26 @@ input[type="button"] {
   color: var(--lo1-starlight);
 }
 
-/* Ra quote card - prevent layout shifts */
+/* Ra quote card - prevent layout shifts and optimize rendering */
 .ra-quote {
   /* Use contain to prevent layout shifts */
-  contain: layout;
+  contain: layout style;
+  /* Skip rendering off-screen quotes for better performance */
+  content-visibility: auto;
+  /* Estimate size to prevent layout shift when content becomes visible */
+  contain-intrinsic-size: auto 200px;
   /* Reserve space to prevent shifts during animation */
   will-change: auto;
+}
+
+/* Message containers - use contain for layout optimization.
+   Note: We intentionally avoid content-visibility here because:
+   1. Messages contain dynamically-loaded suggestions that change height
+   2. content-visibility uses estimated sizes (contain-intrinsic-size) for off-screen content
+   3. When suggestions load, the actual height differs from the estimate, causing scroll jumps
+   The contain property still provides layout isolation without the sizing issues. */
+.message-container {
+  contain: layout style;
 }
 
 /* Starburst icon animation */

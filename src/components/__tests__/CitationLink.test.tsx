@@ -34,15 +34,24 @@ jest.mock("@/contexts/LanguageContext", () => ({
   useLanguage: () => ({ language: mockLanguage, setLanguage: jest.fn() }),
 }));
 
-// Store mock for dynamic test manipulation
-const mockFetchBilingualQuote = jest.fn();
-
 // Mock quote-utils
 jest.mock("@/lib/quote-utils", () => ({
-  fetchBilingualQuote: (...args: unknown[]) => mockFetchBilingualQuote(...args),
   formatWholeQuote: jest.fn((text) => text),
   getRaMaterialUrl: (session: number, question: number, locale: string) =>
     `https://www.llresearch.org${locale === 'en' ? '' : '/' + locale}/channeling/ra-contact/${session}#${question}`,
+}));
+
+// Mock SWR hooks for quote fetching
+let mockQuoteData: { text: string; originalText?: string } | null = null;
+let mockIsLoading = false;
+let mockError: Error | null = null;
+
+jest.mock("@/hooks/useBilingualQuote", () => ({
+  useQuoteData: () => ({
+    data: mockQuoteData,
+    isLoading: mockIsLoading,
+    error: mockError,
+  }),
 }));
 
 // Helper to render with provider
@@ -54,10 +63,12 @@ describe("CitationLink", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLanguage = "en";
-    mockFetchBilingualQuote.mockResolvedValue({
+    mockQuoteData = {
       text: "Questioner: Test question?\n\nRa: I am Ra. Test answer.",
       originalText: undefined,
-    });
+    };
+    mockIsLoading = false;
+    mockError = null;
   });
 
   describe("rendering", () => {
@@ -157,10 +168,10 @@ describe("CitationLink", () => {
   describe("locale-aware URLs", () => {
     it("should use Spanish URL when language is Spanish", () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Interrogador: ¿Pregunta de prueba?\n\nRa: Soy Ra. Respuesta de prueba.",
         originalText: "Questioner: Test question?\n\nRa: I am Ra. Test answer.",
-      });
+      };
 
       renderWithProvider(<CitationLink session={50} question={7} displayText="(Ra 50.7)" />);
 
@@ -173,40 +184,36 @@ describe("CitationLink", () => {
   });
 
   describe("bilingual support", () => {
-    it("should show English original toggle when Spanish with original text", async () => {
+    it("should show English original toggle when Spanish with original text", () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Interrogador: ¿Pregunta?\n\nRa: Soy Ra. Respuesta.",
         originalText: "Questioner: Question?\n\nRa: I am Ra. Answer.",
-      });
+      };
 
       renderWithProvider(<CitationLink session={50} question={7} displayText="(Ra 50.7)" />);
 
       const button = screen.getByRole("button", { name: "(Ra 50.7)" });
       fireEvent.click(button);
 
-      // Wait for quote to load and toggle to appear (includes arrow prefix)
-      await waitFor(() => {
-        expect(screen.getByText(/Show English original/)).toBeInTheDocument();
-      });
+      // Toggle should appear (includes arrow prefix)
+      expect(screen.getByText(/Show English original/)).toBeInTheDocument();
     });
 
-    it("should not show English original toggle for English language", async () => {
+    it("should not show English original toggle for English language", () => {
       mockLanguage = "en";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Questioner: Question?\n\nRa: I am Ra. Answer.",
         originalText: undefined,
-      });
+      };
 
       renderWithProvider(<CitationLink session={50} question={7} displayText="(Ra 50.7)" />);
 
       const button = screen.getByRole("button", { name: "(Ra 50.7)" });
       fireEvent.click(button);
 
-      // Wait for quote to load
-      await waitFor(() => {
-        expect(screen.getByText(/I am Ra/)).toBeInTheDocument();
-      });
+      // Quote should be visible
+      expect(screen.getByText(/I am Ra/)).toBeInTheDocument();
 
       // Toggle should not appear
       expect(screen.queryByText(/Show English original/)).not.toBeInTheDocument();
@@ -214,20 +221,18 @@ describe("CitationLink", () => {
 
     it("should toggle English original visibility", async () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Ra: Soy Ra. Respuesta en español.",
         originalText: "Ra: I am Ra. Answer in English.",
-      });
+      };
 
       renderWithProvider(<CitationLink session={50} question={7} displayText="(Ra 50.7)" />);
 
       const button = screen.getByRole("button", { name: "(Ra 50.7)" });
       fireEvent.click(button);
 
-      // Wait for toggle to appear
-      await waitFor(() => {
-        expect(screen.getByText(/Show English original/)).toBeInTheDocument();
-      });
+      // Toggle should appear
+      expect(screen.getByText(/Show English original/)).toBeInTheDocument();
 
       // Click to show English original
       fireEvent.click(screen.getByText(/Show English original/));
@@ -240,30 +245,26 @@ describe("CitationLink", () => {
   });
 
   describe("error handling", () => {
-    it("should show error when quote not found", async () => {
-      mockFetchBilingualQuote.mockResolvedValue(null);
+    it("should show error when quote not found", () => {
+      mockQuoteData = null;
 
       renderWithProvider(<CitationLink session={999} question={999} displayText="(Ra 999.999)" />);
 
       const button = screen.getByRole("button", { name: "(Ra 999.999)" });
       fireEvent.click(button);
 
-      await waitFor(() => {
-        expect(screen.getByText("Quote not found")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Quote not found")).toBeInTheDocument();
     });
 
-    it("should show error when fetch fails", async () => {
-      mockFetchBilingualQuote.mockRejectedValue(new Error("Network error"));
+    it("should show error when fetch fails", () => {
+      mockError = new Error("Network error");
 
       renderWithProvider(<CitationLink session={50} question={7} displayText="(Ra 50.7)" />);
 
       const button = screen.getByRole("button", { name: "(Ra 50.7)" });
       fireEvent.click(button);
 
-      await waitFor(() => {
-        expect(screen.getByText("Failed to load quote")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Failed to load quote")).toBeInTheDocument();
     });
   });
 });

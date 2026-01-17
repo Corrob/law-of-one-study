@@ -2,20 +2,28 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SearchResultCard from "../SearchResultCard";
 
-// Store mock function reference for test manipulation
-const mockFetchBilingualQuote = jest.fn().mockResolvedValue(null);
-
 // Mock quote-utils to return text as-is for testing
 jest.mock("@/lib/quote-utils", () => ({
   formatWholeQuote: (text: string) => text,
   formatQuoteWithAttribution: (text: string, reference: string, url: string) =>
     `"${text}"\n— ${reference}\n\n${url}`,
-  fetchBilingualQuote: (...args: unknown[]) => mockFetchBilingualQuote(...args),
+  fetchBilingualQuote: jest.fn(),
   // Include the real splitIntoSentences for bilingual tests
   splitIntoSentences: (text: string) => {
     const normalized = text.replace(/\.(?=[A-Z])/g, ". ");
     return normalized.split(/(?<=[.!?])\s+/).filter(s => s.trim());
   },
+}));
+
+// Mock SWR hooks for quote fetching
+let mockQuoteData: { text: string; originalText?: string } | null = null;
+let mockIsLoading = false;
+jest.mock("@/hooks/useBilingualQuote", () => ({
+  useQuoteData: () => ({
+    data: mockQuoteData,
+    isLoading: mockIsLoading,
+    error: null,
+  }),
 }));
 
 // Mock language - will be overridden in specific tests
@@ -38,7 +46,8 @@ describe("SearchResultCard", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLanguage = "en"; // Reset to English
-    mockFetchBilingualQuote.mockResolvedValue(null);
+    mockQuoteData = null;
+    mockIsLoading = false;
   });
 
   it("renders the result reference", () => {
@@ -150,29 +159,27 @@ describe("SearchResultCard", () => {
       score: 0.95,
     };
 
-    it("displays Spanish translation when language is Spanish", async () => {
+    it("displays Spanish translation when language is Spanish", () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Ra: Soy Ra. Ve al Creador. Mira la creación que te rodea.",
         originalText: "Ra: I am Ra. See the Creator. Gaze at the creation around you.",
-      });
+      };
 
       render(
         <SearchResultCard result={sentenceResult} query="creator" onAskAbout={mockOnAskAbout} />
       );
 
-      // Wait for translation to load
-      await waitFor(() => {
-        expect(screen.getByText("Ve al Creador.")).toBeInTheDocument();
-      });
+      // Should display Spanish translation
+      expect(screen.getByText("Ve al Creador.")).toBeInTheDocument();
     });
 
-    it("filters out 'I am Ra' / 'Soy Ra' greeting sentences", async () => {
+    it("filters out 'I am Ra' / 'Soy Ra' greeting sentences", () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Ra: Soy Ra. La creación entera es del Único Creador.",
         originalText: "Ra: I am Ra. The entire creation is of the One Creator.",
-      });
+      };
 
       const resultWithGreeting = {
         ...sentenceResult,
@@ -185,20 +192,18 @@ describe("SearchResultCard", () => {
       );
 
       // Should show the content sentence, not "Soy Ra"
-      await waitFor(() => {
-        expect(screen.getByText("La creación entera es del Único Creador.")).toBeInTheDocument();
-      });
+      expect(screen.getByText("La creación entera es del Único Creador.")).toBeInTheDocument();
 
       // "Soy Ra" should not appear as the matched sentence
       expect(screen.queryByText("Ra: Soy Ra.")).not.toBeInTheDocument();
     });
 
-    it("uses position-based matching for multi-sentence passages", async () => {
+    it("uses position-based matching for multi-sentence passages", () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Ra: Soy Ra. Primera oración. Segunda oración. Tercera oración.",
         originalText: "Ra: I am Ra. First sentence. Second sentence. Third sentence.",
-      });
+      };
 
       const resultWithThirdSentence = {
         ...sentenceResult,
@@ -212,17 +217,15 @@ describe("SearchResultCard", () => {
 
       // Should find "Third sentence" at position 2/3 in English (after filtering "I am Ra")
       // and map to position 2/3 in Spanish = "Tercera oración"
-      await waitFor(() => {
-        expect(screen.getByText("Tercera oración.")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Tercera oración.")).toBeInTheDocument();
     });
 
-    it("handles punctuation differences in matching", async () => {
+    it("handles punctuation differences in matching", () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Ra: Soy Ra. El amor es la luz, la luz es el amor.",
         originalText: "Ra: I am Ra. Love is light; light is love.",
-      });
+      };
 
       const resultWithPunctuation = {
         ...sentenceResult,
@@ -235,17 +238,15 @@ describe("SearchResultCard", () => {
       );
 
       // Should match despite punctuation differences
-      await waitFor(() => {
-        expect(screen.getByText("El amor es la luz, la luz es el amor.")).toBeInTheDocument();
-      });
+      expect(screen.getByText("El amor es la luz, la luz es el amor.")).toBeInTheDocument();
     });
 
-    it("falls back to first content sentence when match not found", async () => {
+    it("falls back to first content sentence when match not found", () => {
       mockLanguage = "es";
-      mockFetchBilingualQuote.mockResolvedValue({
+      mockQuoteData = {
         text: "Ra: Soy Ra. Esta es la primera oración de contenido.",
         originalText: "Ra: I am Ra. Completely different text here.",
-      });
+      };
 
       const resultWithNoMatch = {
         ...sentenceResult,
@@ -258,9 +259,7 @@ describe("SearchResultCard", () => {
       );
 
       // Should fall back to first content sentence (not "Soy Ra")
-      await waitFor(() => {
-        expect(screen.getByText("Esta es la primera oración de contenido.")).toBeInTheDocument();
-      });
+      expect(screen.getByText("Esta es la primera oración de contenido.")).toBeInTheDocument();
     });
   });
 });
