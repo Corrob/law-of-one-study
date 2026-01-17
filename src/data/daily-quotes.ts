@@ -11,6 +11,7 @@ export interface DailyQuote {
   text: {
     en: string;
     es: string;
+    de?: string; // Optional - falls back to English
   };
 }
 

@@ -6,12 +6,14 @@ import { type AvailableLanguage } from "./language-config";
 export interface BilingualText {
   en: string;
   es: string;
+  de?: string; // Optional - falls back to English
 }
 
 // Bilingual aliases for concept matching in different languages
 export interface BilingualAliases {
   en: string[];
   es: string[];
+  de?: string[]; // Optional - falls back to English
 }
 
 /**

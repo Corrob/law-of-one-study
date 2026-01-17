@@ -13,6 +13,7 @@ interface LanguageSelectorProps {
 const LANGUAGE_CODES: Record<AvailableLanguage, string> = {
   en: "EN",
   es: "ES",
+  de: "DE",
 };
 
 /**
