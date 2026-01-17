@@ -193,6 +193,7 @@
     "showMore": "Mehr anzeigen",
     "readFullPassage": "Vollständige Passage lesen",
     "askAboutThis": "Dazu fragen",
+    "askAboutPrompt": "Erzähl mir mehr über diese Passage aus {reference}: \"{text}\"",
     "loadingPassage": "Lade Passage...",
     "greetings": {
       "1": "Was ruft deine Suche?",

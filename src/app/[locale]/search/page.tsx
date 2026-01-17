@@ -173,10 +173,11 @@ export default function SearchPage() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [performSearch]);
 
-  const handleAskAbout = (result: SearchResult) => {
-    // Get display text - prefer sentence if available, fall back to passage text
-    const displayText = result.sentence || result.text || "";
-    const prompt = `Tell me more about this passage from ${result.reference}: "${displayText.slice(0, 200)}${displayText.length > 200 ? "..." : ""}"`;
+  const handleAskAbout = (result: SearchResult, displayText: string) => {
+    // Use the translated display text passed from SearchResultCard
+    const text = displayText || result.sentence || result.text || "";
+    const truncatedText = text.slice(0, 200) + (text.length > 200 ? "..." : "");
+    const prompt = t("askAboutPrompt", { reference: result.reference, text: truncatedText });
     router.push(`/chat?q=${encodeURIComponent(prompt)}`);
   };
 
