@@ -416,6 +416,43 @@ Keep these unchanged:
 - `keyPassages[].reference`
 - `searchTerms` (English only for search)
 
+### Update Zod Validation Schema
+
+**CRITICAL:** Update the Zod schema in `src/lib/schemas/concept-graph.ts` to include your new language. Without this, the validation will strip your translations during JSON import.
+
+Add your language to both schema definitions:
+
+```typescript
+// BilingualTextSchema - for text fields
+export const BilingualTextSchema = z.object({
+  en: z.string(),
+  es: z.string(),
+  de: z.string().optional(),  // Add your language
+  fr: z.string().optional(),  // Example: French
+});
+
+// BilingualAliasesSchema - for alias arrays
+export const BilingualAliasesSchema = z.object({
+  en: z.array(z.string()),
+  es: z.array(z.string()),
+  de: z.array(z.string()).optional(),  // Add your language
+  fr: z.array(z.string()).optional(),  // Example: French
+});
+```
+
+**Why this matters:** Zod's default behavior strips unknown fields during validation. If your language isn't in the schema, all translations will be silently removed when the app loads.
+
+### German Declined Forms (Optional)
+
+For languages with grammatical cases that change adjective endings (like German), add declined form aliases:
+
+```bash
+# Add German declined forms (dritte → dritten/dritter, etc.)
+npx tsx scripts/fix-german-aliases.ts
+```
+
+This ensures concept detection works when the AI uses different grammatical cases.
+
 ---
 
 ## Step 7: Add Daily Quotes Translations
@@ -596,6 +633,12 @@ Before submitting a PR, ensure you have:
 - [ ] `src/data/daily-quotes.ts` - Add `{lang}` key to all quote `text` objects
 - [ ] `src/lib/types-graph.ts` - Add `{lang}?: string` to `BilingualText` interface
 
+### Schema Updates (CRITICAL)
+
+- [ ] `src/lib/schemas/concept-graph.ts` - Add `{lang}` to both:
+  - [ ] `BilingualTextSchema` - e.g., `fr: z.string().optional()`
+  - [ ] `BilingualAliasesSchema` - e.g., `fr: z.array(z.string()).optional()`
+
 ### Type Updates (for optional languages)
 
 If the language key is optional (like German), update these interfaces:
@@ -643,9 +686,17 @@ If the language key is optional (like German), update these interfaces:
 
 ### Concept graph not showing translations
 
+- **Check Zod schema first**: Ensure `src/lib/schemas/concept-graph.ts` includes your language in both `BilingualTextSchema` and `BilingualAliasesSchema`. Zod strips unknown fields during validation.
 - Verify your language key exists in ALL bilingual fields
 - Check that `term`, `aliases`, `definition`, `extendedDefinition` all have your language
 - Verify `keyPassages[].excerpt` and `keyPassages[].context` have translations
+
+### Concept popovers show English content but German UI labels
+
+This symptom indicates Zod validation is stripping your translations:
+- UI labels come from next-intl (working correctly)
+- Content comes from concept-graph.json after Zod validation (being stripped)
+- **Fix**: Add your language to the Zod schemas in `src/lib/schemas/concept-graph.ts`
 
 ### Daily quotes showing English
 
@@ -662,16 +713,21 @@ If the language key is optional (like German), update these interfaces:
 |--------|---------|--------|
 | `scrape-llresearch-translations.ts` | Scrape Ra Material from L/L Research | Web scraping |
 | `translate-study-paths.ts` | Translate study path lessons | GPT-5-mini |
+| `translate-study-path-quotes.ts` | Translate study path Ra quotes | Sentence matching |
 | `add-language-concept-graph.ts` | Add translations to concept graph | GPT-5-mini + sentence matching |
 | `add-language-daily-quotes.ts` | Add translations to daily quotes | Sentence matching |
+| `fix-german-aliases.ts` | Add German declined adjective forms | String manipulation |
 
 **Usage:**
 ```bash
 # Scrape Ra Material
 npx tsx scripts/scrape-llresearch-translations.ts --lang de --all
 
-# Translate study paths
+# Translate study paths (UI content via GPT-5-mini)
 npx tsx scripts/translate-study-paths.ts --language de
+
+# Translate study path quotes (Ra Material excerpts via sentence matching)
+npx tsx scripts/translate-study-path-quotes.ts --lang de
 
 # Add concept graph translations
 npx tsx scripts/add-language-concept-graph.ts --lang de
