@@ -256,10 +256,17 @@ function parseReference(reference: string): { session: number; question: number 
   };
 }
 
-// Split text into sentences
+// Split text into sentences (handling Ra Material formatting)
 function splitIntoSentences(text: string): string[] {
+  // Remove speaker prefixes and "I am Ra" equivalents
   const cleaned = text.replace(speakerPrefixRegex, "").replace(iAmRaRegex, "");
-  return cleaned
+
+  // First, add spaces after periods that are followed directly by capital letters
+  // This handles cases like "...so forth.Each experience..." -> "...so forth. Each experience..."
+  const normalized = cleaned.replace(/\.([A-Z])/g, ". $1");
+
+  // Split on sentence boundaries (period/exclamation/question followed by space)
+  return normalized
     .split(/(?<=[.!?])\s+/)
     .map((s) => s.trim())
     .filter((s) => s.length > 0);

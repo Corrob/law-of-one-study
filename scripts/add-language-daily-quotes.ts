@@ -14,10 +14,12 @@ import * as path from "path";
 const args = process.argv.slice(2);
 const langIndex = args.findIndex((arg) => arg === "--lang" || arg === "--language");
 const TARGET_LANG = langIndex !== -1 && args[langIndex + 1] ? args[langIndex + 1] : null;
+const FORCE_RETRANSLATE = args.includes("--force");
 
 if (!TARGET_LANG) {
-  console.error("Usage: npx tsx scripts/add-language-daily-quotes.ts --lang <language-code>");
+  console.error("Usage: npx tsx scripts/add-language-daily-quotes.ts --lang <language-code> [--force]");
   console.error("Example: npx tsx scripts/add-language-daily-quotes.ts --lang de");
+  console.error("         npx tsx scripts/add-language-daily-quotes.ts --lang de --force  # Re-translate existing");
   process.exit(1);
 }
 
@@ -127,15 +129,15 @@ function splitIntoSentences(text: string): string[] {
   // Remove speaker prefixes and "I am Ra" equivalents
   const cleaned = text.replace(speakerPrefixRegex, "").replace(iAmRaRegex, "");
 
-  // Split on sentence boundaries
-  return cleaned
+  // First, add spaces after periods that are followed directly by capital letters
+  // This handles cases like "...so forth.Each experience..." -> "...so forth. Each experience..."
+  const normalized = cleaned.replace(/\.([A-Z])/g, ". $1");
+
+  // Split on sentence boundaries (period/exclamation/question followed by space)
+  return normalized
     .split(/(?<=[.!?])\s+/)
     .map((s) => s.trim())
     .filter((s) => s.length > 0);
-}
-
-function countSentences(text: string): number {
-  return splitIntoSentences(text).length;
 }
 
 // Normalize text for comparison (handle various quotation marks)
@@ -148,95 +150,92 @@ function normalizeForComparison(text: string): string {
     .trim();
 }
 
-// Find which sentence indices in the full text match the excerpt
-function findSentenceRange(
-  excerpt: string,
-  fullText: string
-): { start: number; end: number } | null {
-  const excerptSentences = splitIntoSentences(excerpt);
-  const fullSentences = splitIntoSentences(fullText);
-
-  if (excerptSentences.length === 0 || fullSentences.length === 0) {
-    return null;
-  }
-
-  const normalizedFirst = normalizeForComparison(excerptSentences[0]);
-
-  for (let i = 0; i < fullSentences.length; i++) {
-    const normalizedFull = normalizeForComparison(fullSentences[i]);
-
-    if (
-      normalizedFull.includes(normalizedFirst.slice(0, 50)) ||
-      normalizedFirst.includes(normalizedFull.slice(0, 50))
-    ) {
-      let matchLength = 0;
-      for (let j = 0; j < excerptSentences.length && i + j < fullSentences.length; j++) {
-        const excerptNorm = normalizeForComparison(excerptSentences[j]);
-        const fullNorm = normalizeForComparison(fullSentences[i + j]);
-
-        if (
-          excerptNorm.slice(0, 30) === fullNorm.slice(0, 30) ||
-          fullNorm.includes(excerptNorm.slice(0, 40)) ||
-          excerptNorm.includes(fullNorm.slice(0, 40))
-        ) {
-          matchLength++;
-        } else {
-          break;
-        }
-      }
-
-      if (matchLength >= excerptSentences.length * 0.8) {
-        return { start: i, end: i + excerptSentences.length - 1 };
-      }
-    }
-  }
-
-  return null;
+// Remove footnote markers from text (superscript numbers that appear in translations)
+// These are typically single or double digit numbers that appear inline
+function removeFootnotes(text: string): string {
+  // Remove standalone numbers that look like footnotes (preceded by space or word, followed by space or punctuation)
+  // Pattern: word boundary + space + 1-2 digit number + space/punctuation
+  return text
+    .replace(/(\w)\s+(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1") // "word 1." -> "word."
+    .replace(/(\w)(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1") // "word1." -> "word."
+    .replace(/\s+/g, " ") // Clean up extra spaces
+    .trim();
 }
 
-// Find translation for an English excerpt
+// Find translation for an English excerpt using proportional sentence positioning
+// This matches the approach used in SearchResultCard.tsx for bilingual sentence matching
 function findTranslation(
   englishExcerpt: string,
   englishFull: string,
   targetFull: string
 ): { text: string; confidence: "high" | "medium" | "low" } {
-  const excerptSentenceCount = countSentences(englishExcerpt);
+  // Clean up texts before processing
+  const cleanedTargetFull = removeFootnotes(targetFull);
+  const cleanedEnglishFull = englishFull;
 
-  // Try sentence range matching
-  const range = findSentenceRange(englishExcerpt, englishFull);
+  // Split into sentences (filtering out very short ones and "I am Ra" greetings)
+  const isContentSentence = (s: string) =>
+    s.length >= 10 && !s.match(/^(Ra:\s*)?(I am Ra|Ich bin Ra|Soy Ra|Je suis Ra)\.?$/i);
 
-  if (range) {
-    const targetSentences = splitIntoSentences(targetFull);
-    const endIndex = Math.min(
-      range.start + excerptSentenceCount - 1,
-      targetSentences.length - 1
-    );
-    const targetText = targetSentences.slice(range.start, endIndex + 1).join(" ");
+  const englishFullSentences = splitIntoSentences(cleanedEnglishFull).filter(isContentSentence);
+  const excerptSentences = splitIntoSentences(englishExcerpt).filter(isContentSentence);
+  const targetSentences = splitIntoSentences(cleanedTargetFull).filter(isContentSentence);
 
-    if (targetText.length > 0) {
-      return { text: targetText, confidence: "high" };
+  if (excerptSentences.length === 0 || targetSentences.length === 0) {
+    return { text: "", confidence: "low" };
+  }
+
+  // Find which sentence in the full English text matches the first sentence of the excerpt
+  const normalizedFirstExcerpt = normalizeForComparison(excerptSentences[0]);
+  let englishStartIndex = -1;
+
+  for (let i = 0; i < englishFullSentences.length; i++) {
+    const normalizedSentence = normalizeForComparison(englishFullSentences[i]);
+    // Match if the full sentence contains the excerpt's first sentence start
+    // OR if they start with the same 30 characters (for slight variations)
+    const excerptStart = normalizedFirstExcerpt.slice(0, 30);
+    const sentenceStart = normalizedSentence.slice(0, 30);
+    if (
+      normalizedSentence.includes(normalizedFirstExcerpt.slice(0, 40)) ||
+      excerptStart === sentenceStart
+    ) {
+      englishStartIndex = i;
+      break;
     }
   }
 
-  // Fallback: try fuzzy matching based on position
-  const normalizedExcerpt = normalizeForComparison(englishExcerpt);
-  const normalizedFull = normalizeForComparison(englishFull);
-  const position = normalizedFull.indexOf(normalizedExcerpt.slice(0, 50));
+  if (englishStartIndex === -1) {
+    return { text: "", confidence: "low" };
+  }
 
-  if (position !== -1) {
-    const percentPosition = position / normalizedFull.length;
-    const targetSentences = splitIntoSentences(targetFull);
-    const estimatedStart = Math.floor(percentPosition * targetSentences.length);
+  // Use PROPORTIONAL positioning - the key insight from SearchResultCard.tsx
+  // Map English sentence position to target language position proportionally
+  const relativeStartPosition = englishStartIndex / Math.max(englishFullSentences.length, 1);
+  const targetStartIndex = Math.min(
+    Math.round(relativeStartPosition * targetSentences.length),
+    targetSentences.length - 1
+  );
 
-    if (estimatedStart < targetSentences.length) {
-      const endIndex = Math.min(
-        estimatedStart + excerptSentenceCount - 1,
-        targetSentences.length - 1
-      );
-      const targetText = targetSentences.slice(estimatedStart, endIndex + 1).join(" ");
+  // Calculate how many target sentences to take (proportionally)
+  // If English excerpt is 3 out of 20 sentences (15%), take ~15% of target sentences
+  const relativeExcerptLength = excerptSentences.length / Math.max(englishFullSentences.length, 1);
+  const targetSentenceCount = Math.max(
+    1,
+    Math.round(relativeExcerptLength * targetSentences.length)
+  );
 
-      return { text: targetText, confidence: "medium" };
-    }
+  // But also cap it to not exceed the original excerpt sentence count (for safety)
+  const finalSentenceCount = Math.min(targetSentenceCount, excerptSentences.length + 1);
+
+  const targetEndIndex = Math.min(
+    targetStartIndex + finalSentenceCount - 1,
+    targetSentences.length - 1
+  );
+
+  const targetText = targetSentences.slice(targetStartIndex, targetEndIndex + 1).join(" ");
+
+  if (targetText.length > 0) {
+    return { text: removeFootnotes(targetText), confidence: "high" };
   }
 
   return { text: "", confidence: "low" };
@@ -244,7 +243,12 @@ function findTranslation(
 
 // Main function
 async function main() {
-  console.log(`=== Add ${config.name} Daily Quotes ===\n`);
+  console.log(`=== Add ${config.name} Daily Quotes ===`);
+  if (FORCE_RETRANSLATE) {
+    console.log("(--force: Re-translating all quotes)\n");
+  } else {
+    console.log("(Use --force to re-translate existing quotes)\n");
+  }
 
   // Read current daily quotes file
   const quotesPath = path.join(__dirname, "../src/data/daily-quotes.ts");
@@ -292,8 +296,8 @@ async function main() {
   const stats = { high: 0, medium: 0, low: 0, skipped: 0 };
 
   for (const quote of quotes) {
-    // Skip if already has this language
-    if (quote.text[LANG]) {
+    // Skip if already has this language (unless --force is used)
+    if (quote.text[LANG] && !FORCE_RETRANSLATE) {
       stats.skipped++;
       continue;
     }

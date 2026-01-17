@@ -1,7 +1,7 @@
 // Utility functions for parsing and filtering Ra Material quotes
 
 import { debug } from "@/lib/debug";
-import { type AvailableLanguage, DEFAULT_LOCALE } from "./language-config";
+import { type AvailableLanguage, DEFAULT_LOCALE, AVAILABLE_LANGUAGES } from "./language-config";
 
 /**
  * Generate a URL to the Ra Material on L/L Research website.
@@ -152,9 +152,8 @@ export async function fetchFullQuote(
   reference: string,
   language: AvailableLanguage = DEFAULT_LOCALE
 ): Promise<string | null> {
-  // Validate language - only allow known languages
-  const validLanguages = ['en', 'es'] as const;
-  if (!validLanguages.includes(language as typeof validLanguages[number])) {
+  // Validate language using the centralized config
+  if (!AVAILABLE_LANGUAGES.includes(language)) {
     debug.log("[fetchFullQuote] Invalid language, defaulting to English:", language);
     language = DEFAULT_LOCALE;
   }
