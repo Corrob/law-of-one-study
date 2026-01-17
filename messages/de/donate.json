@@ -1,0 +1,28 @@
+{
+  "title": "Unterstütze dieses Projekt",
+  "subtitle": "Dieses Tool ist kostenlos für alle, Open Source und von der Gemeinschaft finanziert. Deine Unterstützung hilft, das so zu halten.",
+  "buyMeACoffee": {
+    "title": "Kauf mir einen Kaffee",
+    "description": "Unterstütze das Projekt mit einem einmaligen oder wiederkehrenden Beitrag",
+    "linkText": "Besuche buymeacoffee.com/lawofone.study"
+  },
+  "whatYourSupportEnables": {
+    "title": "Was deine Unterstützung ermöglicht",
+    "hosting": {
+      "title": "Hosting",
+      "description": "Serverkosten, KI-API-Nutzung, Datenbank-Hosting und Infrastruktur, um das Tool rund um die Uhr am Laufen zu halten."
+    },
+    "development": {
+      "title": "Entwicklung",
+      "description": "Kontinuierliche Entwicklung neuer Funktionen, Verbesserungen und Fehlerbehebungen."
+    },
+    "freeAccess": {
+      "title": "Freier Zugang",
+      "description": "Dieses Tool für alle Suchenden kostenlos und zugänglich halten, ohne Werbung oder Bezahlschranken."
+    }
+  },
+  "footerQuote": {
+    "text": "In Wahrheit gibt es kein Richtig oder Falsch. Es gibt keine Polarität, denn alles wird, wie ihr sagen würdet, an irgendeinem Punkt in eurem Tanz durch den Geist/Körper/Seele-Komplex versöhnt werden, den ihr zu dieser Zeit auf verschiedene Weise verzerrt, um euch damit zu unterhalten. Diese Verzerrung ist in keinem Fall notwendig. Sie wird von jedem von euch gewählt als eine Alternative zum Verständnis der vollständigen Einheit des Gedankens, der alle Dinge verbindet.",
+    "attribution": "Ra, Sitzung 1.7"
+  }
+}
