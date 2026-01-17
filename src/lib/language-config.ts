@@ -13,7 +13,7 @@ import { z } from "zod";
 
 // Languages that have Ra Material translations available
 // Only add languages here once their data is in public/sections/{lang}/
-export const AVAILABLE_LANGUAGES = ['en', 'es'] as const;
+export const AVAILABLE_LANGUAGES = ['en', 'es', 'de'] as const;
 export type AvailableLanguage = typeof AVAILABLE_LANGUAGES[number];
 
 // Default locale used throughout the codebase
@@ -26,12 +26,14 @@ export const AvailableLanguageSchema = z.enum(AVAILABLE_LANGUAGES);
 export const LANGUAGE_DISPLAY_NAMES: Record<AvailableLanguage, string> = {
   en: 'English',
   es: 'Español',
+  de: 'Deutsch',
 };
 
 // Full language names for LLM prompts
 export const LANGUAGE_NAMES_FOR_PROMPTS: Record<AvailableLanguage, string> = {
   en: 'English',
   es: 'Spanish',
+  de: 'German',
 };
 
 // Speaker prefixes used in Ra Material by language
@@ -46,6 +48,10 @@ export const SPEAKER_PREFIXES: Record<AvailableLanguage, {
   },
   es: {
     questioner: ['Interrogador:', 'Cuestionador:'],
+    ra: ['Ra:'],
+  },
+  de: {
+    questioner: ['Fragesteller:'],
     ra: ['Ra:'],
   },
 };
@@ -80,6 +86,16 @@ export const UI_LABELS: Record<AvailableLanguage, {
     hideEnglishOriginal: 'Ocultar original en inglés',
     englishOriginal: 'Original en Inglés',
     translationUnavailable: 'Traducción no disponible',
+  },
+  de: {
+    questioner: 'Fragesteller',
+    collapse: 'Einklappen',
+    expand: 'Mehr anzeigen',
+    loading: 'Laden...',
+    showEnglishOriginal: 'Englisches Original anzeigen',
+    hideEnglishOriginal: 'Englisches Original ausblenden',
+    englishOriginal: 'Englisches Original',
+    translationUnavailable: 'Übersetzung nicht verfügbar',
   },
 };
 

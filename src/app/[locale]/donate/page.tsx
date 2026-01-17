@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { titleVariants, staggerContainer, staggerChild } from "@/lib/animations";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getRaMaterialUrl, type AvailableLanguage } from "@/lib/quote-utils";
 
 function HeartIcon({ className }: { className?: string }) {
   return (
@@ -87,6 +88,7 @@ function GlobeIcon({ className }: { className?: string }) {
 
 export default function DonatePage() {
   const t = useTranslations("donate");
+  const locale = useLocale() as AvailableLanguage;
 
   return (
     <NavigationWrapper>
@@ -223,7 +225,7 @@ export default function DonatePage() {
                 </p>
                 <footer className="text-sm text-[var(--lo1-stardust)]/60">
                   <a
-                    href="https://www.llresearch.org/channeling/ra-contact/1#7"
+                    href={getRaMaterialUrl(1, 7, locale)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-[var(--lo1-gold)] transition-colors"

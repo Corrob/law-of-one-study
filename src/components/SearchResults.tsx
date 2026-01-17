@@ -15,7 +15,7 @@ interface SearchResultsProps {
   error: string | null;
   hasSearched: boolean;
   onModeChange: (mode: SearchMode) => void;
-  onAskAbout: (result: SearchResult) => void;
+  onAskAbout: (result: SearchResult, displayText: string) => void;
   inputElement: ReactNode;
 }
 
@@ -114,7 +114,7 @@ export default function SearchResults({
                   <SearchResultCard
                     result={result}
                     query={searchedQuery}
-                    onAskAbout={() => onAskAbout(result)}
+                    onAskAbout={(displayText) => onAskAbout(result, displayText)}
                   />
                 </motion.div>
               ))}

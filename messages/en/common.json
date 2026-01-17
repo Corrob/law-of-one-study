@@ -48,6 +48,12 @@
     "closeMenu": "Close menu",
     "navigationMenu": "Navigation menu"
   },
+  "confirmNewChat": {
+    "title": "Start a new conversation?",
+    "message": "Your current conversation will be cleared. This cannot be undone.",
+    "confirm": "Start New",
+    "cancel": "Keep Chatting"
+  },
   "welcome": {
     "greetings": {
       "seeker": "Welcome, seeker.",
@@ -187,6 +193,7 @@
     "showMore": "Show more",
     "readFullPassage": "Read full passage",
     "askAboutThis": "Ask about this",
+    "askAboutPrompt": "Tell me more about this passage from {reference}: \"{text}\"",
     "loadingPassage": "Loading passage...",
     "greetings": {
       "1": "What calls to your seeking?",

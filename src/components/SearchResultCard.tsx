@@ -47,7 +47,7 @@ function getHighlightRegex(terms: string[]): RegExp {
 export interface SearchResultCardProps {
   result: SearchResult;
   query: string;
-  onAskAbout: () => void;
+  onAskAbout: (displayText: string) => void;
 }
 
 /**
@@ -573,7 +573,7 @@ export default function SearchResultCard({
             {t("readFullPassage")}
           </a>
           <button
-            onClick={onAskAbout}
+            onClick={() => onAskAbout(displayText || "")}
             className="text-sm px-4 py-2 rounded-lg
                        bg-[var(--lo1-gold)]/10 border border-[var(--lo1-gold)]/30
                        text-[var(--lo1-gold)] hover:bg-[var(--lo1-gold)]/20

@@ -48,6 +48,12 @@
     "closeMenu": "Cerrar menú",
     "navigationMenu": "Menú de navegación"
   },
+  "confirmNewChat": {
+    "title": "¿Iniciar una nueva conversación?",
+    "message": "Tu conversación actual será borrada. Esto no se puede deshacer.",
+    "confirm": "Iniciar Nueva",
+    "cancel": "Seguir Chateando"
+  },
   "welcome": {
     "greetings": {
       "seeker": "Bienvenido, buscador.",
@@ -187,6 +193,7 @@
     "showMore": "Mostrar más",
     "readFullPassage": "Leer pasaje completo",
     "askAboutThis": "Preguntar sobre esto",
+    "askAboutPrompt": "Cuéntame más sobre este pasaje de {reference}: \"{text}\"",
     "loadingPassage": "Cargando pasaje...",
     "greetings": {
       "1": "¿Qué llama a tu búsqueda?",

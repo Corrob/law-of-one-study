@@ -4,7 +4,8 @@ import { Link } from "@/i18n/navigation";
 import { motion } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import { titleVariants, staggerContainer, staggerChild } from "@/lib/animations";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getRaMaterialUrl, type AvailableLanguage } from "@/lib/quote-utils";
 
 // Feature icons for the Features section
 function SeekIcon({ className }: { className?: string }) {
@@ -46,6 +47,7 @@ function SearchIcon({ className }: { className?: string }) {
 
 export default function SupportPage() {
   const t = useTranslations("about");
+  const locale = useLocale() as AvailableLanguage;
 
   return (
     <NavigationWrapper>
@@ -721,7 +723,7 @@ export default function SupportPage() {
                 &ldquo;{t("footerQuote.text")}&rdquo;
               </p>
               <a
-                href="https://www.llresearch.org/channeling/ra-contact/1#7"
+                href={getRaMaterialUrl(1, 7, locale)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors rounded focus:outline-none focus:ring-2 focus:ring-[var(--lo1-gold)] focus:ring-offset-2 focus:ring-offset-[var(--lo1-deep-space)]"

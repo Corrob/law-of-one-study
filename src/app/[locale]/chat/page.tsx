@@ -2,6 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ChatInterface, { ChatInterfaceRef } from "@/components/ChatInterface";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -10,6 +11,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 export default function ChatPage() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || undefined;
+  const t = useTranslations("confirmNewChat");
 
   const chatRef = useRef<ChatInterfaceRef>(null);
   const [hasMessages, setHasMessages] = useState(false);
@@ -65,10 +67,10 @@ export default function ChatPage() {
         isOpen={showConfirmModal}
         onConfirm={handleConfirmNewChat}
         onCancel={handleCancelNewChat}
-        title="Start a new conversation?"
-        message="Your current conversation will be cleared. This cannot be undone."
-        confirmText="Start New"
-        cancelText="Keep Chatting"
+        title={t("title")}
+        message={t("message")}
+        confirmText={t("confirm")}
+        cancelText={t("cancel")}
       />
     </main>
   );

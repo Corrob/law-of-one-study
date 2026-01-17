@@ -17,12 +17,18 @@ import densitiesDataEs from "@/data/study-paths/es/densities.json";
 import polarityDataEs from "@/data/study-paths/es/polarity.json";
 import energyCentersDataEs from "@/data/study-paths/es/energy-centers.json";
 
+// Import German study path data
+import densitiesDataDe from "@/data/study-paths/de/densities.json";
+import polarityDataDe from "@/data/study-paths/de/polarity.json";
+import energyCentersDataDe from "@/data/study-paths/de/energy-centers.json";
+
 /**
  * Study paths data organized by language.
  */
 const STUDY_PATHS_BY_LANGUAGE: Record<string, unknown[]> = {
   en: [densitiesDataEn, polarityDataEn, energyCentersDataEn],
   es: [densitiesDataEs, polarityDataEs, energyCentersDataEs],
+  de: [densitiesDataDe, polarityDataDe, energyCentersDataDe],
 };
 
 /**

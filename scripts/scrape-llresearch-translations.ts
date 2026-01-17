@@ -289,6 +289,7 @@ function validateAgainstEnglish(
     process.cwd(),
     "public",
     "sections",
+    "en",
     `${sessionNumber}.json`
   );
 

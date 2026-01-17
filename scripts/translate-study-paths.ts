@@ -1,11 +1,11 @@
 #!/usr/bin/env npx tsx
 /**
- * Translate study paths to Spanish.
+ * Translate study paths to any supported language.
  *
  * This script reads the English study path JSON files and creates
- * Spanish translations using GPT-4o-mini.
+ * translations using GPT-4o-mini.
  *
- * Usage: npx tsx scripts/translate-study-paths.ts
+ * Usage: npx tsx scripts/translate-study-paths.ts --language de
  */
 
 import * as fs from "fs";
@@ -16,9 +16,24 @@ import OpenAI from "openai";
 // Load environment variables from .env.local
 dotenv.config({ path: path.join(__dirname, "../.env.local") });
 
+// Parse command line arguments
+const args = process.argv.slice(2);
+const langIndex = args.findIndex((arg) => arg === "--language" || arg === "--lang");
+const TARGET_LANG = langIndex !== -1 && args[langIndex + 1] ? args[langIndex + 1] : "es";
+
+// Language names for prompts
+const LANGUAGE_NAMES: Record<string, string> = {
+  es: "Spanish",
+  de: "German",
+  fr: "French",
+  pt: "Portuguese",
+  it: "Italian",
+};
+
+const TARGET_LANGUAGE_NAME = LANGUAGE_NAMES[TARGET_LANG] || TARGET_LANG;
+
 // Configuration
 const SOURCE_DIR = path.join(__dirname, "../src/data/study-paths");
-const TARGET_LANG = "es";
 const TARGET_DIR = path.join(SOURCE_DIR, TARGET_LANG);
 
 // Study path files to translate
@@ -27,8 +42,9 @@ const STUDY_PATH_FILES = ["densities.json", "energy-centers.json", "polarity.jso
 // Initialize OpenAI
 const openai = new OpenAI();
 
-// Ra Material terminology glossary for consistent translations
-const TERMINOLOGY_GLOSSARY = `
+// Ra Material terminology glossaries for consistent translations
+const TERMINOLOGY_GLOSSARIES: Record<string, string> = {
+  es: `
 ## Ra Material Terminology (English → Spanish)
 - density → densidad
 - harvest → cosecha
@@ -68,7 +84,51 @@ const TERMINOLOGY_GLOSSARY = `
 - Law of One → Ley del Uno
 - Ra → Ra
 - Confederation → Confederación
-`;
+`,
+  de: `
+## Ra Material Terminology (English → German)
+- density → Dichte / Dichtestufe
+- harvest → Ernte
+- catalyst → Katalysator
+- distortion → Verzerrung
+- polarity → Polarität
+- service to others → Dienst an anderen
+- service to self → Dienst am Selbst
+- mind/body/spirit complex → Geist/Körper/Seele-Komplex
+- social memory complex → sozialer Gedächtniskomplex
+- wanderer → Wanderer
+- higher self → Höheres Selbst
+- intelligent infinity → unendliche Intelligenz
+- intelligent energy → intelligente Energie
+- love/light → Liebe/Licht
+- light/love → Licht/Liebe
+- Logos → Logos
+- sub-Logos → Sub-Logos
+- chakra → Chakra
+- energy center → Energiezentrum
+- red ray → roter Strahl
+- orange ray → orangener Strahl
+- yellow ray → gelber Strahl
+- green ray → grüner Strahl
+- blue ray → blauer Strahl
+- indigo ray → Indigo-Strahl
+- violet ray → violetter Strahl
+- archetypical mind → archetypischer Geist
+- veil of forgetting → Schleier des Vergessens
+- incarnation → Inkarnation
+- third density → dritte Dichte
+- fourth density → vierte Dichte
+- fifth density → fünfte Dichte
+- sixth density → sechste Dichte
+- the One Infinite Creator → der Eine Unendliche Schöpfer
+- free will → freier Wille
+- Law of One → Gesetz des Einen
+- Ra → Ra
+- Confederation → Konföderation
+`,
+};
+
+const TERMINOLOGY_GLOSSARY = TERMINOLOGY_GLOSSARIES[TARGET_LANG] || "";
 
 interface StudyPathSection {
   type: string;
@@ -117,7 +177,7 @@ async function translateText(
       {
         role: "system",
         content: `You are a professional translator specializing in spiritual and philosophical texts.
-Translate the following text from English to Spanish.
+Translate the following text from English to ${TARGET_LANGUAGE_NAME}.
 
 ${TERMINOLOGY_GLOSSARY}
 

@@ -8,19 +8,21 @@
 import { z } from "zod";
 
 /**
- * Schema for bilingual text fields (en + es).
+ * Schema for multilingual text fields (en required, es/de optional).
  */
 export const BilingualTextSchema = z.object({
   en: z.string(),
   es: z.string(),
+  de: z.string().optional(),
 });
 
 /**
- * Schema for bilingual aliases (arrays per language).
+ * Schema for multilingual aliases (arrays per language).
  */
 export const BilingualAliasesSchema = z.object({
   en: z.array(z.string()),
   es: z.array(z.string()),
+  de: z.array(z.string()).optional(),
 });
 
 /**

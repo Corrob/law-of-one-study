@@ -5,14 +5,27 @@ This guide explains how to add a new language to the Law of One Study Tool.
 ## Overview
 
 Adding a language requires:
-1. **Ra Material translations** (106 session files)
-2. **UI translations** (3 message files)
-3. **Configuration updates** (language-config.ts)
-4. **Study paths** (3 JSON files per language)
-5. **Concept graph** (add translations to bilingual format)
-6. **Daily quotes** (add translations to bilingual format)
+1. **Ra Material translations** (105 session files) - Scrape from L/L Research
+2. **Language configuration** (language-config.ts) - Manual updates
+3. **UI translations** (3 message files) - Claude Code translation
+4. **Study paths** (3 JSON files per language) - GPT-5-mini script
+5. **Concept graph translations** - GPT-5-mini + sentence matching
+6. **Daily quotes translations** - Sentence matching from Ra Material
+7. **E2E tests** - Based on existing locale tests
 
-**Estimated time:** 4-8 hours (excluding Ra Material translation)
+**Estimated time:** 2-4 hours with AI assistance
+
+## Translation Methods
+
+| Content | Method | Tool |
+|---------|--------|------|
+| Ra Material (105 sessions) | Scrape L/L Research | `scripts/scrape-llresearch-translations.ts` |
+| UI translations (3 files) | Direct translation | Claude Code |
+| Study paths (3 files) | LLM translation | `scripts/translate-study-paths.ts` + GPT-5-mini |
+| Concept graph terms/definitions | LLM translation | `scripts/add-{lang}-concept-graph.ts` + GPT-5-mini |
+| Concept graph excerpts | Sentence matching | Script matches to Ra Material source |
+| Daily quotes | Sentence matching | `scripts/add-{lang}-daily-quotes.ts` |
+| E2E tests | Adapt from existing | Based on `e2e/spanish-locale.spec.ts` |
 
 ---
 
@@ -75,16 +88,38 @@ Each session file is a JSON object mapping `session.question` to the full Q&A te
 
 ### Scraping L/L Research
 
-If the language is available on L/L Research, you can adapt the existing scrape script:
+If the language is available on L/L Research, use the scrape script:
 
 ```bash
-# Example: Scrape French translations
-npx tsx scripts/scrape-llresearch.ts --language fr
+# Example: Scrape German translations (all 106 sessions)
+npx tsx scripts/scrape-llresearch-translations.ts --lang de --all
+
+# Or scrape a specific session
+npx tsx scripts/scrape-llresearch-translations.ts --lang de --session 1
 ```
+
+**Note:** Session 47 doesn't exist in the Ra Material, so you'll get 105 files.
+
+The script:
+1. Reads the English source files from `public/sections/en/`
+2. Fetches the translated version from L/L Research
+3. Writes JSON files to `public/sections/{lang}/`
 
 ---
 
-## Step 2: Add UI Translations
+## Step 2: Add Language Configuration
+
+Before adding translations, configure the language in the codebase.
+
+### Edit `src/lib/language-config.ts`
+
+Add the language to all configuration maps. See Step 3 in the original flow for details.
+
+---
+
+## Step 3: Add UI Translations
+
+UI translations are best done with Claude Code, which can translate the structured JSON files directly.
 
 ### Message Files
 
@@ -255,7 +290,7 @@ The locale loading should work automatically if you've added message files.
 
 ## Step 5: Add Study Paths
 
-Study paths are guided lessons through the Ra Material. Each language needs its own set of translated lesson files.
+Study paths are guided lessons through the Ra Material. Use the translation script with GPT-5-mini.
 
 ### File Structure
 
@@ -272,111 +307,104 @@ src/data/study-paths/
 
 ### Translation Process
 
-1. Copy the English JSON files to `src/data/study-paths/{lang}/`
-2. Translate all text content (titles, descriptions, lesson content)
-3. Keep the structure and IDs identical to English
+Use the translation script which calls GPT-5-mini:
 
-**Important:** Do NOT translate:
-- `id` fields
-- `pathId` fields
-- `reference` fields (e.g., "Ra 13.23")
-- JSON keys
+```bash
+# Translate study paths using GPT-5-mini
+npx tsx scripts/translate-study-paths.ts --language de
+```
+
+The script:
+1. Reads English study path files
+2. Sends content to GPT-5-mini with a Ra Material terminology glossary
+3. Writes translated files to `src/data/study-paths/{lang}/`
+
+**Note:** The script includes terminology glossaries for Spanish and German. For other languages, add a glossary to the script first.
 
 ### Update Study Paths Loader
 
-Edit `src/lib/study-paths.ts` to import your new language:
+After translation, edit `src/lib/study-paths.ts` to import your new language:
 
 ```typescript
 // Add import for your language
-import densitiesDataFr from "@/data/study-paths/fr/densities.json";
-import polarityDataFr from "@/data/study-paths/fr/polarity.json";
-import energyCentersDataFr from "@/data/study-paths/fr/energy-centers.json";
+import densitiesDataDe from "@/data/study-paths/de/densities.json";
+import polarityDataDe from "@/data/study-paths/de/polarity.json";
+import energyCentersDataDe from "@/data/study-paths/de/energy-centers.json";
 
 // Add to STUDY_PATHS_BY_LANGUAGE
 const STUDY_PATHS_BY_LANGUAGE: Record<string, unknown[]> = {
   en: [densitiesDataEn, polarityDataEn, energyCentersDataEn],
   es: [densitiesDataEs, polarityDataEs, energyCentersDataEs],
-  fr: [densitiesDataFr, polarityDataFr, energyCentersDataFr],  // Add this
+  de: [densitiesDataDe, polarityDataDe, energyCentersDataDe],  // Add this
 };
-```
-
-### Using Translation Scripts
-
-You can use the existing translation script as a starting point:
-
-```bash
-# Translate study paths using LLM
-npx tsx scripts/translate-study-paths.ts --language fr
 ```
 
 ---
 
 ## Step 6: Add Concept Graph Translations
 
-The concept graph uses a **bilingual inline format** where each text field contains translations for all languages in a single file.
+The concept graph uses a **trilingual inline format**. Translation uses a hybrid approach:
+- **Terms, definitions, aliases, context**: GPT-5-mini translation
+- **Key passage excerpts**: Sentence matching from Ra Material source files
 
 ### File Location
 
 `src/data/concept-graph.json`
 
-### Bilingual Format
+### Translation Process
 
-Each text field is an object with language keys:
+Use the generalized translation script:
+
+```bash
+# Add concept graph translations for your language
+npx tsx scripts/add-language-concept-graph.ts --lang de
+```
+
+The script supports: `de`, `es`, `fr` (add more in `LANGUAGE_CONFIGS`).
+
+The script:
+1. **GPT-5-mini translation** for:
+   - `term` - Concept names
+   - `aliases` - Alternative names
+   - `definition` - Short definitions
+   - `extendedDefinition` - Detailed explanations
+   - `keyPassages[].context` - Context descriptions
+   - Category names and descriptions
+
+2. **Sentence matching** for `keyPassages[].excerpt`:
+   - Finds the English excerpt in the full English Q&A
+   - Identifies sentence positions (e.g., sentences 3-5)
+   - Extracts the same sentences from your Ra Material translation
+   - Ensures quotes match the actual translated Ra Material
+
+### Why Sentence Matching for Excerpts?
+
+Key passage excerpts must match the actual Ra Material translations exactly. Using sentence matching ensures:
+- Quotes display correctly when users click to source
+- No drift between displayed quotes and linked content
+- Consistent terminology with official translations
+
+### Trilingual Format Example
 
 ```json
 {
-  "concepts": {
-    "law-of-one": {
-      "id": "law-of-one",
-      "term": {
-        "en": "Law of One",
-        "es": "Ley del Uno",
-        "fr": "Loi de Un"
-      },
-      "aliases": {
-        "en": ["law of one", "the law of one"],
-        "es": ["ley del uno", "la ley del uno"],
-        "fr": ["loi de un", "la loi de un"]
-      },
-      "definition": {
-        "en": "The fundamental truth that all things are one...",
-        "es": "La verdad fundamental de que todas las cosas son una...",
-        "fr": "La vérité fondamentale que toutes les choses sont une..."
-      },
-      "extendedDefinition": {
-        "en": "...",
-        "es": "...",
-        "fr": "..."
-      },
-      "keyPassages": [
-        {
-          "reference": "1.0",
-          "excerpt": {
-            "en": "All things, all of life, all of the creation is part of one original thought.",
-            "es": "Todas las cosas, toda la vida, toda la creación es parte del Pensamiento Original Único.",
-            "fr": "Toutes les choses, toute la vie, toute la création fait partie d'une pensée originale."
-          },
-          "context": {
-            "en": "Ra's first statement of the Law of One",
-            "es": "La primera declaración de Ra sobre la Ley del Uno",
-            "fr": "La première déclaration de Ra sur la Loi de Un"
-          }
-        }
-      ]
+  "term": {
+    "en": "Law of One",
+    "es": "Ley del Uno",
+    "de": "Gesetz des Einen"
+  },
+  "keyPassages": [
+    {
+      "reference": "1.0",
+      "excerpt": {
+        "en": "All things, all of life, all of the creation is part of one original thought.",
+        "es": "Todas las cosas, toda la vida, toda la creación es parte del Pensamiento Original Único.",
+        "de": "Alle Dinge, alles Leben, die gesamte Schöpfung ist Teil eines ursprünglichen Gedankens."
+      }
     }
-  }
+  ]
 }
 ```
-
-### Fields to Translate
-
-For each concept, add your language to:
-- `term` - The concept name
-- `aliases` - Alternative names/spellings (array)
-- `definition` - Short definition
-- `extendedDefinition` - Detailed explanation
-- `keyPassages[].excerpt` - Quote excerpts
-- `keyPassages[].context` - Context descriptions
 
 ### Fields to NOT Translate
 
@@ -386,25 +414,90 @@ Keep these unchanged:
 - `relationships`
 - `sessions`
 - `keyPassages[].reference`
+- `searchTerms` (English only for search)
 
-### Using Translation Scripts
+### Update Zod Validation Schema
+
+**CRITICAL:** Update the Zod schema in `src/lib/schemas/concept-graph.ts` to include your new language. Without this, the validation will strip your translations during JSON import.
+
+Add your language to both schema definitions:
+
+```typescript
+// BilingualTextSchema - for text fields
+export const BilingualTextSchema = z.object({
+  en: z.string(),
+  es: z.string(),
+  de: z.string().optional(),  // Add your language
+  fr: z.string().optional(),  // Example: French
+});
+
+// BilingualAliasesSchema - for alias arrays
+export const BilingualAliasesSchema = z.object({
+  en: z.array(z.string()),
+  es: z.array(z.string()),
+  de: z.array(z.string()).optional(),  // Add your language
+  fr: z.array(z.string()).optional(),  // Example: French
+});
+```
+
+**Why this matters:** Zod's default behavior strips unknown fields during validation. If your language isn't in the schema, all translations will be silently removed when the app loads.
+
+### German Declined Forms (Optional)
+
+For languages with grammatical cases that change adjective endings (like German), add declined form aliases:
 
 ```bash
-# Translate concept graph using LLM
-npx tsx scripts/translate-concept-graph.ts --language fr
+# Add German declined forms (dritte → dritten/dritter, etc.)
+npx tsx scripts/fix-german-aliases.ts
 ```
+
+This ensures concept detection works when the AI uses different grammatical cases.
 
 ---
 
 ## Step 7: Add Daily Quotes Translations
 
-Daily quotes also use a **bilingual inline format**.
+Daily quotes use **sentence matching** to extract translations from your Ra Material source files.
 
 ### File Location
 
 `src/data/daily-quotes.ts`
 
-### Bilingual Format
+### Translation Process
+
+Use the generalized translation script:
+
+```bash
+# Add daily quotes translations for your language
+npx tsx scripts/add-language-daily-quotes.ts --lang de
+```
+
+The script supports: `de`, `es`, `fr`, `pt`, `it`, `nl`, `pl`, `ru` (add more in `LANGUAGE_CONFIGS`).
+
+The script:
+1. Reads each quote's reference (e.g., "Ra 1.7")
+2. Loads the full English and translated Q&A from session files
+3. Finds where the English excerpt appears using sentence matching
+4. Extracts the corresponding sentences from your translation
+5. Updates `daily-quotes.ts` with the matched translations
+
+### Why Sentence Matching?
+
+Daily quotes are excerpts from the Ra Material. Using sentence matching:
+- Ensures quotes match the official translations exactly
+- Avoids LLM "drift" where paraphrasing changes meaning
+- Maintains consistency with what users see in source links
+
+### Expected Results
+
+For German, 89/92 quotes matched successfully:
+- 77 high confidence (exact sentence boundary match)
+- 12 medium confidence (position-based match)
+- 3 not found (very short or unusual formatting)
+
+Unmatched quotes can be translated manually or left as English fallback.
+
+### Trilingual Format
 
 ```typescript
 export const dailyQuotes: DailyQuote[] = [
@@ -413,27 +506,13 @@ export const dailyQuotes: DailyQuote[] = [
     text: {
       en: "You are every thing, every being, every emotion...",
       es: "Eres todo, cada ser, cada emoción...",
-      fr: "Tu es chaque chose, chaque être, chaque émotion...",
+      de: "Du bist jedes Ding, jedes Wesen, jede Emotion...",
     },
   },
-  // ... more quotes
 ];
 ```
 
-### Translation Process
-
-1. Open `src/data/daily-quotes.ts`
-2. For each quote in the `dailyQuotes` array, add your language key to the `text` object
-3. Match excerpts to your Ra Material translations in `public/sections/{lang}/`
-
-### Using Translation Scripts
-
-```bash
-# Translate daily quotes by matching to Ra Material
-npx tsx scripts/translate-daily-quotes.ts --language fr
-```
-
-**Note:** The script matches English excerpts to the corresponding Spanish text in the session files, so your Ra Material translations must be complete first.
+**Note:** Your Ra Material translations must be complete before running this script.
 
 ---
 
@@ -478,19 +557,27 @@ npm run test:e2e
 9. **About/Donate pages** - Content displays correctly
 10. **Locale persistence** - Language persists across navigation
 
-### Add E2E Smoke Tests (Optional)
+### Add E2E Smoke Tests
 
-Create `e2e/{lang}-locale.spec.ts` following the pattern in `e2e/spanish-locale.spec.ts`:
+Create `e2e/{lang}-locale.spec.ts` following the pattern in `e2e/german-locale.spec.ts` or `e2e/spanish-locale.spec.ts`:
 
-```typescript
-test.describe("French Locale Smoke Tests", () => {
-  test("should display French UI on homepage", async ({ page }) => {
-    await page.goto("/fr");
-    // Add assertions for French navigation
-  });
-  // ... more tests
-});
+```bash
+# Copy the German test file as a template
+cp e2e/german-locale.spec.ts e2e/{lang}-locale.spec.ts
 ```
+
+Update the test file:
+1. Change mock response text to your language
+2. Update navigation link names (e.g., "Suchen" → your translation of "Seek")
+3. Update content assertions to match your translations
+
+The tests cover:
+- Homepage displays translated UI
+- Chat interface in target language
+- Search with translated labels
+- Study paths page
+- Explore page
+- Locale persistence across navigation
 
 ---
 
@@ -516,10 +603,11 @@ Before submitting a PR, ensure you have:
 
 ### Required Files
 
-- [ ] `public/sections/{lang}/1.json` through `106.json` (106 files)
+- [ ] `public/sections/{lang}/1.json` through `106.json` (105 files - session 47 doesn't exist)
 - [ ] `messages/{lang}/common.json`
 - [ ] `messages/{lang}/about.json`
 - [ ] `messages/{lang}/donate.json`
+- [ ] `e2e/{lang}-locale.spec.ts` - E2E smoke tests
 
 ### Configuration Updates
 
@@ -529,7 +617,8 @@ Before submitting a PR, ensure you have:
   - [ ] `LANGUAGE_NAMES_FOR_PROMPTS`
   - [ ] `SPEAKER_PREFIXES`
   - [ ] `UI_LABELS`
-- [ ] `src/i18n/routing.ts` - Add locale to `locales` array
+- [ ] `src/i18n/routing.ts` - Add locale to `locales` array (automatic if using `AVAILABLE_LANGUAGES`)
+- [ ] `src/components/LanguageSelector.tsx` - Add language code to `LANGUAGE_CODES`
 
 ### Study Paths
 
@@ -538,15 +627,29 @@ Before submitting a PR, ensure you have:
 - [ ] `src/data/study-paths/{lang}/energy-centers.json`
 - [ ] `src/lib/study-paths.ts` - Add imports and update `STUDY_PATHS_BY_LANGUAGE`
 
-### Bilingual Data (add language key to existing files)
+### Trilingual Data (add language key to existing files)
 
 - [ ] `src/data/concept-graph.json` - Add `{lang}` key to all bilingual fields
 - [ ] `src/data/daily-quotes.ts` - Add `{lang}` key to all quote `text` objects
+- [ ] `src/lib/types-graph.ts` - Add `{lang}?: string` to `BilingualText` interface
+
+### Schema Updates (CRITICAL)
+
+- [ ] `src/lib/schemas/concept-graph.ts` - Add `{lang}` to both:
+  - [ ] `BilingualTextSchema` - e.g., `fr: z.string().optional()`
+  - [ ] `BilingualAliasesSchema` - e.g., `fr: z.array(z.string()).optional()`
+
+### Type Updates (for optional languages)
+
+If the language key is optional (like German), update these interfaces:
+- [ ] `src/lib/types-graph.ts` - `BilingualText` interface
+- [ ] `src/data/daily-quotes.ts` - `DailyQuote` interface
 
 ### Verification
 
 - [ ] All tests pass (`npm test`)
 - [ ] Build passes (`npm run build`)
+- [ ] Lint passes (`npm run lint`)
 - [ ] E2E tests pass (`npm run test:e2e`)
 - [ ] Manual testing complete
 
@@ -583,9 +686,17 @@ Before submitting a PR, ensure you have:
 
 ### Concept graph not showing translations
 
+- **Check Zod schema first**: Ensure `src/lib/schemas/concept-graph.ts` includes your language in both `BilingualTextSchema` and `BilingualAliasesSchema`. Zod strips unknown fields during validation.
 - Verify your language key exists in ALL bilingual fields
 - Check that `term`, `aliases`, `definition`, `extendedDefinition` all have your language
 - Verify `keyPassages[].excerpt` and `keyPassages[].context` have translations
+
+### Concept popovers show English content but German UI labels
+
+This symptom indicates Zod validation is stripping your translations:
+- UI labels come from next-intl (working correctly)
+- Content comes from concept-graph.json after Zod validation (being stripped)
+- **Fix**: Add your language to the Zod schemas in `src/lib/schemas/concept-graph.ts`
 
 ### Daily quotes showing English
 
@@ -596,24 +707,70 @@ Before submitting a PR, ensure you have:
 
 ## Available Translation Scripts
 
-The following scripts in `scripts/` can help automate translations:
+### Recommended Scripts
 
-| Script | Purpose |
-|--------|---------|
-| `translate-study-paths.ts` | Translate study path lesson content |
-| `translate-study-path-quotes.ts` | Match study path quotes to Ra Material |
-| `translate-concept-graph.ts` | Translate all concept graph fields |
-| `translate-concept-terms.ts` | Translate concept terms only |
-| `translate-concept-definitions.ts` | Translate concept definitions |
-| `translate-concept-aliases.ts` | Translate concept aliases |
-| `translate-daily-quotes.ts` | Match daily quotes to Ra Material |
+| Script | Purpose | Method |
+|--------|---------|--------|
+| `scrape-llresearch-translations.ts` | Scrape Ra Material from L/L Research | Web scraping |
+| `translate-study-paths.ts` | Translate study path lessons | GPT-5-mini |
+| `translate-study-path-quotes.ts` | Translate study path Ra quotes | Sentence matching |
+| `add-language-concept-graph.ts` | Add translations to concept graph | GPT-5-mini + sentence matching |
+| `add-language-daily-quotes.ts` | Add translations to daily quotes | Sentence matching |
+| `fix-german-aliases.ts` | Add German declined adjective forms | String manipulation |
 
 **Usage:**
 ```bash
-npx tsx scripts/{script-name}.ts --language {lang}
+# Scrape Ra Material
+npx tsx scripts/scrape-llresearch-translations.ts --lang de --all
+
+# Translate study paths (UI content via GPT-5-mini)
+npx tsx scripts/translate-study-paths.ts --language de
+
+# Translate study path quotes (Ra Material excerpts via sentence matching)
+npx tsx scripts/translate-study-path-quotes.ts --lang de
+
+# Add concept graph translations
+npx tsx scripts/add-language-concept-graph.ts --lang de
+
+# Add daily quotes translations
+npx tsx scripts/add-language-daily-quotes.ts --lang de
 ```
 
-**Note:** Most scripts require the Ra Material translations to be complete first, as they match excerpts to the translated session files.
+### Adding Support for a New Language
+
+The generalized scripts have language configs built-in. To add a new language:
+
+1. **For daily quotes** (`add-language-daily-quotes.ts`):
+   - Add entry to `LANGUAGE_CONFIGS` with speaker prefixes and "I am Ra" equivalent
+
+2. **For concept graph** (`add-language-concept-graph.ts`):
+   - Add entry to `LANGUAGE_CONFIGS` with speaker prefixes, "I am Ra", and terminology glossary
+
+Example config:
+```typescript
+fr: {
+  speakerPrefixes: ["Questionneur:"],
+  iAmRa: ["Je suis Ra."],
+  name: "French",
+  glossary: `
+## Ra Material Terminology (English → French)
+- Law of One → Loi de l'Un
+- density → densité
+...
+`,
+}
+```
+
+### Legacy Scripts (Spanish-only)
+
+These older scripts were designed for Spanish and may need adaptation:
+
+| Script | Purpose |
+|--------|---------|
+| `translate-concept-graph.ts` | Original bilingual concept graph script |
+| `translate-daily-quotes.ts` | Original bilingual daily quotes script |
+
+**Note:** Ra Material translations must be complete before running excerpt-matching scripts.
 
 ---
 
@@ -622,4 +779,10 @@ npx tsx scripts/{script-name}.ts --language {lang}
 - [next-intl documentation](https://next-intl-docs.vercel.app/)
 - [L/L Research translations](https://www.llresearch.org/library/the-ra-contact-sessions-in-other-languages)
 - [Multilingual implementation plan](./multilingual-implementation-plan.md)
-- [Spanish locale E2E tests](../e2e/spanish-locale.spec.ts) - Reference implementation
+
+### Reference Implementations
+
+- [German locale E2E tests](../e2e/german-locale.spec.ts) - Latest reference
+- [Spanish locale E2E tests](../e2e/spanish-locale.spec.ts) - Alternative reference
+- [Concept graph translation script](../scripts/add-language-concept-graph.ts) - GPT + sentence matching
+- [Daily quotes translation script](../scripts/add-language-daily-quotes.ts) - Sentence matching
