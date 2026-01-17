@@ -131,8 +131,9 @@ function normalizeForComparison(text: string): string {
 // Remove footnote markers from translated text
 function removeFootnotes(text: string): string {
   return text
-    .replace(/(\w)\s+(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1")
-    .replace(/(\w)(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1")
+    .replace(/^(\d{1,2})\s+/g, "") // Remove footnotes at start of text
+    .replace(/(\w)\s+(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1") // "word 1." -> "word."
+    .replace(/(\w)(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1") // "word1." -> "word."
     .replace(/\s+/g, " ")
     .trim();
 }

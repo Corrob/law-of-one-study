@@ -100,8 +100,8 @@ export const dailyQuotes: DailyQuote[] = [
     reference: "Ra 17.30",
     text: {
       en: "The best way of service to others is the constant attempt to seek to share the love of the Creator as it is known to the inner self.",
-      es: "3 Lo repetiremos brevemente.",
-      de: "1 Wir werden kurz wiederholen.",
+      es: "Lo repetiremos brevemente.",
+      de: "Wir werden kurz wiederholen.",
     },
   },
   {
@@ -395,7 +395,7 @@ export const dailyQuotes: DailyQuote[] = [
     reference: "Ra 15.14",
     text: {
       en: "The material for your understanding is the self: the mind/body/spirit complex.",
-      es: "3 Sin embargo, sólo podemos decir que el material para tu comprensión es el ser: el complejo mente/cuerpo/espíritu.",
+      es: "Sin embargo, sólo podemos decir que el material para tu comprensión es el ser: el complejo mente/cuerpo/espíritu.",
       de: "Euch wurden Informationen über Heilung gegeben, wie ihr diese Verzerrung nennt.",
     },
   },
@@ -666,8 +666,8 @@ export const dailyQuotes: DailyQuote[] = [
     reference: "Ra 79.27",
     text: {
       en: "The result of these experiments has been a more vivid, varied, and intense experience of Creator by Creator.",
-      es: "2 El resultado de estos experimentos ha sido una experiencia más vívida, variada e intensa del Creador por el Creador.",
-      de: "2 Das Ergebnis dieser Experimente ist eine lebendigere, vielfältigere und intensivere Erfahrung des Schöpfers durch den Schöpfer.",
+      es: "El resultado de estos experimentos ha sido una experiencia más vívida, variada e intensa del Creador por el Creador.",
+      de: "Das Ergebnis dieser Experimente ist eine lebendigere, vielfältigere und intensivere Erfahrung des Schöpfers durch den Schöpfer.",
     },
   },
   {

@@ -153,12 +153,11 @@ function normalizeForComparison(text: string): string {
 // Remove footnote markers from text (superscript numbers that appear in translations)
 // These are typically single or double digit numbers that appear inline
 function removeFootnotes(text: string): string {
-  // Remove standalone numbers that look like footnotes (preceded by space or word, followed by space or punctuation)
-  // Pattern: word boundary + space + 1-2 digit number + space/punctuation
   return text
+    .replace(/^(\d{1,2})\s+/g, "") // Remove footnotes at start of text
     .replace(/(\w)\s+(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1") // "word 1." -> "word."
     .replace(/(\w)(\d{1,2})(?=\s|[.,;:!?]|$)/g, "$1") // "word1." -> "word."
-    .replace(/\s+/g, " ") // Clean up extra spaces
+    .replace(/\s+/g, " ")
     .trim();
 }
 
