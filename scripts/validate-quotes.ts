@@ -1,21 +1,59 @@
 /**
  * Validate that all quotes in the concept graph and study paths reference real Ra Material quotes.
+ * Supports all available languages (en, es, de, fr).
  *
  * Run with: npm run validate:quotes
+ *           npm run validate:quotes -- --lang fr
+ *           npm run validate:quotes -- --fix
  */
 
 import * as fs from "fs";
 import * as path from "path";
 
+// Available languages - keep in sync with language-config.ts
+const AVAILABLE_LANGUAGES = ["en", "es", "de", "fr"] as const;
+type AvailableLanguage = (typeof AVAILABLE_LANGUAGES)[number];
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+const langIndex = args.findIndex((arg) => arg === "--lang" || arg === "--language");
+const SPECIFIC_LANG = langIndex !== -1 ? args[langIndex + 1] : null;
+const FIX_MODE = args.includes("--fix");
+
+// Validate specific language if provided
+if (SPECIFIC_LANG && !AVAILABLE_LANGUAGES.includes(SPECIFIC_LANG as AvailableLanguage)) {
+  console.error(`Invalid language: ${SPECIFIC_LANG}`);
+  console.error(`Available languages: ${AVAILABLE_LANGUAGES.join(", ")}`);
+  process.exit(1);
+}
+
+const LANGUAGES_TO_CHECK = SPECIFIC_LANG
+  ? [SPECIFIC_LANG as AvailableLanguage]
+  : [...AVAILABLE_LANGUAGES];
+
+// Paths
+const conceptGraphPath = path.join(__dirname, "../src/data/concept-graph.json");
+const studyPathsDir = path.join(__dirname, "../src/data/study-paths");
+const sectionsDir = path.join(__dirname, "../public/sections");
+
+// Types for multilingual concept graph
+interface BilingualText {
+  en: string;
+  es?: string;
+  de?: string;
+  fr?: string;
+  [key: string]: string | undefined;
+}
+
 interface KeyPassage {
   reference: string;
-  excerpt: string;
-  context: string;
+  excerpt: BilingualText;
+  context: BilingualText;
 }
 
 interface GraphConcept {
   id: string;
-  term: string;
+  term: BilingualText;
   keyPassages: KeyPassage[];
 }
 
@@ -42,32 +80,37 @@ interface StudyPath {
   lessons: StudyPathLesson[];
 }
 
-// Load paths
-const conceptGraphPath = path.join(__dirname, "../src/data/concept-graph.json");
-const studyPathsDir = path.join(__dirname, "../src/data/study-paths");
-const sectionsDir = path.join(__dirname, "../public/sections");
-
+// Load concept graph
 function loadConceptGraph(): ConceptGraph {
   const data = fs.readFileSync(conceptGraphPath, "utf-8");
   return JSON.parse(data);
 }
 
-function loadStudyPaths(): StudyPath[] {
+// Load study paths for a language
+function loadStudyPaths(language: AvailableLanguage): StudyPath[] {
   const paths: StudyPath[] = [];
-  if (!fs.existsSync(studyPathsDir)) {
+  const langDir =
+    language === "en" ? studyPathsDir : path.join(studyPathsDir, language);
+
+  if (!fs.existsSync(langDir)) {
     return paths;
   }
-  const files = fs.readdirSync(studyPathsDir).filter(f => f.endsWith(".json"));
+
+  const files = fs.readdirSync(langDir).filter((f) => f.endsWith(".json"));
   for (const file of files) {
-    const filePath = path.join(studyPathsDir, file);
+    const filePath = path.join(langDir, file);
     const data = fs.readFileSync(filePath, "utf-8");
     paths.push(JSON.parse(data));
   }
   return paths;
 }
 
-function loadSession(sessionNum: number): Record<string, string> | null {
-  const filePath = path.join(sectionsDir, `${sessionNum}.json`);
+// Load session file for a specific language
+function loadSession(
+  language: AvailableLanguage,
+  sessionNum: number
+): Record<string, string> | null {
+  const filePath = path.join(sectionsDir, language, `${sessionNum}.json`);
   if (!fs.existsSync(filePath)) {
     return null;
   }
@@ -75,11 +118,11 @@ function loadSession(sessionNum: number): Record<string, string> | null {
   return JSON.parse(data);
 }
 
-// Load all sessions
-function loadAllSessions(): Map<string, string> {
+// Load all sessions for a language
+function loadAllSessions(language: AvailableLanguage): Map<string, string> {
   const allText = new Map<string, string>();
   for (let i = 1; i <= 106; i++) {
-    const session = loadSession(i);
+    const session = loadSession(language, i);
     if (session) {
       for (const [key, text] of Object.entries(session)) {
         allText.set(key, text);
@@ -90,7 +133,6 @@ function loadAllSessions(): Map<string, string> {
 }
 
 function parseReference(reference: string): { session: number; question: number } | null {
-  // Handle formats like "16.51", "1.0", "82.10"
   const match = reference.match(/^(\d+)\.(\d+)$/);
   if (match) {
     return {
@@ -102,12 +144,11 @@ function parseReference(reference: string): { session: number; question: number 
 }
 
 function normalizeText(text: string): string {
-  // Normalize for comparison: lowercase, remove extra whitespace, punctuation variations
   return text
     .toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/[""]/g, '"')
-    .replace(/['']/g, "'")
+    .replace(/[""„"«»]/g, '"')
+    .replace(/[''‚']/g, "'")
     .replace(/…/g, "...")
     .replace(/—/g, "-")
     .replace(/\[.*?\]/g, "") // Remove bracketed editorial notes
@@ -115,17 +156,13 @@ function normalizeText(text: string): string {
 }
 
 function getExcerptSignature(excerpt: string): string[] {
-  // Get key phrases from the excerpt for matching
   const normalized = normalizeText(excerpt);
-  // Get unique significant words (>4 chars)
-  const words = normalized.split(" ").filter(w => w.length > 4);
+  const words = normalized.split(" ").filter((w) => w.length > 4);
   return words.slice(0, 15);
 }
 
 function excerptExistsInText(excerpt: string, fullText: string): boolean {
   const normalizedFull = normalizeText(fullText);
-
-  // Check for key phrase matches
   const signature = getExcerptSignature(excerpt);
   if (signature.length === 0) return false;
 
@@ -137,8 +174,6 @@ function excerptExistsInText(excerpt: string, fullText: string): boolean {
   }
 
   const matchRatio = matchCount / signature.length;
-
-  // Need at least 80% of signature words to match
   return matchRatio >= 0.8;
 }
 
@@ -169,29 +204,51 @@ function findQuoteInAllSessions(
 }
 
 interface ValidationResult {
+  language: AvailableLanguage;
   source: "concept-graph" | "study-path";
   sourceId: string;
   sourceName: string;
   reference: string;
   excerpt: string;
-  status: "valid" | "invalid_reference" | "quote_not_found" | "wrong_reference" | "session_not_found";
+  status:
+    | "valid"
+    | "invalid_reference"
+    | "quote_not_found"
+    | "wrong_reference"
+    | "session_not_found"
+    | "missing_translation";
   suggestedReference?: string;
   actualText?: string;
 }
 
 function validateQuote(
+  language: AvailableLanguage,
   source: "concept-graph" | "study-path",
   sourceId: string,
   sourceName: string,
   reference: string,
-  excerpt: string,
-  sessionCache: Map<number, Record<string, string> | null>,
+  excerpt: string | undefined,
+  sessionCache: Map<string, Record<string, string> | null>,
   allSessions: Map<string, string>
 ): ValidationResult {
+  // Check if translation exists
+  if (!excerpt) {
+    return {
+      language,
+      source,
+      sourceId,
+      sourceName,
+      reference,
+      excerpt: "(missing)",
+      status: "missing_translation",
+    };
+  }
+
   const parsed = parseReference(reference);
 
   if (!parsed) {
     return {
+      language,
       source,
       sourceId,
       sourceName,
@@ -201,14 +258,16 @@ function validateQuote(
     };
   }
 
-  // Load session (with caching)
-  if (!sessionCache.has(parsed.session)) {
-    sessionCache.set(parsed.session, loadSession(parsed.session));
+  // Load session (with caching by language-session)
+  const cacheKey = `${language}-${parsed.session}`;
+  if (!sessionCache.has(cacheKey)) {
+    sessionCache.set(cacheKey, loadSession(language, parsed.session));
   }
-  const session = sessionCache.get(parsed.session);
+  const session = sessionCache.get(cacheKey);
 
   if (!session) {
     return {
+      language,
       source,
       sourceId,
       sourceName,
@@ -221,9 +280,9 @@ function validateQuote(
   const questionKey = `${parsed.session}.${parsed.question}`;
   const actualText = session[questionKey];
 
-  // Check if quote exists at the stated reference
   if (actualText && excerptExistsInText(excerpt, actualText)) {
     return {
+      language,
       source,
       sourceId,
       sourceName,
@@ -238,6 +297,7 @@ function validateQuote(
 
   if (foundRef && foundRef !== questionKey) {
     return {
+      language,
       source,
       sourceId,
       sourceName,
@@ -249,16 +309,20 @@ function validateQuote(
     };
   } else if (!foundRef) {
     return {
+      language,
       source,
       sourceId,
       sourceName,
       reference,
       excerpt,
       status: "quote_not_found",
-      actualText: actualText ? actualText.substring(0, 150) + "..." : "Reference not found",
+      actualText: actualText
+        ? actualText.substring(0, 150) + "..."
+        : "Reference not found",
     };
   } else {
     return {
+      language,
       source,
       sourceId,
       sourceName,
@@ -271,44 +335,55 @@ function validateQuote(
 
 function validateAllQuotes(): ValidationResult[] {
   const results: ValidationResult[] = [];
-  const sessionCache = new Map<number, Record<string, string> | null>();
-  const allSessions = loadAllSessions();
-
-  // Validate concept graph quotes
+  const sessionCache = new Map<string, Record<string, string> | null>();
   const graph = loadConceptGraph();
-  for (const [conceptId, concept] of Object.entries(graph.concepts)) {
-    for (const passage of concept.keyPassages) {
-      results.push(
-        validateQuote(
-          "concept-graph",
-          conceptId,
-          concept.term,
-          passage.reference,
-          passage.excerpt,
-          sessionCache,
-          allSessions
-        )
-      );
-    }
-  }
 
-  // Validate study path quotes
-  const studyPaths = loadStudyPaths();
-  for (const studyPath of studyPaths) {
-    for (const lesson of studyPath.lessons) {
-      for (const section of lesson.sections) {
-        if (section.type === "quote" && section.reference && section.text) {
-          results.push(
-            validateQuote(
-              "study-path",
-              `${studyPath.id}/${lesson.id}`,
-              `${studyPath.title} > ${lesson.title}`,
-              section.reference,
-              section.text,
-              sessionCache,
-              allSessions
-            )
-          );
+  for (const language of LANGUAGES_TO_CHECK) {
+    console.log(`\nValidating ${language.toUpperCase()}...`);
+
+    const allSessions = loadAllSessions(language);
+    console.log(`  Loaded ${allSessions.size} Q&A pairs from Ra Material`);
+
+    // Validate concept graph quotes for this language
+    for (const [conceptId, concept] of Object.entries(graph.concepts)) {
+      for (const passage of concept.keyPassages) {
+        const excerpt = passage.excerpt[language];
+        const term = concept.term[language] || concept.term.en;
+
+        results.push(
+          validateQuote(
+            language,
+            "concept-graph",
+            conceptId,
+            term,
+            passage.reference,
+            excerpt,
+            sessionCache,
+            allSessions
+          )
+        );
+      }
+    }
+
+    // Validate study path quotes for this language
+    const studyPaths = loadStudyPaths(language);
+    for (const studyPath of studyPaths) {
+      for (const lesson of studyPath.lessons) {
+        for (const section of lesson.sections) {
+          if (section.type === "quote" && section.reference && section.text) {
+            results.push(
+              validateQuote(
+                language,
+                "study-path",
+                `${studyPath.id}/${lesson.id}`,
+                `${studyPath.title} > ${lesson.title}`,
+                section.reference,
+                section.text,
+                sessionCache,
+                allSessions
+              )
+            );
+          }
         }
       }
     }
@@ -318,83 +393,114 @@ function validateAllQuotes(): ValidationResult[] {
 }
 
 // Run validation
-console.log("Validating quotes against Ra Material...\n");
-console.log("Loading all 106 sessions...");
+console.log("=== Multilingual Quote Validation ===");
+console.log(`Languages: ${LANGUAGES_TO_CHECK.join(", ")}`);
+if (FIX_MODE) {
+  console.log("Fix mode: ON (will attempt to fix wrong references)");
+}
 
 const results = validateAllQuotes();
 
-// Separate by source
-const conceptGraphResults = results.filter(r => r.source === "concept-graph");
-const studyPathResults = results.filter(r => r.source === "study-path");
-
-// Calculate stats for concept graph
-const cgValid = conceptGraphResults.filter(r => r.status === "valid");
-const cgWrongRef = conceptGraphResults.filter(r => r.status === "wrong_reference");
-const cgNotFound = conceptGraphResults.filter(r => r.status === "quote_not_found");
-const cgInvalidRef = conceptGraphResults.filter(r => r.status === "invalid_reference");
-
-// Calculate stats for study paths
-const spValid = studyPathResults.filter(r => r.status === "valid");
-const spWrongRef = studyPathResults.filter(r => r.status === "wrong_reference");
-const spNotFound = studyPathResults.filter(r => r.status === "quote_not_found");
-const spInvalidRef = studyPathResults.filter(r => r.status === "invalid_reference");
-
-console.log(`\n=== CONCEPT GRAPH ===`);
-console.log(`Total passages checked: ${conceptGraphResults.length}`);
-console.log(`  Valid: ${cgValid.length}`);
-console.log(`  Wrong reference (fixable): ${cgWrongRef.length}`);
-console.log(`  Not found anywhere (fabricated?): ${cgNotFound.length}`);
-console.log(`  Invalid reference format: ${cgInvalidRef.length}`);
-
-console.log(`\n=== STUDY PATHS ===`);
-console.log(`Total quotes checked: ${studyPathResults.length}`);
-console.log(`  Valid: ${spValid.length}`);
-console.log(`  Wrong reference (fixable): ${spWrongRef.length}`);
-console.log(`  Not found anywhere (fabricated?): ${spNotFound.length}`);
-console.log(`  Invalid reference format: ${spInvalidRef.length}`);
-
-const allWrongRef = [...cgWrongRef, ...spWrongRef];
-const allNotFound = [...cgNotFound, ...spNotFound];
-const allInvalidRef = [...cgInvalidRef, ...spInvalidRef];
-
-if (allWrongRef.length > 0) {
-  console.log("\n=== WRONG REFERENCE (quote exists but at different location) ===\n");
-  for (const result of allWrongRef) {
-    const prefix = result.source === "concept-graph" ? "Concept" : "Study Path";
-    console.log(`${prefix}: ${result.sourceName}`);
-    console.log(`  Stated ref: ${result.reference} -> Should be: ${result.suggestedReference}`);
-    console.log(`  Excerpt: "${result.excerpt.substring(0, 80)}..."`);
-    console.log("");
-  }
+// Group by language and source
+const byLanguage: Record<string, ValidationResult[]> = {};
+for (const r of results) {
+  if (!byLanguage[r.language]) byLanguage[r.language] = [];
+  byLanguage[r.language].push(r);
 }
 
-if (allNotFound.length > 0) {
-  console.log("=== NOT FOUND (possibly fabricated) ===\n");
-  for (const result of allNotFound) {
-    const prefix = result.source === "concept-graph" ? "Concept" : "Study Path";
-    console.log(`${prefix}: ${result.sourceName} (${result.sourceId})`);
-    console.log(`  Stated ref: ${result.reference}`);
-    console.log(`  Excerpt: "${result.excerpt.substring(0, 80)}..."`);
-    if (result.actualText) {
-      console.log(`  Actual at ref: "${result.actualText.substring(0, 80)}..."`);
+// Print results by language
+let totalErrors = 0;
+
+for (const language of LANGUAGES_TO_CHECK) {
+  const langResults = byLanguage[language] || [];
+  const cgResults = langResults.filter((r) => r.source === "concept-graph");
+  const spResults = langResults.filter((r) => r.source === "study-path");
+
+  const cgValid = cgResults.filter((r) => r.status === "valid");
+  const cgWrongRef = cgResults.filter((r) => r.status === "wrong_reference");
+  const cgNotFound = cgResults.filter((r) => r.status === "quote_not_found");
+  const cgMissing = cgResults.filter((r) => r.status === "missing_translation");
+  const cgInvalidRef = cgResults.filter((r) => r.status === "invalid_reference");
+
+  const spValid = spResults.filter((r) => r.status === "valid");
+  const spWrongRef = spResults.filter((r) => r.status === "wrong_reference");
+  const spNotFound = spResults.filter((r) => r.status === "quote_not_found");
+  const spInvalidRef = spResults.filter((r) => r.status === "invalid_reference");
+
+  console.log(`\n${"=".repeat(50)}`);
+  console.log(`LANGUAGE: ${language.toUpperCase()}`);
+  console.log(`${"=".repeat(50)}`);
+
+  console.log(`\nConcept Graph (${cgResults.length} passages):`);
+  console.log(`  ✓ Valid: ${cgValid.length}`);
+  if (cgWrongRef.length > 0) console.log(`  ⚠ Wrong reference: ${cgWrongRef.length}`);
+  if (cgNotFound.length > 0) console.log(`  ✗ Not found: ${cgNotFound.length}`);
+  if (cgMissing.length > 0) console.log(`  ○ Missing translation: ${cgMissing.length}`);
+  if (cgInvalidRef.length > 0) console.log(`  ! Invalid reference: ${cgInvalidRef.length}`);
+
+  console.log(`\nStudy Paths (${spResults.length} quotes):`);
+  console.log(`  ✓ Valid: ${spValid.length}`);
+  if (spWrongRef.length > 0) console.log(`  ⚠ Wrong reference: ${spWrongRef.length}`);
+  if (spNotFound.length > 0) console.log(`  ✗ Not found: ${spNotFound.length}`);
+  if (spInvalidRef.length > 0) console.log(`  ! Invalid reference: ${spInvalidRef.length}`);
+
+  // Track errors (missing translations don't count as errors for non-English)
+  const langErrors =
+    cgNotFound.length +
+    cgInvalidRef.length +
+    spNotFound.length +
+    spInvalidRef.length +
+    (language === "en" ? cgMissing.length : 0);
+  totalErrors += langErrors;
+
+  // Show details for issues
+  const allWrongRef = [...cgWrongRef, ...spWrongRef];
+  const allNotFound = [...cgNotFound, ...spNotFound];
+
+  if (allWrongRef.length > 0) {
+    console.log(`\n  WRONG REFERENCE (quote exists at different location):`);
+    for (const result of allWrongRef.slice(0, 5)) {
+      const prefix = result.source === "concept-graph" ? "CG" : "SP";
+      console.log(`    [${prefix}] ${result.sourceName}`);
+      console.log(`      Stated: ${result.reference} -> Should be: ${result.suggestedReference}`);
     }
-    console.log("");
+    if (allWrongRef.length > 5) {
+      console.log(`    ... and ${allWrongRef.length - 5} more`);
+    }
+  }
+
+  if (allNotFound.length > 0) {
+    console.log(`\n  NOT FOUND (possibly fabricated):`);
+    for (const result of allNotFound.slice(0, 5)) {
+      const prefix = result.source === "concept-graph" ? "CG" : "SP";
+      console.log(`    [${prefix}] ${result.sourceName} @ ${result.reference}`);
+      console.log(`      "${result.excerpt.substring(0, 60)}..."`);
+    }
+    if (allNotFound.length > 5) {
+      console.log(`    ... and ${allNotFound.length - 5} more`);
+    }
   }
 }
 
-if (allInvalidRef.length > 0) {
-  console.log("=== INVALID REFERENCE FORMAT ===\n");
-  for (const result of allInvalidRef) {
-    const prefix = result.source === "concept-graph" ? "Concept" : "Study Path";
-    console.log(`${prefix}: ${result.sourceName} - Reference: ${result.reference}`);
-  }
-}
-
-const hasErrors = allNotFound.length > 0 || allInvalidRef.length > 0;
-console.log(`\n=== SUMMARY ===`);
+// Final summary
+console.log(`\n${"=".repeat(50)}`);
+console.log("SUMMARY");
+console.log(`${"=".repeat(50)}`);
 console.log(`Total quotes validated: ${results.length}`);
-console.log(`  Concept Graph: ${conceptGraphResults.length}`);
-console.log(`  Study Paths: ${studyPathResults.length}`);
-console.log(`Status: ${hasErrors ? "FAILED - Issues found" : "PASSED - All quotes valid"}`);
+console.log(`Languages checked: ${LANGUAGES_TO_CHECK.join(", ")}`);
 
-process.exit(hasErrors ? 1 : 0);
+const allValid = results.filter((r) => r.status === "valid").length;
+const allWrongRef = results.filter((r) => r.status === "wrong_reference").length;
+const allNotFound = results.filter((r) => r.status === "quote_not_found").length;
+const allMissing = results.filter((r) => r.status === "missing_translation").length;
+
+console.log(`\n  Valid: ${allValid}`);
+console.log(`  Wrong reference: ${allWrongRef}`);
+console.log(`  Not found: ${allNotFound}`);
+console.log(`  Missing translation: ${allMissing}`);
+
+console.log(
+  `\nStatus: ${totalErrors === 0 ? "✓ PASSED" : `✗ FAILED (${totalErrors} errors)`}`
+);
+
+process.exit(totalErrors === 0 ? 0 : 1);

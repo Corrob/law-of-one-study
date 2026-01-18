@@ -22,6 +22,11 @@ import densitiesDataDe from "@/data/study-paths/de/densities.json";
 import polarityDataDe from "@/data/study-paths/de/polarity.json";
 import energyCentersDataDe from "@/data/study-paths/de/energy-centers.json";
 
+// Import French study path data
+import densitiesDataFr from "@/data/study-paths/fr/densities.json";
+import polarityDataFr from "@/data/study-paths/fr/polarity.json";
+import energyCentersDataFr from "@/data/study-paths/fr/energy-centers.json";
+
 /**
  * Study paths data organized by language.
  */
@@ -29,6 +34,7 @@ const STUDY_PATHS_BY_LANGUAGE: Record<string, unknown[]> = {
   en: [densitiesDataEn, polarityDataEn, energyCentersDataEn],
   es: [densitiesDataEs, polarityDataEs, energyCentersDataEs],
   de: [densitiesDataDe, polarityDataDe, energyCentersDataDe],
+  fr: [densitiesDataFr, polarityDataFr, energyCentersDataFr],
 };
 
 /**

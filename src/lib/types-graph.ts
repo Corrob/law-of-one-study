@@ -2,40 +2,40 @@
 
 import { type AvailableLanguage } from "./language-config";
 
-// Bilingual text field for internationalization
+// Bilingual text field for internationalization (all languages required)
 export interface BilingualText {
   en: string;
   es: string;
-  de?: string; // Optional - falls back to English
+  de: string;
+  fr: string;
 }
 
-// Bilingual aliases for concept matching in different languages
+// Bilingual aliases for concept matching in different languages (all required)
 export interface BilingualAliases {
   en: string[];
   es: string[];
-  de?: string[]; // Optional - falls back to English
+  de: string[];
+  fr: string[];
 }
 
 /**
  * Get localized text from a BilingualText object.
- * Falls back to English if the requested locale is not available.
  */
 export function getLocalizedText(
   text: BilingualText,
   locale: AvailableLanguage
 ): string {
-  return text[locale] || text.en;
+  return text[locale];
 }
 
 /**
  * Get localized aliases from a BilingualAliases object.
- * Falls back to English if the requested locale is not available.
  */
 export function getLocalizedAliases(
   aliases: BilingualAliases,
   locale: AvailableLanguage
 ): string[] {
-  return aliases[locale] || aliases.en;
+  return aliases[locale];
 }
 
 // Relationship types between concepts

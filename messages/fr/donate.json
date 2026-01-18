@@ -1,0 +1,28 @@
+{
+  "title": "Soutenir ce projet",
+  "subtitle": "Cet outil est gratuit pour tous, open source et financé par la communauté. Votre soutien contribue à maintenir cette situation.",
+  "buyMeACoffee": {
+    "title": "Offrez-moi un café",
+    "description": "Soutenez le projet avec une contribution unique ou récurrente",
+    "linkText": "Visitez buymeacoffee.com/lawofone.study"
+  },
+  "whatYourSupportEnables": {
+    "title": "Ce que votre soutien permet",
+    "hosting": {
+      "title": "Hébergement",
+      "description": "Coûts de serveur, utilisation de l'API IA, hébergement de base de données et infrastructure pour maintenir l'outil en fonctionnement 24h/24."
+    },
+    "development": {
+      "title": "Développement",
+      "description": "Développement continu de nouvelles fonctionnalités, améliorations et corrections de bugs."
+    },
+    "freeAccess": {
+      "title": "Accès gratuit",
+      "description": "Maintenir cet outil gratuit et accessible à tous les chercheurs, sans publicités ni murs payants."
+    }
+  },
+  "footerQuote": {
+    "text": "En vérité, rien n'est correct ou erroné. Il n'y a aucune polarité car tout sera, comme vous diriez, réconcilié à un moment de votre danse par l'intermédiaire du complexe mental/corps/esprit que vous vous amusez à déformer de diverses manières en ce moment. Cette distorsion n'est en aucun cas nécessaire. Elle est choisie par chacun d'entre vous comme une alternative à la compréhension de la complète unité de pensée qui relie toutes choses.",
+    "attribution": "Ra, Session 1.7"
+  }
+}

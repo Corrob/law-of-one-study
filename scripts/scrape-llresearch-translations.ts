@@ -396,10 +396,8 @@ async function main() {
 
   // Determine sessions to scrape
   if (all) {
-    // All sessions except 47 (which doesn't exist)
-    sessions = Array.from({ length: 106 }, (_, i) => i + 1).filter(
-      (n) => n !== 47
-    );
+    // All 106 sessions (1-106)
+    sessions = Array.from({ length: 106 }, (_, i) => i + 1);
   } else if (sessions.length === 0) {
     console.log("Usage:");
     console.log(

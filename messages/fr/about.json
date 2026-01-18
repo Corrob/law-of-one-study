@@ -1,0 +1,133 @@
+{
+  "title": "À propos de cet outil",
+  "subtitle": "Un compagnon alimenté par l'IA pour explorer le Matériel Ra",
+  "features": {
+    "title": "Fonctionnalités",
+    "seek": {
+      "title": "Chercher",
+      "description": "Posez des questions et recevez des réponses alimentées par l'IA avec des citations vérifiées du Matériel Ra. Chaque réponse inclut des citations directes que vous pouvez vérifier."
+    },
+    "explore": {
+      "title": "Explorer",
+      "description": "Naviguez dans un graphe de concepts interactif montrant les relations entre les idées clés du Matériel Ra. Découvrez des connexions et explorez des citations liées."
+    },
+    "study": {
+      "title": "Étudier",
+      "description": "Suivez des parcours d'apprentissage guidés avec des leçons structurées, des invites de réflexion et des quiz. Suivez votre progression à mesure que vous approfondissez votre compréhension."
+    },
+    "search": {
+      "title": "Recherche",
+      "description": "Recherchez dans le Matériel Ra par sens. Trouvez des citations spécifiques avec le mode Phrase, ou explorez des concepts plus larges avec le mode Passage."
+    }
+  },
+  "howItWorks": {
+    "title": "Comment fonctionne la recherche",
+    "subtitle": "Lorsque vous posez une question dans la fonction Chercher, voici ce qui se passe en coulisses :",
+    "step1": {
+      "number": "1",
+      "title": "Posez une question",
+      "description": "Tapez n'importe quelle question sur la Loi Une, les concepts du Matériel Ra ou les sujets spirituels abordés dans les sessions."
+    },
+    "step2": {
+      "number": "2",
+      "title": "L'IA recherche",
+      "description": "Votre question est convertie en représentation mathématique et comparée à environ 1 500 paires Q&R des 106 sessions."
+    },
+    "step3": {
+      "number": "3",
+      "title": "Obtenez une réponse",
+      "description": "Recevez des explications contextuelles avec :",
+      "bullets": {
+        "quotes": "Citations directes de Ra dans des cartes mises en évidence",
+        "explanations": "Explications contextuelles",
+        "concepts": "Concepts clés liés"
+      }
+    },
+    "warning": {
+      "label": "Important :",
+      "text": "Le texte explicatif de l'IA est destiné à vous aider à comprendre, mais il ne doit pas être considéré comme faisant autorité et peut contenir des erreurs. Comme tous les modèles de langage IA, ce chatbot peut parfois « halluciner » ou générer des informations inexactes. Seules les citations directes de Ra (affichées dans les cartes de citation mises en évidence) sont des passages authentiques du Matériel Ra."
+    }
+  },
+  "llResearch": {
+    "title": "À propos de L/L Research",
+    "intro": "Le Matériel Ra, également connu sous le nom de <emphasis>La Loi Une</emphasis>, a été canalisé entre 1981 et 1984 par Carla Rueckert par le complexe mémoriel sociétal Ra. Les sessions ont été facilitées par Don Elkins (questionneur) et Jim McCarty (scribe).",
+    "description": "<strong>L/L Research</strong> est l'organisation à but non lucratif qui a initialement publié le Matériel Ra et continue de préserver ces enseignements. Fondée par Don Elkins, Carla Rueckert et Jim McCarty, L/L Research s'est consacrée à rendre la Loi Une librement accessible aux chercheurs du monde entier.",
+    "links": {
+      "llresearch": {
+        "title": "llresearch.org",
+        "description": "Site officiel de L/L Research"
+      },
+      "lawofoneinfo": {
+        "title": "lawofone.info",
+        "description": "Archives consultables (notre source)"
+      }
+    }
+  },
+  "copyright": {
+    "title": "Droits d'auteur et attribution",
+    "intro": "Le Contact Ra (La Loi Une) est protégé par le droit d'auteur de L/L Research, qui a généreusement rendu le matériel disponible pour un usage personnel et non commercial gratuit.",
+    "guidelinesTitle": "Selon les directives de L/L Research sur les droits d'auteur :",
+    "guidelines": {
+      "quote": "Le matériel peut être cité librement à des fins personnelles, éducatives et non commerciales",
+      "attribution": "L'attribution doit être donnée à L/L Research et à la Loi Une",
+      "commercial": "L'utilisation commerciale nécessite l'autorisation explicite de L/L Research"
+    },
+    "verification": "Toutes les citations affichées dans ce compagnon d'étude renvoient directement à la source sur <link>lawofone.info</link> pour vérification et étude approfondie."
+  },
+  "projectDetails": {
+    "title": "Détails du projet",
+    "intro": "Le Compagnon d'Étude de la Loi Une est un projet indépendant et open source créé pour aider les étudiants du Matériel Ra à explorer et comprendre les enseignements plus facilement.",
+    "features": {
+      "openSource": {
+        "title": "Gratuit et open source",
+        "description": "Code publiquement disponible sur GitHub"
+      },
+      "communityFunded": {
+        "title": "Financé par la communauté",
+        "description": "Construit avec amour pour les chercheurs"
+      },
+      "independent": {
+        "title": "Projet indépendant",
+        "description": "Non affilié à L/L Research"
+      },
+      "improving": {
+        "title": "En amélioration continue",
+        "description": "Commentaires et contributions bienvenus"
+      }
+    },
+    "supportNote": "Si vous trouvez cet outil utile, veuillez envisager de <link>soutenir directement L/L Research</link>."
+  },
+  "technical": {
+    "title": "Détails techniques",
+    "intro": "Pour ceux qui s'intéressent à l'implémentation technique :",
+    "labels": {
+      "aiModel": "Modèle IA :",
+      "vectorSearch": "Recherche vectorielle :",
+      "embeddings": "Embeddings :",
+      "framework": "Framework :"
+    },
+    "values": {
+      "aiModel": "OpenAI GPT-5-mini",
+      "vectorSearch": "Pinecone",
+      "embeddings": "text-embedding-3-small",
+      "framework": "Next.js 16"
+    },
+    "githubLink": "Voir le code source sur GitHub"
+  },
+  "disclaimer": {
+    "title": "Avertissement important",
+    "mainWarning": "Cet outil est loin d'être une étude primaire du Matériel Ra et ne doit être utilisé que pour compléter votre étude ou par curiosité.",
+    "notReplacement": "Il ne remplace pas la lecture directe des sessions originales.",
+    "limitations": "Comme tous les modèles de langage IA, ce chatbot a des limitations et peut potentiellement fournir des informations inexactes ou trompeuses. L'IA peut parfois « halluciner » (générer des informations qui n'existent pas dans le matériel source) ou mal interpréter les enseignements de Ra. Seules les cartes de citation mises en évidence contiennent des passages vérifiés du Matériel Ra—tout autre texte explicatif est une interprétation générée par l'IA qui peut contenir des erreurs.",
+    "verification": "<strong>Vérifiez toujours les informations importantes</strong> en consultant le Matériel Ra original sur <lawofoneLink>lawofone.info</lawofoneLink> ou dans les livres publiés disponibles auprès de <llresearchLink>L/L Research</llresearchLink>. Pour une étude sérieuse de la Loi Une, il n'y a pas de substitut à la lecture du matériel source primaire."
+  },
+  "feedback": {
+    "title": "Commentaires et questions",
+    "intro": "Cet outil évolue continuellement en fonction des commentaires des utilisateurs. Si vous rencontrez des problèmes ou avez des suggestions, nous serions ravis de vous entendre :",
+    "email": "support@lawofone.study"
+  },
+  "footerQuote": {
+    "text": "Vous êtes toute chose, tout être, toute émotion, tout événement, toute situation. Vous êtes l'unité. Vous êtes l'infini. Vous êtes amour/lumière, lumière/amour. Vous êtes. C'est cela la Loi Une.",
+    "attribution": "— Ra, Session 1.7"
+  }
+}

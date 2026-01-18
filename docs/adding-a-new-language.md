@@ -5,7 +5,7 @@ This guide explains how to add a new language to the Law of One Study Tool.
 ## Overview
 
 Adding a language requires:
-1. **Ra Material translations** (105 session files) - Scrape from L/L Research
+1. **Ra Material translations** (106 session files) - Scrape from L/L Research
 2. **Language configuration** (language-config.ts) - Manual updates
 3. **UI translations** (3 message files) - Claude Code translation
 4. **Study paths** (3 JSON files per language) - GPT-5-mini script
@@ -19,13 +19,46 @@ Adding a language requires:
 
 | Content | Method | Tool |
 |---------|--------|------|
-| Ra Material (105 sessions) | Scrape L/L Research | `scripts/scrape-llresearch-translations.ts` |
+| Ra Material (106 sessions) | Scrape L/L Research | `scripts/scrape-llresearch-translations.ts` |
 | UI translations (3 files) | Direct translation | Claude Code |
 | Study paths (3 files) | LLM translation | `scripts/translate-study-paths.ts` + GPT-5-mini |
-| Concept graph terms/definitions | LLM translation | `scripts/add-{lang}-concept-graph.ts` + GPT-5-mini |
+| Concept graph terms/definitions | LLM translation | `scripts/add-language-concept-graph.ts` + GPT-5-mini |
 | Concept graph excerpts | Sentence matching | Script matches to Ra Material source |
-| Daily quotes | Sentence matching | `scripts/add-{lang}-daily-quotes.ts` |
+| Daily quotes | Sentence matching | `scripts/add-language-daily-quotes.ts` |
 | E2E tests | Adapt from existing | Based on `e2e/spanish-locale.spec.ts` |
+
+## Important Policies
+
+### Strict Quote Requirement
+
+**All Ra Material quotes MUST be extracted via sentence matching from the source translations, never translated by LLM.**
+
+This ensures:
+- Quotes match the official L/L Research translations exactly
+- No semantic drift from LLM paraphrasing
+- Links to source material are accurate
+- Terminology consistency with official translations
+
+Scripts that use sentence matching for quotes:
+- `add-language-daily-quotes.ts` - Daily quotes
+- `add-language-concept-graph.ts` - Key passage excerpts
+- `fix-all-missing-excerpts.ts` - Fill in missing excerpt translations
+
+If sentence matching fails for a quote, investigate the source material rather than falling back to LLM translation. Common causes:
+1. The Ra Material translation is missing that passage (gap in L/L Research translation)
+2. The reference is incorrect
+3. The quote has unusual formatting
+
+For genuine gaps in L/L Research translations (rare), you may use GPT to translate the English passage directly, then add it to both the Ra Material source files and the concept graph.
+
+### All Translations Required
+
+All supported languages must have complete translations - **no fallbacks to English**. The schemas enforce this at build time.
+
+When adding a new language:
+1. Complete ALL translations before merging
+2. Run `npm run build` to verify schema validation passes
+3. Use `fix-all-missing-excerpts.ts` to fill any gaps from sentence matching
 
 ---
 
@@ -98,7 +131,7 @@ npx tsx scripts/scrape-llresearch-translations.ts --lang de --all
 npx tsx scripts/scrape-llresearch-translations.ts --lang de --session 1
 ```
 
-**Note:** Session 47 doesn't exist in the Ra Material, so you'll get 105 files.
+**Note:** All 106 sessions should be scraped (1-106).
 
 The script:
 1. Reads the English source files from `public/sections/en/`
@@ -418,40 +451,47 @@ Keep these unchanged:
 
 ### Update Zod Validation Schema
 
-**CRITICAL:** Update the Zod schema in `src/lib/schemas/concept-graph.ts` to include your new language. Without this, the validation will strip your translations during JSON import.
+**CRITICAL:** Update the Zod schema in `src/lib/schemas/concept-graph.ts` to include your new language as **required**. Without this, the build will fail.
 
 Add your language to both schema definitions:
 
 ```typescript
-// BilingualTextSchema - for text fields
+// BilingualTextSchema - for text fields (ALL languages required)
 export const BilingualTextSchema = z.object({
   en: z.string(),
   es: z.string(),
-  de: z.string().optional(),  // Add your language
-  fr: z.string().optional(),  // Example: French
+  de: z.string(),
+  fr: z.string(),
+  {lang}: z.string(),  // Add your language as required
 });
 
-// BilingualAliasesSchema - for alias arrays
+// BilingualAliasesSchema - for alias arrays (ALL languages required)
 export const BilingualAliasesSchema = z.object({
   en: z.array(z.string()),
   es: z.array(z.string()),
-  de: z.array(z.string()).optional(),  // Add your language
-  fr: z.array(z.string()).optional(),  // Example: French
+  de: z.array(z.string()),
+  fr: z.array(z.string()),
+  {lang}: z.array(z.string()),  // Add your language as required
 });
 ```
 
-**Why this matters:** Zod's default behavior strips unknown fields during validation. If your language isn't in the schema, all translations will be silently removed when the app loads.
+**Why required:** All translations must be complete before merging. The build will fail if any language field is missing.
 
-### German Declined Forms (Optional)
+Also update `src/lib/types-graph.ts` to match:
 
-For languages with grammatical cases that change adjective endings (like German), add declined form aliases:
-
-```bash
-# Add German declined forms (dritte → dritten/dritter, etc.)
-npx tsx scripts/fix-german-aliases.ts
+```typescript
+export interface BilingualText {
+  en: string;
+  es: string;
+  de: string;
+  fr: string;
+  {lang}: string;  // Add your language
+}
 ```
 
-This ensures concept detection works when the AI uses different grammatical cases.
+### Grammatical Variations (Optional)
+
+For languages with grammatical cases that change adjective/noun endings (like German), manually add declined form aliases to the concept graph. This ensures concept detection works when the AI uses different grammatical cases (e.g., "dritte Dichte" vs "dritten Dichte" vs "dritter Dichte").
 
 ---
 
@@ -603,7 +643,7 @@ Before submitting a PR, ensure you have:
 
 ### Required Files
 
-- [ ] `public/sections/{lang}/1.json` through `106.json` (105 files - session 47 doesn't exist)
+- [ ] `public/sections/{lang}/1.json` through `106.json` (106 files)
 - [ ] `messages/{lang}/common.json`
 - [ ] `messages/{lang}/about.json`
 - [ ] `messages/{lang}/donate.json`
@@ -627,23 +667,23 @@ Before submitting a PR, ensure you have:
 - [ ] `src/data/study-paths/{lang}/energy-centers.json`
 - [ ] `src/lib/study-paths.ts` - Add imports and update `STUDY_PATHS_BY_LANGUAGE`
 
-### Trilingual Data (add language key to existing files)
+### Multilingual Data (add language key to existing files)
 
-- [ ] `src/data/concept-graph.json` - Add `{lang}` key to all bilingual fields
-- [ ] `src/data/daily-quotes.ts` - Add `{lang}` key to all quote `text` objects
-- [ ] `src/lib/types-graph.ts` - Add `{lang}?: string` to `BilingualText` interface
+- [ ] `src/data/concept-graph.json` - Add `{lang}` key to ALL bilingual fields (required)
+- [ ] `src/data/daily-quotes.ts` - Add `{lang}` key to ALL quote `text` objects (required)
+- [ ] `src/lib/types-graph.ts` - Add `{lang}: string` to `BilingualText` interface (required, not optional)
 
 ### Schema Updates (CRITICAL)
 
-- [ ] `src/lib/schemas/concept-graph.ts` - Add `{lang}` to both:
-  - [ ] `BilingualTextSchema` - e.g., `fr: z.string().optional()`
-  - [ ] `BilingualAliasesSchema` - e.g., `fr: z.array(z.string()).optional()`
+- [ ] `src/lib/schemas/concept-graph.ts` - Add `{lang}` to both (as required):
+  - [ ] `BilingualTextSchema` - e.g., `pt: z.string()`
+  - [ ] `BilingualAliasesSchema` - e.g., `pt: z.array(z.string())`
 
-### Type Updates (for optional languages)
+### Type Updates (ALL languages required)
 
-If the language key is optional (like German), update these interfaces:
-- [ ] `src/lib/types-graph.ts` - `BilingualText` interface
-- [ ] `src/data/daily-quotes.ts` - `DailyQuote` interface
+Update these interfaces to add your language as required (not optional):
+- [ ] `src/lib/types-graph.ts` - `BilingualText` and `BilingualAliases` interfaces
+- [ ] `src/data/daily-quotes.ts` - `DailyQuote` interface `text` field
 
 ### Verification
 
@@ -716,11 +756,12 @@ This symptom indicates Zod validation is stripping your translations:
 | `translate-study-path-quotes.ts` | Translate study path Ra quotes | Sentence matching |
 | `add-language-concept-graph.ts` | Add translations to concept graph | GPT-5-mini + sentence matching |
 | `add-language-daily-quotes.ts` | Add translations to daily quotes | Sentence matching |
-| `fix-german-aliases.ts` | Add German declined adjective forms | String manipulation |
+| `validate-quotes.ts` | Validate quotes match Ra Material source | Comparison |
+| `fix-all-missing-excerpts.ts` | Fill missing excerpt translations | Sentence matching |
 
 **Usage:**
 ```bash
-# Scrape Ra Material
+# Scrape Ra Material (all 106 sessions)
 npx tsx scripts/scrape-llresearch-translations.ts --lang de --all
 
 # Translate study paths (UI content via GPT-5-mini)
@@ -734,6 +775,12 @@ npx tsx scripts/add-language-concept-graph.ts --lang de
 
 # Add daily quotes translations
 npx tsx scripts/add-language-daily-quotes.ts --lang de
+
+# Validate all quotes match source material
+npx tsx scripts/validate-quotes.ts --lang de
+
+# Fix any missing excerpt translations
+npx tsx scripts/fix-all-missing-excerpts.ts
 ```
 
 ### Adding Support for a New Language
