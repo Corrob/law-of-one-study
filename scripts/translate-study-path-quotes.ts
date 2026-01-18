@@ -50,6 +50,26 @@ const LANGUAGE_CONFIGS: Record<string, LanguageConfig> = {
     iAmRa: ["Eu sou Ra."],
     name: "Portuguese",
   },
+  it: {
+    speakerPrefixes: ["Interrogante:"],
+    iAmRa: ["Io sono Ra."],
+    name: "Italian",
+  },
+  nl: {
+    speakerPrefixes: ["Vraagsteller:"],
+    iAmRa: ["Ik ben Ra."],
+    name: "Dutch",
+  },
+  pl: {
+    speakerPrefixes: ["Pytający:"],
+    iAmRa: ["Jestem Ra."],
+    name: "Polish",
+  },
+  ru: {
+    speakerPrefixes: ["Вопрошающий:"],
+    iAmRa: ["Я есть Ра."],
+    name: "Russian",
+  },
 };
 
 const config = LANGUAGE_CONFIGS[TARGET_LANG];

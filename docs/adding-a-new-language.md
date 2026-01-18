@@ -323,7 +323,7 @@ The locale loading should work automatically if you've added message files.
 
 ## Step 5: Add Study Paths
 
-Study paths are guided lessons through the Ra Material. Use the translation script with GPT-5-mini.
+Study paths are guided lessons through the Ra Material. Translation requires **two steps** to ensure Ra Material quotes use sentence matching (not LLM translation).
 
 ### File Structure
 
@@ -338,21 +338,35 @@ src/data/study-paths/
     └── energy-centers.json
 ```
 
-### Translation Process
+### Translation Process (Two Steps)
 
-Use the translation script which calls GPT-5-mini:
+Study path translation requires two scripts run in sequence:
 
+**Step 1: Translate UI content (GPT)**
 ```bash
-# Translate study paths using GPT-5-mini
 npx tsx scripts/translate-study-paths.ts --language de
 ```
 
-The script:
+This script:
 1. Reads English study path files
-2. Sends content to GPT-5-mini with a Ra Material terminology glossary
-3. Writes translated files to `src/data/study-paths/{lang}/`
+2. Translates lesson titles, descriptions, quiz questions, reflections via GPT-5-mini
+3. **Keeps Ra Material quotes in English** (to be replaced in step 2)
+4. Writes files to `src/data/study-paths/{lang}/`
 
-**Note:** The script includes terminology glossaries for Spanish and German. For other languages, add a glossary to the script first.
+**Step 2: Translate quotes (sentence matching)**
+```bash
+npx tsx scripts/translate-study-path-quotes.ts --lang de
+```
+
+This script:
+1. Reads the translated study path files
+2. Finds each Ra Material quote by reference (e.g., "16.51")
+3. Uses sentence matching to extract the equivalent text from the target language Ra Material
+4. Replaces the English quotes with matched translations
+
+**Why two steps?** Ra Material quotes must come from the official L/L Research translations via sentence matching, not from LLM paraphrasing. This ensures quote accuracy and consistency.
+
+**Note:** Both scripts include terminology glossaries for es, de, fr. For other languages, add glossaries to the scripts first.
 
 ### Update Study Paths Loader
 
@@ -783,39 +797,42 @@ npx tsx scripts/validate-quotes.ts --lang de
 npx tsx scripts/fix-all-missing-excerpts.ts
 ```
 
+### Pre-configured Languages
+
+All scripts have language configs for: **de, es, fr, pt, it, nl, pl, ru**
+
+| Script | Pre-configured Languages |
+|--------|--------------------------|
+| `add-language-daily-quotes.ts` | de, es, fr, pt, it, nl, pl, ru |
+| `add-language-concept-graph.ts` | de, es, fr, pt, it, nl, pl, ru (with glossaries) |
+| `translate-study-path-quotes.ts` | de, es, fr, pt, it, nl, pl, ru |
+| `translate-study-paths.ts` | de, es, fr (glossaries only) |
+
 ### Adding Support for a New Language
 
-The generalized scripts have language configs built-in. To add a new language:
+To add a language not in the pre-configured list:
 
-1. **For daily quotes** (`add-language-daily-quotes.ts`):
-   - Add entry to `LANGUAGE_CONFIGS` with speaker prefixes and "I am Ra" equivalent
+1. **For all scripts**, add entry to `LANGUAGE_CONFIGS` with:
+   - `speakerPrefixes`: The questioner label (e.g., "Fragesteller:")
+   - `iAmRa`: Ra's greeting in that language (e.g., "Ich bin Ra.")
+   - `name`: Language name in English
 
-2. **For concept graph** (`add-language-concept-graph.ts`):
-   - Add entry to `LANGUAGE_CONFIGS` with speaker prefixes, "I am Ra", and terminology glossary
+2. **For concept graph and study paths scripts**, also add a terminology glossary
 
 Example config:
 ```typescript
-fr: {
-  speakerPrefixes: ["Questionneur:"],
-  iAmRa: ["Je suis Ra."],
-  name: "French",
+ja: {
+  speakerPrefixes: ["質問者:"],
+  iAmRa: ["私はラーです。"],
+  name: "Japanese",
   glossary: `
-## Ra Material Terminology (English → French)
-- Law of One → Loi de l'Un
-- density → densité
+## Ra Material Terminology (English → Japanese)
+- Law of One → 一なるものの法則
+- density → 密度
 ...
 `,
 }
 ```
-
-### Legacy Scripts (Spanish-only)
-
-These older scripts were designed for Spanish and may need adaptation:
-
-| Script | Purpose |
-|--------|---------|
-| `translate-concept-graph.ts` | Original bilingual concept graph script |
-| `translate-daily-quotes.ts` | Original bilingual daily quotes script |
 
 **Note:** Ra Material translations must be complete before running excerpt-matching scripts.
 

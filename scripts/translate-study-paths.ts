@@ -126,6 +126,47 @@ const TERMINOLOGY_GLOSSARIES: Record<string, string> = {
 - Ra → Ra
 - Confederation → Konföderation
 `,
+  fr: `
+## Ra Material Terminology (English → French)
+- density → densité
+- harvest → moisson
+- catalyst → catalyseur
+- distortion → distorsion
+- polarity → polarité
+- service to others → service d'autrui
+- service to self → service de soi
+- mind/body/spirit complex → complexe mental/corps/esprit
+- social memory complex → complexe mémoriel sociétal
+- wanderer → errant
+- higher self → soi supérieur
+- intelligent infinity → infini intelligent
+- intelligent energy → énergie intelligente
+- love/light → amour/lumière
+- light/love → lumière/amour
+- Logos → Logos
+- sub-Logos → sous-Logos
+- chakra → chakra
+- energy center → centre énergétique
+- red ray → rayon rouge
+- orange ray → rayon orange
+- yellow ray → rayon jaune
+- green ray → rayon vert
+- blue ray → rayon bleu
+- indigo ray → rayon indigo
+- violet ray → rayon violet
+- archetypical mind → mental archétypal
+- veil of forgetting → voile de l'oubli
+- incarnation → incarnation
+- third density → troisième densité
+- fourth density → quatrième densité
+- fifth density → cinquième densité
+- sixth density → sixième densité
+- the One Infinite Creator → l'Un Créateur Infini
+- free will → libre arbitre
+- Law of One → Loi de l'Un
+- Ra → Ra
+- Confederation → Confédération
+`,
 };
 
 const TERMINOLOGY_GLOSSARY = TERMINOLOGY_GLOSSARIES[TARGET_LANG] || "";

@@ -153,6 +153,181 @@ const LANGUAGE_CONFIGS: Record<string, LanguageConfig> = {
 - Confederation → Confédération
 `,
   },
+  pt: {
+    speakerPrefixes: ["Questionador:"],
+    iAmRa: ["Eu sou Ra."],
+    name: "Portuguese",
+    glossary: `
+## Ra Material Terminology (English → Portuguese)
+- Law of One → Lei do Um
+- density → densidade
+- harvest → colheita
+- catalyst → catalisador
+- distortion → distorção
+- polarity → polaridade
+- service to others → serviço aos outros
+- service to self → serviço a si mesmo
+- mind/body/spirit complex → complexo mente/corpo/espírito
+- social memory complex → complexo de memória social
+- wanderer → andarilho
+- higher self → eu superior
+- intelligent infinity → infinidade inteligente
+- intelligent energy → energia inteligente
+- love/light → amor/luz
+- light/love → luz/amor
+- Logos → Logos
+- sub-Logos → sub-Logos
+- chakra → chakra
+- energy center → centro de energia
+- archetypical mind → mente arquetípica
+- veil of forgetting → véu do esquecimento
+- incarnation → encarnação
+- the One Infinite Creator → o Único Criador Infinito
+- free will → livre arbítrio
+- Ra → Ra
+- Confederation → Confederação
+`,
+  },
+  it: {
+    speakerPrefixes: ["Interrogante:"],
+    iAmRa: ["Io sono Ra."],
+    name: "Italian",
+    glossary: `
+## Ra Material Terminology (English → Italian)
+- Law of One → Legge dell'Uno
+- density → densità
+- harvest → raccolto
+- catalyst → catalizzatore
+- distortion → distorsione
+- polarity → polarità
+- service to others → servizio agli altri
+- service to self → servizio al sé
+- mind/body/spirit complex → complesso mente/corpo/spirito
+- social memory complex → complesso di memoria sociale
+- wanderer → viandante
+- higher self → sé superiore
+- intelligent infinity → infinito intelligente
+- intelligent energy → energia intelligente
+- love/light → amore/luce
+- light/love → luce/amore
+- Logos → Logos
+- sub-Logos → sub-Logos
+- chakra → chakra
+- energy center → centro energetico
+- archetypical mind → mente archetipica
+- veil of forgetting → velo dell'oblio
+- incarnation → incarnazione
+- the One Infinite Creator → l'Unico Creatore Infinito
+- free will → libero arbitrio
+- Ra → Ra
+- Confederation → Confederazione
+`,
+  },
+  nl: {
+    speakerPrefixes: ["Vraagsteller:"],
+    iAmRa: ["Ik ben Ra."],
+    name: "Dutch",
+    glossary: `
+## Ra Material Terminology (English → Dutch)
+- Law of One → Wet van Eén
+- density → dichtheid
+- harvest → oogst
+- catalyst → katalysator
+- distortion → vervorming
+- polarity → polariteit
+- service to others → dienst aan anderen
+- service to self → dienst aan het zelf
+- mind/body/spirit complex → geest/lichaam/ziel complex
+- social memory complex → sociaal geheugencomplex
+- wanderer → zwerver
+- higher self → hogere zelf
+- intelligent infinity → intelligente oneindigheid
+- intelligent energy → intelligente energie
+- love/light → liefde/licht
+- light/love → licht/liefde
+- Logos → Logos
+- sub-Logos → sub-Logos
+- chakra → chakra
+- energy center → energiecentrum
+- archetypical mind → archetypische geest
+- veil of forgetting → sluier van vergeten
+- incarnation → incarnatie
+- the One Infinite Creator → de Ene Oneindige Schepper
+- free will → vrije wil
+- Ra → Ra
+- Confederation → Confederatie
+`,
+  },
+  pl: {
+    speakerPrefixes: ["Pytający:"],
+    iAmRa: ["Jestem Ra."],
+    name: "Polish",
+    glossary: `
+## Ra Material Terminology (English → Polish)
+- Law of One → Prawo Jedności
+- density → gęstość
+- harvest → żniwa
+- catalyst → katalizator
+- distortion → zniekształcenie
+- polarity → polaryzacja
+- service to others → służba innym
+- service to self → służba sobie
+- mind/body/spirit complex → kompleks umysł/ciało/duch
+- social memory complex → kompleks pamięci społecznej
+- wanderer → wędrowiec
+- higher self → wyższe ja
+- intelligent infinity → inteligentna nieskończoność
+- intelligent energy → inteligentna energia
+- love/light → miłość/światło
+- light/love → światło/miłość
+- Logos → Logos
+- sub-Logos → sub-Logos
+- chakra → czakra
+- energy center → centrum energetyczne
+- archetypical mind → umysł archetypowy
+- veil of forgetting → zasłona zapomnienia
+- incarnation → inkarnacja
+- the One Infinite Creator → Jeden Nieskończony Stwórca
+- free will → wolna wola
+- Ra → Ra
+- Confederation → Konfederacja
+`,
+  },
+  ru: {
+    speakerPrefixes: ["Вопрошающий:"],
+    iAmRa: ["Я есть Ра."],
+    name: "Russian",
+    glossary: `
+## Ra Material Terminology (English → Russian)
+- Law of One → Закон Одного
+- density → плотность
+- harvest → жатва
+- catalyst → катализатор
+- distortion → искажение
+- polarity → полярность
+- service to others → служение другим
+- service to self → служение себе
+- mind/body/spirit complex → комплекс разум/тело/дух
+- social memory complex → комплекс социальной памяти
+- wanderer → странник
+- higher self → высшее я
+- intelligent infinity → разумная бесконечность
+- intelligent energy → разумная энергия
+- love/light → любовь/свет
+- light/love → свет/любовь
+- Logos → Логос
+- sub-Logos → суб-Логос
+- chakra → чакра
+- energy center → энергетический центр
+- archetypical mind → архетипический разум
+- veil of forgetting → завеса забвения
+- incarnation → воплощение
+- the One Infinite Creator → Единый Бесконечный Творец
+- free will → свободная воля
+- Ra → Ра
+- Confederation → Конфедерация
+`,
+  },
 };
 
 if (!TARGET_LANG) {
