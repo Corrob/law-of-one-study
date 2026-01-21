@@ -37,7 +37,14 @@ const SOURCE_DIR = path.join(__dirname, "../src/data/study-paths");
 const TARGET_DIR = path.join(SOURCE_DIR, TARGET_LANG);
 
 // Study path files to translate
-const STUDY_PATH_FILES = ["densities.json", "energy-centers.json", "polarity.json"];
+const STUDY_PATH_FILES = [
+  "densities.json",
+  "energy-centers.json",
+  "polarity.json",
+  "catalyst.json",
+  "veil.json",
+  "time-space.json",
+];
 
 // Initialize OpenAI
 const openai = new OpenAI();

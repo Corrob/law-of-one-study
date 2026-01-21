@@ -11,30 +11,42 @@ import { DEFAULT_LOCALE } from "@/lib/language-config";
 import densitiesDataEn from "@/data/study-paths/densities.json";
 import polarityDataEn from "@/data/study-paths/polarity.json";
 import energyCentersDataEn from "@/data/study-paths/energy-centers.json";
+import catalystDataEn from "@/data/study-paths/catalyst.json";
+import veilDataEn from "@/data/study-paths/veil.json";
+import timeSpaceDataEn from "@/data/study-paths/time-space.json";
 
 // Import Spanish study path data
 import densitiesDataEs from "@/data/study-paths/es/densities.json";
 import polarityDataEs from "@/data/study-paths/es/polarity.json";
 import energyCentersDataEs from "@/data/study-paths/es/energy-centers.json";
+import catalystDataEs from "@/data/study-paths/es/catalyst.json";
+import veilDataEs from "@/data/study-paths/es/veil.json";
+import timeSpaceDataEs from "@/data/study-paths/es/time-space.json";
 
 // Import German study path data
 import densitiesDataDe from "@/data/study-paths/de/densities.json";
 import polarityDataDe from "@/data/study-paths/de/polarity.json";
 import energyCentersDataDe from "@/data/study-paths/de/energy-centers.json";
+import catalystDataDe from "@/data/study-paths/de/catalyst.json";
+import veilDataDe from "@/data/study-paths/de/veil.json";
+import timeSpaceDataDe from "@/data/study-paths/de/time-space.json";
 
 // Import French study path data
 import densitiesDataFr from "@/data/study-paths/fr/densities.json";
 import polarityDataFr from "@/data/study-paths/fr/polarity.json";
 import energyCentersDataFr from "@/data/study-paths/fr/energy-centers.json";
+import catalystDataFr from "@/data/study-paths/fr/catalyst.json";
+import veilDataFr from "@/data/study-paths/fr/veil.json";
+import timeSpaceDataFr from "@/data/study-paths/fr/time-space.json";
 
 /**
  * Study paths data organized by language.
  */
 const STUDY_PATHS_BY_LANGUAGE: Record<string, unknown[]> = {
-  en: [densitiesDataEn, polarityDataEn, energyCentersDataEn],
-  es: [densitiesDataEs, polarityDataEs, energyCentersDataEs],
-  de: [densitiesDataDe, polarityDataDe, energyCentersDataDe],
-  fr: [densitiesDataFr, polarityDataFr, energyCentersDataFr],
+  en: [densitiesDataEn, polarityDataEn, energyCentersDataEn, catalystDataEn, veilDataEn, timeSpaceDataEn],
+  es: [densitiesDataEs, polarityDataEs, energyCentersDataEs, catalystDataEs, veilDataEs, timeSpaceDataEs],
+  de: [densitiesDataDe, polarityDataDe, energyCentersDataDe, catalystDataDe, veilDataDe, timeSpaceDataDe],
+  fr: [densitiesDataFr, polarityDataFr, energyCentersDataFr, catalystDataFr, veilDataFr, timeSpaceDataFr],
 };
 
 /**
