@@ -1,0 +1,88 @@
+{
+  "id": "pairs",
+  "title": "Study Method: Pairs",
+  "estimatedMinutes": 8,
+  "sections": [
+    {
+      "type": "content",
+      "markdown": "Ra's **second stage** of teaching involves studying archetypes in **pairs** within each cycle. This reveals how complementary archetypes work together through polarity."
+    },
+    {
+      "type": "quote",
+      "reference": "77.12",
+      "text": "The philosophy was to create a foundation, first of mind, then of body, and then of spiritual complex. Those concept complexes you call the tarot lie then in three groups of seven: the mind cycle, one through seven; the physical complex cycle, eight through fourteen; the spiritual complex cycle, fifteen through twenty-one. The last concept complex may best be termed The Choice.",
+      "context": "Ra describes the overall structure of the 22 archetypes.",
+      "highlight": [
+        "three groups of seven",
+        "mind cycle, one through seven",
+        "The last concept complex may best be termed The Choice"
+      ]
+    },
+    {
+      "type": "quote",
+      "reference": "88.24",
+      "text": "In the second stage we suggested consideration of archetypes in pairs: one and two; three and four; five; six and seven. You may continue in this form for the archetypes of body and spirit. You will note that the consideration of the Significator was left unpaired, for the Significator shall be paired with Archetype Twenty-Two.",
+      "context": "Ra describes the pairing structure for studying archetypes.",
+      "highlight": [
+        "consideration of archetypes in pairs",
+        "Significator shall be paired with Archetype Twenty-Two"
+      ]
+    },
+    {
+      "type": "content",
+      "markdown": "## The Pairing Structure\n\n| Pair | Mind | Body | Spirit | Relationship |\n|------|------|------|--------|-------------|\n| **Matrix & Potentiator** | 1 & 2 | 8 & 9 | 15 & 16 | Conscious & Unconscious |\n| **Catalyst & Experience** | 3 & 4 | 10 & 11 | 17 & 18 | Input & Integration |\n| **Transformation & Great Way** | 6 & 7 | 13 & 14 | 20 & 21 | Change & Environment |\n| **Significator & The Choice** | 5 & 22 | 12 & 22 | 19 & 22 | Self & Decision |\n\nNotice that within each cycle, the Significator (5, 12, 19) stands alone - it has no pair within its own cycle. Instead, all three Significators pair with Archetype 22: **The Choice**."
+    },
+    {
+      "type": "content",
+      "markdown": "### The Four Pair Relationships\n\n**Matrix & Potentiator: Conscious & Unconscious**\nThe fundamental polarity of reaching and awaiting. The Matrix (conscious self) reaches toward the Potentiator (unconscious resources). Ra describes this as male principle reaching toward female principle.\n\n**Catalyst & Experience: Input & Integration**\nCatalyst is what comes to us; Experience is the processed result. Ra says Experience *represents the catalyst that has been processed... because it produces further seed for growth.*\n\n**Transformation & Great Way: Change & Environment**\nTransformation is the crucial change point; the Great Way is the milieu or environment within which that change occurs.\n\n**Significator & The Choice: Self & Decision**\nThe most important pairing. The Significator represents the self; The Choice represents the fundamental decision that self exists to make."
+    },
+    {
+      "type": "content",
+      "markdown": "## The Significator's Special Pairing\n\nThe Significator stands alone within its cycle because its true pair is The Choice (Archetype 22). This reveals a profound truth about the purpose of incarnation:\n\n- **The Significator IS the self** - the mind/body/spirit complex in its fullness\n- **The Choice IS what that self exists to make** - the fundamental polarity decision\n- **All three Significators pair with the same Choice** - because the whole being must choose\n\nThe Significator of Mind (5), Body (12), and Spirit (19) all pair with The Choice (22). This is the only archetype that pairs with multiple others - because the choice of polarity involves the entire self: how we think, how we act, and how we relate to spirit."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Why is the Significator left unpaired within its cycle?",
+      "options": [
+        {
+          "id": "a",
+          "text": "Because there are only seven archetypes per cycle",
+          "isCorrect": false,
+          "explanation": "The issue isn't numbers. Ra specifically states the Significator \"shall be paired with Archetype Twenty-Two\" - The Choice.",
+          "relatedPassage": "88.24"
+        },
+        {
+          "id": "b",
+          "text": "Because it pairs with The Choice (Archetype 22)",
+          "isCorrect": true,
+          "explanation": "Ra states \"the Significator shall be paired with Archetype Twenty-Two.\" The Significator (the self) pairs with The Choice (the fundamental decision), not with another archetype in its cycle.",
+          "relatedPassage": "88.24"
+        },
+        {
+          "id": "c",
+          "text": "Because it is less important than other archetypes",
+          "isCorrect": false,
+          "explanation": "The Significator is highly important - it represents the complex self. Its special pairing with The Choice highlights its central role.",
+          "relatedPassage": "88.24"
+        },
+        {
+          "id": "d",
+          "text": "Because Ra didn't have time to explain it",
+          "isCorrect": false,
+          "explanation": "Ra explicitly explains this pairing structure. The Significator's pairing with The Choice is intentional and meaningful.",
+          "relatedPassage": "88.24"
+        }
+      ]
+    },
+    {
+      "type": "reflection",
+      "prompt": "Consider the Significator-Choice pairing: the self exists to make a fundamental decision. How does your mind (thoughts), body (actions), and spirit (orientation) each participate in making The Choice?",
+      "guidingThoughts": [
+        "The Significator represents you - the complex self",
+        "The Choice is the fundamental polarity decision",
+        "All three aspects of self must participate in choosing",
+        "This is the central purpose of incarnate experience"
+      ]
+    }
+  ]
+}

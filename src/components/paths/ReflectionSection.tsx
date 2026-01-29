@@ -6,6 +6,7 @@ import type {
   ReflectionSection as ReflectionSectionType,
   SavedReflection,
 } from "@/lib/schemas/study-paths";
+import { parseInlineReferences } from "@/components/InlineReference";
 
 interface ReflectionSectionProps {
   section: ReflectionSectionType;
@@ -157,7 +158,7 @@ const ReflectionSection = memo(function ReflectionSection({
 
       {/* Prompt */}
       <p className="text-[var(--lo1-text-light)] mb-4 leading-relaxed">
-        {section.prompt}
+        {parseInlineReferences(section.prompt)}
       </p>
 
       {/* Guiding thoughts */}
@@ -166,7 +167,7 @@ const ReflectionSection = memo(function ReflectionSection({
           {section.guidingThoughts.map((thought, index) => (
             <li key={index} className="flex items-start gap-2">
               <span className="text-[var(--lo1-celestial)]">•</span>
-              {thought}
+              <span>{parseInlineReferences(thought)}</span>
             </li>
           ))}
         </ul>

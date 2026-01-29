@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import type { MultipleChoiceSection } from "@/lib/schemas/study-paths";
 import { getRaMaterialUrlFromReference } from "@/lib/quote-utils";
 import type { AvailableLanguage } from "@/lib/language-config";
+import { parseInlineReferences } from "@/components/InlineReference";
 
 type Option = MultipleChoiceSection["options"][number];
 
@@ -79,7 +80,7 @@ const QuizFeedback = memo(function QuizFeedback({
       </p>
 
       <p className="text-sm text-[var(--lo1-text-light)] leading-relaxed">
-        {explanationOption.explanation}
+        {parseInlineReferences(explanationOption.explanation)}
       </p>
 
       {showCorrectAnswer && (
@@ -153,7 +154,7 @@ const QuizFeedback = memo(function QuizFeedback({
                     &ldquo;{option.text}&rdquo;
                   </p>
                   <p className="text-[var(--lo1-text-light)]/60">
-                    {option.explanation}
+                    {parseInlineReferences(option.explanation)}
                   </p>
                 </div>
               ))}

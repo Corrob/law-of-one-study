@@ -1,13 +1,47 @@
 "use client";
 
-import { memo, useState, useCallback, useEffect } from "react";
+import { memo, useState, useCallback, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import type {
   MultipleChoiceSection as MultipleChoiceSectionType,
   QuizResponse,
+  MCOption,
 } from "@/lib/schemas/study-paths";
 import QuizOption from "./QuizOption";
 import QuizFeedback from "./QuizFeedback";
+
+/**
+ * Shuffles an array using Fisher-Yates algorithm with a seeded random.
+ * Uses question text as seed to ensure consistent shuffle per question
+ * but different from original order.
+ */
+function shuffleOptions(
+  options: MCOption[],
+  seed: string
+): MCOption[] {
+  // Create a simple hash from the seed string
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    const char = seed.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+
+  // Seeded random function
+  const seededRandom = () => {
+    hash = (hash * 1103515245 + 12345) & 0x7fffffff;
+    return hash / 0x7fffffff;
+  };
+
+  // Fisher-Yates shuffle with seeded random
+  const shuffled = [...options];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(seededRandom() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled;
+}
 
 interface MultipleChoiceSectionProps {
   section: MultipleChoiceSectionType;
@@ -40,6 +74,12 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
   const t = useTranslations("studyPaths.quiz");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [answerState, setAnswerState] = useState<AnswerState>({ type: "unanswered", previousAttempts: 0 });
+
+  // Shuffle options once per question to avoid answer always being in same position
+  const shuffledOptions = useMemo(
+    () => shuffleOptions(section.options, section.question),
+    [section.options, section.question]
+  );
 
   // Initialize from saved response if available
   // Note: We recalculate isCorrect from current option data rather than trusting
@@ -134,9 +174,9 @@ const MultipleChoiceSection = memo(function MultipleChoiceSection({
         </h4>
       </div>
 
-      {/* Options */}
+      {/* Options (shuffled to randomize answer position) */}
       <div className="space-y-2" role="radiogroup" aria-label={section.question}>
-        {section.options.map((option) => {
+        {shuffledOptions.map((option) => {
           const isSelected = selectedId === option.id;
           const showAsCorrect = isAnswered && option.isCorrect && showCorrectAnswer;
           const showAsWrong = isAnswered && isSelected && !option.isCorrect;

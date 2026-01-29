@@ -297,3 +297,11 @@ Before committing, the pre-commit hook verifies:
 4. `npm run test:e2e` - Playwright E2E tests pass
 
 If any step fails, fix the issues before committing.
+
+---
+
+## Git Commit Rules
+
+- **NEVER use `--no-verify` on main branch** - All commits to main must pass the pre-commit hooks
+- **Feature branches**: `--no-verify` is acceptable for work-in-progress commits, but ensure all issues are resolved before merging to main
+- **Before merging to main**: Run the full pre-commit checklist manually to catch any issues

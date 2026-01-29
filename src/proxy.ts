@@ -111,7 +111,8 @@ export const config = {
      * - favicon.ico, icon.svg (favicon files)
      * - ingest (PostHog proxy)
      * - sections (static JSON files for Ra Material quotes)
+     * - images (static images like tarot cards)
      */
-    "/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|ingest|sections).*)",
+    "/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|ingest|sections|images).*)",
   ],
 };

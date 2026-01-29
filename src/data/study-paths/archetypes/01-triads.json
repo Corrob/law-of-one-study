@@ -1,0 +1,81 @@
+{
+  "id": "triads",
+  "title": "Study Method: Triads",
+  "estimatedMinutes": 10,
+  "sections": [
+    {
+      "type": "content",
+      "markdown": "The 22 archetypes are organized into three cycles of seven, plus one archetype that stands alone:\n\n- **Mind Cycle** (Archetypes 1-7)\n- **Body Cycle** (Archetypes 8-14)\n- **Spirit Cycle** (Archetypes 15-21)\n- **The Choice** (Archetype 22)\n\nEach cycle contains the same seven stages: Matrix, Potentiator, Catalyst, Experience, Significator, Transformation, and Great Way.\n\nRa's **first stage** of teaching involves studying archetypes in **triads** - viewing the same function across all three cycles to discover how mind, body, and spirit relate."
+    },
+    {
+      "type": "quote",
+      "reference": "88.24",
+      "text": "Our first stage was the presentation of the images, one after the other, in the following order: one, eight, fifteen; two, nine, sixteen; three, ten, seventeen; four, eleven, eighteen; five, twelve, nineteen; six, thirteen, twenty; seven, fourteen, twenty-one; twenty-two. In this way the fundamental relationships between mind, body, and spirit could begin to be discovered.",
+      "context": "Ra describes their recommended order for studying the archetypes.",
+      "highlight": [
+        "one, eight, fifteen; two, nine, sixteen",
+        "fundamental relationships between mind, body, and spirit"
+      ]
+    },
+    {
+      "type": "content",
+      "markdown": "**The Seven Triads:**\n\n| Stage | Mind | Body | Spirit |\n|-------|------|------|--------|\n| Matrix | 1 - Magician | 8 - Strength | 15 - Devil |\n| Potentiator | 2 - High Priestess | 9 - Hermit | 16 - Tower |\n| Catalyst | 3 - Empress | 10 - Wheel | 17 - Star |\n| Experience | 4 - Emperor | 11 - Enchantress | 18 - Moon |\n| Significator | 5 - Hierophant | 12 - Hanged Man | 19 - Sun |\n| Transformation | 6 - Lovers | 13 - Death | 20 - Judgement |\n| Great Way | 7 - Chariot | 14 - Temperance | 21 - World |\n\nBy studying triads, you discover how the same principle manifests differently in mind, body, and spirit."
+    },
+    {
+      "type": "quote",
+      "reference": "77.13",
+      "text": "Furthermore, there are relationships betwixt mind, body, and spirit of the same location in octave, for instance: one, eight, fifteen, and relationships within each octave which are helpful in the pursuit of The Choice by the mind/body/spirit complex.",
+      "context": "Ra confirms the importance of studying relationships across cycles.",
+      "highlight": [
+        "relationships betwixt mind, body, and spirit of the same location"
+      ]
+    },
+    {
+      "type": "content",
+      "markdown": "**Example Triad: The Matrices (1, 8, 15)**\n\nRa describes each Matrix differently:\n- **Matrix of Mind**: \"That from which all comes... the activator in potentiation\" - it *reaches*\n- **Matrix of Body**: \"A reflection in opposites of the mind; that is, unrestricted motion\" - it *moves*\n- **Matrix of Spirit**: \"The deepest darkness\" - it *rests*\n\nThe same function (Matrix = foundation) manifests as reaching in mind, moving in body, and resting in darkness in spirit. Understanding these differences reveals the unique character of each cycle."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Why does Ra recommend studying archetypes in triads (1,8,15 then 2,9,16, etc.)?",
+      "options": [
+        {
+          "id": "a",
+          "text": "It follows the traditional tarot reading order",
+          "isCorrect": false,
+          "explanation": "Ra's order differs from traditional tarot. The triad approach groups archetypes by function across cycles, not by numerical sequence.",
+          "relatedPassage": "88.24"
+        },
+        {
+          "id": "b",
+          "text": "To discover the relationships between mind, body, and spirit",
+          "isCorrect": true,
+          "explanation": "Ra states this order allows \"the fundamental relationships between mind, body, and spirit\" to \"begin to be discovered.\" The same stage operates differently in each cycle.",
+          "relatedPassage": "88.24"
+        },
+        {
+          "id": "c",
+          "text": "Because the images look similar",
+          "isCorrect": false,
+          "explanation": "The images differ significantly. The triad approach reveals how the same *function* (Matrix, Potentiator, etc.) manifests differently across mind, body, and spirit.",
+          "relatedPassage": "88.24"
+        },
+        {
+          "id": "d",
+          "text": "To make memorization easier",
+          "isCorrect": false,
+          "explanation": "The purpose is understanding relationships, not memorization. Ra emphasizes discovering how mind, body, and spirit relate at each stage.",
+          "relatedPassage": "77.13"
+        }
+      ]
+    },
+    {
+      "type": "reflection",
+      "prompt": "Consider one function - Matrix, Potentiator, or Catalyst. How might this function operate differently in your mental life versus your physical life versus your spiritual life?",
+      "guidingThoughts": [
+        "The same principle manifests uniquely in each realm",
+        "Mind reaches, Body moves, Spirit rests in depth",
+        "Understanding these differences deepens self-knowledge"
+      ]
+    }
+  ]
+}

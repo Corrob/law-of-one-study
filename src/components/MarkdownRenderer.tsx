@@ -172,4 +172,38 @@ const markdownComponents: Components = {
   em: ({ children, ...props }) => (
     <em className="italic" {...props}>{children}</em>
   ),
+
+  // Table components
+  table: ({ children, ...props }) => (
+    <div className="overflow-x-auto mb-3">
+      <table className="w-full border-collapse text-sm" {...props}>
+        {children}
+      </table>
+    </div>
+  ),
+  thead: ({ children, ...props }) => (
+    <thead className="bg-[var(--lo1-deep-purple)]/30" {...props}>
+      {children}
+    </thead>
+  ),
+  tbody: ({ children, ...props }) => (
+    <tbody className="divide-y divide-[var(--lo1-mystic-purple)]/20" {...props}>
+      {children}
+    </tbody>
+  ),
+  tr: ({ children, ...props }) => (
+    <tr className="hover:bg-[var(--lo1-deep-purple)]/10 transition-colors" {...props}>
+      {children}
+    </tr>
+  ),
+  th: ({ children, ...props }) => (
+    <th className="px-3 py-2 text-left font-semibold text-[var(--lo1-starlight)] border-b border-[var(--lo1-mystic-purple)]/30" {...props}>
+      {children}
+    </th>
+  ),
+  td: ({ children, ...props }) => (
+    <td className="px-3 py-2 text-[var(--lo1-text-light)]" {...props}>
+      {children}
+    </td>
+  ),
 };

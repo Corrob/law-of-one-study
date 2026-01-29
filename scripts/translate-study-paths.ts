@@ -20,6 +20,7 @@ dotenv.config({ path: path.join(__dirname, "../.env.local") });
 const args = process.argv.slice(2);
 const langIndex = args.findIndex((arg) => arg === "--language" || arg === "--lang");
 const TARGET_LANG = langIndex !== -1 && args[langIndex + 1] ? args[langIndex + 1] : "es";
+const FORCE_OVERWRITE = args.includes("--force");
 
 // Language names for prompts
 const LANGUAGE_NAMES: Record<string, string> = {
@@ -44,6 +45,7 @@ const STUDY_PATH_FILES = [
   "catalyst.json",
   "veil.json",
   "time-space.json",
+  "archetypes.json",
 ];
 
 // Initialize OpenAI
@@ -91,6 +93,19 @@ const TERMINOLOGY_GLOSSARIES: Record<string, string> = {
 - Law of One → Ley del Uno
 - Ra → Ra
 - Confederation → Confederación
+- archetype → arquetipo
+- Matrix → Matriz
+- Potentiator → Potenciador
+- Catalyst → Catalizador (archetype name)
+- Experience → Experiencia
+- Significator → Significador
+- Transformation → Transformación
+- Great Way → Gran Camino
+- the Choice → la Elección
+- the veil / veiling → el velo / velamiento
+- adept → adepto
+- magical personality → personalidad mágica
+- tarot → tarot
 `,
   de: `
 ## Ra Material Terminology (English → German)
@@ -132,6 +147,19 @@ const TERMINOLOGY_GLOSSARIES: Record<string, string> = {
 - Law of One → Gesetz des Einen
 - Ra → Ra
 - Confederation → Konföderation
+- archetype → Archetyp
+- Matrix → Matrix
+- Potentiator → Potentiator
+- Catalyst → Katalysator (archetype name)
+- Experience → Erfahrung
+- Significator → Signifikator
+- Transformation → Transformation
+- Great Way → Großer Weg
+- the Choice → die Wahl
+- the veil / veiling → der Schleier / Verschleierung
+- adept → Adept
+- magical personality → magische Persönlichkeit
+- tarot → Tarot
 `,
   fr: `
 ## Ra Material Terminology (English → French)
@@ -173,6 +201,19 @@ const TERMINOLOGY_GLOSSARIES: Record<string, string> = {
 - Law of One → Loi de l'Un
 - Ra → Ra
 - Confederation → Confédération
+- archetype → archétype
+- Matrix → Matrice
+- Potentiator → Potentiateur
+- Catalyst → Catalyseur (archetype name)
+- Experience → Expérience
+- Significator → Significateur
+- Transformation → Transformation
+- Great Way → Grande Voie
+- the Choice → le Choix
+- the veil / veiling → le voile / le voilement
+- adept → adepte
+- magical personality → personnalité magique
+- tarot → tarot
 `,
 };
 
@@ -352,8 +393,8 @@ async function main() {
     const targetPath = path.join(TARGET_DIR, filename);
 
     // Check if already translated
-    if (fs.existsSync(targetPath)) {
-      console.log(`Skipping ${filename} (already exists)`);
+    if (fs.existsSync(targetPath) && !FORCE_OVERWRITE) {
+      console.log(`Skipping ${filename} (already exists, use --force to overwrite)`);
       continue;
     }
 
