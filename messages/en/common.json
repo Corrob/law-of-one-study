@@ -21,6 +21,7 @@
     "copy": "Copy",
     "copied": "Copied!",
     "new": "New",
+    "export": "Export",
     "close": "Close"
   },
   "labels": {
@@ -44,6 +45,7 @@
     "goToHome": "Go to home",
     "startNewConversation": "Start new conversation",
     "startNewSearch": "Start new search",
+    "exportChat": "Export chat",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "navigationMenu": "Navigation menu"

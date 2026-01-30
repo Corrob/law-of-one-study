@@ -2,19 +2,22 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ChatInterface, { ChatInterfaceRef } from "@/components/ChatInterface";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import ConfirmModal from "@/components/ConfirmModal";
+import { exportChatToMarkdown, downloadMarkdown } from "@/lib/chat/export-markdown";
 
 export default function ChatPage() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || undefined;
   const t = useTranslations("confirmNewChat");
+  const locale = useLocale();
 
   const chatRef = useRef<ChatInterfaceRef>(null);
   const [hasMessages, setHasMessages] = useState(false);
+  const [isChatStreaming, setIsChatStreaming] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const handleNewChat = useCallback(() => {
@@ -33,6 +36,16 @@ export default function ChatPage() {
     setShowConfirmModal(false);
   }, []);
 
+  const handleExportChat = useCallback(() => {
+    const messages = chatRef.current?.getMessages();
+    if (!messages || messages.length === 0) return;
+    const markdown = exportChatToMarkdown(messages, locale);
+    const now = new Date();
+    const date = now.toISOString().slice(0, 10);
+    const time = now.toTimeString().slice(0, 5).replace(":", "");
+    downloadMarkdown(markdown, `law-of-one-seek-${date}-${time}.md`);
+  }, [locale]);
+
   // Keyboard shortcut: Cmd/Ctrl + Shift + O for new chat (matches ChatGPT)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -50,14 +63,19 @@ export default function ChatPage() {
     setHasMessages(messageCount > 0);
   }, []);
 
+  const handleStreamingChange = useCallback((streaming: boolean) => {
+    setIsChatStreaming(streaming);
+  }, []);
+
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
-      <NavigationWrapper showNewChat={hasMessages} onNewChat={handleNewChat}>
+      <NavigationWrapper showNewChat={hasMessages} onNewChat={handleNewChat} showExportChat={hasMessages} onExportChat={handleExportChat} disableExportChat={isChatStreaming}>
         <div className="flex-1 overflow-hidden relative z-10">
           <ErrorBoundary>
             <ChatInterface
               ref={chatRef}
               onMessagesChange={handleMessagesChange}
+              onStreamingChange={handleStreamingChange}
               initialQuery={initialQuery}
             />
           </ErrorBoundary>

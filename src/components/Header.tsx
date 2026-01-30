@@ -2,7 +2,7 @@
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { UnityIcon, MenuIcon, BackIcon, PlusIcon } from "./icons";
+import { UnityIcon, MenuIcon, BackIcon, PlusIcon, DownloadIcon } from "./icons";
 
 interface HeaderProps {
   onMenuClick: () => void;
@@ -10,6 +10,9 @@ interface HeaderProps {
   showNewChat?: boolean;
   onNewSearch?: () => void;
   showNewSearch?: boolean;
+  onExportChat?: () => void;
+  showExportChat?: boolean;
+  disableExportChat?: boolean;
 }
 
 // Map paths to translation keys
@@ -22,7 +25,7 @@ const PAGE_TITLE_KEYS: Record<string, string> = {
   "/donate": "support",
 };
 
-export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearch, showNewSearch }: HeaderProps) {
+export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearch, showNewSearch, onExportChat, showExportChat, disableExportChat }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const isDashboard = pathname === "/";
@@ -69,6 +72,23 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
 
         {/* Right side: Actions */}
         <div className="flex items-center gap-1">
+          {/* Export Chat button (only on /chat when conversation active) */}
+          {pathname === "/chat" && showExportChat && onExportChat && (
+            <button
+              onClick={onExportChat}
+              disabled={disableExportChat}
+              className={`flex items-center gap-1.5 transition-colors text-sm px-3 py-2 rounded-lg ${
+                disableExportChat
+                  ? "text-[var(--lo1-gold)]/40 cursor-not-allowed"
+                  : "text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 hover:bg-[var(--lo1-gold)]/10 cursor-pointer"
+              }`}
+              aria-label={t("header.exportChat")}
+            >
+              <DownloadIcon className="w-4 h-4" />
+              <span className="hidden sm:inline">{t("buttons.export")}</span>
+            </button>
+          )}
+
           {/* New Chat button (only on /chat when conversation active) */}
           {pathname === "/chat" && showNewChat && onNewChat && (
             <button

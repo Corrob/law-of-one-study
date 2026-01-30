@@ -10,17 +10,21 @@ import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
 import { useLanguage } from "@/contexts/LanguageContext";
+import type { Message, MessageSegment } from "@/lib/types";
 
 const INITIAL_PLACEHOLDER_COUNT = 4;
 const FOLLOWUP_PLACEHOLDER_COUNT = 6;
 
 export interface ChatInterfaceRef {
   reset: () => void;
+  getMessages: () => Message[];
 }
 
 export interface ChatInterfaceProps {
   /** Callback fired when message count changes */
   onMessagesChange?: (count: number) => void;
+  /** Callback fired when streaming state changes */
+  onStreamingChange?: (isStreaming: boolean) => void;
   /** Initial query to send automatically */
   initialQuery?: string;
 }
@@ -40,7 +44,7 @@ export interface ChatInterfaceProps {
  * - MessageList: Rendering messages and streaming content
  */
 const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function ChatInterface(
-  { onMessagesChange, initialQuery },
+  { onMessagesChange, onStreamingChange, initialQuery },
   ref
 ) {
   const t = useTranslations("chat");
@@ -174,13 +178,42 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     setPlaceholderKey(getRandomPlaceholderKey(false));
   }, [resetChat, resetQueue, getRandomPlaceholderKey]);
 
-  // Expose reset function to parent via ref
+  // Expose reset and getMessages to parent via ref
   useImperativeHandle(
     ref,
     () => ({
       reset: handleReset,
+      getMessages: () => {
+        if (allChunks.length === 0) return messages;
+
+        // Guard against duplicates: if the last message is already a finalized
+        // assistant message, chunks are stale (about to be reset)
+        const lastMessage = messages[messages.length - 1];
+        if (lastMessage?.role === "assistant") return messages;
+
+        // Include pending/in-progress chunks as an assistant message
+        const segments: MessageSegment[] = allChunks.map((chunk) => {
+          if (chunk.type === "text") {
+            return { type: "text" as const, content: chunk.content };
+          }
+          return { type: "quote" as const, quote: chunk.quote };
+        });
+
+        const pendingAssistant: Message = {
+          id: "export-pending",
+          role: "assistant",
+          content: segments
+            .filter((s) => s.type === "text")
+            .map((s) => s.content)
+            .join(""),
+          segments,
+          timestamp: new Date(),
+        };
+
+        return [...messages, pendingAssistant];
+      },
     }),
-    [handleReset]
+    [handleReset, messages, allChunks]
   );
 
   const hasConversation = messages.length > 0 || allChunks.length > 0;
@@ -189,6 +222,11 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   useEffect(() => {
     onMessagesChange?.(messages.length);
   }, [messages.length, onMessagesChange]);
+
+  // Notify parent of streaming state changes
+  useEffect(() => {
+    onStreamingChange?.(isStreaming);
+  }, [isStreaming, onStreamingChange]);
 
   // Build scroll shadow classes
   const scrollShadowClasses = [

@@ -10,6 +10,9 @@ interface NavigationWrapperProps {
   onNewChat?: () => void;
   showNewSearch?: boolean;
   onNewSearch?: () => void;
+  showExportChat?: boolean;
+  onExportChat?: () => void;
+  disableExportChat?: boolean;
 }
 
 export default function NavigationWrapper({
@@ -18,6 +21,9 @@ export default function NavigationWrapper({
   onNewChat,
   showNewSearch,
   onNewSearch,
+  showExportChat,
+  onExportChat,
+  disableExportChat,
 }: NavigationWrapperProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -37,6 +43,9 @@ export default function NavigationWrapper({
         onNewChat={onNewChat}
         showNewSearch={showNewSearch}
         onNewSearch={onNewSearch}
+        showExportChat={showExportChat}
+        onExportChat={onExportChat}
+        disableExportChat={disableExportChat}
       />
       <BurgerMenu isOpen={isMenuOpen} onClose={handleMenuClose} />
       {children}
