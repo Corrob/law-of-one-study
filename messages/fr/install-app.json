@@ -1,0 +1,27 @@
+{
+  "title": "Installer l'App",
+  "subtitle": "Ajoutez le Compagnon d'Étude de la Loi Une à votre écran d'accueil pour un accès rapide, une expérience hors ligne et un ressenti d'app native.",
+  "detectedPlatform": "Votre plateforme actuelle",
+  "otherPlatforms": "Autres Plateformes",
+  "tip": "Les apps PWA utilisent le moteur de votre navigateur — aucune boutique d'applications requise.",
+  "platforms": {
+    "ios": {
+      "name": "iOS (Safari)",
+      "step1": "Appuyez sur le bouton Partager (carré avec flèche) dans la barre d'outils de Safari.",
+      "step2": "Faites défiler vers le bas et appuyez sur \"Sur l'écran d'accueil\".",
+      "step3": "Appuyez sur \"Ajouter\" en haut à droite pour confirmer."
+    },
+    "android": {
+      "name": "Android (Chrome)",
+      "step1": "Appuyez sur l'icône de menu (⋮) dans la barre d'outils de Chrome.",
+      "step2": "Appuyez sur \"Installer l'application\" ou \"Ajouter à l'écran d'accueil\".",
+      "step3": "Appuyez sur \"Installer\" pour confirmer."
+    },
+    "desktop": {
+      "name": "Bureau (Chrome / Edge)",
+      "step1": "Cherchez l'icône d'installation (⊕) à droite de la barre d'adresse.",
+      "step2": "Cliquez sur \"Installer\" dans l'invite qui apparaît.",
+      "step3": "L'app s'ouvrira dans sa propre fenêtre — épinglez-la à votre barre des tâches ou dock."
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "title": "Install the App",
+  "subtitle": "Add Law of One Study Companion to your home screen for quick access, offline-ready experience, and a native app feel.",
+  "detectedPlatform": "Your current platform",
+  "otherPlatforms": "Other Platforms",
+  "tip": "PWA apps use your browser engine — no app store required.",
+  "platforms": {
+    "ios": {
+      "name": "iOS (Safari)",
+      "step1": "Tap the Share button (square with arrow) in Safari's toolbar.",
+      "step2": "Scroll down and tap \"Add to Home Screen\".",
+      "step3": "Tap \"Add\" in the top-right corner to confirm."
+    },
+    "android": {
+      "name": "Android (Chrome)",
+      "step1": "Tap the menu icon (⋮) in Chrome's toolbar.",
+      "step2": "Tap \"Install app\" or \"Add to Home Screen\".",
+      "step3": "Tap \"Install\" to confirm."
+    },
+    "desktop": {
+      "name": "Desktop (Chrome / Edge)",
+      "step1": "Look for the install icon (⊕) in the right side of the address bar.",
+      "step2": "Click \"Install\" in the prompt that appears.",
+      "step3": "The app will open in its own window — pin it to your taskbar or dock."
+    }
+  }
+}

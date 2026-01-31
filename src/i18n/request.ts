@@ -18,10 +18,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
   }
 
   // Load all message files and merge them
-  const [common, about, donate] = await Promise.all([
+  const [common, about, donate, installApp] = await Promise.all([
     import(`../../messages/${locale}/common.json`),
     import(`../../messages/${locale}/about.json`),
     import(`../../messages/${locale}/donate.json`),
+    import(`../../messages/${locale}/install-app.json`),
   ]);
 
   return {
@@ -30,6 +31,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       ...common.default,
       about: about.default,
       donate: donate.default,
+      installApp: installApp.default,
     },
   };
 });

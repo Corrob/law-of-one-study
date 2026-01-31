@@ -1,0 +1,27 @@
+{
+  "title": "App installieren",
+  "subtitle": "Füge den Gesetz des Einen Studienbegleiter zu deinem Startbildschirm hinzu für schnellen Zugriff, Offline-Erfahrung und ein natives App-Gefühl.",
+  "detectedPlatform": "Deine aktuelle Plattform",
+  "otherPlatforms": "Andere Plattformen",
+  "tip": "PWA-Apps nutzen deine Browser-Engine — kein App Store erforderlich.",
+  "platforms": {
+    "ios": {
+      "name": "iOS (Safari)",
+      "step1": "Tippe auf die Teilen-Taste (Quadrat mit Pfeil) in Safaris Symbolleiste.",
+      "step2": "Scrolle nach unten und tippe auf \"Zum Home-Bildschirm\".",
+      "step3": "Tippe oben rechts auf \"Hinzufügen\" zum Bestätigen."
+    },
+    "android": {
+      "name": "Android (Chrome)",
+      "step1": "Tippe auf das Menü-Symbol (⋮) in Chromes Symbolleiste.",
+      "step2": "Tippe auf \"App installieren\" oder \"Zum Startbildschirm hinzufügen\".",
+      "step3": "Tippe auf \"Installieren\" zum Bestätigen."
+    },
+    "desktop": {
+      "name": "Desktop (Chrome / Edge)",
+      "step1": "Suche das Installieren-Symbol (⊕) rechts in der Adressleiste.",
+      "step2": "Klicke auf \"Installieren\" in der erscheinenden Aufforderung.",
+      "step3": "Die App öffnet sich in einem eigenen Fenster — hefte sie an deine Taskleiste oder dein Dock."
+    }
+  }
+}

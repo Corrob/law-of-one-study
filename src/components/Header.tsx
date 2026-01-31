@@ -23,6 +23,7 @@ const PAGE_TITLE_KEYS: Record<string, string> = {
   "/search": "search",
   "/about": "about",
   "/donate": "support",
+  "/app": "install",
 };
 
 export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearch, showNewSearch, onExportChat, showExportChat, disableExportChat }: HeaderProps) {

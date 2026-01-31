@@ -58,6 +58,11 @@ export const metadata: Metadata = {
     description: "AI-powered companion for exploring the Ra Material",
     images: ["/og-image.png"],
   },
+  other: {
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport = {
@@ -66,6 +71,7 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: "#1a1f4e",
 };
 
 interface RootLayoutProps {

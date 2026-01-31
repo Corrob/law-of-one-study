@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
-import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon } from "./icons";
+import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -177,6 +177,14 @@ export default function Dashboard() {
           >
             <HeartIcon className="w-4 h-4" />
             <span>{t("nav.support")}</span>
+          </Link>
+          <span className="text-[var(--lo1-celestial)]/40">·</span>
+          <Link
+            href="/app"
+            className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
+          >
+            <DownloadIcon className="w-4 h-4" />
+            <span>{t("nav.install")}</span>
           </Link>
         </div>
       </footer>

@@ -1,0 +1,27 @@
+{
+  "title": "Instalar la App",
+  "subtitle": "Agrega el Compañero de Estudio de la Ley del Uno a tu pantalla de inicio para acceso rápido, experiencia sin conexión y una sensación de app nativa.",
+  "detectedPlatform": "Tu plataforma actual",
+  "otherPlatforms": "Otras Plataformas",
+  "tip": "Las apps PWA usan el motor de tu navegador — no requieren tienda de aplicaciones.",
+  "platforms": {
+    "ios": {
+      "name": "iOS (Safari)",
+      "step1": "Toca el botón Compartir (cuadrado con flecha) en la barra de Safari.",
+      "step2": "Desplázate hacia abajo y toca \"Agregar a pantalla de inicio\".",
+      "step3": "Toca \"Agregar\" en la esquina superior derecha para confirmar."
+    },
+    "android": {
+      "name": "Android (Chrome)",
+      "step1": "Toca el icono de menú (⋮) en la barra de Chrome.",
+      "step2": "Toca \"Instalar app\" o \"Agregar a pantalla de inicio\".",
+      "step3": "Toca \"Instalar\" para confirmar."
+    },
+    "desktop": {
+      "name": "Escritorio (Chrome / Edge)",
+      "step1": "Busca el icono de instalar (⊕) en el lado derecho de la barra de direcciones.",
+      "step2": "Haz clic en \"Instalar\" en el mensaje que aparece.",
+      "step3": "La app se abrirá en su propia ventana — fíjala en tu barra de tareas o dock."
+    }
+  }
+}
