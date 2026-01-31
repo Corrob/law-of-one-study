@@ -135,18 +135,17 @@ test.describe("French Locale Smoke Tests", () => {
   test("should display French search interface", async ({ page }) => {
     await page.goto("/fr/search");
 
-    // Check for French mode selection labels
-    await expect(page.getByText("Recherche de phrase")).toBeVisible();
-    await expect(page.getByText("Recherche de passage")).toBeVisible();
+    // Search input should be visible immediately
+    await expect(page.getByRole("textbox")).toBeVisible();
+    // Check for French mode toggle labels
+    await expect(page.getByRole("button", { name: "Phrase" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Passage" })).toBeVisible();
   });
 
   test("should search and display French results", async ({ page }) => {
     await page.goto("/fr/search");
 
-    // Select passage mode
-    await page.getByText("Recherche de passage").click();
-
-    // Wait for search input
+    // Search input should be visible immediately
     const input = page.getByRole("textbox");
     await expect(input).toBeVisible();
 
@@ -163,8 +162,6 @@ test.describe("French Locale Smoke Tests", () => {
   test("should display French labels in search results", async ({ page }) => {
     await page.goto("/fr/search");
 
-    // Select passage mode and search
-    await page.getByText("Recherche de passage").click();
     const input = page.getByRole("textbox");
     await input.fill("amour");
     await input.press("Enter");

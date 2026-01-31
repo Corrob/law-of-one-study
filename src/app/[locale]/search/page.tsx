@@ -8,7 +8,6 @@ import type { AvailableLanguage } from "@/lib/language-config";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import SearchInput from "@/components/SearchInput";
-import SearchModeSelection from "@/components/SearchModeSelection";
 import SearchWelcome from "@/components/SearchWelcome";
 import SearchResults from "@/components/SearchResults";
 import { SearchResult, type SearchMode } from "@/lib/schemas";
@@ -32,7 +31,7 @@ export default function SearchPage() {
   const initialUrlQuery = useRef(searchParams.get("q") || "");
   const initialUrlMode = useRef(searchParams.get("mode") as SearchMode | null);
 
-  const [mode, setMode] = useState<SearchMode | null>(null);
+  const [mode, setMode] = useState<SearchMode | null>("sentence");
   const [inputValue, setInputValue] = useState("");
   const [searchedQuery, setSearchedQuery] = useState(""); // The query used for current results/highlights
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -126,15 +125,16 @@ export default function SearchPage() {
     const urlMode = initialUrlMode.current;
     const urlQuery = initialUrlQuery.current;
 
-    // If we have a mode in URL, set it
+    // If we have a mode in URL, set it (otherwise keep default "sentence")
     if (urlMode === "sentence" || urlMode === "passage") {
       setMode(urlMode);
+    }
 
-      // If we also have a query, perform the search
-      if (urlQuery && urlQuery.length >= 2) {
-        setInputValue(urlQuery);
-        performSearch(urlQuery, urlMode);
-      }
+    // If we have a query, perform the search
+    if (urlQuery && urlQuery.length >= 2) {
+      const searchMode = (urlMode === "sentence" || urlMode === "passage") ? urlMode : "sentence";
+      setInputValue(urlQuery);
+      performSearch(urlQuery, searchMode);
     }
   }, [performSearch]);
 
@@ -159,8 +159,8 @@ export default function SearchPage() {
           setSearchedQuery("");
         }
       } else {
-        // No mode - back to mode selection
-        setMode(null);
+        // No mode in URL - default to sentence
+        setMode("sentence");
         setInputValue("");
         setResults([]);
         setHasSearched(false);
@@ -188,19 +188,13 @@ export default function SearchPage() {
 
   const handleNewSearch = useCallback(() => {
     // Reset all state and update URL
-    setMode(null);
+    setMode("sentence");
     setInputValue("");
     setSearchedQuery("");
     setResults([]);
     setHasSearched(false);
     setError(null);
     router.push("/search");
-  }, [router]);
-
-  // Handle mode selection from welcome screen
-  const handleModeSelect = useCallback((selectedMode: SearchMode) => {
-    setMode(selectedMode);
-    router.push(`/search?mode=${selectedMode}`);
   }, [router]);
 
   // Handle mode change (when toggling during search)
@@ -216,12 +210,10 @@ export default function SearchPage() {
     }
   }, [hasSearched, inputValue, router, performSearch]);
 
-  // Three UI states:
-  // 1. No mode selected - show mode selection
-  // 2. Mode selected but no search - show search welcome with toggle
-  // 3. Has searched - show results with toggle
-  const showModeSelection = mode === null && !hasSearched && !isLoading;
-  const showSearchWelcome = mode !== null && !hasSearched && !isLoading;
+  // Two UI states:
+  // 1. No search yet - show search welcome with toggle
+  // 2. Has searched - show results with toggle
+  const showSearchWelcome = !hasSearched && !isLoading;
 
   // Create the animated input element with layoutId for position animation
   const inputElement = (
@@ -244,7 +236,7 @@ export default function SearchPage() {
       <main className="h-dvh flex flex-col cosmic-bg relative">
         {/* Starfield background - fades out when showing results */}
         <AnimatePresence>
-          {(showModeSelection || showSearchWelcome) && (
+          {showSearchWelcome && (
             <motion.div
               className="starfield"
               initial={{ opacity: 1 }}
@@ -254,27 +246,13 @@ export default function SearchPage() {
           )}
         </AnimatePresence>
         {/* Keep starfield visible but static during results */}
-        {!showModeSelection && !showSearchWelcome && (
+        {!showSearchWelcome && (
           <div className="starfield opacity-30" />
         )}
 
-        <NavigationWrapper showNewSearch={hasSearched || mode !== null} onNewSearch={handleNewSearch}>
+        <NavigationWrapper showNewSearch={hasSearched} onNewSearch={handleNewSearch}>
           <div className="flex-1 overflow-hidden relative z-10 flex flex-col min-h-0">
             <AnimatePresence mode="wait">
-              {/* Mode Selection State */}
-              {showModeSelection && (
-                <motion.div
-                  key="mode-selection"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex-1 flex flex-col"
-                >
-                  <SearchModeSelection onSelectMode={handleModeSelect} />
-                </motion.div>
-              )}
-
               {/* Search Welcome State */}
               {showSearchWelcome && (
                 <motion.div
@@ -297,7 +275,7 @@ export default function SearchPage() {
               )}
 
               {/* Results State */}
-              {!showModeSelection && !showSearchWelcome && (
+              {!showSearchWelcome && (
                 <motion.div
                   key="search-results"
                   initial={{ opacity: 0 }}

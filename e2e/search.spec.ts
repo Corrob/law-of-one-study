@@ -60,31 +60,16 @@ test.describe("Search Feature", () => {
     });
   });
 
-  test("should display mode selection on initial load", async ({ page }) => {
+  test("should show search input immediately on load", async ({ page }) => {
     await page.goto("/search");
 
-    // Check for mode selection cards
-    await expect(page.getByText("Sentence Search")).toBeVisible();
-    await expect(page.getByText("Passage Search")).toBeVisible();
-    await expect(page.getByText("Find a specific quote by meaning")).toBeVisible();
-    await expect(page.getByText("Discover quotes by concept")).toBeVisible();
-
-    // Search input should not be visible until mode is selected
-    await expect(page.getByRole("textbox")).not.toBeVisible();
-  });
-
-  test("should show search input after selecting mode", async ({ page }) => {
-    await page.goto("/search");
-
-    // Select Passage Search mode
-    await page.getByText("Passage Search").click();
-
-    // Now search input should be visible
+    // Search input should be visible immediately (defaults to sentence mode)
     await expect(page.getByRole("textbox")).toBeVisible();
     await expect(page.getByText(/Try these/i)).toBeVisible();
 
-    // URL should reflect mode
-    await expect(page).toHaveURL(/\/search\?mode=passage/);
+    // Mode toggle should be visible with Sentence and Passage options
+    await expect(page.getByRole("button", { name: "Sentence" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Passage" })).toBeVisible();
   });
 
   test("should search and display results", async ({ page }) => {

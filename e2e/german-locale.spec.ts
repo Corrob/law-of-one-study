@@ -135,18 +135,17 @@ test.describe("German Locale Smoke Tests", () => {
   test("should display German search interface", async ({ page }) => {
     await page.goto("/de/search");
 
-    // Check for German mode selection labels
-    await expect(page.getByText("Satzsuche")).toBeVisible();
-    await expect(page.getByText("Passagensuche")).toBeVisible();
+    // Search input should be visible immediately
+    await expect(page.getByRole("textbox")).toBeVisible();
+    // Check for German mode toggle labels
+    await expect(page.getByRole("button", { name: "Satz" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Passage" })).toBeVisible();
   });
 
   test("should search and display German results", async ({ page }) => {
     await page.goto("/de/search");
 
-    // Select passage mode
-    await page.getByText("Passagensuche").click();
-
-    // Wait for search input
+    // Search input should be visible immediately
     const input = page.getByRole("textbox");
     await expect(input).toBeVisible();
 
@@ -163,8 +162,6 @@ test.describe("German Locale Smoke Tests", () => {
   test("should display German labels in search results", async ({ page }) => {
     await page.goto("/de/search");
 
-    // Select passage mode and search
-    await page.getByText("Passagensuche").click();
     const input = page.getByRole("textbox");
     await input.fill("liebe");
     await input.press("Enter");
