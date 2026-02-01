@@ -27,32 +27,32 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Ra material JSON files never change - cache for 1 year
+        // Ra material JSON files - cache for 30 days
         source: "/sections/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: "public, max-age=2592000",
           },
         ],
       },
       {
-        // Tarot and other static images - cache for 1 year
+        // Tarot and other static images - cache for 30 days
         source: "/images/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: "public, max-age=2592000",
           },
         ],
       },
       {
-        // PWA icons - cache for 1 year
+        // PWA icons - cache for 30 days
         source: "/icons/:path*",
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=31536000, immutable",
+            value: "public, max-age=2592000",
           },
         ],
       },
