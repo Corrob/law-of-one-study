@@ -1,13 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
-import {
-  titleVariants,
-  staggerContainer,
-  staggerChild,
-} from "@/lib/animations";
+import MotionFadeIn from "@/components/MotionFadeIn";
+import { MotionStaggerGroup, MotionStaggerItem } from "@/components/MotionStaggerGroup";
 import { useTranslations } from "next-intl";
 import { DownloadIcon } from "@/components/icons";
 
@@ -97,8 +93,7 @@ function PlatformCard({ platform, isDetected, t }: PlatformCardProps) {
   const steps = [1, 2, 3] as const;
 
   return (
-    <motion.div
-      variants={staggerChild}
+    <MotionStaggerItem
       className={`bg-[var(--lo1-indigo)]/30 backdrop-blur-sm border rounded-2xl p-6 ${
         isDetected
           ? "border-[var(--lo1-gold)]/40 shadow-[0_0_20px_rgba(212,168,83,0.1)]"
@@ -147,7 +142,7 @@ function PlatformCard({ platform, isDetected, t }: PlatformCardProps) {
           </li>
         ))}
       </ol>
-    </motion.div>
+    </MotionStaggerItem>
   );
 }
 
@@ -169,12 +164,7 @@ export default function InstallAppContent() {
         <div className="flex-1 overflow-auto relative z-10 py-8 px-6">
           <article className="max-w-3xl mx-auto">
             {/* Page Title */}
-            <motion.div
-              className="text-center mb-12"
-              variants={titleVariants}
-              initial="hidden"
-              animate="visible"
-            >
+            <MotionFadeIn className="text-center mb-12" variant="title">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-[var(--lo1-gold)]/20 flex items-center justify-center">
                   <DownloadIcon className="w-8 h-8 text-[var(--lo1-gold)]" />
@@ -186,28 +176,19 @@ export default function InstallAppContent() {
               <p className="text-[var(--lo1-stardust)] text-lg max-w-xl mx-auto">
                 {t("subtitle")}
               </p>
-            </motion.div>
+            </MotionFadeIn>
 
             {/* Detected Platform */}
-            <motion.section
-              className="mb-8"
-              variants={staggerContainer(0.1)}
-              initial="hidden"
-              animate="visible"
-            >
+            <MotionStaggerGroup className="mb-8" staggerDelay={0.1}>
               <PlatformCard
                 platform={detectedPlatform}
                 isDetected={true}
                 t={t}
               />
-            </motion.section>
+            </MotionStaggerGroup>
 
             {/* Other Platforms */}
-            <motion.section
-              variants={staggerContainer(0.15)}
-              initial="hidden"
-              animate="visible"
-            >
+            <MotionStaggerGroup staggerDelay={0.15}>
               <h2 className="text-xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-4">
                 {t("otherPlatforms")}
               </h2>
@@ -221,20 +202,15 @@ export default function InstallAppContent() {
                   />
                 ))}
               </div>
-            </motion.section>
+            </MotionStaggerGroup>
 
             {/* Tip */}
-            <motion.section
-              className="mt-12 text-center"
-              variants={staggerChild}
-              initial="hidden"
-              animate="visible"
-            >
+            <MotionFadeIn className="mt-12 text-center" delay={0.3}>
               <div className="inline-flex items-center gap-2 text-sm text-[var(--lo1-stardust)]/60">
                 <ShareIcon className="w-4 h-4" />
                 <span>{t("tip")}</span>
               </div>
-            </motion.section>
+            </MotionFadeIn>
           </article>
         </div>
       </main>

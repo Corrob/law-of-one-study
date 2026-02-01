@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import NavigationWrapper from "@/components/NavigationWrapper";
@@ -11,11 +11,10 @@ import { getStudyPath } from "@/lib/study-paths";
 import type { QuizResponse } from "@/lib/schemas/study-paths";
 
 interface PathDetailContentProps {
-  params: Promise<{ pathId: string }>;
+  pathId: string;
 }
 
-export default function PathDetailContent({ params }: PathDetailContentProps) {
-  const { pathId } = use(params);
+export default function PathDetailContent({ pathId }: PathDetailContentProps) {
   const locale = useLocale();
   const t = useTranslations("studyPaths");
 

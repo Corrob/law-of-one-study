@@ -3,6 +3,19 @@
 
 const CACHE_NAME = "lo1-v2";
 const SHELL_ASSETS = ["/", "/icons/icon-192.png", "/icons/icon-512.png"];
+const MAX_CACHE_ENTRIES = 150;
+
+/**
+ * Trim a cache to the maximum number of entries by removing the oldest first.
+ */
+async function trimCache(cacheName, maxEntries) {
+  const cache = await caches.open(cacheName);
+  const keys = await cache.keys();
+  if (keys.length > maxEntries) {
+    const toDelete = keys.slice(0, keys.length - maxEntries);
+    await Promise.all(toDelete.map((key) => cache.delete(key)));
+  }
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -46,6 +59,7 @@ self.addEventListener("fetch", (event) => {
           const fetchPromise = fetch(event.request).then((response) => {
             if (response.ok) {
               cache.put(event.request, response.clone());
+              trimCache(CACHE_NAME, MAX_CACHE_ENTRIES);
             }
             return response;
           });
@@ -65,6 +79,7 @@ self.addEventListener("fetch", (event) => {
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseClone);
+            trimCache(CACHE_NAME, MAX_CACHE_ENTRIES);
           });
         }
         return response;

@@ -3,6 +3,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin();
 
+const STATIC_CACHE_MAX_AGE = "public, max-age=2592000"; // 30 days
+
 const nextConfig: NextConfig = {
   // Required for PostHog proxy
   skipTrailingSlashRedirect: true,
@@ -32,7 +34,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=2592000",
+            value: STATIC_CACHE_MAX_AGE,
           },
         ],
       },
@@ -42,7 +44,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=2592000",
+            value: STATIC_CACHE_MAX_AGE,
           },
         ],
       },
@@ -52,7 +54,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=2592000",
+            value: STATIC_CACHE_MAX_AGE,
           },
         ],
       },
