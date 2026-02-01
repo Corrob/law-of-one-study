@@ -23,7 +23,41 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Security headers are now managed by middleware.ts for nonce-based CSP
+  // Cache static assets that rarely change
+  async headers() {
+    return [
+      {
+        // Ra material JSON files never change - cache for 1 year
+        source: "/sections/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Tarot and other static images - cache for 1 year
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // PWA icons - cache for 1 year
+        source: "/icons/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

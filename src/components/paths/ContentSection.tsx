@@ -117,11 +117,11 @@ const markdownComponents: Components = {
       {processChildren(children)}
     </td>
   ),
-  // Center images horizontally
+  // Center images horizontally, lazy-load for performance
   img: ({ alt, ...props }) => (
     <span className="block text-center my-4">
       {/* eslint-disable-next-line @next/next/no-img-element -- Markdown images have unknown dimensions */}
-      <img alt={alt} className="inline-block max-w-full rounded-lg shadow-lg" {...props} />
+      <img alt={alt} loading="lazy" className="inline-block max-w-full rounded-lg shadow-lg" {...props} />
     </span>
   ),
 };

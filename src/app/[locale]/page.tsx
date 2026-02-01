@@ -1,5 +1,3 @@
-"use client";
-
 import NavigationWrapper from "@/components/NavigationWrapper";
 import Dashboard from "@/components/Dashboard";
 import ErrorBoundary from "@/components/ErrorBoundary";
