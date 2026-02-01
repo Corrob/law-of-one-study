@@ -1,8 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { titleVariants, fadeWithDelay } from "@/lib/animations";
-
 interface MotionFadeInProps {
   children: React.ReactNode;
   className?: string;
@@ -14,7 +11,7 @@ interface MotionFadeInProps {
 
 /**
  * Thin client wrapper for fade-in animations.
- * Use this to add framer-motion animations to server-rendered content.
+ * Uses CSS animations instead of framer-motion for lighter bundle.
  */
 export default function MotionFadeIn({
   children,
@@ -22,21 +19,16 @@ export default function MotionFadeIn({
   variant = "default",
   delay,
 }: MotionFadeInProps) {
-  const variants =
-    delay !== undefined
-      ? fadeWithDelay(delay)
-      : variant === "title"
-        ? titleVariants
-        : fadeWithDelay(0);
+  const duration = variant === "title" ? 0.4 : 0.3;
 
   return (
-    <motion.div
+    <div
       className={className}
-      variants={variants}
-      initial="hidden"
-      animate="visible"
+      style={{
+        animation: `opacity-fade-in ${duration}s ease-out ${delay ?? 0}s both`,
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

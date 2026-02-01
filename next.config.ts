@@ -8,6 +8,10 @@ const STATIC_CACHE_MAX_AGE = "public, max-age=2592000"; // 30 days
 const nextConfig: NextConfig = {
   // Required for PostHog proxy
   skipTrailingSlashRedirect: true,
+  // Tree-shake barrel exports for these packages
+  experimental: {
+    optimizePackageImports: ["framer-motion"],
+  },
   // PostHog reverse proxy to avoid ad blockers
   async rewrites() {
     return [

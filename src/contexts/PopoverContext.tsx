@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useMemo,
   useRef,
   ReactNode,
 } from "react";
@@ -73,10 +74,13 @@ export function PopoverProvider({ children }: { children: ReactNode }) {
     }
   }, [cancelClose, requestClose]);
 
+  const value = useMemo(
+    () => ({ openPopover, open, close, requestClose, cancelClose, isAnyOpen, setHoveringPopover }),
+    [openPopover, open, close, requestClose, cancelClose, isAnyOpen, setHoveringPopover]
+  );
+
   return (
-    <PopoverContext.Provider
-      value={{ openPopover, open, close, requestClose, cancelClose, isAnyOpen, setHoveringPopover }}
-    >
+    <PopoverContext.Provider value={value}>
       {children}
     </PopoverContext.Provider>
   );

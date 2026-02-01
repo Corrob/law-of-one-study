@@ -1,5 +1,5 @@
 // Mock D3 modules before importing layout
-jest.mock("d3", () => ({
+jest.mock("d3-force", () => ({
   forceSimulation: jest.fn(() => ({
     force: jest.fn().mockReturnThis(),
     alphaDecay: jest.fn().mockReturnThis(),
@@ -339,18 +339,18 @@ describe("layout", () => {
 
   describe("createForceSimulation", () => {
     it("should create a d3 force simulation", () => {
-      const d3 = require("d3");
+      const d3Force = require("d3-force");
       const nodes = [createClusterNode("cosmology")];
       const links: GraphLink[] = [];
 
       const simulation = createForceSimulation(nodes, links, 800, 600);
 
       expect(simulation).toBeDefined();
-      expect(d3.forceSimulation).toHaveBeenCalledWith(nodes);
+      expect(d3Force.forceSimulation).toHaveBeenCalledWith(nodes);
     });
 
     it("should configure all required forces", () => {
-      const d3 = require("d3");
+      const d3Force = require("d3-force");
       const nodes = [
         createClusterNode("cosmology"),
         createClusterNode("polarity"),
@@ -360,10 +360,10 @@ describe("layout", () => {
       createForceSimulation(nodes, links, 800, 600);
 
       // Verify force functions were called
-      expect(d3.forceLink).toHaveBeenCalled();
-      expect(d3.forceManyBody).toHaveBeenCalled();
-      expect(d3.forceCenter).toHaveBeenCalledWith(400, 300); // width/2, height/2
-      expect(d3.forceCollide).toHaveBeenCalled();
+      expect(d3Force.forceLink).toHaveBeenCalled();
+      expect(d3Force.forceManyBody).toHaveBeenCalled();
+      expect(d3Force.forceCenter).toHaveBeenCalledWith(400, 300); // width/2, height/2
+      expect(d3Force.forceCollide).toHaveBeenCalled();
     });
   });
 });

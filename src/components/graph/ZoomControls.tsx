@@ -2,17 +2,18 @@
  * Zoom control buttons for the concept graph.
  */
 
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import type { ZoomBehavior } from "d3-zoom";
 
 interface ZoomControlsProps {
   svgRef: React.RefObject<SVGSVGElement | null>;
-  zoomRef: React.RefObject<d3.ZoomBehavior<SVGSVGElement, unknown> | null>;
+  zoomRef: React.RefObject<ZoomBehavior<SVGSVGElement, unknown> | null>;
 }
 
 export function ZoomControls({ svgRef, zoomRef }: ZoomControlsProps) {
   const handleZoomIn = () => {
     if (svgRef.current && zoomRef.current) {
-      const svg = d3.select(svgRef.current);
+      const svg = select(svgRef.current);
       svg.transition().duration(200).call(
         zoomRef.current.scaleBy,
         1.3
@@ -22,7 +23,7 @@ export function ZoomControls({ svgRef, zoomRef }: ZoomControlsProps) {
 
   const handleZoomOut = () => {
     if (svgRef.current && zoomRef.current) {
-      const svg = d3.select(svgRef.current);
+      const svg = select(svgRef.current);
       svg.transition().duration(200).call(
         zoomRef.current.scaleBy,
         0.7

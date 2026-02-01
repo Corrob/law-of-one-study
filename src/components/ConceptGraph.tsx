@@ -1,7 +1,9 @@
 "use client";
 
 import { useRef, useEffect, useState, useCallback } from "react";
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import { zoom, zoomIdentity, zoomTransform } from "d3-zoom";
+import type { ZoomBehavior } from "d3-zoom";
 import type {
   GraphNode,
   GraphLink,
@@ -47,7 +49,7 @@ export default function ConceptGraph({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const [transform, setTransform] = useState(d3.zoomIdentity);
+  const [transform, setTransform] = useState(zoomIdentity);
   const [isMobile, setIsMobile] = useState(false);
 
   // Track previous mobile state to detect layout changes
@@ -57,7 +59,7 @@ export default function ConceptGraph({
   const prevNodeCountRef = useRef(nodes.length);
 
   // Store zoom behavior for programmatic control
-  const zoomRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+  const zoomRef = useRef<ZoomBehavior<SVGSVGElement, unknown> | null>(null);
 
   // Use force simulation hook
   const { nodePositions, positionsRef } = useForceSimulation({
@@ -98,24 +100,23 @@ export default function ConceptGraph({
   useEffect(() => {
     if (!svgRef.current) return;
 
-    const svg = d3.select(svgRef.current);
-    const zoom = d3
-      .zoom<SVGSVGElement, unknown>()
+    const svg = select(svgRef.current);
+    const zoomBehavior = zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.3, 3])
       .on("zoom", (event) => {
         setTransform(event.transform);
       });
 
-    svg.call(zoom);
-    zoomRef.current = zoom;
+    svg.call(zoomBehavior);
+    zoomRef.current = zoomBehavior;
 
     // Apply initial zoomed-out transform to show all categories
     if (dimensions.width > 0) {
       const scale = isMobile ? 0.55 : 0.75; // More zoomed out on mobile
       const offsetX = (dimensions.width * (1 - scale)) / 2;
       const offsetY = (dimensions.height * (1 - scale)) / 2;
-      const initialTransform = d3.zoomIdentity.translate(offsetX, offsetY).scale(scale);
-      svg.call(zoom.transform, initialTransform);
+      const initialTransform = zoomIdentity.translate(offsetX, offsetY).scale(scale);
+      svg.call(zoomBehavior.transform, initialTransform);
     }
 
     // Double-click to reset zoom (to fit view showing all categories)
@@ -124,8 +125,8 @@ export default function ConceptGraph({
       const offsetX = (dimensions.width * (1 - scale)) / 2;
       const offsetY = (dimensions.height * (1 - scale)) / 2;
       svg.transition().duration(300).call(
-        zoom.transform,
-        d3.zoomIdentity.translate(offsetX, offsetY).scale(scale)
+        zoomBehavior.transform,
+        zoomIdentity.translate(offsetX, offsetY).scale(scale)
       );
     });
 
@@ -160,14 +161,14 @@ export default function ConceptGraph({
       const centroidY = sumY / count;
 
       // Get current transform and calculate new pan position
-      const svg = d3.select(svgRef.current);
-      const currentTransform = d3.zoomTransform(svgRef.current!);
+      const svg = select(svgRef.current);
+      const currentTransform = zoomTransform(svgRef.current!);
       const currentScale = currentTransform.k;
 
       const newX = dimensions.width / 2 - centroidX * currentScale;
       const newY = dimensions.height / 2 - centroidY * currentScale;
 
-      const newTransform = d3.zoomIdentity
+      const newTransform = zoomIdentity
         .translate(newX, newY)
         .scale(currentScale);
 

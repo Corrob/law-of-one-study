@@ -4,10 +4,11 @@
 
 import { render, screen, fireEvent } from "@testing-library/react";
 import { ZoomControls } from "../ZoomControls";
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import type { ZoomBehavior } from "d3-zoom";
 
-// Mock D3
-jest.mock("d3", () => ({
+// Mock D3 selection
+jest.mock("d3-selection", () => ({
   select: jest.fn(() => ({
     transition: jest.fn(() => ({
       duration: jest.fn(() => ({
@@ -20,7 +21,7 @@ jest.mock("d3", () => ({
 describe("ZoomControls", () => {
   const mockSvgRef = { current: document.createElementNS("http://www.w3.org/2000/svg", "svg") };
   const mockScaleBy = jest.fn();
-  const mockZoomRef = { current: { scaleBy: mockScaleBy } as unknown as d3.ZoomBehavior<SVGSVGElement, unknown> };
+  const mockZoomRef = { current: { scaleBy: mockScaleBy } as unknown as ZoomBehavior<SVGSVGElement, unknown> };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -45,7 +46,7 @@ describe("ZoomControls", () => {
 
     fireEvent.click(screen.getByLabelText("Zoom in"));
 
-    expect(d3.select).toHaveBeenCalledWith(mockSvgRef.current);
+    expect(select).toHaveBeenCalledWith(mockSvgRef.current);
   });
 
   it("calls d3.select when zoom out is clicked", () => {
@@ -53,7 +54,7 @@ describe("ZoomControls", () => {
 
     fireEvent.click(screen.getByLabelText("Zoom out"));
 
-    expect(d3.select).toHaveBeenCalledWith(mockSvgRef.current);
+    expect(select).toHaveBeenCalledWith(mockSvgRef.current);
   });
 
   it("does not call d3.select when svgRef.current is null", () => {
@@ -63,7 +64,7 @@ describe("ZoomControls", () => {
     fireEvent.click(screen.getByLabelText("Zoom in"));
     fireEvent.click(screen.getByLabelText("Zoom out"));
 
-    expect(d3.select).not.toHaveBeenCalled();
+    expect(select).not.toHaveBeenCalled();
   });
 
   it("does not call d3.select when zoomRef.current is null", () => {
@@ -73,7 +74,7 @@ describe("ZoomControls", () => {
     fireEvent.click(screen.getByLabelText("Zoom in"));
     fireEvent.click(screen.getByLabelText("Zoom out"));
 
-    expect(d3.select).not.toHaveBeenCalled();
+    expect(select).not.toHaveBeenCalled();
   });
 
   it("has correct button styling", () => {

@@ -7,7 +7,7 @@ import { useRef, useEffect, useState } from "react";
 import type { GraphNode, GraphLink } from "@/lib/graph/types";
 import { isClusterNode, isSubClusterNode, isConceptNode } from "@/lib/graph/types";
 import { createForceSimulation, computeSugiyamaLayout } from "@/lib/graph/layout";
-import type { Simulation } from "d3";
+import type { Simulation } from "d3-force";
 
 interface UseForceSimulationOptions {
   nodes: GraphNode[];

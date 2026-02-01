@@ -1,7 +1,14 @@
 // D3 Force Layout Configuration for Concept Explorer
 
-import * as d3 from "d3";
-import * as d3dag from "d3-dag";
+import {
+  forceSimulation,
+  forceLink,
+  forceManyBody,
+  forceCenter,
+  forceCollide,
+} from "d3-force";
+import type { Force, Simulation } from "d3-force";
+import { graphStratify, sugiyama, coordCenter } from "d3-dag";
 import type {
   GraphNode,
   GraphLink,
@@ -82,10 +89,10 @@ export const EDGE_STYLES: Record<
 function forceSubcategoryCluster(
   nodes: GraphNode[],
   strength: number = 0.1
-): d3.Force<GraphNode, GraphLink> {
+): Force<GraphNode, GraphLink> {
   let cachedNodes: GraphNode[] = nodes;
 
-  const force: d3.Force<GraphNode, GraphLink> = (alpha: number) => {
+  const force: Force<GraphNode, GraphLink> = (alpha: number) => {
     // Group concept nodes by subcategory
     const subcategoryGroups = new Map<string, GraphNode[]>();
 
@@ -134,13 +141,11 @@ export function createForceSimulation(
   links: GraphLink[],
   width: number,
   height: number
-): d3.Simulation<GraphNode, GraphLink> {
-  return d3
-    .forceSimulation<GraphNode>(nodes)
+): Simulation<GraphNode, GraphLink> {
+  return forceSimulation<GraphNode>(nodes)
     .force(
       "link",
-      d3
-        .forceLink<GraphNode, GraphLink>(links)
+      forceLink<GraphNode, GraphLink>(links)
         .id((d) => d.id)
         .distance((link) => {
           // Longer distances to spread nodes out more
@@ -154,19 +159,17 @@ export function createForceSimulation(
     )
     .force(
       "charge",
-      d3
-        .forceManyBody<GraphNode>()
+      forceManyBody<GraphNode>()
         .strength((d) => {
           // Much stronger repulsion to prevent overlap
           return isClusterNode(d) ? -600 : -300;
         })
         .distanceMax(500)
     )
-    .force("center", d3.forceCenter(width / 2, height / 2).strength(0.05))
+    .force("center", forceCenter(width / 2, height / 2).strength(0.05))
     .force(
       "collide",
-      d3
-        .forceCollide<GraphNode>()
+      forceCollide<GraphNode>()
         .radius((d) => getNodeRadius(d, false) + 25) // Much larger collision radius
         .iterations(3) // More iterations for better collision resolution
         .strength(1) // Full collision strength
@@ -263,16 +266,16 @@ export function computeSugiyamaLayout(
 
   try {
     // Create DAG using stratify
-    const stratify = d3dag.graphStratify();
+    const stratify = graphStratify();
     const dag = stratify(dagData);
 
     // Create Sugiyama layout with pyramid-style hierarchy
     // - coordCenter: centers children under parents for pyramid look
     // - Larger vertical spacing (120) for clear layer separation
     // - Horizontal spacing (100) for readability
-    const layout = d3dag.sugiyama()
+    const layout = sugiyama()
       .nodeSize(() => [100, 120] as const) // [horizontal, vertical] spacing
-      .coord(d3dag.coordCenter()); // Center nodes for pyramid hierarchy
+      .coord(coordCenter()); // Center nodes for pyramid hierarchy
 
     // Run layout
     const { width: dagWidth, height: dagHeight } = layout(dag);
