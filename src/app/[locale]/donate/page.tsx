@@ -1,56 +1,29 @@
-"use client";
-
-import { motion } from "framer-motion";
+import { getTranslations, getLocale } from "next-intl/server";
 import NavigationWrapper from "@/components/NavigationWrapper";
-import { titleVariants, staggerContainer, staggerChild } from "@/lib/animations";
-import { useTranslations, useLocale } from "next-intl";
+import MotionFadeIn from "@/components/MotionFadeIn";
+import { MotionStaggerGroup, MotionStaggerItem } from "@/components/MotionStaggerGroup";
 import { getRaMaterialUrl, type AvailableLanguage } from "@/lib/quote-utils";
 
+// Pure SVG icons - no client JS needed
 function HeartIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-      />
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
 }
 
 function CoffeeIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3"
-      />
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h1a4 4 0 1 1 0 8h-1M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" />
     </svg>
   );
 }
 
 function ServerIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-    >
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
       <rect x="2" y="3" width="20" height="14" rx="2" />
       <path strokeLinecap="round" d="M8 21h8M12 17v4" />
     </svg>
@@ -59,13 +32,7 @@ function ServerIcon({ className }: { className?: string }) {
 
 function CodeIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-    >
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M16 18l6-6-6-6M8 6l-6 6 6 6" />
     </svg>
   );
@@ -73,36 +40,24 @@ function CodeIcon({ className }: { className?: string }) {
 
 function GlobeIcon({ className }: { className?: string }) {
   return (
-    <svg
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      strokeWidth={1.5}
-    >
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
       <circle cx="12" cy="12" r="10" />
       <path strokeLinecap="round" d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
     </svg>
   );
 }
 
-export default function DonatePage() {
-  const t = useTranslations("donate");
-  const locale = useLocale() as AvailableLanguage;
+export default async function DonatePage() {
+  const t = await getTranslations("donate");
+  const locale = (await getLocale()) as AvailableLanguage;
 
   return (
     <NavigationWrapper>
       <main className="min-h-dvh flex flex-col cosmic-bg relative">
-        {/* Content */}
         <div className="flex-1 overflow-auto relative z-10 py-8 px-6">
           <article className="max-w-3xl mx-auto">
-            {/* Page Title */}
-            <motion.div
-              className="text-center mb-12"
-              variants={titleVariants}
-              initial="hidden"
-              animate="visible"
-            >
+            {/* Page Title - animated */}
+            <MotionFadeIn className="text-center mb-12" variant="title">
               <div className="flex justify-center mb-4">
                 <div className="w-16 h-16 rounded-full bg-[var(--lo1-gold)]/20 flex items-center justify-center">
                   <HeartIcon className="w-8 h-8 text-[var(--lo1-gold)]" />
@@ -114,16 +69,11 @@ export default function DonatePage() {
               <p className="text-[var(--lo1-stardust)] text-lg max-w-xl mx-auto">
                 {t("subtitle")}
               </p>
-            </motion.div>
+            </MotionFadeIn>
 
-            {/* Buy Me a Coffee Card */}
-            <motion.section
-              className="mb-12"
-              variants={staggerContainer(0.1)}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div variants={staggerChild}>
+            {/* Buy Me a Coffee Card - animated */}
+            <MotionStaggerGroup className="mb-12">
+              <MotionStaggerItem>
                 <a
                   href="https://buymeacoffee.com/lawofone.study"
                   target="_blank"
@@ -148,77 +98,61 @@ export default function DonatePage() {
                     </svg>
                   </span>
                 </a>
-              </motion.div>
-            </motion.section>
+              </MotionStaggerItem>
+            </MotionStaggerGroup>
 
-            {/* What Your Support Enables */}
-            <motion.section
-              className="mb-12"
-              variants={staggerContainer(0.1)}
-              initial="hidden"
-              animate="visible"
-            >
+            {/* What Your Support Enables - animated stagger */}
+            <section className="mb-12">
               <h2 className="text-2xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6 text-center">
                 {t("whatYourSupportEnables.title")}
               </h2>
-              <motion.div
-                className="grid md:grid-cols-3 gap-4"
-                variants={staggerContainer(0.1)}
-              >
-                <motion.div
-                  variants={staggerChild}
-                  className="bg-[var(--lo1-indigo)]/30 backdrop-blur-sm border border-[var(--lo1-celestial)]/30 rounded-xl p-5"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
-                      <ServerIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
+              <MotionStaggerGroup className="grid md:grid-cols-3 gap-4">
+                <MotionStaggerItem>
+                  <div className="bg-[var(--lo1-indigo)]/30 backdrop-blur-sm border border-[var(--lo1-celestial)]/30 rounded-xl p-5">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
+                        <ServerIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
+                      </div>
+                      <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.hosting.title")}</h3>
                     </div>
-                    <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.hosting.title")}</h3>
+                    <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
+                      {t("whatYourSupportEnables.hosting.description")}
+                    </p>
                   </div>
-                  <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
-                    {t("whatYourSupportEnables.hosting.description")}
-                  </p>
-                </motion.div>
+                </MotionStaggerItem>
 
-                <motion.div
-                  variants={staggerChild}
-                  className="bg-[var(--lo1-indigo)]/30 backdrop-blur-sm border border-[var(--lo1-celestial)]/30 rounded-xl p-5"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
-                      <CodeIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
+                <MotionStaggerItem>
+                  <div className="bg-[var(--lo1-indigo)]/30 backdrop-blur-sm border border-[var(--lo1-celestial)]/30 rounded-xl p-5">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
+                        <CodeIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
+                      </div>
+                      <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.development.title")}</h3>
                     </div>
-                    <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.development.title")}</h3>
+                    <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
+                      {t("whatYourSupportEnables.development.description")}
+                    </p>
                   </div>
-                  <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
-                    {t("whatYourSupportEnables.development.description")}
-                  </p>
-                </motion.div>
+                </MotionStaggerItem>
 
-                <motion.div
-                  variants={staggerChild}
-                  className="bg-[var(--lo1-indigo)]/30 backdrop-blur-sm border border-[var(--lo1-celestial)]/30 rounded-xl p-5"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
-                      <GlobeIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
+                <MotionStaggerItem>
+                  <div className="bg-[var(--lo1-indigo)]/30 backdrop-blur-sm border border-[var(--lo1-celestial)]/30 rounded-xl p-5">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center">
+                        <GlobeIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
+                      </div>
+                      <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.freeAccess.title")}</h3>
                     </div>
-                    <h3 className="font-semibold text-[var(--lo1-starlight)]">{t("whatYourSupportEnables.freeAccess.title")}</h3>
+                    <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
+                      {t("whatYourSupportEnables.freeAccess.description")}
+                    </p>
                   </div>
-                  <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">
-                    {t("whatYourSupportEnables.freeAccess.description")}
-                  </p>
-                </motion.div>
-              </motion.div>
-            </motion.section>
+                </MotionStaggerItem>
+              </MotionStaggerGroup>
+            </section>
 
-            {/* Footer Quote */}
-            <motion.section
-              className="text-center mt-16"
-              variants={staggerChild}
-              initial="hidden"
-              animate="visible"
-            >
+            {/* Footer Quote - static server-rendered */}
+            <section className="text-center mt-16">
               <blockquote className="max-w-2xl mx-auto">
                 <p className="font-[family-name:var(--font-cormorant)] italic text-xl text-[var(--lo1-stardust)] leading-relaxed mb-3">
                   &ldquo;{t("footerQuote.text")}&rdquo;
@@ -234,7 +168,7 @@ export default function DonatePage() {
                   </a>
                 </footer>
               </blockquote>
-            </motion.section>
+            </section>
           </article>
         </div>
       </main>

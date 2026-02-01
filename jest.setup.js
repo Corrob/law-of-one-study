@@ -72,6 +72,11 @@ process.env.NEXT_PUBLIC_POSTHOG_KEY = "test-key";
 process.env.NEXT_PUBLIC_POSTHOG_HOST = "https://test.posthog.com";
 process.env.OPENAI_API_KEY = "test-openai-key";
 
+// Mock DOM APIs not implemented in jsdom
+if (typeof Element !== "undefined") {
+  Element.prototype.scrollIntoView = jest.fn();
+}
+
 // Expose Node.js native fetch APIs to the jsdom environment
 // These are needed for Next.js API route testing
 const { Request, Response, Headers, fetch } = globalThis;

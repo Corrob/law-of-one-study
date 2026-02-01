@@ -3,6 +3,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin();
 
+const STATIC_CACHE_MAX_AGE = "public, max-age=2592000"; // 30 days
+
 const nextConfig: NextConfig = {
   // Required for PostHog proxy
   skipTrailingSlashRedirect: true,
@@ -23,7 +25,41 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Security headers are now managed by middleware.ts for nonce-based CSP
+  // Cache static assets that rarely change
+  async headers() {
+    return [
+      {
+        // Ra material JSON files - cache for 30 days
+        source: "/sections/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: STATIC_CACHE_MAX_AGE,
+          },
+        ],
+      },
+      {
+        // Tarot and other static images - cache for 30 days
+        source: "/images/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: STATIC_CACHE_MAX_AGE,
+          },
+        ],
+      },
+      {
+        // PWA icons - cache for 30 days
+        source: "/icons/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: STATIC_CACHE_MAX_AGE,
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);
