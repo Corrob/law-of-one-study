@@ -136,8 +136,8 @@ export const QUOTE_CONFIG = {
 
 /** Stream recovery configuration for mobile backgrounding resilience */
 export const STREAM_RECOVERY_CONFIG = {
-  /** TTL for cached responses in Redis (seconds) */
-  cacheTtlSeconds: 300,
+  /** TTL for cached responses in Redis (seconds) — 24 hours */
+  cacheTtlSeconds: 86_400,
   /** Time after resume to wait for new data before declaring stream dead (ms) */
   staleTimeoutMs: 5_000,
   /** Minimum hidden duration before treating resume as mobile backgrounding (ms).
