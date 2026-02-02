@@ -465,6 +465,160 @@ describe("useChatStream", () => {
       );
       expect(result.current.streamDone).toBe(true);
     });
+
+    it("should treat recovery as failed when cache has only non-chunk events", async () => {
+      mockFetch.mockResolvedValueOnce(
+        createMockReaderResponse(
+          ['event: session\ndata: {"responseId":"no-chunks-id"}\n\n'],
+          new Error("connection lost")
+        )
+      );
+
+      // Server cache has session + meta but no actual chunks
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "session", data: { responseId: "no-chunks-id" } },
+          { event: "meta", data: { intent: "question" } },
+        ],
+        complete: false,
+      });
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      // No chunks were replayed, so addChunk should not have been called with recovery content
+      expect(addChunk).not.toHaveBeenCalled();
+      // Should fall through to error path — isStreaming cleared, error message shown
+      expect(result.current.isStreaming).toBe(false);
+      expect(result.current.messages).toHaveLength(2);
+      expect(result.current.messages[1].role).toBe("assistant");
+    });
+
+    it("should schedule suggestions retry when recovery has chunks but no suggestions", async () => {
+      jest.useFakeTimers();
+
+      mockFetch.mockResolvedValueOnce(
+        createMockReaderResponse(
+          ['event: session\ndata: {"responseId":"no-suggestions-id"}\n\n'],
+          new Error("connection lost")
+        )
+      );
+
+      // First recovery: chunks but no suggestions
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "chunk", data: { type: "text", content: "Answer text" } },
+        ],
+        complete: false,
+      });
+
+      // Retry recovery: now includes suggestions
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "chunk", data: { type: "text", content: "Answer text" } },
+          { event: "suggestions", data: { items: ["Follow up?", "More info?"] } },
+        ],
+        complete: true,
+      });
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      // Should have recovered content
+      expect(addChunk).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "text", content: "Answer text" })
+      );
+      expect(result.current.streamDone).toBe(true);
+      // No suggestions yet
+      expect(result.current.suggestions).toEqual([]);
+
+      // Advance timer to trigger suggestions retry
+      await act(async () => {
+        jest.advanceTimersByTime(3_000);
+      });
+      // Let the retry promise resolve
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(result.current.suggestions).toEqual(["Follow up?", "More info?"]);
+      expect(mockRecoverFromServer).toHaveBeenCalledTimes(2);
+
+      jest.useRealTimers();
+    });
+
+    it("should stop retrying suggestions after max attempts", async () => {
+      jest.useFakeTimers();
+
+      mockFetch.mockResolvedValueOnce(
+        createMockReaderResponse(
+          ['event: session\ndata: {"responseId":"exhausted-id"}\n\n'],
+          new Error("connection lost")
+        )
+      );
+
+      // First recovery: chunks but no suggestions
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "chunk", data: { type: "text", content: "Answer" } },
+        ],
+        complete: false,
+      });
+
+      // Retry 1: still no suggestions
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "chunk", data: { type: "text", content: "Answer" } },
+        ],
+        complete: false,
+      });
+
+      // Retry 2: still no suggestions
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "chunk", data: { type: "text", content: "Answer" } },
+        ],
+        complete: true,
+      });
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      // Advance through both retry attempts
+      for (let i = 0; i < 2; i++) {
+        await act(async () => {
+          jest.advanceTimersByTime(3_000);
+        });
+        await act(async () => {
+          await Promise.resolve();
+        });
+      }
+
+      // Should have called recover 3 times: initial + 2 retries
+      expect(mockRecoverFromServer).toHaveBeenCalledTimes(3);
+      // Suggestions should still be empty — retries exhausted
+      expect(result.current.suggestions).toEqual([]);
+
+      // Advance again — should NOT trigger a 3rd retry
+      await act(async () => {
+        jest.advanceTimersByTime(3_000);
+      });
+      expect(mockRecoverFromServer).toHaveBeenCalledTimes(3);
+
+      jest.useRealTimers();
+    });
   });
 
   describe("finalizeMessage", () => {

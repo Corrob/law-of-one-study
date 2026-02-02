@@ -12,6 +12,7 @@ import {
   parseSessionEventData,
 } from "@/lib/schemas/sse-events";
 import { DEFAULT_LOCALE } from "@/lib/language-config";
+import { STREAM_RECOVERY_CONFIG } from "@/lib/config";
 import { useStreamRecovery } from "./useStreamRecovery";
 
 /** Maximum number of messages to keep in memory (prevents unbounded growth) */
@@ -39,32 +40,40 @@ interface UseChatStreamReturn {
   setMessages: React.Dispatch<React.SetStateAction<MessageType[]>>;
 }
 
+/** Metadata about what was replayed during recovery */
+interface ReplayResult {
+  chunksReplayed: number;
+  hadSuggestions: boolean;
+}
+
 /**
  * Process cached events through the same pipeline as live SSE events.
  * Used during recovery to replay server-cached responses.
+ * Returns metadata about what was replayed so callers can decide next steps.
  */
 function replayCachedEvents(
   events: Array<{ event: string; data: object }>,
   addChunk: (chunk: AnimationChunk) => void,
   setSuggestions: (items: string[]) => void
-): void {
-  let chunkIdCounter = 0;
+): ReplayResult {
+  let contentChunkCount = 0;
+  let hadSuggestions = false;
 
   for (const { event, data } of events) {
     if (event === "chunk") {
       const chunkData = parseChunkData(data);
       if (!chunkData) continue;
-      chunkIdCounter++;
+      contentChunkCount++;
 
       if (chunkData.type === "text") {
         addChunk({
-          id: `recovery-chunk-${chunkIdCounter}`,
+          id: `recovery-chunk-${contentChunkCount}`,
           type: "text",
           content: chunkData.content,
         });
       } else if (chunkData.type === "quote") {
         addChunk({
-          id: `recovery-chunk-${chunkIdCounter}`,
+          id: `recovery-chunk-${contentChunkCount}`,
           type: "quote",
           quote: {
             text: chunkData.text,
@@ -77,33 +86,101 @@ function replayCachedEvents(
       const suggestionsData = parseSuggestionsEventData(data);
       if (suggestionsData) {
         setSuggestions(suggestionsData.items);
+        hadSuggestions = true;
       }
     }
     // "meta", "session", "done" events are handled by caller or ignored during replay
   }
+
+  return { chunksReplayed: contentChunkCount, hadSuggestions };
+}
+
+/** Result of a recovery attempt */
+interface RecoveryResult {
+  recovered: boolean;
+  hadSuggestions: boolean;
 }
 
 /**
  * Attempt to recover a response from the server cache.
- * Returns true if recovery succeeded and events were replayed.
+ * Returns whether recovery succeeded and whether suggestions were included.
+ * Recovery is only considered successful if actual content chunks were replayed —
+ * a cache with only meta/session events would leave the UI stuck.
  */
 async function tryRecover(
   recoveryPromise: Promise<{ events: Array<{ event: string; data: object }>; complete: boolean } | null> | null,
   addChunk: (chunk: AnimationChunk) => void,
   setSuggestions: (items: string[]) => void,
   setStreamDone: (done: boolean) => void
-): Promise<boolean> {
-  if (!recoveryPromise) return false;
+): Promise<RecoveryResult> {
+  if (!recoveryPromise) return { recovered: false, hadSuggestions: false };
   const cached = await recoveryPromise;
-  if (!cached || cached.events.length === 0) return false;
+  if (!cached || cached.events.length === 0) return { recovered: false, hadSuggestions: false };
+
+  const { chunksReplayed, hadSuggestions } = replayCachedEvents(cached.events, addChunk, setSuggestions);
+
+  if (chunksReplayed === 0) {
+    debug.log("[useChatStream] Recovery cache had no content chunks, treating as failed");
+    return { recovered: false, hadSuggestions: false };
+  }
 
   debug.log("[useChatStream] Recovered from cache:", {
     eventCount: cached.events.length,
+    chunksReplayed,
+    hadSuggestions,
     complete: cached.complete,
   });
-  replayCachedEvents(cached.events, addChunk, setSuggestions);
   setStreamDone(true);
-  return true;
+  return { recovered: true, hadSuggestions };
+}
+
+/**
+ * Fire-and-forget: poll the recovery endpoint for suggestions after a delay.
+ * The server may still be generating suggestions when the initial recovery fetch
+ * happens, so we retry up to `suggestionsRetryMaxAttempts` times.
+ */
+function retrySuggestionsFromCache(
+  responseId: string,
+  recoverFromServer: (id: string) => Promise<{ events: Array<{ event: string; data: object }>; complete: boolean } | null>,
+  setSuggestions: (items: string[]) => void
+): void {
+  const { suggestionsRetryDelayMs, suggestionsRetryMaxAttempts } = STREAM_RECOVERY_CONFIG;
+  let attempts = 0;
+
+  function attempt() {
+    attempts++;
+    setTimeout(async () => {
+      try {
+        const cached = await recoverFromServer(responseId);
+        if (!cached) return;
+
+        for (const { event, data } of cached.events) {
+          if (event === "suggestions") {
+            const suggestionsData = parseSuggestionsEventData(data);
+            if (suggestionsData) {
+              debug.log("[useChatStream] Suggestions retry succeeded on attempt", attempts);
+              setSuggestions(suggestionsData.items);
+              return;
+            }
+          }
+        }
+
+        // No suggestions found — retry if under limit
+        if (attempts < suggestionsRetryMaxAttempts) {
+          attempt();
+        } else {
+          debug.log("[useChatStream] Suggestions retry exhausted, giving up");
+        }
+      } catch {
+        debug.log("[useChatStream] Suggestions retry failed on attempt", attempts);
+        if (attempts < suggestionsRetryMaxAttempts) {
+          attempt();
+        }
+      }
+    }, suggestionsRetryDelayMs);
+  }
+
+  attempt();
 }
 
 /**
@@ -326,11 +403,23 @@ export function useChatStream(
         const recoveryId = currentResponseId;
         const recoveryPromise = recoveryId ? recoverRef.current(recoveryId) : null;
 
+        /** Attempt cache recovery; schedule suggestions retry if needed. */
+        async function attemptRecoveryWithSuggestions(): Promise<boolean> {
+          const result = await tryRecover(recoveryPromise, addChunk, setSuggestions, setStreamDone);
+          if (result.recovered) {
+            if (!result.hadSuggestions && recoveryId) {
+              retrySuggestionsFromCache(recoveryId, recoverRef.current, setSuggestions);
+            }
+            return true;
+          }
+          return false;
+        }
+
         if (error instanceof DOMException && error.name === "AbortError") {
           if (userAbortedRef.current) {
             return;
           }
-          if (await tryRecover(recoveryPromise, addChunk, setSuggestions, setStreamDone)) {
+          if (await attemptRecoveryWithSuggestions()) {
             return;
           }
           // Recovery failed after stale-connection abort (e.g., desktop tab switch
@@ -338,7 +427,7 @@ export function useChatStream(
         } else {
           console.error("Chat error:", error);
 
-          if (await tryRecover(recoveryPromise, addChunk, setSuggestions, setStreamDone)) {
+          if (await attemptRecoveryWithSuggestions()) {
             return;
           }
         }

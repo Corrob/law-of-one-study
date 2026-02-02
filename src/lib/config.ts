@@ -150,6 +150,10 @@ export const STREAM_RECOVERY_CONFIG = {
   forceFinalizeDelayMs: 3_000,
   /** sessionStorage key for the current response ID */
   responseIdStorageKey: "lo1-response-id",
+  /** Delay before retrying recovery endpoint for suggestions (ms) */
+  suggestionsRetryDelayMs: 3_000,
+  /** Maximum retry attempts for fetching suggestions after recovery */
+  suggestionsRetryMaxAttempts: 2,
 } as const;
 
 // =============================================================================
