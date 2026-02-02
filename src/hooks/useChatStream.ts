@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Message as MessageType, MessageSegment, AnimationChunk } from "@/lib/types";
 import { parseSSE } from "@/lib/sse";
 import { debug } from "@/lib/debug";
@@ -9,8 +9,10 @@ import {
   parseChunkData,
   parseSuggestionsEventData,
   parseErrorEventData,
+  parseSessionEventData,
 } from "@/lib/schemas/sse-events";
 import { DEFAULT_LOCALE } from "@/lib/language-config";
+import { useStreamRecovery } from "./useStreamRecovery";
 
 /** Maximum number of messages to keep in memory (prevents unbounded growth) */
 const MAX_CONVERSATION_HISTORY = 30;
@@ -38,6 +40,73 @@ interface UseChatStreamReturn {
 }
 
 /**
+ * Process cached events through the same pipeline as live SSE events.
+ * Used during recovery to replay server-cached responses.
+ */
+function replayCachedEvents(
+  events: Array<{ event: string; data: object }>,
+  addChunk: (chunk: AnimationChunk) => void,
+  setSuggestions: (items: string[]) => void
+): void {
+  let chunkIdCounter = 0;
+
+  for (const { event, data } of events) {
+    if (event === "chunk") {
+      const chunkData = parseChunkData(data);
+      if (!chunkData) continue;
+      chunkIdCounter++;
+
+      if (chunkData.type === "text") {
+        addChunk({
+          id: `recovery-chunk-${chunkIdCounter}`,
+          type: "text",
+          content: chunkData.content,
+        });
+      } else if (chunkData.type === "quote") {
+        addChunk({
+          id: `recovery-chunk-${chunkIdCounter}`,
+          type: "quote",
+          quote: {
+            text: chunkData.text,
+            reference: chunkData.reference,
+            url: chunkData.url,
+          },
+        });
+      }
+    } else if (event === "suggestions") {
+      const suggestionsData = parseSuggestionsEventData(data);
+      if (suggestionsData) {
+        setSuggestions(suggestionsData.items);
+      }
+    }
+    // "meta", "session", "done" events are handled by caller or ignored during replay
+  }
+}
+
+/**
+ * Attempt to recover a response from the server cache.
+ * Returns true if recovery succeeded and events were replayed.
+ */
+async function tryRecover(
+  recoveryPromise: Promise<{ events: Array<{ event: string; data: object }>; complete: boolean } | null> | null,
+  addChunk: (chunk: AnimationChunk) => void,
+  setSuggestions: (items: string[]) => void,
+  setStreamDone: (done: boolean) => void
+): Promise<boolean> {
+  if (!recoveryPromise) return false;
+  const cached = await recoveryPromise;
+  if (!cached || cached.events.length === 0) return false;
+
+  debug.log("[useChatStream] Recovered from cache:", {
+    eventCount: cached.events.length,
+    complete: cached.complete,
+  });
+  replayCachedEvents(cached.events, addChunk, setSuggestions);
+  setStreamDone(true);
+  return true;
+}
+
+/**
  * Custom hook for managing chat streaming with SSE.
  *
  * Handles:
@@ -46,19 +115,10 @@ interface UseChatStreamReturn {
  * - Managing message state and history
  * - Tracking analytics events
  * - Error handling and rate limiting
+ * - Recovery from mobile backgrounding via server-side response cache
  *
  * @param onPlaceholderChange - Callback when placeholder should update based on conversation depth
  * @returns Chat stream state and controls
- *
- * @example
- * ```tsx
- * const { messages, isStreaming, sendMessage, reset } = useChatStream({
- *   onPlaceholderChange: (depth) => setPlaceholder(getPlaceholder(depth))
- * });
- *
- * // Send a message
- * await sendMessage("What is the Law of One?", addChunk);
- * ```
  */
 export function useChatStream(
   onPlaceholderChange?: (conversationDepth: number) => void
@@ -67,9 +127,18 @@ export function useChatStream(
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const userAbortedRef = useRef(false);
+
+  const { setResponseId, recoverFromServer, registerStreamAbort } = useStreamRecovery();
+
+  // Keep a stable ref so the sendMessage callback doesn't depend on recoverFromServer identity
+  const recoverRef = useRef(recoverFromServer);
+  recoverRef.current = recoverFromServer;
 
   const sendMessage = useCallback(
     async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = DEFAULT_LOCALE) => {
+      userAbortedRef.current = false;
       const requestStartTime = Date.now();
 
       // Add user message
@@ -102,23 +171,36 @@ export function useChatStream(
       setStreamDone(false);
       setSuggestions([]);
 
+      // Cancel any in-flight request
+      abortControllerRef.current?.abort();
+
+      const requestBody = JSON.stringify({
+        message: content,
+        history: messages.map((m) => ({
+          role: m.role,
+          content: m.content,
+          quotesUsed: m.segments
+            ?.filter((s) => s.type === "quote")
+            .map((s) => (s.type === "quote" ? s.quote.reference : null))
+            .filter(Boolean),
+        })),
+        thinkingMode,
+        targetLanguage,
+      });
+
+      let contentChunksReceived = false;
+      let currentResponseId: string | null = null;
+
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+      registerStreamAbort(abortController);
+
       try {
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            message: content,
-            history: messages.map((m) => ({
-              role: m.role,
-              content: m.content,
-              quotesUsed: m.segments
-                ?.filter((s) => s.type === "quote")
-                .map((s) => (s.type === "quote" ? s.quote.reference : null))
-                .filter(Boolean),
-            })),
-            thinkingMode,
-            targetLanguage,
-          }),
+          signal: abortController.signal,
+          body: requestBody,
         });
 
         if (!response.ok) {
@@ -170,7 +252,14 @@ export function useChatStream(
           for (const event of events) {
             debug.log("[useChatStream] SSE event:", { type: event.type });
 
-            if (event.type === "chunk") {
+            if (event.type === "session") {
+              // Store response ID for recovery
+              const sessionData = parseSessionEventData(event.data);
+              if (sessionData) {
+                currentResponseId = sessionData.responseId;
+                setResponseId(sessionData.responseId);
+              }
+            } else if (event.type === "chunk") {
               const chunkData = parseChunkData(event.data);
               if (!chunkData) {
                 debug.log("[useChatStream] Invalid chunk data:", event.data);
@@ -179,6 +268,7 @@ export function useChatStream(
               chunkIdCounter++;
 
               if (chunkData.type === "text") {
+                contentChunksReceived = true;
                 responseLength += chunkData.content.length;
                 addChunk({
                   id: `chunk-${chunkIdCounter}`,
@@ -186,6 +276,7 @@ export function useChatStream(
                   content: chunkData.content,
                 });
               } else if (chunkData.type === "quote") {
+                contentChunksReceived = true;
                 quoteCount++;
                 addChunk({
                   id: `chunk-${chunkIdCounter}`,
@@ -216,7 +307,6 @@ export function useChatStream(
               const errorData = parseErrorEventData(event.data);
               debug.log("[useChatStream] SSE error:", errorData);
 
-              // Create error with structured data for analytics
               const error = new Error(errorData?.message || "An error occurred");
               Object.assign(error, {
                 code: errorData?.code,
@@ -226,11 +316,46 @@ export function useChatStream(
             }
           }
         }
-      } catch (error) {
-        console.error("Chat error:", error);
 
+        // Success
+        return;
+      } catch (error) {
+        // Try to recover from server cache — one fetch, reused across paths.
+        // The server keeps running even after the client disconnects, so the
+        // response may be fully (or partially) cached.
+        const recoveryId = currentResponseId;
+        const recoveryPromise = recoveryId ? recoverRef.current(recoveryId) : null;
+
+        if (error instanceof DOMException && error.name === "AbortError") {
+          if (userAbortedRef.current) {
+            return;
+          }
+          if (await tryRecover(recoveryPromise, addChunk, setSuggestions, setStreamDone)) {
+            return;
+          }
+          // Recovery failed after stale-connection abort (e.g., desktop tab switch
+          // where the server hasn't finished yet) — fall through to graceful degradation
+        } else {
+          console.error("Chat error:", error);
+
+          if (await tryRecover(recoveryPromise, addChunk, setSuggestions, setStreamDone)) {
+            return;
+          }
+        }
+
+        // Recovery failed or no responseId — fall back to graceful degradation
+        if (contentChunksReceived) {
+          addChunk({
+            id: "chunk-incomplete",
+            type: "text",
+            content: "\n\n_(Response may be incomplete due to a connection issue.)_",
+          });
+          setStreamDone(true);
+          return;
+        }
+
+        // No chunks and no recovery — show error message
         // Extract error code if present (from SSE error events)
-        // Use type guard pattern to safely access extended error properties
         const hasErrorCode = (e: unknown): e is Error & { code?: string; retryable?: boolean } =>
           e instanceof Error && "code" in e;
 
@@ -243,10 +368,8 @@ export function useChatStream(
           "streaming_error";
 
         if (errorCode && error instanceof Error) {
-          // Use the user-friendly message from the server
           errorText = error.message;
 
-          // Map error codes to analytics types
           if (errorCode === "RATE_LIMITED") {
             errorType = "rate_limit";
           } else if (errorCode === "VALIDATION_ERROR") {
@@ -255,7 +378,6 @@ export function useChatStream(
             errorType = "api_error";
           }
         } else if (error instanceof Error && error.message) {
-          // Fallback for non-coded errors (e.g., from HTTP response)
           if (
             error.message.includes("Maximum") ||
             error.message.includes("too long") ||
@@ -285,9 +407,12 @@ export function useChatStream(
         };
         setMessages((prev) => [...prev, errorMessage]);
         setIsStreaming(false);
+        return;
+      } finally {
+        registerStreamAbort(null);
       }
     },
-    [messages]
+    [messages, setResponseId, registerStreamAbort]
   );
 
   const finalizeMessage = useCallback(
@@ -332,6 +457,9 @@ export function useChatStream(
   );
 
   const reset = useCallback(() => {
+    userAbortedRef.current = true;
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
     setMessages([]);
     setStreamDone(false);
     setIsStreaming(false);

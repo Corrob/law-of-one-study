@@ -7,7 +7,7 @@
 
 import { NextRequest } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
-import { RATE_LIMIT_CONFIG } from "@/lib/config";
+import { RATE_LIMIT_CONFIG, SSE_CONFIG } from "@/lib/config";
 import { ChatMessage } from "@/lib/types";
 
 import {
@@ -16,6 +16,7 @@ import {
   executeChatQuery,
   createSSESender,
   createSSEResponse,
+  startHeartbeat,
 } from "@/lib/chat";
 
 interface ChatRequest {
@@ -73,20 +74,34 @@ export async function POST(request: NextRequest) {
     }
 
     // Create streaming response
+    const responseId = crypto.randomUUID();
+
     const stream = new ReadableStream({
       async start(controller) {
         const send = createSSESender(controller);
+        const stopHeartbeat = startHeartbeat(controller, SSE_CONFIG.heartbeatIntervalMs);
 
-        await executeChatQuery({
-          message,
-          history,
-          clientIp,
-          send,
-          thinkingMode: thinkingMode ?? false,
-          targetLanguage: targetLanguage ?? 'en',
-        });
+        // Send responseId as the first event so the client can use it for recovery
+        send("session", { responseId });
 
-        controller.close();
+        try {
+          await executeChatQuery({
+            message,
+            history,
+            clientIp,
+            send,
+            thinkingMode: thinkingMode ?? false,
+            targetLanguage: targetLanguage ?? 'en',
+            responseId,
+          });
+        } finally {
+          stopHeartbeat();
+          try {
+            controller.close();
+          } catch {
+            // Controller may already be closed if the client disconnected
+          }
+        }
       },
     });
 

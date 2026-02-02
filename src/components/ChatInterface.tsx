@@ -11,6 +11,7 @@ import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { Message, MessageSegment } from "@/lib/types";
+import { STREAM_RECOVERY_CONFIG } from "@/lib/config";
 
 const INITIAL_PLACEHOLDER_COUNT = 4;
 const FOLLOWUP_PLACEHOLDER_COUNT = 6;
@@ -98,6 +99,7 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     queueLength,
     onChunkComplete,
     addChunk,
+    forceFinalize,
     reset: resetQueue,
   } = useAnimationQueue();
 
@@ -161,6 +163,16 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
       resetQueue();
     }
   }, [streamDone, isFullyComplete, allChunks, finalizeMessage, resetQueue]);
+
+  // Force-finalize stalled animation queue (e.g., mobile app backgrounded and resumed)
+  useEffect(() => {
+    if (streamDone && !isFullyComplete) {
+      const timeout = setTimeout(() => {
+        forceFinalize();
+      }, STREAM_RECOVERY_CONFIG.forceFinalizeDelayMs);
+      return () => clearTimeout(timeout);
+    }
+  }, [streamDone, isFullyComplete, forceFinalize]);
 
   // Auto-send initial query if provided (e.g., from search "Ask about this")
   useEffect(() => {

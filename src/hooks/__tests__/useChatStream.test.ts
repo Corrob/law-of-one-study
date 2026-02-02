@@ -68,6 +68,22 @@ jest.mock("@/lib/analytics", () => ({
   },
 }));
 
+// Mock useStreamRecovery
+const mockSetResponseId = jest.fn();
+const mockRecoverFromServer = jest.fn();
+const mockRegisterStreamAbort = jest.fn();
+
+jest.mock("../useStreamRecovery", () => ({
+  useStreamRecovery: () => ({
+    responseId: null,
+    setResponseId: mockSetResponseId,
+    wasBackgrounded: false,
+    clearBackgrounded: jest.fn(),
+    recoverFromServer: mockRecoverFromServer,
+    registerStreamAbort: mockRegisterStreamAbort,
+  }),
+}));
+
 // Mock fetch
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
@@ -84,9 +100,37 @@ function createMockSSEResponse(events: Array<{ type: string; data: object }>) {
   });
 }
 
+/**
+ * Create a mock response whose reader yields SSE chunks then optionally throws.
+ * Useful for simulating mid-stream disconnects / partial reads.
+ */
+function createMockReaderResponse(sseChunks: string[], error?: Error) {
+  const encoder = new globalThis.TextEncoder();
+  let callCount = 0;
+  return {
+    ok: true,
+    status: 200,
+    headers: new Map([["Content-Type", "text/event-stream"]]),
+    body: {
+      getReader: () => ({
+        read: async () => {
+          if (callCount < sseChunks.length) {
+            const value = encoder.encode(sseChunks[callCount]);
+            callCount++;
+            return { done: false, value };
+          }
+          if (error) throw error;
+          return { done: true, value: undefined };
+        },
+      }),
+    },
+  };
+}
+
 describe("useChatStream", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockRecoverFromServer.mockResolvedValue(null);
   });
 
   describe("initial state", () => {
@@ -236,6 +280,25 @@ describe("useChatStream", () => {
       expect(result.current.suggestions).toEqual(["Tell me more", "What else?"]);
     });
 
+    it("should handle session event and store responseId", async () => {
+      mockFetch.mockResolvedValueOnce(
+        createMockSSEResponse([
+          { type: "session", data: { responseId: "test-uuid" } },
+          { type: "chunk", data: { type: "text", content: "Hello" } },
+          { type: "done", data: {} },
+        ])
+      );
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      expect(mockSetResponseId).toHaveBeenCalledWith("test-uuid");
+    });
+
     it("should send history with request", async () => {
       mockFetch.mockResolvedValueOnce(
         createMockSSEResponse([{ type: "done", data: {} }])
@@ -328,6 +391,79 @@ describe("useChatStream", () => {
       expect(result.current.messages).toHaveLength(2);
       expect(result.current.messages[1].role).toBe("assistant");
       expect(result.current.isStreaming).toBe(false);
+    });
+
+    it("should recover from server cache on mid-stream network error with no chunks", async () => {
+      // Stream sends session event but connection dies before any chunks
+      mockFetch.mockResolvedValueOnce(
+        createMockReaderResponse(
+          ['event: session\ndata: {"responseId":"recovery-test-id"}\n\n'],
+          new Error("connection lost")
+        )
+      );
+
+      // Server has the full response cached
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "chunk", data: { type: "text", content: "Recovered response" } },
+          { event: "suggestions", data: { items: ["Follow up?"] } },
+          { event: "done", data: {} },
+        ],
+        complete: true,
+      });
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      // Should have recovered via cache, NOT shown an error
+      expect(addChunk).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "text", content: "Recovered response" })
+      );
+      expect(result.current.streamDone).toBe(true);
+      expect(result.current.suggestions).toEqual(["Follow up?"]);
+      // Only user message — no error message added
+      expect(result.current.messages).toHaveLength(1);
+      expect(result.current.messages[0].role).toBe("user");
+    });
+
+    it("should not show incomplete marker on recovery even when cache is not yet marked complete", async () => {
+      mockFetch.mockResolvedValueOnce(
+        createMockReaderResponse(
+          ['event: session\ndata: {"responseId":"partial-cache-id"}\n\n'],
+          new Error("connection lost")
+        )
+      );
+
+      // Server cached chunks but markComplete hasn't resolved yet
+      mockRecoverFromServer.mockResolvedValueOnce({
+        events: [
+          { event: "chunk", data: { type: "text", content: "Full response here" } },
+        ],
+        complete: false,
+      });
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      // Should replay the chunk
+      expect(addChunk).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "text", content: "Full response here" })
+      );
+      // Should NOT add an "incomplete" marker
+      expect(addChunk).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          content: expect.stringContaining("incomplete"),
+        })
+      );
+      expect(result.current.streamDone).toBe(true);
     });
   });
 
@@ -439,6 +575,106 @@ describe("useChatStream", () => {
       });
 
       expect(result.current.messages).toHaveLength(1);
+    });
+  });
+
+  describe("partial content graceful degradation", () => {
+    it("should finalize with incomplete indicator when chunks were received before error", async () => {
+      // Simulate a stream that sends chunks then errors mid-stream
+      mockFetch.mockResolvedValueOnce(
+        createMockReaderResponse(
+          ['event: chunk\ndata: {"type":"text","content":"Partial response"}\n\n'],
+          new Error("network error")
+        )
+      );
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      // Should have received the text chunk
+      expect(addChunk).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "text", content: "Partial response" })
+      );
+
+      // Should have appended an incomplete indicator chunk
+      expect(addChunk).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "text",
+          content: expect.stringContaining("incomplete"),
+        })
+      );
+
+      // Should set streamDone (triggers finalization flow)
+      expect(result.current.streamDone).toBe(true);
+
+      // Should NOT add an error message to messages (only user message)
+      expect(result.current.messages).toHaveLength(1);
+      expect(result.current.messages[0].role).toBe("user");
+    });
+  });
+
+  describe("abort behavior", () => {
+    it("should not show error when request is aborted", async () => {
+      // Create a fetch that will be aborted
+      let rejectFetch: (reason: Error) => void;
+      mockFetch.mockReturnValueOnce(
+        new Promise((_resolve, reject) => {
+          rejectFetch = reject;
+        })
+      );
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      // Start streaming
+      let sendPromise: Promise<void>;
+      act(() => {
+        sendPromise = result.current.sendMessage("Hi", addChunk);
+      });
+
+      // Abort by resetting
+      act(() => {
+        result.current.reset();
+      });
+
+      // Simulate the AbortError from fetch
+      const abortError = new DOMException("The operation was aborted.", "AbortError");
+      await act(async () => {
+        rejectFetch!(abortError);
+        try {
+          await sendPromise!;
+        } catch {
+          // Expected
+        }
+      });
+
+      // Should have no error messages (reset clears everything)
+      expect(result.current.messages).toEqual([]);
+    });
+
+    it("should pass abort signal to fetch", async () => {
+      mockFetch.mockResolvedValueOnce(
+        createMockSSEResponse([{ type: "done", data: {} }])
+      );
+
+      const { result } = renderHook(() => useChatStream());
+      const addChunk = jest.fn();
+
+      await act(async () => {
+        await result.current.sendMessage("Hi", addChunk);
+      });
+
+      // Verify fetch was called with a signal
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/chat",
+        expect.objectContaining({
+          signal: expect.any(AbortSignal),
+        })
+      );
     });
   });
 

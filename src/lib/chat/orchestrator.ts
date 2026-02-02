@@ -27,6 +27,7 @@ import { detectConcepts, formatConceptsForMeta, buildQueryWithConcepts } from ".
 import { streamOffTopicResponse } from "./off-topic";
 import { performSearch } from "./search";
 import type { SSESender } from "./sse-encoder";
+import { appendEvent } from "./response-cache";
 
 import { LANGUAGE_NAMES_FOR_PROMPTS, isLanguageAvailable, type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 
@@ -42,6 +43,8 @@ export interface ExecuteChatParams {
   thinkingMode?: boolean;
   /** Target language for responses (ISO code, e.g., 'es' for Spanish) */
   targetLanguage?: string;
+  /** Unique ID for caching the response for mobile recovery */
+  responseId: string;
 }
 
 /**
@@ -229,8 +232,14 @@ function trackAnalytics(
  * @throws Never - all errors are sent via SSE
  */
 export async function executeChatQuery(params: ExecuteChatParams): Promise<void> {
-  const { message, history, clientIp, send, thinkingMode = false, targetLanguage = 'en' } = params;
+  const { message, history, clientIp, send, thinkingMode = false, targetLanguage = 'en', responseId } = params;
   const startTime = Date.now();
+
+  // Wrap send to also cache events for mobile recovery (fire-and-forget)
+  const cachingSend: SSESender = (event, data) => {
+    send(event, data);
+    void appendEvent(responseId, event, data);
+  };
 
   try {
     // Build conversation context
@@ -253,7 +262,7 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
 
     // Handle off-topic queries
     if (intent === "off-topic") {
-      await streamOffTopicResponse(send);
+      await streamOffTopicResponse(cachingSend);
       return;
     }
 
@@ -261,7 +270,7 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
     const { passages } = await performSearch(augmentedQuery, sessionRef);
 
     // Send metadata to client
-    send("meta", {
+    cachingSend("meta", {
       quotes: passages,
       intent,
       confidence,
@@ -283,7 +292,7 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
     );
 
     // Stream LLM response
-    const { fullOutput, usage } = await streamLLMResponse(llmMessages, passages, send, thinkingMode);
+    const { fullOutput, usage } = await streamLLMResponse(llmMessages, passages, cachingSend, thinkingMode);
 
     // Track analytics
     if (usage) {
@@ -303,12 +312,12 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
     // Generate follow-up suggestions
     const suggestions = await generateSuggestions(message, fullOutput, intent, { turnCount });
     if (suggestions.length > 0) {
-      send("suggestions", { items: suggestions });
+      cachingSend("suggestions", { items: suggestions });
     }
 
-    send("done", {});
+    cachingSend("done", {});
   } catch (error) {
     console.error("Chat pipeline error:", error);
-    sendStreamError(send, error);
+    sendStreamError(cachingSend, error);
   }
 }

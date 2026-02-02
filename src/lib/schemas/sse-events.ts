@@ -111,6 +111,15 @@ export function parseErrorEventData(
 }
 
 /**
+ * Schema for session event data (response ID for recovery).
+ */
+export const SessionEventDataSchema = z.object({
+  responseId: z.string(),
+});
+
+export type ValidatedSessionEventData = z.infer<typeof SessionEventDataSchema>;
+
+/**
  * Safely parse meta event data with validation.
  *
  * @param data - Raw event data from SSE stream
@@ -120,5 +129,18 @@ export function parseMetaEventData(
   data: unknown
 ): ValidatedMetaEventData | null {
   const result = MetaEventDataSchema.safeParse(data);
+  return result.success ? result.data : null;
+}
+
+/**
+ * Safely parse session event data with validation.
+ *
+ * @param data - Raw event data from SSE stream
+ * @returns Validated session data or null if invalid
+ */
+export function parseSessionEventData(
+  data: unknown
+): ValidatedSessionEventData | null {
+  const result = SessionEventDataSchema.safeParse(data);
   return result.success ? result.data : null;
 }

@@ -24,6 +24,8 @@ interface UseAnimationQueueReturn {
   onChunkComplete: () => void;
   /** Add a new chunk to the animation queue */
   addChunk: (chunk: AnimationChunk) => void;
+  /** Force-complete all chunks immediately (skip remaining animations) */
+  forceFinalize: () => void;
   /** Reset all state for a new message */
   reset: () => void;
 }
@@ -47,7 +49,8 @@ type AnimationQueueAction =
   | { type: "ADD_CHUNK"; chunk: AnimationChunk }
   | { type: "ADVANCE" }
   | { type: "COMPLETE_CURRENT" }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "FORCE_FINALIZE" };
 
 const initialState: AnimationQueueState = {
   queue: [],
@@ -132,6 +135,16 @@ function animationQueueReducer(
       return initialState;
     }
 
+    case "FORCE_FINALIZE": {
+      debug.log("[useAnimationQueue] Force-finalizing all chunks");
+      const all = [
+        ...state.completedChunks,
+        ...(state.currentChunk ? [state.currentChunk] : []),
+        ...state.queue,
+      ];
+      return { queue: [], completedChunks: all, currentChunk: null };
+    }
+
     default:
       return state;
   }
@@ -207,6 +220,10 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
     dispatch({ type: "COMPLETE_CURRENT" });
   }, []);
 
+  const forceFinalize = useCallback(() => {
+    dispatch({ type: "FORCE_FINALIZE" });
+  }, []);
+
   const reset = useCallback(() => {
     dispatch({ type: "RESET" });
   }, []);
@@ -235,6 +252,7 @@ export function useAnimationQueue(): UseAnimationQueueReturn {
     queueLength: state.queue.length,
     onChunkComplete,
     addChunk,
+    forceFinalize,
     reset,
   };
 }

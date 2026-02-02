@@ -5,7 +5,7 @@
  * serverless function instances. Falls back to in-memory Map for local development.
  */
 
-import { Redis } from "@upstash/redis";
+import { redis, isRedisConfigured } from "./redis";
 
 interface RateLimitEntry {
   count: number;
@@ -14,19 +14,6 @@ interface RateLimitEntry {
 
 // In-memory fallback for local development (when Redis is not configured)
 const localLimitMap = new Map<string, RateLimitEntry>();
-
-// Check if Upstash Redis is configured
-const isRedisConfigured = Boolean(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
-);
-
-// Create Redis client only if configured
-const redis = isRedisConfigured
-  ? new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL!,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-    })
-  : null;
 
 export interface RateLimitConfig {
   maxRequests: number;

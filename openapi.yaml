@@ -41,6 +41,7 @@ paths:
                 type: string
                 description: |
                   Server-Sent Events stream with the following event types:
+                  - `session`: Session metadata with response ID (sent first, used for recovery)
                   - `meta`: Initial metadata (quotes, intent, confidence)
                   - `chunk`: Streaming content (text or quote)
                   - `suggestions`: Follow-up question suggestions
@@ -87,6 +88,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerError'
+
+  /api/chat/recover:
+    get:
+      summary: Recover a cached chat response
+      description: |
+        Replays cached SSE events for a given response ID. Used by the client
+        to recover responses after mobile backgrounding kills the SSE connection.
+
+        Each chat response is cached server-side for 5 minutes. If the client
+        loses the SSE connection (e.g., mobile app backgrounded), it can fetch
+        the full response from this endpoint using the response ID received in
+        the `session` SSE event.
+      operationId: recoverChatResponse
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Response ID from the `session` SSE event
+      responses:
+        '200':
+          description: Cached response events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoveryResponse'
+        '400':
+          description: Invalid or missing id parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Response not found (expired or invalid ID)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '429':
+          description: Rate limited
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitError'
 
   /api/search:
     post:
@@ -204,6 +251,15 @@ components:
             type: string
           example: ["50.7", "51.1"]
 
+    SSESessionEvent:
+      type: object
+      description: Session metadata sent as the first event in the stream
+      properties:
+        responseId:
+          type: string
+          format: uuid
+          description: Unique ID for this response (used for recovery via /api/chat/recover)
+
     SSEMetaEvent:
       type: object
       description: Initial metadata sent at start of response
@@ -320,6 +376,29 @@ components:
         - RATE_LIMITED
         - VALIDATION_ERROR
         - UNKNOWN_ERROR
+
+    RecoveryResponse:
+      type: object
+      description: Cached SSE events for response recovery
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/CachedEvent'
+        complete:
+          type: boolean
+          description: Whether the response finished generating (contains a done event)
+
+    CachedEvent:
+      type: object
+      description: A cached SSE event for replay
+      properties:
+        event:
+          type: string
+          description: SSE event type (meta, chunk, suggestions, done, error)
+        data:
+          type: object
+          description: Event payload (same schema as the corresponding SSE event)
 
     ValidationError:
       type: object

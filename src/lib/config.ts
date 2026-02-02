@@ -33,6 +33,16 @@ export const MODEL_PRICING = {
 } as const;
 
 // =============================================================================
+// SSE STREAMING
+// =============================================================================
+
+/** SSE streaming configuration */
+export const SSE_CONFIG = {
+  /** Interval between heartbeat comments to keep connections alive (ms) */
+  heartbeatIntervalMs: 15_000,
+} as const;
+
+// =============================================================================
 // RATE LIMITING
 // =============================================================================
 
@@ -40,6 +50,14 @@ export const MODEL_PRICING = {
 export const RATE_LIMIT_CONFIG = {
   /** Maximum requests per time window */
   maxRequests: 10,
+  /** Time window in milliseconds (1 minute) */
+  windowMs: 60 * 1000,
+} as const;
+
+/** Rate limiting for the recovery endpoint (higher limit since recovery is lightweight) */
+export const RECOVERY_RATE_LIMIT_CONFIG = {
+  /** Maximum requests per time window */
+  maxRequests: 30,
   /** Time window in milliseconds (1 minute) */
   windowMs: 60 * 1000,
 } as const;
@@ -110,6 +128,28 @@ export const QUOTE_CONFIG = {
   longQuoteThreshold: 15,
   /** Typical ideal sentence range for long quotes */
   idealSentenceRange: { min: 5, max: 12 },
+} as const;
+
+// =============================================================================
+// STREAM RECOVERY
+// =============================================================================
+
+/** Stream recovery configuration for mobile backgrounding resilience */
+export const STREAM_RECOVERY_CONFIG = {
+  /** TTL for cached responses in Redis (seconds) */
+  cacheTtlSeconds: 300,
+  /** Time after resume to wait for new data before declaring stream dead (ms) */
+  staleTimeoutMs: 5_000,
+  /** Minimum hidden duration before treating resume as mobile backgrounding (ms).
+   *  Desktop tab switches keep the connection alive so don't need recovery.
+   *  Mobile OS backgrounding suspends the process for 10+ seconds and kills the connection. */
+  minHiddenForRecoveryMs: 10_000,
+  /** Time to wait for animation queue to drain before force-finalizing (ms).
+   *  Balances giving animations time to complete vs. showing suggestions promptly
+   *  after tab-switch (rAF is throttled while backgrounded, stalling the queue). */
+  forceFinalizeDelayMs: 3_000,
+  /** sessionStorage key for the current response ID */
+  responseIdStorageKey: "lo1-response-id",
 } as const;
 
 // =============================================================================

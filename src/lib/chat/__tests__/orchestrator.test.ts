@@ -66,6 +66,10 @@ jest.mock("../stream-processor", () => ({
   }),
 }));
 
+jest.mock("../response-cache", () => ({
+  appendEvent: jest.fn().mockResolvedValue(undefined),
+}));
+
 import { openai } from "@/lib/openai";
 import { executeChatQuery, ExecuteChatParams } from "../orchestrator";
 
@@ -79,6 +83,7 @@ describe("chat/orchestrator", () => {
     history: [],
     clientIp: "127.0.0.1",
     send: mockSend,
+    responseId: "test-response-id",
   };
 
   beforeEach(() => {

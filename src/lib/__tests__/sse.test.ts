@@ -150,6 +150,40 @@ describe("parseSSE", () => {
     });
   });
 
+  describe("SSE comments (heartbeats)", () => {
+    it("should ignore SSE comment lines", () => {
+      const buffer = ': heartbeat\n\nevent: chunk\ndata: {"content": "Hello"}\n\n';
+      const { events, remaining } = parseSSE(buffer);
+
+      expect(events).toHaveLength(1);
+      expect(events[0].type).toBe("chunk");
+      expect(events[0].data).toEqual({ content: "Hello" });
+      expect(remaining).toBe("");
+    });
+
+    it("should ignore multiple heartbeat comments between events", () => {
+      const buffer =
+        'event: chunk\ndata: {"content": "A"}\n\n' +
+        ': heartbeat\n\n' +
+        ': heartbeat\n\n' +
+        'event: chunk\ndata: {"content": "B"}\n\n';
+      const { events, remaining } = parseSSE(buffer);
+
+      expect(events).toHaveLength(2);
+      expect(events[0].data).toEqual({ content: "A" });
+      expect(events[1].data).toEqual({ content: "B" });
+      expect(remaining).toBe("");
+    });
+
+    it("should ignore heartbeat-only buffer", () => {
+      const buffer = ': heartbeat\n\n';
+      const { events, remaining } = parseSSE(buffer);
+
+      expect(events).toHaveLength(0);
+      expect(remaining).toBe("");
+    });
+  });
+
   describe("streaming simulation", () => {
     it("should handle chunked SSE data accumulation", () => {
       // Simulate receiving data in chunks

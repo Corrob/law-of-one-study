@@ -50,7 +50,12 @@ export function createSSESender(
   controller: ReadableStreamDefaultController<Uint8Array>
 ): SSESender {
   return (event: string, data: object) => {
-    controller.enqueue(encodeSSEEvent(event, data));
+    try {
+      controller.enqueue(encodeSSEEvent(event, data));
+    } catch {
+      // Controller may be closed if the client disconnected (e.g., background tab throttled).
+      // Silently ignore — the orchestrator will finish its work and the stream will clean up.
+    }
   };
 }
 
@@ -71,4 +76,41 @@ export const SSE_HEADERS = {
  */
 export function createSSEResponse(stream: ReadableStream<Uint8Array>): Response {
   return new Response(stream, { headers: SSE_HEADERS });
+}
+
+/**
+ * Encode an SSE comment (heartbeat) into a Uint8Array.
+ *
+ * SSE comments start with `:` and are ignored by all spec-compliant parsers.
+ * Used to keep connections alive during long-running server operations.
+ */
+export function encodeSSEComment(text: string = "heartbeat"): Uint8Array {
+  return encoder.encode(`: ${text}\n\n`);
+}
+
+/**
+ * Start sending periodic SSE heartbeat comments to keep the connection alive.
+ *
+ * Background browser tabs throttle idle connections. Sending periodic comments
+ * prevents the browser from closing the SSE connection during long server operations
+ * (augmentation, search, etc.).
+ *
+ * @param controller - ReadableStream controller for enqueueing data
+ * @param intervalMs - Milliseconds between heartbeat comments
+ * @returns Cleanup function to stop the heartbeat
+ */
+export function startHeartbeat(
+  controller: ReadableStreamDefaultController<Uint8Array>,
+  intervalMs: number
+): () => void {
+  const id = setInterval(() => {
+    try {
+      controller.enqueue(encodeSSEComment());
+    } catch {
+      // Controller may be closed; cleanup will happen via stopHeartbeat
+      clearInterval(id);
+    }
+  }, intervalMs);
+
+  return () => clearInterval(id);
 }

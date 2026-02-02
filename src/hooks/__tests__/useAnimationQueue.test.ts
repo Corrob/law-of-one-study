@@ -297,4 +297,66 @@ describe("useAnimationQueue", () => {
       expect(result.current.queueLength).toBe(2);
     });
   });
+
+  describe("forceFinalize", () => {
+    it("should move all chunks to completed", () => {
+      const { result } = renderHook(() => useAnimationQueue());
+
+      act(() => {
+        result.current.addChunk(createTextChunk("1", "First"));
+        result.current.addChunk(createTextChunk("2", "Second"));
+        result.current.addChunk(createTextChunk("3", "Third"));
+      });
+
+      // 1 is current, 2 and 3 in queue
+      expect(result.current.currentChunk?.id).toBe("1");
+      expect(result.current.queueLength).toBe(2);
+
+      act(() => {
+        result.current.forceFinalize();
+      });
+
+      expect(result.current.completedChunks).toHaveLength(3);
+      expect(result.current.currentChunk).toBeNull();
+      expect(result.current.queueLength).toBe(0);
+      expect(result.current.isFullyComplete).toBe(true);
+    });
+
+    it("should include already-completed chunks", () => {
+      const { result } = renderHook(() => useAnimationQueue());
+
+      act(() => {
+        result.current.addChunk(createTextChunk("1", "First"));
+        result.current.addChunk(createTextChunk("2", "Second"));
+        result.current.addChunk(createTextChunk("3", "Third"));
+      });
+
+      // Complete the first chunk normally
+      act(() => {
+        result.current.onChunkComplete();
+      });
+
+      // Now force-finalize the rest
+      act(() => {
+        result.current.forceFinalize();
+      });
+
+      expect(result.current.completedChunks).toHaveLength(3);
+      expect(result.current.completedChunks[0].id).toBe("1");
+      expect(result.current.completedChunks[1].id).toBe("2");
+      expect(result.current.completedChunks[2].id).toBe("3");
+      expect(result.current.isFullyComplete).toBe(true);
+    });
+
+    it("should handle empty state gracefully", () => {
+      const { result } = renderHook(() => useAnimationQueue());
+
+      act(() => {
+        result.current.forceFinalize();
+      });
+
+      expect(result.current.completedChunks).toEqual([]);
+      expect(result.current.isFullyComplete).toBe(false);
+    });
+  });
 });

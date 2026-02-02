@@ -28,7 +28,7 @@ export { processStreamWithMarkers } from "./stream-processor";
 export type { StreamProcessorResult, StreamChunk, TokenUsage } from "./stream-processor";
 
 // SSE encoding
-export { createSSESender, encodeSSEEvent, createSSEResponse, SSE_HEADERS } from "./sse-encoder";
+export { createSSESender, encodeSSEEvent, createSSEResponse, SSE_HEADERS, encodeSSEComment, startHeartbeat } from "./sse-encoder";
 export type { SSESender } from "./sse-encoder";
 
 // Error response handling
@@ -50,6 +50,10 @@ export type { OffTopicHandlerResult } from "./off-topic";
 // Search orchestration
 export { createSearchEmbedding, searchPassages, performSearch } from "./search";
 export type { SessionReference, SearchResult } from "./search";
+
+// Response cache (mobile recovery)
+export { appendEvent, getCachedResponse } from "./response-cache";
+export type { CachedEvent, CachedResponse } from "./response-cache";
 
 // Chat pipeline orchestrator
 export { executeChatQuery } from "./orchestrator";
