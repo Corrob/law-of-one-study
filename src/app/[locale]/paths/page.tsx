@@ -1,9 +1,11 @@
 import { Suspense } from "react";
+import NavBarSkeleton from "@/components/NavBarSkeleton";
 import PathsContent from "./PathsContent";
 
 function PathsSkeleton() {
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
+      <NavBarSkeleton />
       <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
         <div className="max-w-4xl mx-auto">
           <div className="h-8 w-48 bg-[var(--lo1-celestial)]/20 rounded animate-pulse mb-6" />

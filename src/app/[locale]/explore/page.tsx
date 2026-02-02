@@ -1,9 +1,11 @@
 import { Suspense } from "react";
+import NavBarSkeleton from "@/components/NavBarSkeleton";
 import ExploreContent from "./ExploreContent";
 
 function ExploreSkeleton() {
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
+      <NavBarSkeleton />
       <div className="flex-1 flex items-center justify-center">
         <div className="text-[var(--lo1-stardust)] animate-pulse">Loading graph...</div>
       </div>
