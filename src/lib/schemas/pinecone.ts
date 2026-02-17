@@ -32,6 +32,39 @@ export const ConceptMetadataSchema = z.object({
 export type ValidatedConceptMetadata = z.infer<typeof ConceptMetadataSchema>;
 
 /**
+ * Schema for Confederation passage metadata stored in Pinecone.
+ */
+export const ConfederationPassageMetadataSchema = z.object({
+  text: z.string(),
+  reference: z.string(),
+  entity: z.string(),
+  date: z.string(),
+  transcriptId: z.string(),
+  chunkIndex: z.number(),
+  speaker: z.string(),
+  url: z.string(),
+});
+
+export type ValidatedConfederationPassageMetadata = z.infer<typeof ConfederationPassageMetadataSchema>;
+
+/**
+ * Schema for Confederation sentence metadata stored in Pinecone.
+ */
+export const ConfederationSentenceMetadataSchema = z.object({
+  text: z.string(),
+  reference: z.string(),
+  entity: z.string(),
+  date: z.string(),
+  transcriptId: z.string(),
+  chunkIndex: z.number(),
+  sentenceIndex: z.number(),
+  speaker: z.string(),
+  url: z.string(),
+});
+
+export type ValidatedConfederationSentenceMetadata = z.infer<typeof ConfederationSentenceMetadataSchema>;
+
+/**
  * Safely parse Pinecone metadata with validation.
  *
  * @param data - Raw metadata from Pinecone response
@@ -54,5 +87,25 @@ export function parseConceptMetadata(
   data: unknown
 ): ValidatedConceptMetadata | null {
   const result = ConceptMetadataSchema.safeParse(data);
+  return result.success ? result.data : null;
+}
+
+/**
+ * Safely parse Confederation passage metadata with validation.
+ */
+export function parseConfederationPassageMetadata(
+  data: unknown
+): ValidatedConfederationPassageMetadata | null {
+  const result = ConfederationPassageMetadataSchema.safeParse(data);
+  return result.success ? result.data : null;
+}
+
+/**
+ * Safely parse Confederation sentence metadata with validation.
+ */
+export function parseConfederationSentenceMetadata(
+  data: unknown
+): ValidatedConfederationSentenceMetadata | null {
+  const result = ConfederationSentenceMetadataSchema.safeParse(data);
   return result.success ? result.data : null;
 }

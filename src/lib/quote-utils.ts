@@ -46,6 +46,21 @@ export function getRaMaterialUrlFromReference(
   return getRaMaterialUrl(session, question, locale);
 }
 
+/**
+ * Generate a URL for a Confederation channeling transcript on L/L Research.
+ *
+ * @param transcriptId - Transcript ID in "YYYY-MMDD" format (e.g., "2024-1214")
+ * @returns URL to the transcript on llresearch.org
+ *
+ * @example
+ * getConfederationUrl("2024-1214") // https://www.llresearch.org/channeling/2024/1214
+ */
+export function getConfederationUrl(transcriptId: string): string {
+  const year = transcriptId.substring(0, 4);
+  const mmdd = transcriptId.substring(5);
+  return `https://www.llresearch.org/channeling/${year}/${mmdd}`;
+}
+
 // Result of parsing a session/question reference from user query
 export interface SessionQuestionRef {
   session: number;

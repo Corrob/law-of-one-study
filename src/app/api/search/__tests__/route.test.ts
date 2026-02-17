@@ -44,16 +44,20 @@ jest.mock("@/lib/pinecone", () => ({
       score: 0.9,
     },
   ]),
+  searchConfederationPassages: jest.fn().mockResolvedValue([]),
+  searchConfederationSentences: jest.fn().mockResolvedValue([]),
 }));
 
 import { checkRateLimit } from "@/lib/rate-limit";
 import { createEmbedding } from "@/lib/openai";
-import { searchRaMaterial, searchSentences } from "@/lib/pinecone";
+import { searchRaMaterial, searchSentences, searchConfederationPassages, searchConfederationSentences } from "@/lib/pinecone";
 
 const mockCheckRateLimit = checkRateLimit as jest.Mock;
 const mockCreateEmbedding = createEmbedding as jest.Mock;
 const mockSearchRaMaterial = searchRaMaterial as jest.Mock;
 const mockSearchSentences = searchSentences as jest.Mock;
+const _mockSearchConfederationPassages = searchConfederationPassages as jest.Mock;
+const _mockSearchConfederationSentences = searchConfederationSentences as jest.Mock;
 
 function createRequest(body: Record<string, unknown>): NextRequest {
   return new NextRequest("http://localhost:3000/api/search", {
@@ -70,7 +74,7 @@ describe("POST /api/search", () => {
   });
 
   describe("mode-specific searches", () => {
-    it("should only query sentence index when mode=sentence", async () => {
+    it("should query sentence indexes when mode=sentence", async () => {
       const request = createRequest({
         query: "You are infinity",
         mode: "sentence",
@@ -80,21 +84,19 @@ describe("POST /api/search", () => {
 
       expect(response.status).toBe(200);
       expect(mockSearchSentences).toHaveBeenCalled();
-      expect(mockSearchRaMaterial).not.toHaveBeenCalled();
       expect(data.mode).toBe("sentence");
       expect(data.results[0].sentence).toBe(
         "The Law of One states simply that all things are one."
       );
     });
 
-    it("should only query passage index when mode=passage", async () => {
+    it("should query passage indexes when mode=passage", async () => {
       const request = createRequest({ query: "Law of One", mode: "passage" });
       const response = await POST(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
       expect(mockSearchRaMaterial).toHaveBeenCalled();
-      expect(mockSearchSentences).not.toHaveBeenCalled();
       expect(data.mode).toBe("passage");
       expect(data.results[0].text).toBe(
         "Ra: I am Ra. The Law of One states simply that all things are one."
@@ -108,8 +110,16 @@ describe("POST /api/search", () => {
 
       expect(response.status).toBe(200);
       expect(mockSearchRaMaterial).toHaveBeenCalled();
-      expect(mockSearchSentences).not.toHaveBeenCalled();
       expect(data.mode).toBe("passage");
+    });
+
+    it("should only query Ra when source=ra", async () => {
+      const request = createRequest({ query: "Law of One", mode: "sentence", source: "ra" });
+      const response = await POST(request);
+
+      expect(response.status).toBe(200);
+      expect(mockSearchSentences).toHaveBeenCalled();
+      expect(_mockSearchConfederationSentences).not.toHaveBeenCalled();
     });
 
     it("should pass limit to sentence search", async () => {

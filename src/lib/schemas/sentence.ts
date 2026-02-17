@@ -8,9 +8,9 @@
 import { z } from "zod";
 
 /**
- * Speaker types in Ra Material.
+ * Speaker types in Ra Material and Confederation channelings.
  */
-export const SpeakerSchema = z.enum(["ra", "questioner", "text"]);
+export const SpeakerSchema = z.enum(["ra", "questioner", "text", "channeling", "comment"]);
 export type Speaker = z.infer<typeof SpeakerSchema>;
 
 /**

@@ -111,7 +111,8 @@ test.describe("Search Feature", () => {
     await input.press("Enter");
 
     // Wait for navigation - URL should include both mode and query
-    await expect(page).toHaveURL(/\/search\?mode=passage&q=test%20query/);
+    // URLSearchParams encodes spaces as "+" which is equivalent to "%20"
+    await expect(page).toHaveURL(/\/search\?mode=passage&q=test(\+|%20)query/);
   });
 
   test("should load search from URL query param", async ({ page }) => {

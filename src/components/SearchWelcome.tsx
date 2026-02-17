@@ -4,13 +4,16 @@ import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import ModeToggle from "./ModeToggle";
+import SourceFilter from "./SourceFilter";
 import type { SearchMode } from "@/lib/schemas";
 
 interface SearchWelcomeProps {
   mode: SearchMode;
+  includeConfederation: boolean;
   greeting: string | null;
   suggestions: string[];
   onModeChange: (mode: SearchMode) => void;
+  onConfederationToggle: (enabled: boolean) => void;
   onSuggestedSearch: (suggestion: string) => void;
   inputElement: ReactNode;
 }
@@ -29,9 +32,11 @@ const suggestionVariants = {
 
 export default function SearchWelcome({
   mode,
+  includeConfederation,
   greeting,
   suggestions,
   onModeChange,
+  onConfederationToggle,
   onSuggestedSearch,
   inputElement,
 }: SearchWelcomeProps) {
@@ -71,12 +76,22 @@ export default function SearchWelcome({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3, delay: 0.3 }}
-        className="text-[var(--lo1-stardust)]/70 text-sm text-center mb-8 max-w-md"
+        className="text-[var(--lo1-stardust)]/70 text-sm text-center mb-4 max-w-md"
       >
         {mode === "sentence"
           ? t("sentenceExplanation")
           : t("passageExplanation")}
       </motion.p>
+
+      {/* Confederation Toggle */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.35 }}
+        className="mb-8"
+      >
+        <SourceFilter enabled={includeConfederation} onChange={onConfederationToggle} />
+      </motion.div>
 
       {/* Suggestions */}
       {suggestions.length > 0 && (

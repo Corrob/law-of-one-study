@@ -178,7 +178,7 @@
     "46": "What is the most important thing I can do?"
   },
   "search": {
-    "placeholder": "Search the Ra Material...",
+    "placeholder": "Search the teachings...",
     "searchButton": "Search",
     "howToSearch": "How would you like to search?",
     "sentenceSearch": "Sentence Search",
@@ -210,7 +210,14 @@
     "modeToggle": {
       "sentence": "Sentence",
       "passage": "Passage"
-    }
+    },
+    "confederationToggle": {
+      "label": "Include Confederation",
+      "description": "Search Q'uo, Hatonn & more",
+      "tooltip": "Include channeled material from Q'uo, Hatonn, Latwii, and other Confederation sources alongside the Ra Material"
+    },
+    "readFullTranscript": "Read full transcript",
+    "confederationEntity": "{entity}"
   },
   "searchSuggestions": {
     "passage": {

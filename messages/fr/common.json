@@ -178,7 +178,7 @@
     "46": "Quelle est la chose la plus importante que je puisse faire ?"
   },
   "search": {
-    "placeholder": "Rechercher dans le Matériel Ra...",
+    "placeholder": "Rechercher dans les enseignements...",
     "searchButton": "Rechercher",
     "howToSearch": "Comment souhaitez-vous rechercher ?",
     "sentenceSearch": "Recherche de phrase",
@@ -210,7 +210,14 @@
     "modeToggle": {
       "sentence": "Phrase",
       "passage": "Passage"
-    }
+    },
+    "confederationToggle": {
+      "label": "Inclure Confédération",
+      "description": "Rechercher Q'uo, Hatonn et plus",
+      "tooltip": "Inclure le matériel canalisé de Q'uo, Hatonn, Latwii et d'autres sources de la Confédération aux côtés du Matériel Ra"
+    },
+    "readFullTranscript": "Lire la transcription complète",
+    "confederationEntity": "{entity}"
   },
   "searchSuggestions": {
     "passage": {

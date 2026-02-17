@@ -82,10 +82,11 @@ export interface TextSegment {
 }
 
 /**
- * Parse Ra Material text into formatted segments.
- * Splits text by "Questioner:" and "Ra:" prefixes.
+ * Parse Ra Material or Confederation text into formatted segments.
+ * Splits text by "Questioner:" and "Ra:" prefixes (Ra Material),
+ * or returns the full text as a single segment (Confederation).
  *
- * @param text - Raw Ra Material text
+ * @param text - Raw text from Ra Material or Confederation
  * @returns Array of segments with type and content
  */
 export function parseRaMaterialText(text: string): TextSegment[] {

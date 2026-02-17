@@ -178,7 +178,7 @@
     "46": "Was ist das Wichtigste, das ich tun kann?"
   },
   "search": {
-    "placeholder": "Durchsuche das Ra-Material...",
+    "placeholder": "Durchsuche die Lehren...",
     "searchButton": "Suchen",
     "howToSearch": "Wie möchtest du suchen?",
     "sentenceSearch": "Satzsuche",
@@ -210,7 +210,14 @@
     "modeToggle": {
       "sentence": "Satz",
       "passage": "Passage"
-    }
+    },
+    "confederationToggle": {
+      "label": "Konföderation einbeziehen",
+      "description": "Q'uo, Hatonn und mehr durchsuchen",
+      "tooltip": "Gechanneltes Material von Q'uo, Hatonn, Latwii und anderen Konföderationsquellen zusammen mit dem Ra-Material einbeziehen"
+    },
+    "readFullTranscript": "Vollständiges Transkript lesen",
+    "confederationEntity": "{entity}"
   },
   "searchSuggestions": {
     "passage": {

@@ -61,6 +61,7 @@ export interface PineconeMetadata {
   url: string;
 }
 
+
 // Error codes for chat API
 export type ChatErrorCode =
   | "AUGMENTATION_FAILED"

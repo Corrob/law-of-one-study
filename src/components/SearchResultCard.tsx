@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { type SearchResult } from "@/lib/schemas";
@@ -50,9 +50,30 @@ export interface SearchResultCardProps {
   onAskAbout: (displayText: string) => void;
 }
 
+const CONTEXT_WINDOW = 4;
+
+/**
+ * Trim text to ~CONTEXT_WINDOW sentences before and after the matched sentence.
+ * If the sentence isn't found, returns the original text unchanged.
+ */
+function trimAroundSentence(text: string, matchedSentence: string): string {
+  const sentences = text.split(/(?<=[.!?])\s+/).filter((s) => s.length > 0);
+  if (sentences.length <= CONTEXT_WINDOW * 2 + 1) return text;
+
+  // Find which sentence contains the match
+  const lower = matchedSentence.slice(0, 60).toLowerCase();
+  const idx = sentences.findIndex((s) => s.toLowerCase().includes(lower));
+  if (idx === -1) return text;
+
+  const start = Math.max(0, idx - CONTEXT_WINDOW);
+  const end = Math.min(sentences.length, idx + CONTEXT_WINDOW + 1);
+  return sentences.slice(start, end).join(" ");
+}
+
 /**
  * Highlight a matched sentence within text using gold text color.
  * Used in expanded context view to show which sentence matched the search.
+ * Trims long text to sentences around the match, then highlights.
  */
 function highlightMatchedSentence(
   text: string,
@@ -60,16 +81,40 @@ function highlightMatchedSentence(
 ): React.ReactNode {
   if (!matchedSentence) return text;
 
-  const index = text.indexOf(matchedSentence);
-  if (index === -1) return text;
+  // Trim long passages to a window around the matched sentence
+  const trimmed = trimAroundSentence(text, matchedSentence);
 
-  const before = text.slice(0, index);
-  const after = text.slice(index + matchedSentence.length);
+  let index = trimmed.indexOf(matchedSentence);
+  let matchLength = matchedSentence.length;
+
+  // Fallback: try case-insensitive search with first 60 chars as anchor
+  if (index === -1 && matchedSentence.length > 20) {
+    const anchor = matchedSentence.slice(0, 60).toLowerCase();
+    const lowerText = trimmed.toLowerCase();
+    const anchorIdx = lowerText.indexOf(anchor);
+    if (anchorIdx !== -1) {
+      // Find sentence end: period/exclamation/question followed by space+uppercase or end of text.
+      // This avoids breaking on abbreviations like "Dr." or "U.S.A."
+      const afterAnchor = trimmed.slice(anchorIdx + anchor.length);
+      const endMatch = afterAnchor.match(/[.!?](?:\s+[A-Z]|\s*$)/);
+      const endOffset = endMatch
+        ? anchor.length + (endMatch.index ?? 0) + 1
+        : matchedSentence.length;
+      index = anchorIdx;
+      matchLength = Math.min(endOffset, trimmed.length - anchorIdx);
+    }
+  }
+
+  if (index === -1) return trimmed;
+
+  const before = trimmed.slice(0, index);
+  const matched = trimmed.slice(index, index + matchLength);
+  const after = trimmed.slice(index + matchLength);
 
   return (
     <>
       {before}
-      <span className="text-[var(--lo1-gold)] font-medium">{matchedSentence}</span>
+      <span className="text-[var(--lo1-gold)] font-medium">{matched}</span>
       {after}
     </>
   );
@@ -118,17 +163,47 @@ export default function SearchResultCard({
   const [expandedSegments, setExpandedSegments] = useState<Set<number>>(new Set());
   const [showFullPassage, setShowFullPassage] = useState(false);
   const [showEnglishOriginal, setShowEnglishOriginal] = useState(false);
+  const [confederationPassageText, setConfederationPassageText] = useState<string | null>(null);
+  const [loadingConfederationPassage, setLoadingConfederationPassage] = useState(false);
 
   // Determine if this result has a sentence match (from hybrid search)
   const hasSentenceMatch = hasSentence(result);
 
-  // Build reference for SWR
-  const reference = `${result.session}.${result.question}`;
+  // Determine source type
+  const isConfederation = result.source === "confederation";
+
+  // Fetch Confederation passage context for "View in context"
+  const handleViewConfederationContext = useCallback(async () => {
+    if (!result.transcriptId || result.chunkIndex === undefined) return;
+    setLoadingConfederationPassage(true);
+    setShowFullPassage(true);
+    try {
+      const params = new URLSearchParams({
+        id: result.transcriptId,
+        chunk: String(result.chunkIndex),
+      });
+      // Truncate sentence to avoid URL length limits — server only needs an anchor prefix
+      if (result.sentence) params.set("sentence", result.sentence.slice(0, 120));
+      const res = await fetch(`/api/confederation-passage?${params}`);
+      if (res.ok) {
+        const data = await res.json();
+        setConfederationPassageText(data.text);
+      }
+    } catch {
+      // Silently fail — user can still use the external link
+    } finally {
+      setLoadingConfederationPassage(false);
+    }
+  }, [result.transcriptId, result.chunkIndex, result.sentence]);
+
+  // Build reference for SWR (only for Ra results)
+  const reference = isConfederation ? "" : `${result.session}.${result.question}`;
 
   // SWR handles fetching, caching, and deduplication across all SearchResultCards
   // useQuoteData handles both English and non-English cases in a single hook
+  // Skip SWR fetch for Confederation results (no local section files — empty string disables SWR)
   const { data: quoteData, isLoading: loadingTranslation } = useQuoteData(
-    reference,
+    isConfederation ? "" : reference,
     language as AvailableLanguage
   );
 
@@ -219,8 +294,12 @@ export default function SearchResultCard({
   // Get highlight terms from query
   const highlightTerms = useMemo(() => getHighlightTerms(query), [query]);
 
-  // Extract short reference (e.g., "49.8" from "Ra 49.8")
-  const shortRef = result.reference.match(/(\d+\.\d+)/)?.[1] || result.reference;
+  // Extract short reference for badge display
+  // Ra: "49.8" from "Ra 49.8"
+  // Confederation: date like "2024-01-24" from "Q'uo, 2024-01-24"
+  const shortRef = isConfederation
+    ? result.date || result.reference
+    : result.reference.match(/(\d+\.\d+)/)?.[1] || result.reference;
 
   // Get text content - always show translated version when available
   // The "Show English original" toggle controls the separate English section below
@@ -270,14 +349,24 @@ export default function SearchResultCard({
     });
   };
 
-  // Get speaker label for sentence mode
-  const speakerLabel = hasSentenceMatch
-    ? result.speaker === "ra"
-      ? tQuote("ra")
-      : result.speaker === "questioner"
-        ? tQuote("questioner")
-        : null
-    : null;
+  // Get speaker label for sentence mode and Confederation passage mode
+  const speakerLabel = (() => {
+    if (isConfederation) {
+      // Confederation: show entity name for channeling, "Questioner" for questions
+      if (result.speaker === "questioner") return tQuote("questioner");
+      return result.entity || result.reference.split(",")[0];
+    }
+    if (hasSentenceMatch) {
+      if (result.speaker === "ra") return tQuote("ra");
+      if (result.speaker === "questioner") return tQuote("questioner");
+    }
+    return null;
+  })();
+
+  // Determine if speaker should be styled as "gold" (Ra or channeling entity)
+  const isSpeakerGold = isConfederation
+    ? result.speaker !== "questioner"
+    : result.speaker === "ra";
 
   return (
     <div
@@ -291,10 +380,10 @@ export default function SearchResultCard({
       <div className="p-5">
         {/* Header with reference badge and speaker */}
         <div className="flex justify-between items-start mb-4">
-          {hasSentenceMatch && speakerLabel ? (
+          {(hasSentenceMatch || isConfederation) && speakerLabel ? (
             <span
               className={`text-xs font-semibold uppercase tracking-wider ${
-                result.speaker === "ra"
+                isSpeakerGold
                   ? "text-[var(--lo1-gold)]"
                   : "text-[var(--lo1-celestial)]/80"
               }`}
@@ -310,8 +399,11 @@ export default function SearchResultCard({
             href={result.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-2.5 py-1 rounded-full text-xs font-semibold bg-[var(--lo1-gold)]/15 text-[var(--lo1-gold)]
-                       hover:bg-[var(--lo1-gold)]/25 transition-colors"
+            className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
+              isConfederation
+                ? "bg-[var(--lo1-celestial)]/15 text-[var(--lo1-celestial)] hover:bg-[var(--lo1-celestial)]/25"
+                : "bg-[var(--lo1-gold)]/15 text-[var(--lo1-gold)] hover:bg-[var(--lo1-gold)]/25"
+            }`}
           >
             {shortRef}
           </a>
@@ -323,12 +415,12 @@ export default function SearchResultCard({
             {/* Show translated sentence if available, otherwise show original */}
             <p
               className={`text-[16px] leading-relaxed ${
-                result.speaker === "ra"
+                isSpeakerGold
                   ? "text-[var(--lo1-starlight)]"
                   : "text-[var(--lo1-text-light)]/90"
               }`}
             >
-              {loadingTranslation ? (
+              {loadingTranslation && !isConfederation ? (
                 <span className="text-[var(--lo1-stardust)]">...</span>
               ) : (
                 highlightText(
@@ -338,12 +430,21 @@ export default function SearchResultCard({
               )}
             </p>
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => setShowFullPassage(true)}
-                className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
-              >
-                {loadingTranslation ? t("loadingPassage") : `↓ ${t("viewInContext")}`}
-              </button>
+              {isConfederation ? (
+                <button
+                  onClick={handleViewConfederationContext}
+                  className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
+                >
+                  ↓ {t("viewInContext")}
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowFullPassage(true)}
+                  className="text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] cursor-pointer"
+                >
+                  {loadingTranslation ? t("loadingPassage") : `↓ ${t("viewInContext")}`}
+                </button>
+              )}
               {/* English original toggle for non-English users */}
               {language !== 'en' && translatedSentence && (
                 <button
@@ -387,31 +488,48 @@ export default function SearchResultCard({
         {/* Sentence mode expanded: show full passage with sentence highlighted */}
         {hasSentenceMatch && showFullPassage && (
           <div className="space-y-4">
-            {fullPassageSegments ? (
-              fullPassageSegments.map((segment, index) => {
-                return (
-                  <div key={index}>
-                    {segment.type === "ra" && (
-                      <div className="mb-2">
-                        <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wider">
-                          {tQuote("ra")}
-                        </span>
-                      </div>
-                    )}
-                    <p
-                      className={`text-[15px] leading-relaxed whitespace-pre-line ${
-                        segment.type === "ra"
-                          ? "text-[var(--lo1-starlight)]"
-                          : "text-[var(--lo1-text-light)]/90"
-                      }`}
-                    >
-                      {highlightMatchedSentence(segment.content, translatedSentence || result.sentence)}
-                    </p>
-                  </div>
-                );
-              })
+            {isConfederation ? (
+              // Confederation: show passage fetched from Pinecone
+              loadingConfederationPassage ? (
+                <p className="text-[var(--lo1-stardust)] text-sm">{t("loadingPassage")}</p>
+              ) : confederationPassageText ? (
+                <p className="text-[15px] leading-relaxed whitespace-pre-line text-[var(--lo1-starlight)]">
+                  {highlightMatchedSentence(confederationPassageText, result.sentence)}
+                </p>
+              ) : (
+                // Fetch failed or passage not found — show the sentence itself
+                <p className="text-[15px] leading-relaxed text-[var(--lo1-starlight)]">
+                  <span className="text-[var(--lo1-gold)] font-medium">{result.sentence}</span>
+                </p>
+              )
             ) : (
-              <p className="text-[var(--lo1-stardust)] text-sm">{t("loadingPassage")}</p>
+              // Ra: show passage from local section files
+              fullPassageSegments ? (
+                fullPassageSegments.map((segment, index) => {
+                  return (
+                    <div key={index}>
+                      {segment.type === "ra" && (
+                        <div className="mb-2">
+                          <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wider">
+                            {tQuote("ra")}
+                          </span>
+                        </div>
+                      )}
+                      <p
+                        className={`text-[15px] leading-relaxed whitespace-pre-line ${
+                          segment.type === "ra"
+                            ? "text-[var(--lo1-starlight)]"
+                            : "text-[var(--lo1-text-light)]/90"
+                        }`}
+                      >
+                        {highlightMatchedSentence(segment.content, translatedSentence || result.sentence)}
+                      </p>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-[var(--lo1-stardust)] text-sm">{t("loadingPassage")}</p>
+              )
             )}
             <div className="flex items-center gap-4">
               <button
@@ -420,8 +538,8 @@ export default function SearchResultCard({
               >
                 ↑ {t("showLess")}
               </button>
-              {/* English original toggle for non-English users */}
-              {language !== 'en' && englishOriginalText && (
+              {/* English original toggle for non-English users (Ra only) */}
+              {!isConfederation && language !== 'en' && englishOriginalText && (
                 <button
                   onClick={() => setShowEnglishOriginal(!showEnglishOriginal)}
                   className="text-xs text-[var(--lo1-celestial)] hover:text-[var(--lo1-celestial-light)] cursor-pointer"
@@ -430,8 +548,8 @@ export default function SearchResultCard({
                 </button>
               )}
             </div>
-            {/* Show English original if toggled */}
-            {showEnglishOriginal && englishOriginalText && (
+            {/* Show English original if toggled (Ra only) */}
+            {!isConfederation && showEnglishOriginal && englishOriginalText && (
               <div className="mt-4 pt-4 border-t border-[var(--lo1-celestial)]/20">
                 {parseRaMaterialText(formatWholeQuote(englishOriginalText)).map((segment, index) => (
                   <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
@@ -468,11 +586,11 @@ export default function SearchResultCard({
         {/* Passage mode: show segments as before */}
         {!hasSentenceMatch && (
           <div className="space-y-4">
-            {/* Loading indicator for translation */}
-            {loadingTranslation && (
+            {/* Loading indicator for translation (not for Confederation) */}
+            {loadingTranslation && !isConfederation && (
               <p className="text-[var(--lo1-stardust)] text-sm">...</p>
             )}
-            {!loadingTranslation && segments.map((segment, index) => {
+            {(!loadingTranslation || isConfederation) && segments.map((segment, index) => {
               const isExpanded = expandedSegments.has(index);
               const { content, needsButton } = getSegmentDisplayContent(
                 segment.type,
@@ -483,7 +601,7 @@ export default function SearchResultCard({
 
               return (
                 <div key={index}>
-                  {/* Ra label */}
+                  {/* Speaker label: Ra for Ra results, entity name for Confederation */}
                   {segment.type === "ra" && (
                     <div className="mb-2">
                       <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wider">
@@ -570,7 +688,7 @@ export default function SearchResultCard({
                        hover:border-[var(--lo1-celestial)]/50 hover:bg-[var(--lo1-celestial)]/5
                        transition-all duration-200"
           >
-            {t("readFullPassage")}
+            {isConfederation ? t("readFullTranscript") : t("readFullPassage")}
           </a>
           <button
             onClick={() => onAskAbout(displayText || "")}

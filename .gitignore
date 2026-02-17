@@ -45,3 +45,6 @@ next-env.d.ts
 
 # test results
 test-results*.json
+
+# scraped data (large, not served to users)
+/data/confederation/

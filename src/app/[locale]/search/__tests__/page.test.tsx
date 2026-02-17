@@ -4,12 +4,14 @@ import userEvent from "@testing-library/user-event";
 // Mock next/navigation for useSearchParams
 let mockUrlQuery = "";
 let mockUrlMode: string | null = null;
+let mockUrlConfederation: string | null = null;
 
 jest.mock("next/navigation", () => ({
   useSearchParams: () => ({
     get: (key: string) => {
       if (key === "q") return mockUrlQuery;
       if (key === "mode") return mockUrlMode;
+      if (key === "confederation") return mockUrlConfederation;
       return null;
     },
   }),
@@ -45,6 +47,7 @@ describe("SearchPage", () => {
     jest.clearAllMocks();
     mockUrlQuery = "";
     mockUrlMode = null;
+    mockUrlConfederation = null;
     mockFetch.mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ results: [], mode: "sentence" }),
@@ -79,7 +82,7 @@ describe("SearchPage", () => {
   });
 
   describe("search with mode", () => {
-    it("triggers search with default sentence mode", async () => {
+    it("triggers search with default sentence mode and ra source", async () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
@@ -90,7 +93,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "sentence", language: "en" }),
+            body: JSON.stringify({ query: "love", limit: 20, mode: "sentence", source: "ra", language: "en" }),
           })
         );
       });
@@ -111,13 +114,13 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "passage", language: "en" }),
+            body: JSON.stringify({ query: "love", limit: 20, mode: "passage", source: "ra", language: "en" }),
           })
         );
       });
     });
 
-    it("includes mode in URL when search is performed", async () => {
+    it("includes mode in URL when search is performed (no confederation by default)", async () => {
       const user = userEvent.setup();
       render(<SearchPage />);
 
@@ -169,7 +172,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "passage", language: "en" }),
+            body: JSON.stringify({ query: "love", limit: 20, mode: "passage", source: "ra", language: "en" }),
           })
         );
       });
@@ -189,7 +192,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", language: "en" }),
+            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", source: "ra", language: "en" }),
           })
         );
       });
@@ -207,7 +210,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "passage", language: "en" }),
+            body: JSON.stringify({ query: "initial query", limit: 20, mode: "passage", source: "ra", language: "en" }),
           })
         );
       });
@@ -225,7 +228,26 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", language: "en" }),
+            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", source: "ra", language: "en" }),
+          })
+        );
+      });
+    });
+
+    it("performs search with confederation=1 from URL", async () => {
+      mockUrlQuery = "initial query";
+      mockUrlMode = "sentence";
+      mockUrlConfederation = "1";
+
+      await act(async () => {
+        render(<SearchPage />);
+      });
+
+      await waitFor(() => {
+        expect(mockFetch).toHaveBeenCalledWith(
+          "/api/search",
+          expect.objectContaining({
+            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", source: "all", language: "en" }),
           })
         );
       });
@@ -308,7 +330,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: suggestionText, limit: 20, mode: "sentence", language: "en" }),
+            body: JSON.stringify({ query: suggestionText, limit: 20, mode: "sentence", source: "ra", language: "en" }),
           })
         );
       });

@@ -5,10 +5,16 @@
 export {
   PineconeMetadataSchema,
   ConceptMetadataSchema,
+  ConfederationPassageMetadataSchema,
+  ConfederationSentenceMetadataSchema,
   parsePineconeMetadata,
   parseConceptMetadata,
+  parseConfederationPassageMetadata,
+  parseConfederationSentenceMetadata,
   type ValidatedPineconeMetadata,
   type ValidatedConceptMetadata,
+  type ValidatedConfederationPassageMetadata,
+  type ValidatedConfederationSentenceMetadata,
 } from "./pinecone";
 
 export {
@@ -22,12 +28,16 @@ export {
 
 export {
   SearchModeSchema,
+  SearchSourceSchema,
+  SourceFilterSchema,
   SearchRequestSchema,
   HybridSearchResultSchema,
   SearchResultSchema,
   SearchResponseSchema,
   parseSearchRequest,
   type SearchMode,
+  type SearchSource,
+  type SourceFilter,
   type ValidatedSearchRequest,
   type HybridSearchResult,
   type SearchResult,

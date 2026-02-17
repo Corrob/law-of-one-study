@@ -13,6 +13,18 @@ export const SearchModeSchema = z.enum(["sentence", "passage"]);
 export type SearchMode = z.infer<typeof SearchModeSchema>;
 
 /**
+ * Schema for search source type (which corpus a result came from).
+ */
+export const SearchSourceSchema = z.enum(["ra", "confederation"]);
+export type SearchSource = z.infer<typeof SearchSourceSchema>;
+
+/**
+ * Schema for source filter in search requests.
+ */
+export const SourceFilterSchema = z.enum(["all", "ra", "confederation"]);
+export type SourceFilter = z.infer<typeof SourceFilterSchema>;
+
+/**
  * Schema for search request body.
  */
 export const SearchRequestSchema = z.object({
@@ -22,6 +34,7 @@ export const SearchRequestSchema = z.object({
     .max(500, "Search query must be at most 500 characters"),
   limit: z.number().int().min(1).max(50).optional().default(20),
   mode: SearchModeSchema.optional().default("passage"),
+  source: SourceFilterSchema.optional().default("all"),
   language: AvailableLanguageSchema.optional().default("en"),
 });
 
@@ -29,7 +42,8 @@ export type ValidatedSearchRequest = z.infer<typeof SearchRequestSchema>;
 
 /**
  * Schema for hybrid search result.
- * Combines passage and sentence data - each result may have either or both.
+ * Combines passage and sentence data — each result may have either or both.
+ * Supports both Ra Material and Confederation sources.
  */
 export const HybridSearchResultSchema = z.object({
   // Passage data (from passage search)
@@ -40,10 +54,18 @@ export const HybridSearchResultSchema = z.object({
   speaker: SpeakerSchema.optional(),
   // Common fields (always present)
   reference: z.string(),
-  session: z.number(),
-  question: z.number(),
   url: z.string(),
   score: z.number(),
+  // Source discriminator
+  source: SearchSourceSchema.optional(), // "ra" | "confederation" (optional for backwards compat)
+  // Ra-specific fields (optional when source is confederation)
+  session: z.number().optional(),
+  question: z.number().optional(),
+  // Confederation-specific fields
+  entity: z.string().optional(),
+  date: z.string().optional(),
+  transcriptId: z.string().optional(),
+  chunkIndex: z.number().optional(),
 });
 
 export type HybridSearchResult = z.infer<typeof HybridSearchResultSchema>;

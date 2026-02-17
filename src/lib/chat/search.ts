@@ -2,10 +2,11 @@
  * Search orchestration for chat queries
  *
  * Handles embedding creation and Pinecone search with proper error handling.
+ * Searches both Ra Material and Confederation passages in parallel.
  */
 
 import { createEmbedding } from "@/lib/openai";
-import { searchRaMaterial } from "@/lib/pinecone";
+import { searchRaMaterial, searchConfederationPassages } from "@/lib/pinecone";
 import { Quote } from "@/lib/types";
 import { SEARCH_CONFIG } from "@/lib/config";
 import { createChatError } from "./errors";
@@ -55,14 +56,45 @@ export async function searchPassages(
 }
 
 /**
- * Performs the complete search flow: embedding creation + search
+ * Searches the Confederation Library with the given embedding.
+ * Non-fatal: returns empty array on failure so chat continues with Ra results only.
+ */
+async function searchConfederationQuotes(
+  embedding: number[],
+  topK: number = 4
+): Promise<Quote[]> {
+  try {
+    const results = await searchConfederationPassages(embedding, topK);
+    return results.map((r) => ({
+      text: r.text,
+      reference: r.reference,
+      url: r.url,
+    }));
+  } catch (e) {
+    console.warn("[Chat Search] Confederation search failed, continuing with Ra only:", e);
+    return [];
+  }
+}
+
+/**
+ * Performs the complete search flow: embedding creation + parallel Ra & Confederation search.
+ * Merges results with Ra passages prioritized.
  */
 export async function performSearch(
   query: string,
   sessionRef?: SessionReference | null
 ): Promise<SearchResult> {
   const embedding = await createSearchEmbedding(query);
-  const passages = await searchPassages(embedding, sessionRef);
+
+  // Search both sources in parallel
+  const [raPassages, confedPassages] = await Promise.all([
+    searchPassages(embedding, sessionRef),
+    searchConfederationQuotes(embedding),
+  ]);
+
+  // Merge: Ra passages first, then Confederation, cap total
+  const maxTotal = SEARCH_CONFIG.defaultTopK + 4;
+  const passages = [...raPassages, ...confedPassages].slice(0, maxTotal);
 
   return { passages, embedding };
 }
