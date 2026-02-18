@@ -216,6 +216,69 @@ test.describe("Search Feature", () => {
     await expect(page.getByRole("textbox")).toBeVisible();
   });
 
+  test("should display Confederation results when toggle is enabled", async ({ page }) => {
+    const confederationSearchResults = [
+      {
+        text: "Ra: I am Ra. The Law of One states that all things are one.",
+        reference: "Ra 1.7",
+        session: 1,
+        question: 7,
+        url: "https://lawofone.info/s/1#7",
+        score: 0,
+      },
+      {
+        text: "I am Q'uo, and we greet you in the love and in the light of the One Infinite Creator.",
+        reference: "Q'uo, 2024-01-24",
+        entity: "Q'uo",
+        date: "2024-01-24",
+        transcriptId: "2024_0124",
+        chunkIndex: 0,
+        url: "https://www.llresearch.org/channeling/transcript/2024-01-24_quo",
+        score: 0,
+        source: "confederation",
+      },
+    ];
+
+    // Override the search API for this test: return mixed results when source is "all"
+    await page.route("**/api/search", async (route) => {
+      const body = route.request().postDataJSON();
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({
+          results: body?.source === "all" ? confederationSearchResults : mockSearchResults,
+          query: body?.query || "test",
+          totalResults: body?.source === "all" ? confederationSearchResults.length : mockSearchResults.length,
+          mode: body?.mode || "passage",
+        }),
+      });
+    });
+
+    await page.goto("/search?mode=passage");
+
+    // Enable the Confederation toggle
+    const toggle = page.getByRole("switch");
+    await expect(toggle).toBeVisible();
+    await toggle.click();
+
+    // Search for something
+    const input = page.getByRole("textbox");
+    await input.fill("love and light");
+    await input.press("Enter");
+
+    // Wait for results
+    await expect(page.getByText(/Closest \d+ matches by meaning/)).toBeVisible({ timeout: 10000 });
+
+    // Assert Ra result badge is visible
+    await expect(page.getByText("1.7")).toBeVisible();
+
+    // Assert Confederation result reference is visible
+    await expect(page.getByText("2024-01-24")).toBeVisible();
+
+    // Assert Confederation-specific "Read full transcript" link appears
+    await expect(page.getByText("Read full transcript")).toBeVisible();
+  });
+
   test("should toggle between modes and re-search", async ({ page }) => {
     await page.goto("/search?mode=passage");
 

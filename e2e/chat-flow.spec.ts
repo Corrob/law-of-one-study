@@ -101,6 +101,69 @@ test.describe("Chat Interaction Flow", () => {
     await expect(page.getByText("What are the densities?")).toBeVisible();
   });
 
+  test("should display Confederation citation and open modal", async ({ page }) => {
+    // Override the chat API for this test with Confederation-specific mock data
+    const confederationMockEvents = [
+      {
+        event: "meta",
+        data: {
+          quotes: [
+            {
+              text: "I am Q'uo, and we greet you in the love and in the light of the One Infinite Creator.",
+              reference: "Q'uo, 2024-01-24",
+              url: "https://www.llresearch.org/channeling/transcript/2024-01-24_quo",
+            },
+          ],
+          intent: "conceptual",
+          confidence: "high",
+        },
+      },
+      { event: "chunk", data: { type: "text", content: "The Confederation teaches " } },
+      { event: "chunk", data: { type: "text", content: "that love is the creative force " } },
+      { event: "chunk", data: { type: "text", content: "of the universe (Q'uo, 2024-01-24)." } },
+      { event: "suggestions", data: { items: ["Tell me more about Q'uo"] } },
+      { event: "done", data: {} },
+    ];
+
+    await page.route("**/api/chat", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "text/event-stream",
+        headers: {
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+        },
+        body: createMockSSE(confederationMockEvents),
+      });
+    });
+
+    await page.goto("/chat");
+
+    const input = page.getByRole("textbox");
+    await input.fill("What does Q'uo say about love?");
+    await input.press("Enter");
+
+    // Wait for response text
+    await expect(page.getByText("The Confederation teaches")).toBeVisible({ timeout: 10000 });
+
+    // Assert the inline citation is rendered as a clickable button
+    const citationButton = page.locator("button.citation-link", { hasText: "(Q'uo, 2024-01-24)" });
+    await expect(citationButton).toBeVisible();
+
+    // Click the citation → modal should open
+    await citationButton.click();
+    const modal = page.getByRole("dialog");
+    await expect(modal).toBeVisible({ timeout: 5000 });
+
+    // Modal should contain the passage text and entity name
+    await expect(modal.getByText("I am Q'uo, and we greet you")).toBeVisible();
+    await expect(modal.getByText("Q'uo, 2024-01-24")).toBeVisible();
+
+    // Close the modal
+    await modal.getByLabel("Close").click();
+    await expect(modal).not.toBeVisible();
+  });
+
   test("should handle follow-up conversation", async ({ page }) => {
     await page.goto("/chat");
 
