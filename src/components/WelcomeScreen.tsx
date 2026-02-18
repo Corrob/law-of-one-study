@@ -79,11 +79,11 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
       {/* Toggles */}
       {(onThinkingModeChange || onConfederationChange) && (
         <div className="w-full max-w-lg mb-8 animate-input-enter flex flex-col items-center gap-2">
-          {onThinkingModeChange && (
-            <ThinkingModeToggle enabled={thinkingMode} onChange={onThinkingModeChange} />
-          )}
           {onConfederationChange && (
             <SourceFilter enabled={includeConfederation} onChange={onConfederationChange} />
+          )}
+          {onThinkingModeChange && (
+            <ThinkingModeToggle enabled={thinkingMode} onChange={onThinkingModeChange} />
           )}
         </div>
       )}
