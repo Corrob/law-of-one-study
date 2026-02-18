@@ -16,14 +16,27 @@ import {
   COMPARATIVE_QUESTIONS,
   ARCHETYPE_GUIDANCE,
   OFF_TOPIC_HANDLING,
+  CONFEDERATION_QUOTE_RULES,
+  CONFEDERATION_FOCUSED_RULES,
 } from "./constants";
 
 /**
  * Build the full response prompt, choosing Ra-only or Ra+Confederation variants.
+ * When confederationFocused is true, the LLM focuses exclusively on Confederation sources.
  */
-export function buildResponsePrompt(includeConfederation: boolean): string {
+export function buildResponsePrompt(
+  includeConfederation: boolean,
+  confederationFocused: boolean = false
+): string {
   const preamble = includeConfederation ? ROLE_PREAMBLE : ROLE_PREAMBLE_RA_ONLY;
   const citations = includeConfederation ? CITATION_INSTRUCTIONS : CITATION_INSTRUCTIONS_RA_ONLY;
+
+  // Determine which confederation rules to append (if any)
+  const confederationRules = confederationFocused
+    ? `\n\n${CONFEDERATION_FOCUSED_RULES}`
+    : includeConfederation
+      ? `\n\n${CONFEDERATION_QUOTE_RULES}`
+      : "";
 
   return `${preamble}
 
@@ -264,7 +277,7 @@ ${COMPARATIVE_QUESTIONS}
 
 ${ARCHETYPE_GUIDANCE}
 
-${OFF_TOPIC_HANDLING}
+${OFF_TOPIC_HANDLING}${confederationRules}
 
 ANTI-PATTERNS (avoid in ALL responses):
 - Never start with "Great question!" or similar filler phrases

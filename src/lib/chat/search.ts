@@ -80,13 +80,26 @@ async function searchConfederationQuotes(
  * Performs the complete search flow: embedding creation + Ra search,
  * optionally including Confederation passages in parallel.
  * Merges results with Ra passages prioritized.
+ *
+ * When confederationFocused is true, searches ONLY Confederation (skips Ra)
+ * with a larger topK for richer results.
  */
 export async function performSearch(
   query: string,
   sessionRef?: SessionReference | null,
-  includeConfederation: boolean = false
+  includeConfederation: boolean = false,
+  confederationFocused: boolean = false
 ): Promise<SearchResult> {
   const embedding = await createSearchEmbedding(query);
+
+  // Confederation-focused: search only Confederation with higher topK
+  if (confederationFocused) {
+    const passages = await searchConfederationQuotes(
+      embedding,
+      SEARCH_CONFIG.defaultTopK
+    );
+    return { passages, embedding };
+  }
 
   if (includeConfederation) {
     // Search both sources in parallel

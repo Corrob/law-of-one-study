@@ -280,6 +280,12 @@ EXAMPLES:
 
 IMPORTANT: Cards 8 and 11 are SWAPPED from modern Rider-Waite order. Ra follows the older Marseilles tradition where Justice is 8 and Strength is 11.`;
 
+export const CONFEDERATION_QUOTE_RULES = `CONFEDERATION QUOTE REQUIREMENT:
+When Confederation passages are provided alongside Ra Material, you MUST include at least one Confederation quote ({{QUOTE:N}}) in your response. Look for passages with entity references like "Q'uo, 2024-01-15" or "Hatonn, 1986-03-02" and include at least one. This ensures the seeker benefits from the broader Confederation perspective they opted into.`;
+
+export const CONFEDERATION_FOCUSED_RULES = `CONFEDERATION-FOCUSED RESPONSE:
+The seeker is asking specifically about Confederation teachings. Focus your response EXCLUSIVELY on the Confederation passages provided (Q'uo, Hatonn, Latwii, etc.). Do NOT quote or cite Ra Material in this response. Present the Confederation entities' perspectives as the primary teaching.`;
+
 export const COMPARATIVE_QUESTIONS = `COMPARISONS TO OTHER TEACHINGS:
 Users may ask how Ra's teachings relate to Buddhism, Christianity, simulation theory, etc.
 

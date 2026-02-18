@@ -131,6 +131,23 @@ describe("search", () => {
       expect(result.passages).toEqual([...raResults, ...confedResults]);
     });
 
+    it("should search only Confederation when confederationFocused is true", async () => {
+      const mockEmbedding = [0.1, 0.2, 0.3];
+      const confedResults = [
+        { text: "Q'uo quote", reference: "Q'uo, 2024-01-01", url: "https://example.com/1" },
+        { text: "Hatonn quote", reference: "Hatonn, 1986-03-02", url: "https://example.com/2" },
+      ];
+
+      (openai.createEmbedding as jest.Mock).mockResolvedValue(mockEmbedding);
+      (pinecone.searchConfederationPassages as jest.Mock).mockResolvedValue(confedResults);
+
+      const result = await performSearch("What does Q'uo say?", null, true, true);
+
+      expect(pinecone.searchRaMaterial).not.toHaveBeenCalled();
+      expect(pinecone.searchConfederationPassages).toHaveBeenCalledWith(mockEmbedding, 8);
+      expect(result.passages).toEqual(confedResults);
+    });
+
     it("should pass session reference to search", async () => {
       const mockEmbedding = [0.1, 0.2, 0.3];
       const mockResults = [

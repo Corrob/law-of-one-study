@@ -33,6 +33,29 @@ import { appendEvent } from "./response-cache";
 import { LANGUAGE_NAMES_FOR_PROMPTS, isLanguageAvailable, type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 
 /**
+ * Detect if the user's message is specifically asking about Confederation sources.
+ * Returns true for queries mentioning Confederation entity names or explicitly
+ * requesting Confederation quotes/sources.
+ */
+export function detectConfederationFocus(message: string): boolean {
+  const lower = message.toLowerCase();
+
+  // Entity name mentions (Q'uo, Hatonn, Latwii, Laitos)
+  if (/\b(q[''\u2019]?uo|hatonn|latwii|laitos)\b/i.test(message)) return true;
+
+  // "confederation" + quote/source context
+  if (/confederation\s+(quote|source|passage|material|teaching|perspective)s?/i.test(message)) return true;
+
+  // "more from" pattern
+  if (/more\s+(from|by)\s+(q[''\u2019]?uo|hatonn|latwii|confederation)/i.test(message)) return true;
+
+  // "what does/did [entity] say/teach" pattern
+  if (/what\s+(does|did|do)\s+(the\s+)?confederation\s+(say|teach|think)/i.test(lower)) return true;
+
+  return false;
+}
+
+/**
  * Parameters for executing a chat query.
  */
 export interface ExecuteChatParams {
@@ -75,7 +98,8 @@ function buildLLMMessages(
   quotesUsed: string[],
   promptContext: string,
   targetLanguage: string = DEFAULT_LOCALE,
-  includeConfederation: boolean = false
+  includeConfederation: boolean = false,
+  confederationFocused: boolean = false
 ): Array<{ role: "system" | "user" | "assistant"; content: string }> {
   const quoteExclusionBlock =
     quotesUsed.length > 0
@@ -89,11 +113,13 @@ function buildLLMMessages(
     ? `\n\nIMPORTANT: Respond in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. The user prefers ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Write your explanations, analysis, and connecting text in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Quote content will be provided in the appropriate language.`
     : '';
 
-  const systemPrompt = buildResponsePrompt(includeConfederation) + languageInstruction;
+  const systemPrompt = buildResponsePrompt(includeConfederation, confederationFocused) + languageInstruction;
 
-  const passagesLabel = includeConfederation
-    ? "Here are relevant passages from Ra and the Confederation"
-    : "Here are relevant Ra passages";
+  const passagesLabel = confederationFocused
+    ? "Here are relevant Confederation passages"
+    : includeConfederation
+      ? "Here are relevant passages from Ra and the Confederation"
+      : "Here are relevant Ra passages";
 
   return [
     { role: "system" as const, content: systemPrompt },
@@ -274,8 +300,14 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
       return;
     }
 
+    // Detect confederation-focused queries (only when confederation is enabled)
+    const confederationFocused = includeConfederation && detectConfederationFocus(message);
+    if (confederationFocused) {
+      debug.log("[Orchestrator] Confederation-focused query detected");
+    }
+
     // Search for relevant passages
-    const { passages } = await performSearch(augmentedQuery, sessionRef, includeConfederation);
+    const { passages } = await performSearch(augmentedQuery, sessionRef, includeConfederation, confederationFocused);
 
     // Send metadata to client
     cachingSend("meta", {
@@ -297,7 +329,8 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
       quotesUsed,
       promptContext,
       targetLanguage,
-      includeConfederation
+      includeConfederation,
+      confederationFocused
     );
 
     // Stream LLM response

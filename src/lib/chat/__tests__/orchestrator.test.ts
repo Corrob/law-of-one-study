@@ -71,7 +71,7 @@ jest.mock("../response-cache", () => ({
 }));
 
 import { openai } from "@/lib/openai";
-import { executeChatQuery, ExecuteChatParams } from "../orchestrator";
+import { executeChatQuery, ExecuteChatParams, detectConfederationFocus } from "../orchestrator";
 import { performSearch } from "../search";
 
 const mockCreate = openai.chat.completions.create as jest.Mock;
@@ -166,6 +166,7 @@ describe("chat/orchestrator", () => {
       expect(mockPerformSearch).toHaveBeenCalledWith(
         expect.any(String),
         null,
+        false,
         false
       );
     });
@@ -176,7 +177,8 @@ describe("chat/orchestrator", () => {
       expect(mockPerformSearch).toHaveBeenCalledWith(
         expect.any(String),
         null,
-        true
+        true,
+        false
       );
     });
 
@@ -197,6 +199,91 @@ describe("chat/orchestrator", () => {
       const createCall = mockCreate.mock.calls[0][0];
       const userMessage = createCall.messages.find((m: { role: string }) => m.role === "user");
       expect(userMessage.content).toContain("Here are relevant passages from Ra and the Confederation");
+    });
+
+    it("should use confederation-only passages label for confederation-focused queries", async () => {
+      await executeChatQuery({
+        ...baseParams,
+        message: "What does Q'uo say about meditation?",
+        includeConfederation: true,
+      });
+
+      expect(mockCreate).toHaveBeenCalled();
+      const createCall = mockCreate.mock.calls[0][0];
+      const userMessage = createCall.messages.find((m: { role: string }) => m.role === "user");
+      expect(userMessage.content).toContain("Here are relevant Confederation passages");
+    });
+
+    it("should pass confederationFocused=true to performSearch for confederation-focused queries", async () => {
+      await executeChatQuery({
+        ...baseParams,
+        message: "What does Hatonn teach about love?",
+        includeConfederation: true,
+      });
+
+      expect(mockPerformSearch).toHaveBeenCalledWith(
+        expect.any(String),
+        null,
+        true,
+        true
+      );
+    });
+
+    it("should not activate confederation focus when includeConfederation is false", async () => {
+      await executeChatQuery({
+        ...baseParams,
+        message: "What does Q'uo say about meditation?",
+        includeConfederation: false,
+      });
+
+      expect(mockPerformSearch).toHaveBeenCalledWith(
+        expect.any(String),
+        null,
+        false,
+        false
+      );
+    });
+  });
+
+  describe("detectConfederationFocus", () => {
+    it("should detect Q'uo mentions", () => {
+      expect(detectConfederationFocus("What does Q'uo say about love?")).toBe(true);
+      expect(detectConfederationFocus("Tell me about Quo's teachings")).toBe(true);
+      expect(detectConfederationFocus("Q\u2019uo on meditation")).toBe(true);
+    });
+
+    it("should detect other Confederation entity names", () => {
+      expect(detectConfederationFocus("What does Hatonn say?")).toBe(true);
+      expect(detectConfederationFocus("Show me Latwii quotes")).toBe(true);
+      expect(detectConfederationFocus("What did Laitos teach?")).toBe(true);
+    });
+
+    it("should detect confederation + source context", () => {
+      expect(detectConfederationFocus("Show me confederation quotes")).toBe(true);
+      expect(detectConfederationFocus("confederation sources on love")).toBe(true);
+      expect(detectConfederationFocus("confederation teachings about harvest")).toBe(true);
+      expect(detectConfederationFocus("confederation passages on meditation")).toBe(true);
+    });
+
+    it("should detect 'more from' patterns", () => {
+      expect(detectConfederationFocus("more from Q'uo")).toBe(true);
+      expect(detectConfederationFocus("more by Hatonn")).toBe(true);
+      expect(detectConfederationFocus("more from confederation")).toBe(true);
+    });
+
+    it("should detect 'what does confederation say' patterns", () => {
+      expect(detectConfederationFocus("What does the confederation say about this?")).toBe(true);
+      expect(detectConfederationFocus("what did confederation teach about love?")).toBe(true);
+    });
+
+    it("should not trigger for general Ra questions", () => {
+      expect(detectConfederationFocus("What is the Law of One?")).toBe(false);
+      expect(detectConfederationFocus("Tell me about catalyst")).toBe(false);
+      expect(detectConfederationFocus("How does meditation work?")).toBe(false);
+    });
+
+    it("should not trigger for incidental 'confederation' mentions without source context", () => {
+      expect(detectConfederationFocus("What is the Confederation of Planets?")).toBe(false);
     });
   });
 });
