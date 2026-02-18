@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { useEffect } from "react";
 import CitationLink from "../CitationLink";
-import { CitationModalProvider } from "@/contexts/CitationModalContext";
+import { CitationModalProvider, useCitationModal } from "@/contexts/CitationModalContext";
 
 // Mock framer-motion
 jest.mock("framer-motion", () => ({
@@ -265,6 +266,98 @@ describe("CitationLink", () => {
       fireEvent.click(button);
 
       expect(screen.getByText("Failed to load quote")).toBeInTheDocument();
+    });
+  });
+
+  describe("confederation citations", () => {
+    it("should render as a button element", () => {
+      renderWithProvider(
+        <CitationLink
+          confederationRef="Q'uo, 2024-01-24"
+          entity="Q'uo"
+          url="https://www.llresearch.org/channeling/transcript/2024-01-24_quo"
+          displayText="(Q'uo, 2024-01-24)"
+        />
+      );
+
+      const button = screen.getByRole("button", { name: "(Q'uo, 2024-01-24)" });
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveClass("citation-link");
+    });
+
+    it("should have descriptive title attribute", () => {
+      renderWithProvider(
+        <CitationLink
+          confederationRef="Q'uo, 2024-01-24"
+          entity="Q'uo"
+          url="https://www.llresearch.org/channeling/transcript/2024-01-24_quo"
+          displayText="(Q'uo, 2024-01-24)"
+        />
+      );
+
+      const button = screen.getByRole("button");
+      expect(button).toHaveAttribute("title", "View Q'uo transcript");
+    });
+
+    it("should open confederation modal when quotes are available in context", () => {
+      // Helper component that injects quotes into the citation context
+      function QuoteInjector() {
+        const { setQuotes } = useCitationModal();
+        useEffect(() => {
+          setQuotes([{
+            text: "I am Q'uo. We greet you in the love and light.",
+            reference: "Q'uo, 2024-01-24",
+            url: "https://www.llresearch.org/channeling/transcript/2024-01-24_quo",
+          }]);
+        }, [setQuotes]);
+        return null;
+      }
+
+      render(
+        <CitationModalProvider>
+          <QuoteInjector />
+          <CitationLink
+            confederationRef="Q'uo, 2024-01-24"
+            entity="Q'uo"
+            url="https://www.llresearch.org/channeling/transcript/2024-01-24_quo"
+            displayText="(Q'uo, 2024-01-24)"
+          />
+        </CitationModalProvider>
+      );
+
+      const button = screen.getByRole("button", { name: "(Q'uo, 2024-01-24)" });
+      fireEvent.click(button);
+
+      // Modal should open with the confederation passage
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+      expect(screen.getByText(/I am Q'uo/)).toBeInTheDocument();
+    });
+
+    it("should fall back to opening URL when quote not in context", () => {
+      const mockOpen = jest.fn();
+      jest.spyOn(window, "open").mockImplementation(mockOpen);
+
+      renderWithProvider(
+        <CitationLink
+          confederationRef="Q'uo, 2024-01-24"
+          entity="Q'uo"
+          url="https://www.llresearch.org/channeling/transcript/2024-01-24_quo"
+          displayText="(Q'uo, 2024-01-24)"
+        />
+      );
+
+      const button = screen.getByRole("button", { name: "(Q'uo, 2024-01-24)" });
+      fireEvent.click(button);
+
+      // No modal, but URL opened in new tab
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(mockOpen).toHaveBeenCalledWith(
+        "https://www.llresearch.org/channeling/transcript/2024-01-24_quo",
+        "_blank",
+        "noopener,noreferrer"
+      );
+
+      jest.restoreAllMocks();
     });
   });
 });

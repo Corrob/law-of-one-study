@@ -83,8 +83,34 @@ export function parseEllipsis(text: string): {
 
 /**
  * Extract just the session.question from reference like "Ra 49.8".
+ * For confederation references like "Q'uo, 2024-01-24", returns the full reference.
  */
 export function getShortReference(reference: string): string {
   const match = reference.match(/(\d+\.\d+)/);
   return match ? match[1] : reference;
+}
+
+/** Ra reference pattern: "50.7" or "Ra 50.7" */
+const RA_REF_PATTERN = /^\s*(Ra\s+)?\d+\.\d+\s*$/;
+
+/**
+ * Check if a quote reference is from Ra Material (e.g., "50.7" or "Ra 50.7").
+ */
+export function isRaReference(reference: string): boolean {
+  return RA_REF_PATTERN.test(reference);
+}
+
+/**
+ * Extract entity name from a confederation reference like "Q'uo, 2024-01-24".
+ * Returns the entity name (e.g., "Q'uo") or null if not a confederation reference.
+ */
+export function getConfederationEntity(reference: string): string | null {
+  if (isRaReference(reference)) return null;
+  // Confederation references are typically "Entity, YYYY-MM-DD"
+  const commaIdx = reference.indexOf(",");
+  if (commaIdx > 0) {
+    return reference.slice(0, commaIdx).trim();
+  }
+  // If no comma, just return the reference itself as the entity name
+  return reference.trim() || null;
 }

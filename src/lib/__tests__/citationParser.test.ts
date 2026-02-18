@@ -2,6 +2,7 @@ import {
   parseCitationsInText,
   buildCitationUrl,
   CITATION_REGEX,
+  CONFEDERATION_CITATION_REGEX,
   type CitationSegment,
 } from "../citationParser";
 
@@ -67,7 +68,7 @@ describe("citationParser", () => {
         content: "Ra explains ",
       });
       expect(result[1]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
@@ -85,17 +86,17 @@ describe("citationParser", () => {
 
       expect(result).toHaveLength(5);
 
-      const citations = result.filter((s) => s.type === "citation");
+      const citations = result.filter((s) => s.type === "ra-citation");
       expect(citations).toHaveLength(2);
       expect(citations[0]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
         url: "https://www.llresearch.org/channeling/ra-contact/50#7",
       });
       expect(citations[1]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 51,
         question: 3,
         displayText: "(Ra 51.3)",
@@ -109,7 +110,7 @@ describe("citationParser", () => {
 
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 1,
         question: 1,
         displayText: "(Ra 1.1)",
@@ -131,7 +132,7 @@ describe("citationParser", () => {
         content: "The veil is explained ",
       });
       expect(result[1]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 83,
         question: 17,
         displayText: "(Ra 83.17)",
@@ -146,14 +147,14 @@ describe("citationParser", () => {
       expect(result).toHaveLength(4);
       expect(result[0]).toEqual({ type: "text", content: "See " });
       expect(result[1]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
         url: "https://www.llresearch.org/channeling/ra-contact/50#7",
       });
       expect(result[2]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 51,
         question: 3,
         displayText: "(Ra 51.3)",
@@ -166,9 +167,9 @@ describe("citationParser", () => {
       const text = "This is from session 106 (Ra 106.23).";
       const result = parseCitationsInText(text);
 
-      const citation = result.find((s) => s.type === "citation");
+      const citation = result.find((s) => s.type === "ra-citation");
       expect(citation).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 106,
         question: 23,
         displayText: "(Ra 106.23)",
@@ -187,7 +188,7 @@ describe("citationParser", () => {
 
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
-        type: "citation",
+        type: "ra-citation",
         session: 50,
         question: 7,
         displayText: "(Ra 50.7)",
@@ -200,13 +201,13 @@ describe("citationParser", () => {
         "Ra describes the veil as essential for meaningful choice in third density (Ra 83.17). Without it, there would be no catalyst for growth (Ra 83.18).";
       const result = parseCitationsInText(text);
 
-      const citations = result.filter((s) => s.type === "citation");
+      const citations = result.filter((s) => s.type === "ra-citation");
       expect(citations).toHaveLength(2);
 
-      expect(citations[0].type === "citation" && citations[0].session).toBe(83);
-      expect(citations[0].type === "citation" && citations[0].question).toBe(17);
-      expect(citations[1].type === "citation" && citations[1].session).toBe(83);
-      expect(citations[1].type === "citation" && citations[1].question).toBe(18);
+      expect(citations[0].type === "ra-citation" && citations[0].session).toBe(83);
+      expect(citations[0].type === "ra-citation" && citations[0].question).toBe(17);
+      expect(citations[1].type === "ra-citation" && citations[1].session).toBe(83);
+      expect(citations[1].type === "ra-citation" && citations[1].question).toBe(18);
     });
 
     it("should not match malformed citations", () => {
@@ -227,6 +228,71 @@ describe("citationParser", () => {
         type: "text",
         content: ", this is important.",
       });
+    });
+  });
+
+  describe("CONFEDERATION_CITATION_REGEX", () => {
+    it("should match Q'uo citation format", () => {
+      const text = "(Q'uo, 2024-01-24)";
+      const regex = new RegExp(CONFEDERATION_CITATION_REGEX.source, "g");
+      const match = regex.exec(text);
+
+      expect(match).not.toBeNull();
+      expect(match![1]).toBe("Q'uo");
+      expect(match![2]).toBe("2024-01-24");
+    });
+
+    it("should match Hatonn citation format", () => {
+      const regex = new RegExp(CONFEDERATION_CITATION_REGEX.source, "g");
+      expect(regex.test("(Hatonn, 1989-03-12)")).toBe(true);
+    });
+
+    it("should not match malformed dates", () => {
+      const regex = new RegExp(CONFEDERATION_CITATION_REGEX.source, "g");
+      expect(regex.test("(Q'uo, 2024)")).toBe(false);
+      expect(regex.test("(Q'uo 2024-01-24)")).toBe(false); // Missing comma
+    });
+  });
+
+  describe("parseCitationsInText with confederation", () => {
+    it("should parse confederation citation", () => {
+      const text = "Q'uo explains (Q'uo, 2024-01-24) that love is the lesson.";
+      const result = parseCitationsInText(text);
+
+      expect(result).toHaveLength(3);
+      expect(result[1]).toEqual({
+        type: "confederation-citation",
+        reference: "Q'uo, 2024-01-24",
+        entity: "Q'uo",
+        displayText: "(Q'uo, 2024-01-24)",
+        url: "https://www.llresearch.org/channeling/transcript/2024-01-24_quo",
+      });
+    });
+
+    it("should parse mixed Ra and confederation citations", () => {
+      const text = "Ra says (Ra 50.7) and Q'uo says (Q'uo, 2024-01-24) similar things.";
+      const result = parseCitationsInText(text);
+
+      const raCitations = result.filter((s) => s.type === "ra-citation");
+      const confedCitations = result.filter((s) => s.type === "confederation-citation");
+
+      expect(raCitations).toHaveLength(1);
+      expect(confedCitations).toHaveLength(1);
+
+      expect(raCitations[0].type === "ra-citation" && raCitations[0].session).toBe(50);
+      expect(confedCitations[0].type === "confederation-citation" && confedCitations[0].entity).toBe("Q'uo");
+    });
+
+    it("should handle Hatonn citation", () => {
+      const text = "As Hatonn notes (Hatonn, 1989-03-12).";
+      const result = parseCitationsInText(text);
+
+      const confed = result.find((s) => s.type === "confederation-citation");
+      expect(confed).toBeDefined();
+      if (confed && confed.type === "confederation-citation") {
+        expect(confed.entity).toBe("Hatonn");
+        expect(confed.reference).toBe("Hatonn, 1989-03-12");
+      }
     });
   });
 });

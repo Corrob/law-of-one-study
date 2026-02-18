@@ -10,7 +10,9 @@ import {
   parseSuggestionsEventData,
   parseErrorEventData,
   parseSessionEventData,
+  parseMetaEventData,
 } from "@/lib/schemas/sse-events";
+import { Quote } from "@/lib/types";
 import { DEFAULT_LOCALE } from "@/lib/language-config";
 import { STREAM_RECOVERY_CONFIG } from "@/lib/config";
 import { useStreamRecovery } from "./useStreamRecovery";
@@ -30,8 +32,10 @@ interface UseChatStreamReturn {
   streamDone: boolean;
   /** Follow-up suggestions from the AI */
   suggestions: string[];
+  /** Quotes from the meta event (includes passage text for modal display) */
+  quotes: Quote[];
   /** Send a message and start streaming the response */
-  sendMessage: (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode?: boolean, targetLanguage?: string) => Promise<void>;
+  sendMessage: (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode?: boolean, targetLanguage?: string, includeConfederation?: boolean) => Promise<void>;
   /** Finalize the assistant message after animations complete */
   finalizeMessage: (allChunks: AnimationChunk[]) => void;
   /** Reset all state for a new conversation */
@@ -44,6 +48,7 @@ interface UseChatStreamReturn {
 interface ReplayResult {
   chunksReplayed: number;
   hadSuggestions: boolean;
+  quotes: Quote[];
 }
 
 /**
@@ -58,9 +63,15 @@ function replayCachedEvents(
 ): ReplayResult {
   let contentChunkCount = 0;
   let hadSuggestions = false;
+  let quotes: Quote[] = [];
 
   for (const { event, data } of events) {
-    if (event === "chunk") {
+    if (event === "meta") {
+      const metaData = parseMetaEventData(data);
+      if (metaData?.quotes) {
+        quotes = metaData.quotes;
+      }
+    } else if (event === "chunk") {
       const chunkData = parseChunkData(data);
       if (!chunkData) continue;
       contentChunkCount++;
@@ -92,13 +103,14 @@ function replayCachedEvents(
     // "meta", "session", "done" events are handled by caller or ignored during replay
   }
 
-  return { chunksReplayed: contentChunkCount, hadSuggestions };
+  return { chunksReplayed: contentChunkCount, hadSuggestions, quotes };
 }
 
 /** Result of a recovery attempt */
 interface RecoveryResult {
   recovered: boolean;
   hadSuggestions: boolean;
+  quotes: Quote[];
 }
 
 /**
@@ -113,15 +125,15 @@ async function tryRecover(
   setSuggestions: (items: string[]) => void,
   setStreamDone: (done: boolean) => void
 ): Promise<RecoveryResult> {
-  if (!recoveryPromise) return { recovered: false, hadSuggestions: false };
+  if (!recoveryPromise) return { recovered: false, hadSuggestions: false, quotes: [] };
   const cached = await recoveryPromise;
-  if (!cached || cached.events.length === 0) return { recovered: false, hadSuggestions: false };
+  if (!cached || cached.events.length === 0) return { recovered: false, hadSuggestions: false, quotes: [] };
 
-  const { chunksReplayed, hadSuggestions } = replayCachedEvents(cached.events, addChunk, setSuggestions);
+  const { chunksReplayed, hadSuggestions, quotes } = replayCachedEvents(cached.events, addChunk, setSuggestions);
 
   if (chunksReplayed === 0) {
     debug.log("[useChatStream] Recovery cache had no content chunks, treating as failed");
-    return { recovered: false, hadSuggestions: false };
+    return { recovered: false, hadSuggestions: false, quotes: [] };
   }
 
   debug.log("[useChatStream] Recovered from cache:", {
@@ -131,7 +143,7 @@ async function tryRecover(
     complete: cached.complete,
   });
   setStreamDone(true);
-  return { recovered: true, hadSuggestions };
+  return { recovered: true, hadSuggestions, quotes };
 }
 
 /**
@@ -204,6 +216,7 @@ export function useChatStream(
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamDone, setStreamDone] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
   const abortControllerRef = useRef<AbortController | null>(null);
   const userAbortedRef = useRef(false);
 
@@ -214,7 +227,7 @@ export function useChatStream(
   recoverRef.current = recoverFromServer;
 
   const sendMessage = useCallback(
-    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = DEFAULT_LOCALE) => {
+    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = DEFAULT_LOCALE, includeConfederation: boolean = false) => {
       userAbortedRef.current = false;
       const requestStartTime = Date.now();
 
@@ -263,6 +276,7 @@ export function useChatStream(
         })),
         thinkingMode,
         targetLanguage,
+        includeConfederation,
       });
 
       let contentChunksReceived = false;
@@ -336,6 +350,11 @@ export function useChatStream(
                 currentResponseId = sessionData.responseId;
                 setResponseId(sessionData.responseId);
               }
+            } else if (event.type === "meta") {
+              const metaData = parseMetaEventData(event.data);
+              if (metaData?.quotes.length) {
+                setQuotes(metaData.quotes);
+              }
             } else if (event.type === "chunk") {
               const chunkData = parseChunkData(event.data);
               if (!chunkData) {
@@ -407,6 +426,9 @@ export function useChatStream(
         async function attemptRecoveryWithSuggestions(): Promise<boolean> {
           const result = await tryRecover(recoveryPromise, addChunk, setSuggestions, setStreamDone);
           if (result.recovered) {
+            if (result.quotes.length > 0) {
+              setQuotes(result.quotes);
+            }
             if (!result.hadSuggestions && recoveryId) {
               retrySuggestionsFromCache(recoveryId, recoverRef.current, setSuggestions);
             }
@@ -553,6 +575,7 @@ export function useChatStream(
     setStreamDone(false);
     setIsStreaming(false);
     setSuggestions([]);
+    setQuotes([]);
   }, []);
 
   return {
@@ -560,6 +583,7 @@ export function useChatStream(
     isStreaming,
     streamDone,
     suggestions,
+    quotes,
     sendMessage,
     finalizeMessage,
     reset,

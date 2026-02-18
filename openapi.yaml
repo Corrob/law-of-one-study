@@ -229,6 +229,13 @@ components:
           maxItems: 20
           items:
             $ref: '#/components/schemas/ChatMessage'
+        includeConfederation:
+          type: boolean
+          default: false
+          description: |
+            When true, search Confederation channeling passages (Q'uo, Hatonn, etc.)
+            alongside the Ra Material and adapt prompts accordingly.
+            When false (default), only Ra Material passages are searched.
 
     ChatMessage:
       type: object

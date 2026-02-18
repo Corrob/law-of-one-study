@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { AvailableLanguage } from "@/lib/language-config";
+import { useConfederationPreference } from "@/hooks/useConfederationPreference";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import SearchInput from "@/components/SearchInput";
@@ -42,7 +43,9 @@ export default function SearchContent() {
   const initialUrlConfederation = useRef(searchParams.get("confederation") === "1");
 
   const [mode, setMode] = useState<SearchMode | null>("sentence");
-  const [includeConfederation, setIncludeConfederation] = useState(false);
+  const { includeConfederation, setIncludeConfederation } = useConfederationPreference(
+    initialUrlConfederation.current ? true : undefined
+  );
   const [inputValue, setInputValue] = useState("");
   const [searchedQuery, setSearchedQuery] = useState(""); // The query used for current results/highlights
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -145,10 +148,7 @@ export default function SearchContent() {
       setMode(urlMode);
     }
 
-    // If confederation=1 in URL, enable it
-    if (urlConfederation) {
-      setIncludeConfederation(true);
-    }
+    // Note: confederation URL param is handled by useConfederationPreference initialOverride
 
     // If we have a query, perform the search
     if (urlQuery && urlQuery.length >= 2) {
@@ -197,7 +197,7 @@ export default function SearchContent() {
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [performSearch]);
+  }, [performSearch, setIncludeConfederation]);
 
   const handleAskAbout = (result: SearchResult, displayText: string) => {
     // Use the translated display text passed from SearchResultCard
@@ -222,7 +222,7 @@ export default function SearchContent() {
     setHasSearched(false);
     setError(null);
     router.push("/search");
-  }, [router]);
+  }, [router, setIncludeConfederation]);
 
   // Handle mode change (when toggling during search)
   const handleModeChange = useCallback((newMode: SearchMode) => {
@@ -249,7 +249,7 @@ export default function SearchContent() {
     } else {
       router.push(buildSearchUrl(mode!, undefined, enabled));
     }
-  }, [hasSearched, inputValue, router, performSearch, mode]);
+  }, [hasSearched, inputValue, router, performSearch, mode, setIncludeConfederation]);
 
   // Two UI states:
   // 1. No search yet - show search welcome with toggle

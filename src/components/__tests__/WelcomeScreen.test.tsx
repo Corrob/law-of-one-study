@@ -178,6 +178,31 @@ describe("WelcomeScreen", () => {
     });
   });
 
+  describe("confederation toggle", () => {
+    it("should render SourceFilter when onConfederationChange is provided", () => {
+      const mockOnConfederationChange = jest.fn();
+      render(
+        <WelcomeScreen
+          onSelectStarter={mockOnSelectStarter}
+          includeConfederation={false}
+          onConfederationChange={mockOnConfederationChange}
+        />
+      );
+
+      // SourceFilter renders a switch role element
+      const switches = screen.getAllByRole("switch");
+      expect(switches.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it("should not render SourceFilter when onConfederationChange is not provided", () => {
+      render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
+
+      // Without onThinkingModeChange or onConfederationChange, no switches should render
+      const switches = screen.queryAllByRole("switch");
+      expect(switches).toHaveLength(0);
+    });
+  });
+
   describe("styling", () => {
     it("should have proper classes on starter buttons", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);

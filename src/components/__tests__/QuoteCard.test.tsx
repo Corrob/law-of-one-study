@@ -197,7 +197,44 @@ describe("QuoteCard", () => {
 
       render(<QuoteCard quote={quote} />);
 
-      expect(screen.getByText("Session 50")).toBeInTheDocument();
+      // Reference appears as both entity header label and reference link
+      const matches = screen.getAllByText("Session 50");
+      expect(matches.length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  describe("confederation quotes", () => {
+    const confederationQuote: Quote = {
+      text: "Love is the lesson of third density.",
+      reference: "Q'uo, 2024-01-24",
+      url: "https://www.llresearch.org/channeling/transcript/2024-01-24",
+      metadata: {},
+    };
+
+    it("should show entity name as header label for confederation quotes", () => {
+      render(<QuoteCard quote={confederationQuote} />);
+
+      expect(screen.getByText("Q'uo")).toBeInTheDocument();
+    });
+
+    it("should show full reference in reference badge for confederation quotes", () => {
+      render(<QuoteCard quote={confederationQuote} />);
+
+      expect(screen.getByText("Q'uo, 2024-01-24")).toBeInTheDocument();
+    });
+
+    it("should not show expand ellipsis for confederation quotes", () => {
+      const confedWithEllipsis: Quote = {
+        ...confederationQuote,
+        text: "...\n\nLove is the lesson.\n\n...",
+      };
+
+      render(<QuoteCard quote={confedWithEllipsis} />);
+
+      // Should not render ellipsis buttons (no local section files for confederation)
+      const buttons = screen.queryAllByText("...");
+      const ellipsisButtons = buttons.filter((el) => el.tagName === "BUTTON");
+      expect(ellipsisButtons).toHaveLength(0);
     });
   });
 

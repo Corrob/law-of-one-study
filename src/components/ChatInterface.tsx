@@ -10,6 +10,9 @@ import GlobalPopover from "./GlobalPopover";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCitationModal } from "@/contexts/CitationModalContext";
+import { useConfederationPreference } from "@/hooks/useConfederationPreference";
+import { debug } from "@/lib/debug";
 import type { Message, MessageSegment } from "@/lib/types";
 import { STREAM_RECOVERY_CONFIG } from "@/lib/config";
 
@@ -58,6 +61,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   // Get current language setting
   const { language } = useLanguage();
 
+  // Confederation preference (shared with Search via localStorage)
+  const { includeConfederation, setIncludeConfederation } = useConfederationPreference();
+
   // Helper to get random placeholder key
   const getRandomPlaceholderKey = useCallback((forFollowUp: boolean) => {
     const count = forFollowUp ? FOLLOWUP_PLACEHOLDER_COUNT : INITIAL_PLACEHOLDER_COUNT;
@@ -74,12 +80,16 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     ? t(`followUpPlaceholders.${placeholderKey}`)
     : t(`initialPlaceholders.${placeholderKey}`);
 
+  // Citation modal context for passing quotes
+  const { setQuotes } = useCitationModal();
+
   // Chat stream management
   const {
     messages,
     isStreaming,
     streamDone,
     suggestions,
+    quotes,
     sendMessage,
     finalizeMessage,
     reset: resetChat,
@@ -151,9 +161,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     async (content: string) => {
       resetQueue();
       setTimeout(() => scrollToBottom("smooth"), 50);
-      await sendMessage(content, addChunk, thinkingMode, language);
+      await sendMessage(content, addChunk, thinkingMode, language, includeConfederation);
     },
-    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode, language]
+    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode, language, includeConfederation]
   );
 
   // Finalize message when stream is done AND all animations are complete
@@ -173,6 +183,14 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
       return () => clearTimeout(timeout);
     }
   }, [streamDone, isFullyComplete, forceFinalize]);
+
+  // Sync quotes from stream to citation modal context for Confederation modals
+  useEffect(() => {
+    if (quotes.length > 0) {
+      debug.log("[ChatInterface] Syncing quotes to context:", quotes.length);
+      setQuotes(quotes);
+    }
+  }, [quotes, setQuotes]);
 
   // Auto-send initial query if provided (e.g., from search "Ask about this")
   useEffect(() => {
@@ -291,6 +309,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
                     inputElement={inputElement}
                     thinkingMode={thinkingMode}
                     onThinkingModeChange={setThinkingMode}
+                    includeConfederation={includeConfederation}
+                    onConfederationChange={setIncludeConfederation}
                   />
                 </motion.div>
               ) : (

@@ -4,10 +4,12 @@
 
 import {
   ROLE_PREAMBLE,
+  ROLE_PREAMBLE_RA_ONLY,
   STYLE_RULES,
   QUOTE_FORMAT_RULES,
   QUOTE_SELECTION_RULES,
   CITATION_INSTRUCTIONS,
+  CITATION_INSTRUCTIONS_RA_ONLY,
   FALLBACK_HANDLING,
   EMOTIONAL_AWARENESS,
   CONVERSATION_CONTEXT,
@@ -16,7 +18,14 @@ import {
   OFF_TOPIC_HANDLING,
 } from "./constants";
 
-export const UNIFIED_RESPONSE_PROMPT = `${ROLE_PREAMBLE}
+/**
+ * Build the full response prompt, choosing Ra-only or Ra+Confederation variants.
+ */
+export function buildResponsePrompt(includeConfederation: boolean): string {
+  const preamble = includeConfederation ? ROLE_PREAMBLE : ROLE_PREAMBLE_RA_ONLY;
+  const citations = includeConfederation ? CITATION_INSTRUCTIONS : CITATION_INSTRUCTIONS_RA_ONLY;
+
+  return `${preamble}
 
 YOUR TASK:
 Respond to the user based on the detected intent and provided Ra passages. The intent label is a hint - trust your judgment if it seems mismatched.
@@ -237,7 +246,7 @@ The human always takes precedence over the classification.
 
 Low-confidence signals (when provided as [Confidence: low]) indicate the classification is uncertain - read the message carefully and adapt. For example, if labeled "quote-search" but the user is clearly asking for explanation, respond with explanation.
 
-${CITATION_INSTRUCTIONS}
+${citations}
 
 ${QUOTE_FORMAT_RULES}
 
@@ -275,3 +284,6 @@ Vary your approach:
 - Practical: "Is there a specific aspect you'd like to understand more deeply?"
 
 Many responses need no follow-up. When in doubt, omit it.`;
+}
+
+export const UNIFIED_RESPONSE_PROMPT = buildResponsePrompt(true);

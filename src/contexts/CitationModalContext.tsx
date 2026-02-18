@@ -1,16 +1,18 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useRef, ReactNode } from "react";
 import CitationModal from "@/components/CitationModal";
+import { Quote } from "@/lib/types";
 
-interface CitationModalState {
-  session: number;
-  question: number;
-}
+type CitationModalState =
+  | { type: "ra"; session: number; question: number }
+  | { type: "confederation"; reference: string; text: string; url: string; entity: string };
 
 interface CitationModalContextValue {
   openCitation: (session: number, question: number) => void;
+  openConfederationCitation: (reference: string, fallbackUrl?: string) => void;
   closeCitation: () => void;
+  setQuotes: (quotes: Quote[]) => void;
 }
 
 const CitationModalContext = createContext<CitationModalContextValue | null>(null);
@@ -36,9 +38,34 @@ interface CitationModalProviderProps {
  */
 export function CitationModalProvider({ children }: CitationModalProviderProps) {
   const [modalState, setModalState] = useState<CitationModalState | null>(null);
+  const quotesRef = useRef<Quote[]>([]);
+
+  const setQuotes = useCallback((quotes: Quote[]) => {
+    quotesRef.current = quotes;
+  }, []);
 
   const openCitation = useCallback((session: number, question: number) => {
-    setModalState({ session, question });
+    setModalState({ type: "ra", session, question });
+  }, []);
+
+  const openConfederationCitation = useCallback((reference: string, fallbackUrl?: string) => {
+    const quote = quotesRef.current.find((q) => q.reference === reference);
+    if (!quote) {
+      // Quote text not available — fall back to opening transcript in new tab
+      if (fallbackUrl) {
+        window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+      }
+      return;
+    }
+
+    const entity = reference.split(",")[0].trim();
+    setModalState({
+      type: "confederation",
+      reference,
+      text: quote.text,
+      url: quote.url,
+      entity,
+    });
   }, []);
 
   const closeCitation = useCallback(() => {
@@ -46,14 +73,24 @@ export function CitationModalProvider({ children }: CitationModalProviderProps) 
   }, []);
 
   return (
-    <CitationModalContext.Provider value={{ openCitation, closeCitation }}>
+    <CitationModalContext.Provider value={{ openCitation, openConfederationCitation, closeCitation, setQuotes }}>
       {children}
-      {modalState && (
+      {modalState?.type === "ra" && (
         <CitationModal
           isOpen={true}
           onClose={closeCitation}
           session={modalState.session}
           question={modalState.question}
+        />
+      )}
+      {modalState?.type === "confederation" && (
+        <CitationModal
+          isOpen={true}
+          onClose={closeCitation}
+          confederationRef={modalState.reference}
+          confederationText={modalState.text}
+          confederationUrl={modalState.url}
+          confederationEntity={modalState.entity}
         />
       )}
     </CitationModalContext.Provider>

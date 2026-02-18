@@ -420,4 +420,64 @@ describe("chat/stream-processor", () => {
       expect(sentEvents.some((e) => (e.data as { type: string }).type === "quote")).toBe(false);
     });
   });
+
+  describe("citation marker replacement", () => {
+    it("should replace Ra cite markers with (Ra X.Y) format", async () => {
+      const stream = createMockStreamFromText(["See {{CITE:1}} for details."]);
+
+      await processStreamWithMarkers(stream, mockQuotes, sendMock);
+
+      const textEvents = sentEvents.filter(
+        (e) => (e.data as { type: string }).type === "text"
+      );
+      expect(textEvents).toHaveLength(1);
+      expect((textEvents[0].data as { content: string }).content).toBe("See (Ra 1.1) for details.");
+    });
+
+    it("should replace confederation cite markers with (Entity, Date) format", async () => {
+      const confedQuotes: Quote[] = [
+        ...mockQuotes,
+        { text: "Love is the lesson.", reference: "Q'uo, 2024-01-24", url: "https://www.llresearch.org/channeling/transcript/2024-01-24" },
+      ];
+      const stream = createMockStreamFromText(["See {{CITE:4}} for details."]);
+
+      await processStreamWithMarkers(stream, confedQuotes, sendMock);
+
+      const textEvents = sentEvents.filter(
+        (e) => (e.data as { type: string }).type === "text"
+      );
+      expect(textEvents).toHaveLength(1);
+      expect((textEvents[0].data as { content: string }).content).toBe("See (Q'uo, 2024-01-24) for details.");
+    });
+
+    it("should handle mixed Ra and confederation cite markers", async () => {
+      const mixedQuotes: Quote[] = [
+        { text: "Ra: I am Ra.", reference: "50.7", url: "https://example.com/ra" },
+        { text: "Love is the lesson.", reference: "Q'uo, 2024-01-24", url: "https://example.com/quo" },
+      ];
+      const stream = createMockStreamFromText(["See {{CITE:1}} and {{CITE:2}}."]);
+
+      await processStreamWithMarkers(stream, mixedQuotes, sendMock);
+
+      const textEvents = sentEvents.filter(
+        (e) => (e.data as { type: string }).type === "text"
+      );
+      expect(textEvents).toHaveLength(1);
+      expect((textEvents[0].data as { content: string }).content).toBe(
+        "See (Ra 50.7) and (Q'uo, 2024-01-24)."
+      );
+    });
+
+    it("should add space between adjacent citations", async () => {
+      const stream = createMockStreamFromText(["{{CITE:1}}{{CITE:2}}"]);
+
+      await processStreamWithMarkers(stream, mockQuotes, sendMock);
+
+      const textEvents = sentEvents.filter(
+        (e) => (e.data as { type: string }).type === "text"
+      );
+      expect(textEvents).toHaveLength(1);
+      expect((textEvents[0].data as { content: string }).content).toBe("(Ra 1.1) (Ra 2.5)");
+    });
+  });
 });

@@ -9,7 +9,7 @@ import { fetchFullQuote, formatWholeQuote, formatQuoteWithAttribution } from "@/
 import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { type AvailableLanguage } from "@/lib/language-config";
-import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
+import { parseRaText, parseEllipsis, getShortReference, isRaReference, getConfederationEntity } from "@/lib/ra-text-parser";
 import CopyButton from "./CopyButton";
 
 interface QuoteCardProps {
@@ -17,12 +17,13 @@ interface QuoteCardProps {
 }
 
 /**
- * Displays a Ra Material quote with expandable content and copy functionality.
+ * Displays a quote card for Ra Material or Confederation sources.
  *
  * Features:
  * - Formats Questioner/Ra dialogue with distinct styling
+ * - Shows entity name (Q'uo, Hatonn) for Confederation quotes
  * - Handles partial quotes with ellipsis indicators
- * - Supports expanding to show full quote text
+ * - Supports expanding to show full quote text (Ra only)
  * - Copy-to-clipboard functionality
  * - Analytics tracking for user interactions
  * - Multilingual support via language context
@@ -34,6 +35,10 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
   const { language } = useLanguage();
   const t = useTranslations("quote");
 
+  // Determine source type
+  const isRa = isRaReference(quote.reference);
+  const confederationEntity = isRa ? null : getConfederationEntity(quote.reference);
+
   // Parse ellipsis from quote text
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
@@ -44,19 +49,22 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
     hasTrailing,
     contentLength: content.length,
     language,
+    isRa,
+    confederationEntity,
   });
 
-  // State for expansion
+  // State for expansion (Ra only - confederation quotes don't have local section files)
   const [isExpanded, setIsExpanded] = useState(false);
   const [fullQuoteText, setFullQuoteText] = useState<string | null>(null);
   const [isLoadingFull, setIsLoadingFull] = useState(false);
 
-  // State for translated quote (loaded on mount for non-English)
+  // State for translated quote (loaded on mount for non-English, Ra only)
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [isLoadingTranslation, setIsLoadingTranslation] = useState(false);
 
-  // Fetch translated quote on mount if language is not English
+  // Fetch translated quote on mount if language is not English (Ra only)
   useEffect(() => {
+    if (!isRa) return; // No translation fetch for confederation
     if (language !== 'en' && !translatedText && !isLoadingTranslation) {
       setIsLoadingTranslation(true);
       debug.log("[QuoteCard] Fetching translated quote:", quote.reference, language);
@@ -76,7 +84,7 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
           setIsLoadingTranslation(false);
         });
     }
-  }, [language, quote.reference, translatedText, isLoadingTranslation]);
+  }, [language, quote.reference, translatedText, isLoadingTranslation, isRa]);
 
   // Determine what text to display:
   // - If expanded and have full quote, use that
@@ -89,11 +97,13 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
       : content;
 
   // Format the content (without ellipsis)
+  // For confederation quotes, parseRaText won't find Ra/Questioner prefixes,
+  // so it returns the text as a single "text" segment — which is correct.
   const segments = parseRaText(displayContent);
   debug.log("[QuoteCard] Formatted segments:", segments.length, segments);
   const shortRef = getShortReference(quote.reference);
 
-  // Extract session and question numbers for tracking
+  // Extract session and question numbers for tracking (Ra only)
   const match = quote.reference.match(/(\d+)\.(\d+)/);
   const sessionNumber = match ? parseInt(match[1]) : 0;
   const questionNumber = match ? parseInt(match[2]) : 0;
@@ -103,7 +113,7 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
     analytics.quoteDisplayed({
       sessionNumber,
       questionNumber,
-      positionInResponse: 0, // Could be enhanced to track actual position
+      positionInResponse: 0,
       sentenceRange: hasLeading || hasTrailing ? "partial" : undefined,
     });
   }, [sessionNumber, questionNumber, hasLeading, hasTrailing]);
@@ -117,12 +127,11 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
     });
   };
 
-  // Handle expand/collapse
+  // Handle expand/collapse (Ra only)
   const handleExpandClick = async (e: React.MouseEvent) => {
     e.preventDefault();
 
     if (isExpanded) {
-      // Collapse
       setIsExpanded(false);
       return;
     }
@@ -135,7 +144,6 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
       debug.log("[QuoteCard] Fetched full text length:", fullText?.length || 0);
       debug.log("[QuoteCard] Original text length:", quote.text.length);
       if (fullText) {
-        // Format with paragraph breaks
         const formatted = formatWholeQuote(fullText);
         debug.log("[QuoteCard] Formatted text length:", formatted.length);
         setFullQuoteText(formatted);
@@ -147,7 +155,6 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
 
     setIsExpanded(true);
 
-    // Track expansion
     analytics.quoteLinkClicked({
       sessionNumber,
       questionNumber,
@@ -170,12 +177,22 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
 
   const showEllipsis = !isExpanded && (hasLeading || hasTrailing);
 
+  // Header label: entity name for confederation, "Questioner" for Ra
+  const headerLabel = confederationEntity || t("questioner");
+  // Header label styling: gold for confederation entity, celestial for questioner
+  const headerLabelClass = confederationEntity
+    ? "text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide"
+    : "text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide";
+
+  // Speaker label for "ra" segments: entity name for confederation, "Ra" for Ra
+  const speakerLabel = confederationEntity || "Ra";
+
   return (
     <div className="ra-quote mt-6 mb-4 rounded-lg bg-[var(--lo1-indigo)]/60 backdrop-blur-sm border-l-4 border-[var(--lo1-gold)] p-4 shadow-lg relative" data-testid="quote-card">
       {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
-        <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-          {t("questioner")}
+        <span className={headerLabelClass}>
+          {headerLabel}
         </span>
         <a
           href={quote.url}
@@ -188,8 +205,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
         </a>
       </div>
 
-      {/* Leading ellipsis - click to expand */}
-      {showEllipsis && hasLeading && (
+      {/* Leading ellipsis - click to expand (Ra only) */}
+      {isRa && showEllipsis && hasLeading && (
         <button
           onClick={handleExpandClick}
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mb-2 cursor-pointer"
@@ -203,11 +220,11 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
 
       {segments.map((segment, index) => (
         <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
-          {/* Only show Ra label, Questioner is in header */}
+          {/* Show speaker label for Ra/entity segments */}
           {segment.type === "ra" && (
             <div className="mb-1">
               <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide">
-                Ra
+                {speakerLabel}
               </span>
             </div>
           )}
@@ -221,8 +238,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
         </div>
       ))}
 
-      {/* Trailing ellipsis - click to expand */}
-      {showEllipsis && hasTrailing && (
+      {/* Trailing ellipsis - click to expand (Ra only) */}
+      {isRa && showEllipsis && hasTrailing && (
         <button
           onClick={handleExpandClick}
           className="block text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-2 cursor-pointer"
@@ -234,8 +251,8 @@ const QuoteCard = memo(function QuoteCard({ quote }: QuoteCardProps) {
         </button>
       )}
 
-      {/* Collapse button when expanded */}
-      {isExpanded && (hasLeading || hasTrailing) && (
+      {/* Collapse button when expanded (Ra only) */}
+      {isRa && isExpanded && (hasLeading || hasTrailing) && (
         <button
           onClick={handleExpandClick}
           className="block text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-3 cursor-pointer"

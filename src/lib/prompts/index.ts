@@ -6,9 +6,12 @@
 // Constants (for advanced usage - composing custom prompts)
 export {
   ROLE_PREAMBLE,
+  ROLE_PREAMBLE_RA_ONLY,
   STYLE_RULES,
   QUOTE_FORMAT_RULES,
   QUOTE_SELECTION_RULES,
+  CITATION_INSTRUCTIONS,
+  CITATION_INSTRUCTIONS_RA_ONLY,
   OFF_TOPIC_HANDLING,
   FALLBACK_HANDLING,
   CONVERSATION_CONTEXT,
@@ -19,7 +22,7 @@ export {
 
 // Main prompts
 export { QUERY_AUGMENTATION_PROMPT } from "./query-augmentation";
-export { UNIFIED_RESPONSE_PROMPT } from "./response";
+export { UNIFIED_RESPONSE_PROMPT, buildResponsePrompt } from "./response";
 export { SUGGESTION_GENERATION_PROMPT } from "./suggestions";
 
 // Utility functions

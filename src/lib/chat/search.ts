@@ -77,24 +77,32 @@ async function searchConfederationQuotes(
 }
 
 /**
- * Performs the complete search flow: embedding creation + parallel Ra & Confederation search.
+ * Performs the complete search flow: embedding creation + Ra search,
+ * optionally including Confederation passages in parallel.
  * Merges results with Ra passages prioritized.
  */
 export async function performSearch(
   query: string,
-  sessionRef?: SessionReference | null
+  sessionRef?: SessionReference | null,
+  includeConfederation: boolean = false
 ): Promise<SearchResult> {
   const embedding = await createSearchEmbedding(query);
 
-  // Search both sources in parallel
-  const [raPassages, confedPassages] = await Promise.all([
-    searchPassages(embedding, sessionRef),
-    searchConfederationQuotes(embedding),
-  ]);
+  if (includeConfederation) {
+    // Search both sources in parallel
+    const [raPassages, confedPassages] = await Promise.all([
+      searchPassages(embedding, sessionRef),
+      searchConfederationQuotes(embedding),
+    ]);
 
-  // Merge: Ra passages first, then Confederation, cap total
-  const maxTotal = SEARCH_CONFIG.defaultTopK + 4;
-  const passages = [...raPassages, ...confedPassages].slice(0, maxTotal);
+    // Merge: Ra passages first, then Confederation, cap total
+    const maxTotal = SEARCH_CONFIG.defaultTopK + 4;
+    const passages = [...raPassages, ...confedPassages].slice(0, maxTotal);
 
+    return { passages, embedding };
+  }
+
+  // Ra-only search
+  const passages = await searchPassages(embedding, sessionRef);
   return { passages, embedding };
 }

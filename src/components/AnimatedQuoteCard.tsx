@@ -7,7 +7,7 @@ import { formatWholeQuote, formatQuoteForCopy } from "@/lib/quote-utils";
 import { useTranslations } from "next-intl";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { type AvailableLanguage } from "@/lib/language-config";
-import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
+import { parseRaText, parseEllipsis, getShortReference, isRaReference } from "@/lib/ra-text-parser";
 import { useQuoteText } from "@/hooks/useBilingualQuote";
 
 interface AnimatedQuoteCardProps {
@@ -34,8 +34,9 @@ export default function AnimatedQuoteCard({
   const [copySuccess, setCopySuccess] = useState(false);
 
   // SWR handles fetching, caching, and deduplication
-  // Fetch the full quote text in the current language
-  const { data: fullQuoteData } = useQuoteText(quote.reference, language as AvailableLanguage);
+  // Fetch the full quote text in the current language (Ra only — Confederation has no local files)
+  const isRa = isRaReference(quote.reference);
+  const { data: fullQuoteData } = useQuoteText(isRa ? quote.reference : "", language as AvailableLanguage);
 
   // Format the fetched text
   const fullQuoteText = fullQuoteData ? formatWholeQuote(fullQuoteData) : null;

@@ -7,7 +7,7 @@ import { debug } from "@/lib/debug";
 import { formatWholeQuote, formatQuoteWithAttribution, getRaMaterialUrl } from "@/lib/quote-utils";
 import { useTranslations } from "next-intl";
 import { type AvailableLanguage } from "@/lib/language-config";
-import { parseRaText, parseEllipsis, getShortReference } from "@/lib/ra-text-parser";
+import { parseRaText, parseEllipsis, getShortReference, isRaReference, getConfederationEntity } from "@/lib/ra-text-parser";
 import { useBilingualQuote } from "@/hooks/useBilingualQuote";
 import CopyButton from "../CopyButton";
 
@@ -18,8 +18,9 @@ interface BilingualQuoteCardProps {
 }
 
 /**
- * Displays a Ra Material quote with bilingual support.
+ * Displays a quote with bilingual support.
  * Shows translated quote prominently with collapsible English original.
+ * Supports both Ra Material and Confederation sources.
  */
 const BilingualQuoteCard = memo(function BilingualQuoteCard({
   quote,
@@ -28,14 +29,18 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
   const t = useTranslations("quote");
   const { hasLeading, hasTrailing, content } = parseEllipsis(quote.text);
 
+  // Determine source type
+  const isRa = isRaReference(quote.reference);
+  const confederationEntity = isRa ? null : getConfederationEntity(quote.reference);
+
   // UI state for expansion and showing original
   const [isExpanded, setIsExpanded] = useState(false);
   const [showOriginal, setShowOriginal] = useState(false);
 
   // SWR handles fetching, caching, and deduplication across components
-  // Note: isLoading available but not displayed (instant fallback to content)
+  // Skip SWR fetch for Confederation results (no local section files — empty string disables SWR)
   const { data: bilingualData } = useBilingualQuote(
-    quote.reference,
+    isRa ? quote.reference : "",
     targetLanguage
   );
 
@@ -44,23 +49,26 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
     targetLanguage,
     textLength: quote.text.length,
     hasData: !!bilingualData,
+    isRa,
+    confederationEntity,
   });
 
   const shortRef = getShortReference(quote.reference);
 
-  // Extract session and question numbers for tracking
+  // Extract session and question numbers for tracking (Ra only)
   const match = quote.reference.match(/(\d+)\.(\d+)/);
   const sessionNumber = match ? parseInt(match[1]) : 0;
   const questionNumber = match ? parseInt(match[2]) : 0;
 
-  // Generate locale-aware URL for the quote link
-  const quoteUrl = getRaMaterialUrl(sessionNumber, questionNumber, targetLanguage);
+  // Generate locale-aware URL for the quote link (Ra only; confederation uses quote.url)
+  const quoteUrl = isRa
+    ? getRaMaterialUrl(sessionNumber, questionNumber, targetLanguage)
+    : quote.url;
 
-  // Derive formatted texts from SWR data
+  // Derive formatted texts from SWR data (Ra only)
   const initialTranslation = bilingualData?.text ? formatWholeQuote(bilingualData.text) : null;
   const initialOriginal = bilingualData?.originalText ? formatWholeQuote(bilingualData.originalText) : null;
-  // Check if we're showing English as fallback (no original means the text IS the original)
-  const isFallbackToEnglish = targetLanguage !== 'en' && bilingualData && !bilingualData.originalText;
+  const isFallbackToEnglish = isRa && targetLanguage !== 'en' && bilingualData && !bilingualData.originalText;
 
   // Track quote display on mount
   useEffect(() => {
@@ -96,14 +104,17 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
     setIsExpanded(!isExpanded);
   };
 
-  // Current display text (translated version)
-  // When expanded, use full translated text; otherwise use translated excerpt or original content
-  const displayText = isExpanded && initialTranslation
-    ? initialTranslation
-    : initialTranslation || content;
+  // Current display text
+  // For Ra: translated version when available, otherwise original content
+  // For Confederation: always use original content (no translations available)
+  const displayText = isRa
+    ? (isExpanded && initialTranslation
+        ? initialTranslation
+        : initialTranslation || content)
+    : content;
   const segments = parseRaText(displayText);
 
-  // Original text segments (English) for "Show English original" toggle
+  // Original text segments (English) for "Show English original" toggle (Ra only)
   const originalSegments = showOriginal && initialOriginal
     ? parseRaText(initialOriginal)
     : null;
@@ -120,9 +131,18 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
     });
   };
 
-  const showEllipsis = !isExpanded && (hasLeading || hasTrailing);
-  // Only show "Show English original" if we have a translation (not showing fallback)
-  const hasOriginal = targetLanguage !== 'en' && !isFallbackToEnglish && initialOriginal;
+  const showEllipsis = isRa && !isExpanded && (hasLeading || hasTrailing);
+  // Only show "Show English original" if we have a Ra translation (not showing fallback)
+  const hasOriginal = isRa && targetLanguage !== 'en' && !isFallbackToEnglish && initialOriginal;
+
+  // Header label: entity name for confederation, "Questioner" for Ra
+  const headerLabel = confederationEntity || t("questioner");
+  const headerLabelClass = confederationEntity
+    ? "text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide"
+    : "text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide";
+
+  // Speaker label for "ra" segments
+  const speakerLabel = confederationEntity || "Ra";
 
   return (
     <div
@@ -132,8 +152,8 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
       {/* Header with reference number */}
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-[var(--lo1-celestial)] uppercase tracking-wide">
-            {t("questioner")}
+          <span className={headerLabelClass}>
+            {headerLabel}
           </span>
           {isFallbackToEnglish && (
             <span className="text-xs text-[var(--lo1-celestial)]/60 italic">
@@ -152,7 +172,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
         </a>
       </div>
 
-      {/* Leading ellipsis - click to expand */}
+      {/* Leading ellipsis - click to expand (Ra only) */}
       {showEllipsis && hasLeading && (
         <button
           onClick={handleExpandClick}
@@ -164,13 +184,13 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
         </button>
       )}
 
-      {/* Translated quote segments */}
+      {/* Quote segments */}
       {segments.map((segment, index) => (
         <div key={index} className={segment.type === "ra" ? "mt-3" : ""}>
           {segment.type === "ra" && (
             <div className="mb-1">
               <span className="text-xs font-semibold text-[var(--lo1-gold)] uppercase tracking-wide">
-                Ra
+                {speakerLabel}
               </span>
             </div>
           )}
@@ -184,7 +204,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
         </div>
       ))}
 
-      {/* Trailing ellipsis - click to expand */}
+      {/* Trailing ellipsis - click to expand (Ra only) */}
       {showEllipsis && hasTrailing && (
         <button
           onClick={handleExpandClick}
@@ -196,8 +216,8 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
         </button>
       )}
 
-      {/* Collapse button when expanded */}
-      {isExpanded && (hasLeading || hasTrailing) && (
+      {/* Collapse button when expanded (Ra only) */}
+      {isRa && isExpanded && (hasLeading || hasTrailing) && (
         <button
           onClick={handleExpandClick}
           className="block text-xs text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] mt-3 cursor-pointer"
@@ -208,7 +228,7 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
         </button>
       )}
 
-      {/* Show original toggle (for non-English languages) */}
+      {/* Show original toggle (for non-English languages, Ra only) */}
       {hasOriginal && (
         <div className="mt-4 pt-3 border-t border-[var(--lo1-celestial)]/20">
           <button
@@ -224,7 +244,6 @@ const BilingualQuoteCard = memo(function BilingualQuoteCard({
             <div className="mt-3 pl-3 border-l-2 border-[var(--lo1-celestial)]/30">
               {originalSegments.map((segment, index) => (
                 <div key={index} className={segment.type === "ra" ? "mt-2" : ""}>
-                  {/* Use hardcoded English labels for the English original */}
                   {segment.type === "questioner" && (
                     <div className="mb-1">
                       <span className="text-xs font-semibold text-[var(--lo1-celestial)]/70 uppercase tracking-wide">

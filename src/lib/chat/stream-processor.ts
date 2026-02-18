@@ -11,18 +11,30 @@ import { applySentenceRangeToQuote, formatWholeQuote } from "@/lib/quote-utils";
 import { debug } from "@/lib/debug";
 import type { SSESender } from "./sse-encoder";
 
+/** Check if a reference matches Ra Material format (e.g., "50.7" or "Ra 50.7") */
+function isRaReference(reference: string): boolean {
+  return /^\s*(Ra\s+)?\d+\.\d+\s*$/.test(reference);
+}
+
 /**
- * Replace all {{CITE:N}} markers in text with (Ra X.Y) format.
- * Citations are inline text, not block elements like quotes.
+ * Replace all {{CITE:N}} markers in text with readable citation format.
+ * Ra citations: (Ra X.Y)
+ * Confederation citations: (Entity, Date) — e.g., (Q'uo, 2024-01-24)
  */
 function replaceCiteMarkers(text: string, passages: Quote[]): string {
   const replaced = text.replace(new RegExp(CITE_MARKER_REGEX.source, "g"), (match, indexStr) => {
     const index = parseInt(indexStr, 10);
     const passage = passages[index - 1]; // Convert from 1-indexed to 0-indexed
     if (passage?.reference) {
-      // Reference may be "50.7" or "Ra 50.7" - normalize to "(Ra X.Y)" format
-      const ref = passage.reference.replace(/^Ra\s+/i, "");
-      const formatted = `(Ra ${ref})`;
+      let formatted: string;
+      if (isRaReference(passage.reference)) {
+        // Ra Material: normalize to "(Ra X.Y)" format
+        const ref = passage.reference.replace(/^Ra\s+/i, "");
+        formatted = `(Ra ${ref.trim()})`;
+      } else {
+        // Confederation: use reference as-is, e.g., "(Q'uo, 2024-01-24)"
+        formatted = `(${passage.reference})`;
+      }
       debug.log("[API] Replaced citation marker:", match, "->", formatted);
       return formatted;
     }
@@ -31,8 +43,8 @@ function replaceCiteMarkers(text: string, passages: Quote[]): string {
     return "";
   });
 
-  // Ensure exactly one space between adjacent citations: "(Ra X.Y)(Ra Z.W)" -> "(Ra X.Y) (Ra Z.W)"
-  return replaced.replace(/\)\(Ra /g, ") (Ra ");
+  // Ensure exactly one space between adjacent citations
+  return replaced.replace(/\)\(/g, ") (");
 }
 
 /** Token usage data from OpenAI API */

@@ -121,13 +121,24 @@ function LinkedText({ text, onSearch, locale }: { text: string; onSearch: (term:
   for (let i = 0; i < citationSegments.length; i++) {
     const seg = citationSegments[i];
 
-    if (seg.type === "citation") {
-      // Render citation as clickable link
+    if (seg.type === "ra-citation") {
+      // Render Ra citation as clickable link that opens modal
       processedElements.push(
         <CitationLink
           key={`cite-${i}`}
           session={seg.session}
           question={seg.question}
+          displayText={seg.displayText}
+        />
+      );
+    } else if (seg.type === "confederation-citation") {
+      // Render Confederation citation as external link
+      processedElements.push(
+        <CitationLink
+          key={`cite-${i}`}
+          confederationRef={seg.reference}
+          entity={seg.entity}
+          url={seg.url}
           displayText={seg.displayText}
         />
       );

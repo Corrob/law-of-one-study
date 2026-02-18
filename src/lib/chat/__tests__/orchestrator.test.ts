@@ -72,8 +72,10 @@ jest.mock("../response-cache", () => ({
 
 import { openai } from "@/lib/openai";
 import { executeChatQuery, ExecuteChatParams } from "../orchestrator";
+import { performSearch } from "../search";
 
 const mockCreate = openai.chat.completions.create as jest.Mock;
+const mockPerformSearch = performSearch as jest.Mock;
 
 describe("chat/orchestrator", () => {
   const mockSend = jest.fn();
@@ -154,6 +156,47 @@ describe("chat/orchestrator", () => {
       await executeChatQuery(baseParams);
 
       expect(mockSend).toHaveBeenCalledWith("done", {});
+    });
+  });
+
+  describe("includeConfederation parameter", () => {
+    it("should pass includeConfederation=false to performSearch by default", async () => {
+      await executeChatQuery(baseParams);
+
+      expect(mockPerformSearch).toHaveBeenCalledWith(
+        expect.any(String),
+        null,
+        false
+      );
+    });
+
+    it("should pass includeConfederation=true to performSearch when enabled", async () => {
+      await executeChatQuery({ ...baseParams, includeConfederation: true });
+
+      expect(mockPerformSearch).toHaveBeenCalledWith(
+        expect.any(String),
+        null,
+        true
+      );
+    });
+
+    it("should use Ra-only passages label when confederation is disabled", async () => {
+      await executeChatQuery({ ...baseParams, includeConfederation: false });
+
+      expect(mockCreate).toHaveBeenCalled();
+      const createCall = mockCreate.mock.calls[0][0];
+      const userMessage = createCall.messages.find((m: { role: string }) => m.role === "user");
+      expect(userMessage.content).toContain("Here are relevant Ra passages");
+      expect(userMessage.content).not.toContain("Confederation");
+    });
+
+    it("should use combined passages label when confederation is enabled", async () => {
+      await executeChatQuery({ ...baseParams, includeConfederation: true });
+
+      expect(mockCreate).toHaveBeenCalled();
+      const createCall = mockCreate.mock.calls[0][0];
+      const userMessage = createCall.messages.find((m: { role: string }) => m.role === "user");
+      expect(userMessage.content).toContain("Here are relevant passages from Ra and the Confederation");
     });
   });
 });

@@ -9,6 +9,7 @@ jest.mock("@/lib/openai", () => ({
 
 jest.mock("@/lib/pinecone", () => ({
   searchRaMaterial: jest.fn(),
+  searchConfederationPassages: jest.fn(),
 }));
 
 describe("search", () => {
@@ -85,7 +86,7 @@ describe("search", () => {
   });
 
   describe("performSearch", () => {
-    it("should perform full search flow", async () => {
+    it("should perform full search flow (Ra only by default)", async () => {
       const mockEmbedding = [0.1, 0.2, 0.3];
       const mockResults = [
         { text: "Quote 1", reference: "Ra 1.1", url: "https://example.com/1" },
@@ -98,6 +99,36 @@ describe("search", () => {
 
       expect(result.embedding).toEqual(mockEmbedding);
       expect(result.passages).toEqual(mockResults);
+      expect(pinecone.searchConfederationPassages).not.toHaveBeenCalled();
+    });
+
+    it("should not search Confederation when includeConfederation is false", async () => {
+      const mockEmbedding = [0.1, 0.2, 0.3];
+      (openai.createEmbedding as jest.Mock).mockResolvedValue(mockEmbedding);
+      (pinecone.searchRaMaterial as jest.Mock).mockResolvedValue([]);
+
+      await performSearch("What is love?", null, false);
+
+      expect(pinecone.searchConfederationPassages).not.toHaveBeenCalled();
+    });
+
+    it("should search Confederation when includeConfederation is true", async () => {
+      const mockEmbedding = [0.1, 0.2, 0.3];
+      const raResults = [
+        { text: "Ra quote", reference: "1.1", url: "https://example.com/1" },
+      ];
+      const confedResults = [
+        { text: "Q'uo quote", reference: "Q'uo, 2024-01-01", url: "https://example.com/2" },
+      ];
+
+      (openai.createEmbedding as jest.Mock).mockResolvedValue(mockEmbedding);
+      (pinecone.searchRaMaterial as jest.Mock).mockResolvedValue(raResults);
+      (pinecone.searchConfederationPassages as jest.Mock).mockResolvedValue(confedResults);
+
+      const result = await performSearch("What is love?", null, true);
+
+      expect(pinecone.searchConfederationPassages).toHaveBeenCalledWith(mockEmbedding, 4);
+      expect(result.passages).toEqual([...raResults, ...confedResults]);
     });
 
     it("should pass session reference to search", async () => {

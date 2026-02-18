@@ -45,6 +45,7 @@ global.fetch = mockFetch;
 describe("SearchPage", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    localStorage.clear();
     mockUrlQuery = "";
     mockUrlMode = null;
     mockUrlConfederation = null;

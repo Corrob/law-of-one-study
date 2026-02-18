@@ -24,6 +24,7 @@ interface ChatRequest {
   history: ChatMessage[];
   thinkingMode?: boolean;
   targetLanguage?: string;
+  includeConfederation?: boolean;
 }
 
 /**
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request
     const body: ChatRequest = await request.json();
-    const { message, history, thinkingMode, targetLanguage } = body;
+    const { message, history, thinkingMode, targetLanguage, includeConfederation } = body;
 
     const validationResult = validateChatRequest(message, history);
     if (!validationResult.valid) {
@@ -92,6 +93,7 @@ export async function POST(request: NextRequest) {
             send,
             thinkingMode: thinkingMode ?? false,
             targetLanguage: targetLanguage ?? 'en',
+            includeConfederation: includeConfederation ?? false,
             responseId,
           });
         } finally {

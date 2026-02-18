@@ -68,7 +68,14 @@ export const MetaEventDataSchema = z.object({
   ),
   intent: z.string(),
   confidence: z.string(),
-  concepts: z.array(z.string()).optional(),
+  concepts: z.array(
+    z.object({
+      id: z.string(),
+      term: z.string(),
+      definition: z.string(),
+      category: z.string(),
+    })
+  ).optional(),
 });
 
 export type ValidatedMetaEventData = z.infer<typeof MetaEventDataSchema>;

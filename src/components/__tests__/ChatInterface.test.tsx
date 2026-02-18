@@ -113,6 +113,7 @@ jest.mock("@/hooks/useChatStream", () => ({
     isStreaming: false,
     streamDone: false,
     suggestions: [],
+    quotes: [],
     sendMessage: mockSendMessage,
     finalizeMessage: mockFinalizeMessage,
     reset: mockResetChat,
@@ -146,6 +147,16 @@ jest.mock("@/contexts/LanguageContext", () => ({
   })),
 }));
 
+const mockSetQuotes = jest.fn();
+jest.mock("@/contexts/CitationModalContext", () => ({
+  useCitationModal: jest.fn(() => ({
+    openCitation: jest.fn(),
+    openConfederationCitation: jest.fn(),
+    closeCitation: jest.fn(),
+    setQuotes: mockSetQuotes,
+  })),
+}));
+
 import { useChatStream } from "@/hooks/useChatStream";
 import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 
@@ -160,6 +171,7 @@ describe("ChatInterface", () => {
       isStreaming: false,
       streamDone: false,
       suggestions: [],
+      quotes: [],
       sendMessage: mockSendMessage,
       finalizeMessage: mockFinalizeMessage,
       reset: mockResetChat,
@@ -205,6 +217,7 @@ describe("ChatInterface", () => {
         isStreaming: false,
         streamDone: false,
         suggestions: [],
+        quotes: [],
         sendMessage: mockSendMessage,
         finalizeMessage: mockFinalizeMessage,
         reset: mockResetChat,
@@ -247,7 +260,8 @@ describe("ChatInterface", () => {
           "What is the Law of One?",
           expect.any(Function),
           false, // thinkingMode defaults to false
-          "en" // language defaults to English from mock
+          "en", // language defaults to English from mock
+          false // includeConfederation defaults to false
         );
       });
     });
@@ -270,6 +284,7 @@ describe("ChatInterface", () => {
         isStreaming: true,
         streamDone: false,
         suggestions: [],
+        quotes: [],
         sendMessage: mockSendMessage,
         finalizeMessage: mockFinalizeMessage,
         reset: mockResetChat,
@@ -291,6 +306,7 @@ describe("ChatInterface", () => {
         isStreaming: false,
         streamDone: true,
         suggestions: [],
+        quotes: [],
         sendMessage: mockSendMessage,
         finalizeMessage: mockFinalizeMessage,
         reset: mockResetChat,
@@ -320,6 +336,7 @@ describe("ChatInterface", () => {
         isStreaming: true,
         streamDone: false,
         suggestions: [],
+        quotes: [],
         sendMessage: mockSendMessage,
         finalizeMessage: mockFinalizeMessage,
         reset: mockResetChat,
@@ -349,6 +366,7 @@ describe("ChatInterface", () => {
         isStreaming: false,
         streamDone: true,
         suggestions: [],
+        quotes: [],
         sendMessage: mockSendMessage,
         finalizeMessage: mockFinalizeMessage,
         reset: mockResetChat,

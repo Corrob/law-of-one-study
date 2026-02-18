@@ -10,7 +10,8 @@
 
 import { openai } from "@/lib/openai";
 import { debug } from "@/lib/debug";
-import { UNIFIED_RESPONSE_PROMPT, buildContextFromQuotes } from "@/lib/prompts";
+import { buildResponsePrompt } from "@/lib/prompts/response";
+import { buildContextFromQuotes } from "@/lib/prompts";
 import { ChatMessage, Quote, QueryIntent, IntentConfidence } from "@/lib/types";
 import type { GraphConcept } from "@/lib/types-graph";
 import { parseSessionQuestionReference } from "@/lib/quote-utils";
@@ -43,6 +44,8 @@ export interface ExecuteChatParams {
   thinkingMode?: boolean;
   /** Target language for responses (ISO code, e.g., 'es' for Spanish) */
   targetLanguage?: string;
+  /** When true, include Confederation passages alongside Ra Material */
+  includeConfederation?: boolean;
   /** Unique ID for caching the response for mobile recovery */
   responseId: string;
 }
@@ -71,7 +74,8 @@ function buildLLMMessages(
   quotesContext: string,
   quotesUsed: string[],
   promptContext: string,
-  targetLanguage: string = DEFAULT_LOCALE
+  targetLanguage: string = DEFAULT_LOCALE,
+  includeConfederation: boolean = false
 ): Array<{ role: "system" | "user" | "assistant"; content: string }> {
   const quoteExclusionBlock =
     quotesUsed.length > 0
@@ -85,7 +89,11 @@ function buildLLMMessages(
     ? `\n\nIMPORTANT: Respond in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. The user prefers ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Write your explanations, analysis, and connecting text in ${LANGUAGE_NAMES_FOR_PROMPTS[targetLanguage]}. Quote content will be provided in the appropriate language.`
     : '';
 
-  const systemPrompt = UNIFIED_RESPONSE_PROMPT + languageInstruction;
+  const systemPrompt = buildResponsePrompt(includeConfederation) + languageInstruction;
+
+  const passagesLabel = includeConfederation
+    ? "Here are relevant passages from Ra and the Confederation"
+    : "Here are relevant Ra passages";
 
   return [
     { role: "system" as const, content: systemPrompt },
@@ -95,7 +103,7 @@ function buildLLMMessages(
     })),
     {
       role: "user" as const,
-      content: `[Intent: ${intent}] [Confidence: ${confidence}] [Turn: ${turnCount}]\n\n${message}\n\nHere are relevant Ra passages:\n\n${quotesContext}${quoteExclusionBlock}${conceptContextBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
+      content: `[Intent: ${intent}] [Confidence: ${confidence}] [Turn: ${turnCount}]\n\n${message}\n\n${passagesLabel}:\n\n${quotesContext}${quoteExclusionBlock}${conceptContextBlock}\n\nRespond to the user, using {{QUOTE:N}} format to include quotes.`,
     },
   ];
 }
@@ -232,7 +240,7 @@ function trackAnalytics(
  * @throws Never - all errors are sent via SSE
  */
 export async function executeChatQuery(params: ExecuteChatParams): Promise<void> {
-  const { message, history, clientIp, send, thinkingMode = false, targetLanguage = 'en', responseId } = params;
+  const { message, history, clientIp, send, thinkingMode = false, targetLanguage = 'en', includeConfederation = false, responseId } = params;
   const startTime = Date.now();
 
   // Wrap send to also cache events for mobile recovery (fire-and-forget)
@@ -267,7 +275,7 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
     }
 
     // Search for relevant passages
-    const { passages } = await performSearch(augmentedQuery, sessionRef);
+    const { passages } = await performSearch(augmentedQuery, sessionRef, includeConfederation);
 
     // Send metadata to client
     cachingSend("meta", {
@@ -288,7 +296,8 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
       quotesContext,
       quotesUsed,
       promptContext,
-      targetLanguage
+      targetLanguage,
+      includeConfederation
     );
 
     // Stream LLM response
