@@ -570,6 +570,33 @@ export const dailyQuotes: DailyQuote[] = [
 
 ---
 
+## Confederation Library (Future / English-Only)
+
+The Confederation Library (~1,483 transcripts, ~5.3M words) is currently **English-only**. The "Include Confederation" toggle on the Chat and Search pages is automatically hidden for non-English locales to avoid mixing English Confederation text with localized Ra Material.
+
+### Current Behavior
+
+- **English locale**: Confederation toggle appears on Chat welcome screen and Search page
+- **Non-English locales**: Toggle is hidden; `includeConfederation` is forced to `false`
+- This is handled in `ChatInterface.tsx` and `SearchContent.tsx` via `isEnglish` checks
+
+### Future Translation Plan
+
+When ready to translate Confederation content for a new language:
+
+1. **AI-translate transcripts** using `gpt-4o-mini` with terminology glossaries (same approach as `scripts/translate-study-paths.ts`)
+2. **Store translations** in `public/confederation/{lang}/` (mirrors Ra Material pattern in `public/sections/{lang}/`)
+3. **Fetch translated text client-side**, similar to `fetchFullQuote()` / `useQuoteText()`
+4. **Remove the `isEnglish` guard** in `ChatInterface.tsx` and `SearchContent.tsx` for that language
+5. **Build script**: `scripts/translate-confederation.ts` (to be created when ready)
+
+### Estimates
+
+- **Cost**: ~$16 total for 3 languages via `gpt-4o-mini`
+- **Storage**: ~34 MB per language added to the repo (needs evaluation — may warrant a different storage approach)
+
+---
+
 ## Step 8: Testing
 
 ### Run Tests
@@ -698,6 +725,11 @@ Before submitting a PR, ensure you have:
 Update these interfaces to add your language as required (not optional):
 - [ ] `src/lib/types-graph.ts` - `BilingualText` and `BilingualAliases` interfaces
 - [ ] `src/data/daily-quotes.ts` - `DailyQuote` interface `text` field
+
+### Confederation Library (Future / Optional)
+
+- [ ] `public/confederation/{lang}/` - Translated Confederation transcripts (when ready)
+- [ ] Remove `isEnglish` guard in `ChatInterface.tsx` and `SearchContent.tsx` for this language
 
 ### Verification
 

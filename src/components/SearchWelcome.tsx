@@ -9,11 +9,11 @@ import type { SearchMode } from "@/lib/schemas";
 
 interface SearchWelcomeProps {
   mode: SearchMode;
-  includeConfederation: boolean;
+  includeConfederation?: boolean;
   greeting: string | null;
   suggestions: string[];
   onModeChange: (mode: SearchMode) => void;
-  onConfederationToggle: (enabled: boolean) => void;
+  onConfederationToggle?: (enabled: boolean) => void;
   onSuggestedSearch: (suggestion: string) => void;
   inputElement: ReactNode;
 }
@@ -83,15 +83,17 @@ export default function SearchWelcome({
           : t("passageExplanation")}
       </motion.p>
 
-      {/* Confederation Toggle */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.35 }}
-        className="mb-8"
-      >
-        <SourceFilter enabled={includeConfederation} onChange={onConfederationToggle} />
-      </motion.div>
+      {/* Confederation Toggle - hidden for non-English locales (English-only content) */}
+      {onConfederationToggle && includeConfederation !== undefined && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.35 }}
+          className="mb-8"
+        >
+          <SourceFilter enabled={includeConfederation} onChange={onConfederationToggle} />
+        </motion.div>
+      )}
 
       {/* Suggestions */}
       {suggestions.length > 0 && (

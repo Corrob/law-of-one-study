@@ -10,14 +10,14 @@ import type { SearchResult, SearchMode } from "@/lib/schemas";
 
 interface SearchResultsProps {
   mode: SearchMode;
-  includeConfederation: boolean;
+  includeConfederation?: boolean;
   results: SearchResult[];
   searchedQuery: string;
   isLoading: boolean;
   error: string | null;
   hasSearched: boolean;
   onModeChange: (mode: SearchMode) => void;
-  onConfederationToggle: (enabled: boolean) => void;
+  onConfederationToggle?: (enabled: boolean) => void;
   onAskAbout: (result: SearchResult, displayText: string) => void;
   inputElement: ReactNode;
 }
@@ -53,10 +53,12 @@ export default function SearchResults({
       {/* Sticky Search Header */}
       <div className="px-4 pt-4 pb-3 bg-[var(--lo1-deep-space)]/50 backdrop-blur-sm shrink-0">
         <div className="max-w-2xl mx-auto">
-          {/* Mode Toggle + Confederation Toggle */}
+          {/* Mode Toggle + Confederation Toggle (hidden for non-English locales) */}
           <div className="flex justify-center items-center gap-3 mb-3 flex-wrap">
             <ModeToggle mode={mode} onChange={onModeChange} />
-            <SourceFilter enabled={includeConfederation} onChange={onConfederationToggle} />
+            {onConfederationToggle && includeConfederation !== undefined && (
+              <SourceFilter enabled={includeConfederation} onChange={onConfederationToggle} />
+            )}
           </div>
           {inputElement}
         </div>

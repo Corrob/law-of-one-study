@@ -43,9 +43,12 @@ export default function SearchContent() {
   const initialUrlConfederation = useRef(searchParams.get("confederation") === "1");
 
   const [mode, setMode] = useState<SearchMode | null>("sentence");
-  const { includeConfederation, setIncludeConfederation } = useConfederationPreference(
-    initialUrlConfederation.current ? true : undefined
+  const isEnglish = locale === "en";
+  // Confederation content is English-only, so force off for non-English locales
+  const { includeConfederation: rawIncludeConfederation, setIncludeConfederation } = useConfederationPreference(
+    isEnglish && initialUrlConfederation.current ? true : undefined
   );
+  const includeConfederation = isEnglish ? rawIncludeConfederation : false;
   const [inputValue, setInputValue] = useState("");
   const [searchedQuery, setSearchedQuery] = useState(""); // The query used for current results/highlights
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -306,13 +309,15 @@ export default function SearchContent() {
                 >
                   <SearchWelcome
                     mode={mode!}
-                    includeConfederation={includeConfederation}
                     greeting={greeting}
                     suggestions={suggestions}
                     onModeChange={handleModeChange}
-                    onConfederationToggle={handleConfederationToggle}
                     onSuggestedSearch={handleSuggestedSearch}
                     inputElement={inputElement}
+                    {...(isEnglish ? {
+                      includeConfederation,
+                      onConfederationToggle: handleConfederationToggle,
+                    } : {})}
                   />
                 </motion.div>
               )}
@@ -328,16 +333,18 @@ export default function SearchContent() {
                 >
                   <SearchResults
                     mode={mode!}
-                    includeConfederation={includeConfederation}
                     results={results}
                     searchedQuery={searchedQuery}
                     isLoading={isLoading}
                     error={error}
                     hasSearched={hasSearched}
                     onModeChange={handleModeChange}
-                    onConfederationToggle={handleConfederationToggle}
                     onAskAbout={handleAskAbout}
                     inputElement={inputElement}
+                    {...(isEnglish ? {
+                      includeConfederation,
+                      onConfederationToggle: handleConfederationToggle,
+                    } : {})}
                   />
                 </motion.div>
               )}

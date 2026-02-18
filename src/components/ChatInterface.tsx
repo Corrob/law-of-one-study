@@ -60,9 +60,12 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
 
   // Get current language setting
   const { language } = useLanguage();
+  const isEnglish = language === "en";
 
   // Confederation preference (shared with Search via localStorage)
-  const { includeConfederation, setIncludeConfederation } = useConfederationPreference();
+  // Confederation content is English-only, so force off for non-English locales
+  const { includeConfederation: rawIncludeConfederation, setIncludeConfederation } = useConfederationPreference();
+  const includeConfederation = isEnglish ? rawIncludeConfederation : false;
 
   // Helper to get random placeholder key
   const getRandomPlaceholderKey = useCallback((forFollowUp: boolean) => {
@@ -309,8 +312,10 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
                     inputElement={inputElement}
                     thinkingMode={thinkingMode}
                     onThinkingModeChange={setThinkingMode}
-                    includeConfederation={includeConfederation}
-                    onConfederationChange={setIncludeConfederation}
+                    {...(isEnglish ? {
+                      includeConfederation,
+                      onConfederationChange: setIncludeConfederation,
+                    } : {})}
                   />
                 </motion.div>
               ) : (
