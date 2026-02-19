@@ -94,7 +94,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "sentence", source: "ra", language: "en" }),
+            body: JSON.stringify({ query: "love", limit: 30, mode: "sentence", source: "ra", language: "en" }),
           })
         );
       });
@@ -115,7 +115,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "passage", source: "ra", language: "en" }),
+            body: JSON.stringify({ query: "love", limit: 30, mode: "passage", source: "ra", language: "en" }),
           })
         );
       });
@@ -173,7 +173,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "love", limit: 20, mode: "passage", source: "ra", language: "en" }),
+            body: JSON.stringify({ query: "love", limit: 30, mode: "passage", source: "ra", language: "en" }),
           })
         );
       });
@@ -193,7 +193,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", source: "ra", language: "en" }),
+            body: JSON.stringify({ query: "initial query", limit: 30, mode: "sentence", source: "ra", language: "en" }),
           })
         );
       });
@@ -211,7 +211,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "passage", source: "ra", language: "en" }),
+            body: JSON.stringify({ query: "initial query", limit: 30, mode: "passage", source: "ra", language: "en" }),
           })
         );
       });
@@ -229,7 +229,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", source: "ra", language: "en" }),
+            body: JSON.stringify({ query: "initial query", limit: 30, mode: "sentence", source: "ra", language: "en" }),
           })
         );
       });
@@ -248,7 +248,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: "initial query", limit: 20, mode: "sentence", source: "all", language: "en" }),
+            body: JSON.stringify({ query: "initial query", limit: 30, mode: "sentence", source: "all", language: "en" }),
           })
         );
       });
@@ -331,7 +331,7 @@ describe("SearchPage", () => {
         expect(mockFetch).toHaveBeenCalledWith(
           "/api/search",
           expect.objectContaining({
-            body: JSON.stringify({ query: suggestionText, limit: 20, mode: "sentence", source: "ra", language: "en" }),
+            body: JSON.stringify({ query: suggestionText, limit: 30, mode: "sentence", source: "ra", language: "en" }),
           })
         );
       });
