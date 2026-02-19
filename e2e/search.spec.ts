@@ -216,7 +216,7 @@ test.describe("Search Feature", () => {
     await expect(page.getByRole("textbox")).toBeVisible();
   });
 
-  test("should display Confederation results when toggle is enabled", async ({ page }) => {
+  test("should display Confederation results when 'All' source is selected", async ({ page }) => {
     const confederationSearchResults = [
       {
         text: "Ra: I am Ra. The Law of One states that all things are one.",
@@ -256,10 +256,10 @@ test.describe("Search Feature", () => {
 
     await page.goto("/search?mode=passage");
 
-    // Enable the Confederation toggle
-    const toggle = page.getByRole("switch");
-    await expect(toggle).toBeVisible();
-    await toggle.click();
+    // Select 'All' in the source filter segmented control
+    const allButton = page.getByRole("radio", { name: "All" });
+    await expect(allButton).toBeVisible();
+    await allButton.click();
 
     // Search for something
     const input = page.getByRole("textbox");

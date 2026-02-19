@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { AvailableLanguage } from "@/lib/language-config";
-import { useConfederationPreference } from "@/hooks/useConfederationPreference";
+import { useSourcePreference } from "@/hooks/useConfederationPreference";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import SearchInput from "@/components/SearchInput";
@@ -18,15 +18,27 @@ const PASSAGE_SUGGESTION_COUNT = 52;
 const SENTENCE_SUGGESTION_COUNT = 52;
 
 /** Maximum number of search results to return */
-const SEARCH_LIMIT = 20;
+const SEARCH_LIMIT = 30;
+
+/** Valid source filter values for URL param parsing */
+const VALID_SOURCES: SourceFilter[] = ["ra", "confederation", "all"];
 
 /** Build URL search string for the search page */
-function buildSearchUrl(mode: SearchMode, query?: string, includeConfederation?: boolean): string {
+function buildSearchUrl(mode: SearchMode, query?: string, source?: SourceFilter): string {
   const params = new URLSearchParams();
-  if (includeConfederation) params.set("confederation", "1");
+  if (source && source !== "ra") params.set("source", source);
   params.set("mode", mode);
   if (query) params.set("q", query);
   return `/search?${params.toString()}`;
+}
+
+/** Parse source filter from URL param, with legacy ?confederation=1 support */
+function parseSourceFromUrl(params: URLSearchParams): SourceFilter | undefined {
+  const source = params.get("source") as SourceFilter | null;
+  if (source && VALID_SOURCES.includes(source)) return source;
+  // Legacy support
+  if (params.get("confederation") === "1") return "all";
+  return undefined;
 }
 
 export default function SearchContent() {
@@ -40,15 +52,15 @@ export default function SearchContent() {
   // Read URL params once on mount
   const initialUrlQuery = useRef(searchParams.get("q") || "");
   const initialUrlMode = useRef(searchParams.get("mode") as SearchMode | null);
-  const initialUrlConfederation = useRef(searchParams.get("confederation") === "1");
+  const initialUrlSource = useRef(parseSourceFromUrl(searchParams));
 
   const [mode, setMode] = useState<SearchMode | null>("sentence");
   const isEnglish = locale === "en";
-  // Confederation content is English-only, so force off for non-English locales
-  const { includeConfederation: rawIncludeConfederation, setIncludeConfederation } = useConfederationPreference(
-    isEnglish && initialUrlConfederation.current ? true : undefined
+  // Confederation content is English-only, so force to "ra" for non-English locales
+  const { sourceFilter: rawSourceFilter, setSourceFilter } = useSourcePreference(
+    isEnglish ? initialUrlSource.current : undefined
   );
-  const includeConfederation = isEnglish ? rawIncludeConfederation : false;
+  const sourceFilter: SourceFilter = isEnglish ? rawSourceFilter : "ra";
   const [inputValue, setInputValue] = useState("");
   const [searchedQuery, setSearchedQuery] = useState(""); // The query used for current results/highlights
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -58,9 +70,6 @@ export default function SearchContent() {
   const [suggestionKeys, setSuggestionKeys] = useState<number[]>([]);
   const [greeting, setGreeting] = useState<string | null>(null);
   const didInitialLoad = useRef(false);
-
-  // Derive the source filter value from the boolean toggle
-  const source: SourceFilter = includeConfederation ? "all" : "ra";
 
   // Helper to generate random keys
   const getRandomKeys = useCallback((count: number, maxCount: number): number[] => {
@@ -106,7 +115,7 @@ export default function SearchContent() {
       const response = await fetch("/api/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: trimmed, limit: SEARCH_LIMIT, mode: searchMode, source: searchSource || source, language: locale }),
+        body: JSON.stringify({ query: trimmed, limit: SEARCH_LIMIT, mode: searchMode, source: searchSource || sourceFilter, language: locale }),
       });
 
       if (!response.ok) {
@@ -124,7 +133,7 @@ export default function SearchContent() {
     } finally {
       setIsLoading(false);
     }
-  }, [locale, source]);
+  }, [locale, sourceFilter]);
 
   // Handle search: update URL and perform search
   const handleSearch = useCallback((searchQuery: string) => {
@@ -133,9 +142,9 @@ export default function SearchContent() {
     if (!trimmed || trimmed.length < 2) return;
 
     // Update URL for bookmarking/sharing (write-only, we don't react to this)
-    router.push(buildSearchUrl(mode, trimmed, includeConfederation));
+    router.push(buildSearchUrl(mode, trimmed, sourceFilter));
     performSearch(trimmed, mode);
-  }, [router, performSearch, mode, includeConfederation]);
+  }, [router, performSearch, mode, sourceFilter]);
 
   // Initial load: read URL params once and perform search if needed
   useEffect(() => {
@@ -144,19 +153,19 @@ export default function SearchContent() {
 
     const urlMode = initialUrlMode.current;
     const urlQuery = initialUrlQuery.current;
-    const urlConfederation = initialUrlConfederation.current;
+    const urlSource = initialUrlSource.current;
 
     // If we have a mode in URL, set it (otherwise keep default "sentence")
     if (urlMode === "sentence" || urlMode === "passage") {
       setMode(urlMode);
     }
 
-    // Note: confederation URL param is handled by useConfederationPreference initialOverride
+    // Note: source URL param is handled by useSourcePreference initialOverride
 
     // If we have a query, perform the search
     if (urlQuery && urlQuery.length >= 2) {
       const searchMode = (urlMode === "sentence" || urlMode === "passage") ? urlMode : "sentence";
-      const searchSource: SourceFilter = urlConfederation ? "all" : "ra";
+      const searchSource: SourceFilter = urlSource || "ra";
       setInputValue(urlQuery);
       performSearch(urlQuery, searchMode, searchSource);
     }
@@ -169,17 +178,20 @@ export default function SearchContent() {
       const params = new URLSearchParams(window.location.search);
       const urlQuery = params.get("q") || "";
       const urlMode = params.get("mode") as SearchMode | null;
-      const urlConfederation = params.get("confederation") === "1";
+      const urlSource = parseSourceFromUrl(params);
 
-      // Update confederation from URL
-      setIncludeConfederation(urlConfederation);
+      // Update source from URL
+      if (urlSource) {
+        setSourceFilter(urlSource);
+      } else {
+        setSourceFilter("ra");
+      }
 
       if (urlMode === "sentence" || urlMode === "passage") {
         setMode(urlMode);
         if (urlQuery && urlQuery.length >= 2) {
           setInputValue(urlQuery);
-          const searchSource: SourceFilter = urlConfederation ? "all" : "ra";
-          performSearch(urlQuery, urlMode, searchSource);
+          performSearch(urlQuery, urlMode, urlSource || "ra");
         } else {
           // Mode but no query - show search welcome
           setInputValue("");
@@ -200,7 +212,7 @@ export default function SearchContent() {
 
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, [performSearch, setIncludeConfederation]);
+  }, [performSearch, setSourceFilter]);
 
   const handleAskAbout = (result: SearchResult, displayText: string) => {
     // Use the translated display text passed from SearchResultCard
@@ -218,14 +230,14 @@ export default function SearchContent() {
   const handleNewSearch = useCallback(() => {
     // Reset all state and update URL
     setMode("sentence");
-    setIncludeConfederation(false);
+    setSourceFilter("ra");
     setInputValue("");
     setSearchedQuery("");
     setResults([]);
     setHasSearched(false);
     setError(null);
     router.push("/search");
-  }, [router, setIncludeConfederation]);
+  }, [router, setSourceFilter]);
 
   // Handle mode change (when toggling during search)
   const handleModeChange = useCallback((newMode: SearchMode) => {
@@ -233,26 +245,25 @@ export default function SearchContent() {
 
     if (hasSearched && inputValue.trim().length >= 2) {
       // Re-search with new mode
-      router.push(buildSearchUrl(newMode, inputValue.trim(), includeConfederation));
+      router.push(buildSearchUrl(newMode, inputValue.trim(), sourceFilter));
       performSearch(inputValue.trim(), newMode);
     } else {
-      router.push(buildSearchUrl(newMode, undefined, includeConfederation));
+      router.push(buildSearchUrl(newMode, undefined, sourceFilter));
     }
-  }, [hasSearched, inputValue, router, performSearch, includeConfederation]);
+  }, [hasSearched, inputValue, router, performSearch, sourceFilter]);
 
-  // Handle confederation toggle
-  const handleConfederationToggle = useCallback((enabled: boolean) => {
-    setIncludeConfederation(enabled);
-    const newSource: SourceFilter = enabled ? "all" : "ra";
+  // Handle source filter change
+  const handleSourceChange = useCallback((newSource: SourceFilter) => {
+    setSourceFilter(newSource);
 
     if (hasSearched && inputValue.trim().length >= 2) {
       // Re-search with new source
-      router.push(buildSearchUrl(mode!, inputValue.trim(), enabled));
+      router.push(buildSearchUrl(mode!, inputValue.trim(), newSource));
       performSearch(inputValue.trim(), mode!, newSource);
     } else {
-      router.push(buildSearchUrl(mode!, undefined, enabled));
+      router.push(buildSearchUrl(mode!, undefined, newSource));
     }
-  }, [hasSearched, inputValue, router, performSearch, mode, setIncludeConfederation]);
+  }, [hasSearched, inputValue, router, performSearch, mode, setSourceFilter]);
 
   // Two UI states:
   // 1. No search yet - show search welcome with toggle
@@ -315,8 +326,8 @@ export default function SearchContent() {
                     onSuggestedSearch={handleSuggestedSearch}
                     inputElement={inputElement}
                     {...(isEnglish ? {
-                      includeConfederation,
-                      onConfederationToggle: handleConfederationToggle,
+                      sourceFilter,
+                      onSourceChange: handleSourceChange,
                     } : {})}
                   />
                 </motion.div>
@@ -342,8 +353,8 @@ export default function SearchContent() {
                     onAskAbout={handleAskAbout}
                     inputElement={inputElement}
                     {...(isEnglish ? {
-                      includeConfederation,
-                      onConfederationToggle: handleConfederationToggle,
+                      sourceFilter,
+                      onSourceChange: handleSourceChange,
                     } : {})}
                   />
                 </motion.div>

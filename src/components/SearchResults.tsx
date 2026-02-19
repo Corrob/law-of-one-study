@@ -6,18 +6,18 @@ import { useTranslations } from "next-intl";
 import ModeToggle from "./ModeToggle";
 import SourceFilter from "./SourceFilter";
 import SearchResultCard from "./SearchResultCard";
-import type { SearchResult, SearchMode } from "@/lib/schemas";
+import type { SearchResult, SearchMode, SourceFilter as SourceFilterType } from "@/lib/schemas";
 
 interface SearchResultsProps {
   mode: SearchMode;
-  includeConfederation?: boolean;
+  sourceFilter?: SourceFilterType;
   results: SearchResult[];
   searchedQuery: string;
   isLoading: boolean;
   error: string | null;
   hasSearched: boolean;
   onModeChange: (mode: SearchMode) => void;
-  onConfederationToggle?: (enabled: boolean) => void;
+  onSourceChange?: (source: SourceFilterType) => void;
   onAskAbout: (result: SearchResult, displayText: string) => void;
   inputElement: ReactNode;
 }
@@ -36,14 +36,14 @@ const resultVariants = {
 
 export default function SearchResults({
   mode,
-  includeConfederation,
+  sourceFilter,
   results,
   searchedQuery,
   isLoading,
   error,
   hasSearched,
   onModeChange,
-  onConfederationToggle,
+  onSourceChange,
   onAskAbout,
   inputElement,
 }: SearchResultsProps) {
@@ -53,11 +53,11 @@ export default function SearchResults({
       {/* Sticky Search Header */}
       <div className="px-4 pt-4 pb-3 bg-[var(--lo1-deep-space)]/50 backdrop-blur-sm shrink-0">
         <div className="max-w-2xl mx-auto">
-          {/* Mode Toggle + Confederation Toggle (hidden for non-English locales) */}
+          {/* Mode Toggle + Source Filter (hidden for non-English locales) */}
           <div className="flex justify-center items-center gap-3 mb-3 flex-wrap">
             <ModeToggle mode={mode} onChange={onModeChange} />
-            {onConfederationToggle && includeConfederation !== undefined && (
-              <SourceFilter enabled={includeConfederation} onChange={onConfederationToggle} />
+            {onSourceChange && sourceFilter !== undefined && (
+              <SourceFilter value={sourceFilter} onChange={onSourceChange} />
             )}
           </div>
           {inputElement}

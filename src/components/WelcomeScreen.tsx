@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import ThinkingModeToggle from "./ThinkingModeToggle";
 import SourceFilter from "./SourceFilter";
+import type { SourceFilter as SourceFilterType } from "@/lib/schemas";
 
 // Greeting keys that map to translations
 const GREETING_KEYS = [
@@ -23,11 +24,11 @@ interface WelcomeScreenProps {
   inputElement?: ReactNode;
   thinkingMode?: boolean;
   onThinkingModeChange?: (enabled: boolean) => void;
-  includeConfederation?: boolean;
-  onConfederationChange?: (enabled: boolean) => void;
+  sourceFilter?: SourceFilterType;
+  onSourceChange?: (source: SourceFilterType) => void;
 }
 
-export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingMode = false, onThinkingModeChange, includeConfederation = false, onConfederationChange }: WelcomeScreenProps) {
+export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingMode = false, onThinkingModeChange, sourceFilter, onSourceChange }: WelcomeScreenProps) {
   const [greetingKey, setGreetingKey] = useState<typeof GREETING_KEYS[number] | null>(null);
   const [starterKeys, setStarterKeys] = useState<number[]>([]);
   const t = useTranslations("welcome");
@@ -77,10 +78,10 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
       )}
 
       {/* Toggles */}
-      {(onThinkingModeChange || onConfederationChange) && (
+      {(onThinkingModeChange || onSourceChange) && (
         <div className="w-full max-w-lg mb-8 animate-input-enter flex flex-col items-center gap-2">
-          {onConfederationChange && (
-            <SourceFilter enabled={includeConfederation} onChange={onConfederationChange} />
+          {onSourceChange && sourceFilter !== undefined && (
+            <SourceFilter value={sourceFilter} onChange={onSourceChange} />
           )}
           {onThinkingModeChange && (
             <ThinkingModeToggle enabled={thinkingMode} onChange={onThinkingModeChange} />

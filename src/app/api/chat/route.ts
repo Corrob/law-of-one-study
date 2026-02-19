@@ -24,6 +24,9 @@ interface ChatRequest {
   history: ChatMessage[];
   thinkingMode?: boolean;
   targetLanguage?: string;
+  /** Source filter: "ra" (default), "confederation", or "all" */
+  sourceFilter?: "ra" | "confederation" | "all";
+  /** @deprecated Legacy boolean — use sourceFilter instead */
   includeConfederation?: boolean;
 }
 
@@ -67,7 +70,10 @@ export async function POST(request: NextRequest) {
 
     // Parse and validate request
     const body: ChatRequest = await request.json();
-    const { message, history, thinkingMode, targetLanguage, includeConfederation } = body;
+    const { message, history, thinkingMode, targetLanguage, sourceFilter, includeConfederation } = body;
+
+    // Resolve source filter: prefer new sourceFilter, fall back to legacy boolean
+    const resolvedSourceFilter = sourceFilter ?? (includeConfederation ? "all" : "ra");
 
     const validationResult = validateChatRequest(message, history);
     if (!validationResult.valid) {
@@ -93,7 +99,7 @@ export async function POST(request: NextRequest) {
             send,
             thinkingMode: thinkingMode ?? false,
             targetLanguage: targetLanguage ?? 'en',
-            includeConfederation: includeConfederation ?? false,
+            sourceFilter: resolvedSourceFilter,
             responseId,
           });
         } finally {

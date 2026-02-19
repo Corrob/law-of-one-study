@@ -14,6 +14,7 @@ import {
 } from "@/lib/schemas/sse-events";
 import { Quote } from "@/lib/types";
 import { DEFAULT_LOCALE } from "@/lib/language-config";
+import type { SourceFilter } from "@/lib/schemas";
 import { STREAM_RECOVERY_CONFIG } from "@/lib/config";
 import { useStreamRecovery } from "./useStreamRecovery";
 
@@ -35,7 +36,7 @@ interface UseChatStreamReturn {
   /** Quotes from the meta event (includes passage text for modal display) */
   quotes: Quote[];
   /** Send a message and start streaming the response */
-  sendMessage: (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode?: boolean, targetLanguage?: string, includeConfederation?: boolean) => Promise<void>;
+  sendMessage: (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode?: boolean, targetLanguage?: string, sourceFilter?: SourceFilter) => Promise<void>;
   /** Finalize the assistant message after animations complete */
   finalizeMessage: (allChunks: AnimationChunk[]) => void;
   /** Reset all state for a new conversation */
@@ -227,7 +228,7 @@ export function useChatStream(
   recoverRef.current = recoverFromServer;
 
   const sendMessage = useCallback(
-    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = DEFAULT_LOCALE, includeConfederation: boolean = false) => {
+    async (content: string, addChunk: (chunk: AnimationChunk) => void, thinkingMode: boolean = false, targetLanguage: string = DEFAULT_LOCALE, sourceFilter: SourceFilter = "ra") => {
       userAbortedRef.current = false;
       const requestStartTime = Date.now();
 
@@ -276,7 +277,7 @@ export function useChatStream(
         })),
         thinkingMode,
         targetLanguage,
-        includeConfederation,
+        sourceFilter,
       });
 
       let contentChunksReceived = false;
