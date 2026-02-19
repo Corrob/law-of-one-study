@@ -18,7 +18,7 @@ const PASSAGE_SUGGESTION_COUNT = 52;
 const SENTENCE_SUGGESTION_COUNT = 52;
 
 /** Maximum number of search results to return */
-const SEARCH_LIMIT = 20;
+const SEARCH_LIMIT = 30;
 
 /** Valid source filter values for URL param parsing */
 const VALID_SOURCES: SourceFilter[] = ["ra", "confederation", "all"];
