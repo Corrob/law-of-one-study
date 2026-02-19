@@ -67,8 +67,8 @@ export interface ExecuteChatParams {
   thinkingMode?: boolean;
   /** Target language for responses (ISO code, e.g., 'es' for Spanish) */
   targetLanguage?: string;
-  /** When true, include Confederation passages alongside Ra Material */
-  includeConfederation?: boolean;
+  /** Source filter: "ra" (default), "confederation", or "all" */
+  sourceFilter?: "ra" | "confederation" | "all";
   /** Unique ID for caching the response for mobile recovery */
   responseId: string;
 }
@@ -266,7 +266,7 @@ function trackAnalytics(
  * @throws Never - all errors are sent via SSE
  */
 export async function executeChatQuery(params: ExecuteChatParams): Promise<void> {
-  const { message, history, clientIp, send, thinkingMode = false, targetLanguage = 'en', includeConfederation = false, responseId } = params;
+  const { message, history, clientIp, send, thinkingMode = false, targetLanguage = 'en', sourceFilter = 'ra', responseId } = params;
   const startTime = Date.now();
 
   // Wrap send to also cache events for mobile recovery (fire-and-forget)
@@ -300,8 +300,9 @@ export async function executeChatQuery(params: ExecuteChatParams): Promise<void>
       return;
     }
 
-    // Detect confederation-focused queries (only when confederation is enabled)
-    const confederationFocused = includeConfederation && detectConfederationFocus(message);
+    // Derive search behavior from source filter
+    const includeConfederation = sourceFilter !== "ra";
+    const confederationFocused = sourceFilter === "confederation" || (sourceFilter === "all" && detectConfederationFocus(message));
     if (confederationFocused) {
       debug.log("[Orchestrator] Confederation-focused query detected");
     }

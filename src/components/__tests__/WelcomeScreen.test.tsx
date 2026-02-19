@@ -178,28 +178,30 @@ describe("WelcomeScreen", () => {
     });
   });
 
-  describe("confederation toggle", () => {
-    it("should render SourceFilter when onConfederationChange is provided", () => {
-      const mockOnConfederationChange = jest.fn();
+  describe("source filter", () => {
+    it("should render SourceFilter when onSourceChange is provided", () => {
+      const mockOnSourceChange = jest.fn();
       render(
         <WelcomeScreen
           onSelectStarter={mockOnSelectStarter}
-          includeConfederation={false}
-          onConfederationChange={mockOnConfederationChange}
+          sourceFilter="ra"
+          onSourceChange={mockOnSourceChange}
         />
       );
 
-      // SourceFilter renders a switch role element
-      const switches = screen.getAllByRole("switch");
-      expect(switches.length).toBeGreaterThanOrEqual(1);
+      // SourceFilter renders a radiogroup with radio buttons
+      const radiogroup = screen.getByRole("radiogroup");
+      expect(radiogroup).toBeInTheDocument();
+      const radios = screen.getAllByRole("radio");
+      expect(radios).toHaveLength(3);
     });
 
-    it("should not render SourceFilter when onConfederationChange is not provided", () => {
+    it("should not render SourceFilter when onSourceChange is not provided", () => {
       render(<WelcomeScreen onSelectStarter={mockOnSelectStarter} />);
 
-      // Without onThinkingModeChange or onConfederationChange, no switches should render
-      const switches = screen.queryAllByRole("switch");
-      expect(switches).toHaveLength(0);
+      // Without onThinkingModeChange or onSourceChange, no radiogroups should render
+      const radiogroups = screen.queryAllByRole("radiogroup");
+      expect(radiogroups).toHaveLength(0);
     });
   });
 

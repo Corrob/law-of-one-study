@@ -5,15 +5,15 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import ModeToggle from "./ModeToggle";
 import SourceFilter from "./SourceFilter";
-import type { SearchMode } from "@/lib/schemas";
+import type { SearchMode, SourceFilter as SourceFilterType } from "@/lib/schemas";
 
 interface SearchWelcomeProps {
   mode: SearchMode;
-  includeConfederation?: boolean;
+  sourceFilter?: SourceFilterType;
   greeting: string | null;
   suggestions: string[];
   onModeChange: (mode: SearchMode) => void;
-  onConfederationToggle?: (enabled: boolean) => void;
+  onSourceChange?: (source: SourceFilterType) => void;
   onSuggestedSearch: (suggestion: string) => void;
   inputElement: ReactNode;
 }
@@ -32,11 +32,11 @@ const suggestionVariants = {
 
 export default function SearchWelcome({
   mode,
-  includeConfederation,
+  sourceFilter,
   greeting,
   suggestions,
   onModeChange,
-  onConfederationToggle,
+  onSourceChange,
   onSuggestedSearch,
   inputElement,
 }: SearchWelcomeProps) {
@@ -48,10 +48,22 @@ export default function SearchWelcome({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="mb-6"
+        className="mb-4"
       >
         <ModeToggle mode={mode} onChange={onModeChange} />
       </motion.div>
+
+      {/* Source Filter - hidden for non-English locales (English-only content) */}
+      {onSourceChange && sourceFilter !== undefined && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.05 }}
+          className="mb-6"
+        >
+          <SourceFilter value={sourceFilter} onChange={onSourceChange} />
+        </motion.div>
+      )}
 
       {/* Greeting */}
       {greeting && (
@@ -82,18 +94,6 @@ export default function SearchWelcome({
           ? t("sentenceExplanation")
           : t("passageExplanation")}
       </motion.p>
-
-      {/* Confederation Toggle - hidden for non-English locales (English-only content) */}
-      {onConfederationToggle && includeConfederation !== undefined && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.35 }}
-          className="mb-8"
-        >
-          <SourceFilter enabled={includeConfederation} onChange={onConfederationToggle} />
-        </motion.div>
-      )}
 
       {/* Suggestions */}
       {suggestions.length > 0 && (

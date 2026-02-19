@@ -159,8 +159,8 @@ describe("chat/orchestrator", () => {
     });
   });
 
-  describe("includeConfederation parameter", () => {
-    it("should pass includeConfederation=false to performSearch by default", async () => {
+  describe("sourceFilter parameter", () => {
+    it("should search Ra-only by default (sourceFilter: 'ra')", async () => {
       await executeChatQuery(baseParams);
 
       expect(mockPerformSearch).toHaveBeenCalledWith(
@@ -171,8 +171,8 @@ describe("chat/orchestrator", () => {
       );
     });
 
-    it("should pass includeConfederation=true to performSearch when enabled", async () => {
-      await executeChatQuery({ ...baseParams, includeConfederation: true });
+    it("should include confederation when sourceFilter is 'all'", async () => {
+      await executeChatQuery({ ...baseParams, sourceFilter: "all" });
 
       expect(mockPerformSearch).toHaveBeenCalledWith(
         expect.any(String),
@@ -182,8 +182,19 @@ describe("chat/orchestrator", () => {
       );
     });
 
-    it("should use Ra-only passages label when confederation is disabled", async () => {
-      await executeChatQuery({ ...baseParams, includeConfederation: false });
+    it("should search confederation-only when sourceFilter is 'confederation'", async () => {
+      await executeChatQuery({ ...baseParams, sourceFilter: "confederation" });
+
+      expect(mockPerformSearch).toHaveBeenCalledWith(
+        expect.any(String),
+        null,
+        true,
+        true
+      );
+    });
+
+    it("should use Ra-only passages label when sourceFilter is 'ra'", async () => {
+      await executeChatQuery({ ...baseParams, sourceFilter: "ra" });
 
       expect(mockCreate).toHaveBeenCalled();
       const createCall = mockCreate.mock.calls[0][0];
@@ -192,8 +203,8 @@ describe("chat/orchestrator", () => {
       expect(userMessage.content).not.toContain("Confederation");
     });
 
-    it("should use combined passages label when confederation is enabled", async () => {
-      await executeChatQuery({ ...baseParams, includeConfederation: true });
+    it("should use combined passages label when sourceFilter is 'all'", async () => {
+      await executeChatQuery({ ...baseParams, sourceFilter: "all" });
 
       expect(mockCreate).toHaveBeenCalled();
       const createCall = mockCreate.mock.calls[0][0];
@@ -201,11 +212,10 @@ describe("chat/orchestrator", () => {
       expect(userMessage.content).toContain("Here are relevant passages from Ra and the Confederation");
     });
 
-    it("should use confederation-only passages label for confederation-focused queries", async () => {
+    it("should use confederation-only passages label for sourceFilter 'confederation'", async () => {
       await executeChatQuery({
         ...baseParams,
-        message: "What does Q'uo say about meditation?",
-        includeConfederation: true,
+        sourceFilter: "confederation",
       });
 
       expect(mockCreate).toHaveBeenCalled();
@@ -214,11 +224,11 @@ describe("chat/orchestrator", () => {
       expect(userMessage.content).toContain("Here are relevant Confederation passages");
     });
 
-    it("should pass confederationFocused=true to performSearch for confederation-focused queries", async () => {
+    it("should detect confederation-focused queries when sourceFilter is 'all'", async () => {
       await executeChatQuery({
         ...baseParams,
         message: "What does Hatonn teach about love?",
-        includeConfederation: true,
+        sourceFilter: "all",
       });
 
       expect(mockPerformSearch).toHaveBeenCalledWith(
@@ -229,11 +239,11 @@ describe("chat/orchestrator", () => {
       );
     });
 
-    it("should not activate confederation focus when includeConfederation is false", async () => {
+    it("should not detect confederation focus when sourceFilter is 'ra'", async () => {
       await executeChatQuery({
         ...baseParams,
         message: "What does Q'uo say about meditation?",
-        includeConfederation: false,
+        sourceFilter: "ra",
       });
 
       expect(mockPerformSearch).toHaveBeenCalledWith(

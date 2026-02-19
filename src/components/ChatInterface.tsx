@@ -11,7 +11,7 @@ import { useAnimationQueue } from "@/hooks/useAnimationQueue";
 import { useChatStream } from "@/hooks/useChatStream";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCitationModal } from "@/contexts/CitationModalContext";
-import { useConfederationPreference } from "@/hooks/useConfederationPreference";
+import { useSourcePreference } from "@/hooks/useConfederationPreference";
 import { debug } from "@/lib/debug";
 import type { Message, MessageSegment } from "@/lib/types";
 import { STREAM_RECOVERY_CONFIG } from "@/lib/config";
@@ -62,10 +62,10 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
   const { language } = useLanguage();
   const isEnglish = language === "en";
 
-  // Confederation preference (shared with Search via localStorage)
-  // Confederation content is English-only, so force off for non-English locales
-  const { includeConfederation: rawIncludeConfederation, setIncludeConfederation } = useConfederationPreference();
-  const includeConfederation = isEnglish ? rawIncludeConfederation : false;
+  // Source preference (shared with Search via localStorage)
+  // Confederation content is English-only, so force to "ra" for non-English locales
+  const { sourceFilter: rawSourceFilter, setSourceFilter } = useSourcePreference();
+  const sourceFilter = isEnglish ? rawSourceFilter : "ra" as const;
 
   // Helper to get random placeholder key
   const getRandomPlaceholderKey = useCallback((forFollowUp: boolean) => {
@@ -164,9 +164,9 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
     async (content: string) => {
       resetQueue();
       setTimeout(() => scrollToBottom("smooth"), 50);
-      await sendMessage(content, addChunk, thinkingMode, language, includeConfederation);
+      await sendMessage(content, addChunk, thinkingMode, language, sourceFilter);
     },
-    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode, language, includeConfederation]
+    [sendMessage, addChunk, resetQueue, scrollToBottom, thinkingMode, language, sourceFilter]
   );
 
   // Finalize message when stream is done AND all animations are complete
@@ -313,8 +313,8 @@ const ChatInterface = forwardRef<ChatInterfaceRef, ChatInterfaceProps>(function 
                     thinkingMode={thinkingMode}
                     onThinkingModeChange={setThinkingMode}
                     {...(isEnglish ? {
-                      includeConfederation,
-                      onConfederationChange: setIncludeConfederation,
+                      sourceFilter,
+                      onSourceChange: setSourceFilter,
                     } : {})}
                   />
                 </motion.div>

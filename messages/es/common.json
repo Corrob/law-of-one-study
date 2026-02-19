@@ -211,10 +211,11 @@
       "sentence": "Frase",
       "passage": "Pasaje"
     },
-    "confederationToggle": {
-      "label": "Incluir Confederación",
-      "description": "Buscar Q'uo, Hatonn y más",
-      "tooltip": "Incluir material canalizado de Q'uo, Hatonn, Latwii y otras fuentes de la Confederación junto con el Material de Ra"
+    "sourceFilter": {
+      "label": "Fuente",
+      "ra": "Ra",
+      "confederation": "Confederación",
+      "all": "Todos"
     },
     "readFullTranscript": "Leer transcripción completa",
     "confederationEntity": "{entity}"

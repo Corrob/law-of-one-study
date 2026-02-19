@@ -261,7 +261,7 @@ describe("ChatInterface", () => {
           expect.any(Function),
           false, // thinkingMode defaults to false
           "en", // language defaults to English from mock
-          false // includeConfederation defaults to false
+          "ra" // sourceFilter defaults to "ra"
         );
       });
     });
