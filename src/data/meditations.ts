@@ -3,6 +3,10 @@
  *
  * Each meditation is based on specific exercises described in the Ra Material.
  * Audio files are stored in public/meditations/ and will be added separately.
+ *
+ * Audio file convention:
+ * - English: /meditations/<filename>.mp3
+ * - Other locales: /meditations/<locale>/<filename>.mp3
  */
 
 export interface Meditation {
@@ -19,8 +23,19 @@ export interface Meditation {
   referenceUrls: string[];
   /** Duration in seconds (approximate, based on audio file) */
   durationSeconds: number;
-  /** Audio file path relative to /meditations/ */
+  /** Audio file name (without locale prefix) */
   audioFile: string;
+}
+
+/**
+ * Get the audio path for a meditation, localized by locale.
+ * English uses the root /meditations/ directory; other locales use /meditations/<locale>/.
+ */
+export function getAudioPath(meditation: Meditation, locale: string): string {
+  if (locale === "en") {
+    return `/meditations/${meditation.audioFile}`;
+  }
+  return `/meditations/${locale}/${meditation.audioFile}`;
 }
 
 export const MEDITATIONS: Meditation[] = [

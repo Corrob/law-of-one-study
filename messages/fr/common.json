@@ -36,6 +36,7 @@
     "explore": "Explorer",
     "study": "Étudier",
     "search": "Recherche",
+    "meditate": "Méditer",
     "about": "À propos",
     "support": "Soutenir",
     "install": "Installer"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Recherche",
       "description": "Recherchez n'importe quelle citation"
+    },
+    "meditate": {
+      "title": "Méditer",
+      "description": "Méditations guidées"
     }
   },
   "explorePage": {
@@ -440,6 +445,29 @@
     "metaphysics": "Métaphysique",
     "practice": "Pratique Spirituelle",
     "archetypes": "Esprit Archétypique"
+  },
+  "meditate": {
+    "title": "Méditer",
+    "subtitle": "Méditations guidées inspirées des exercices de Ra",
+    "selectMeditation": "Choisissez une méditation",
+    "nowPlaying": "En cours de lecture",
+    "references": "Références du Matériel de Ra",
+    "duration": "{minutes} min",
+    "play": "Lire la méditation",
+    "pause": "Mettre en pause la méditation",
+    "audioNotAvailable": "Audio à venir",
+    "audioNotAvailableDesc": "L'audio de cette méditation est en préparation. Revenez bientôt.",
+    "meditations": {
+      "findingLove": "Trouver l'Amour dans l'Instant",
+      "findingLoveDesc": "Le premier exercice de Ra : apprenez à voir l'amour dans chaque instant, chaque conscience. Une pratique douce de pause, d'observation et de découverte de l'amour/lumière dans votre expérience présente.",
+      "findingLoveQuote": "L'instant contient l'amour. C'est la leçon/l'objectif de cette illusion ou de cette danse. La première tentative est la pierre angulaire. Sur ce choix repose le reste de l'expérience de vie d'une entité.",
+      "seeingCreator": "Voir le Créateur",
+      "seeingCreatorDesc": "Exercices deux à quatre de Ra : une méditation progressive allant de voir le Créateur dans un autre soi, à voir le Créateur dans le miroir, jusqu'à voir le Créateur dans toute la création autour de vous.",
+      "seeingCreatorQuote": "La deuxième recherche d'amour dans l'instant est la vision du soi par le soi. La troisième est la vision du Créateur. La quatrième, la vision de l'amour dans la création autour de vous.",
+      "balancingSelf": "Équilibrer le Soi",
+      "balancingSelfDesc": "La technique d'équilibrage de Ra : passez en revue le catalyseur de votre journée, trouvez les charges émotionnelles, vivez chaque sentiment pleinement, puis vivez son opposé, et laissez l'équilibre émerger naturellement.",
+      "balancingSelfQuote": "La technique d'acceptation de soi est la pierre angulaire de ce travail. Le processus de polarisation est basé sur la revue quotidienne du catalyseur au fur et à mesure que l'expérience de la journée est traitée."
+    }
   },
   "thinking": {
     "1": "Analyse des archives cosmiques...",

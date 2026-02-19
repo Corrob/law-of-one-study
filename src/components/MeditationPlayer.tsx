@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { PlayIcon, PauseIcon } from "./icons";
-import type { Meditation } from "@/data/meditations";
+import { getAudioPath, type Meditation } from "@/data/meditations";
 
 interface MeditationPlayerProps {
   meditation: Meditation;
@@ -17,6 +17,7 @@ function formatTime(seconds: number): string {
 
 export default function MeditationPlayer({ meditation }: MeditationPlayerProps) {
   const t = useTranslations("meditate");
+  const locale = useLocale();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -24,7 +25,7 @@ export default function MeditationPlayer({ meditation }: MeditationPlayerProps) 
   const [audioAvailable, setAudioAvailable] = useState(true);
   const [audioError, setAudioError] = useState(false);
 
-  const audioPath = `/meditations/${meditation.audioFile}`;
+  const audioPath = getAudioPath(meditation, locale);
 
   // Reset state when meditation changes
   useEffect(() => {

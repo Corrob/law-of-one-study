@@ -36,6 +36,7 @@
     "explore": "Erkunden",
     "study": "Studieren",
     "search": "Suche",
+    "meditate": "Meditieren",
     "about": "Über uns",
     "support": "Unterstützen",
     "install": "Installieren"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Suche",
       "description": "Nach Zitaten suchen"
+    },
+    "meditate": {
+      "title": "Meditieren",
+      "description": "Geführte Meditationen"
     }
   },
   "explorePage": {
@@ -440,6 +445,29 @@
     "metaphysics": "Metaphysik",
     "practice": "Spirituelle Praxis",
     "archetypes": "Archetypischer Geist"
+  },
+  "meditate": {
+    "title": "Meditieren",
+    "subtitle": "Geführte Meditationen inspiriert von den Übungen von Ra",
+    "selectMeditation": "Wähle eine Meditation",
+    "nowPlaying": "Wird abgespielt",
+    "references": "Ra-Material-Referenzen",
+    "duration": "{minutes} Min.",
+    "play": "Meditation abspielen",
+    "pause": "Meditation pausieren",
+    "audioNotAvailable": "Audio kommt bald",
+    "audioNotAvailableDesc": "Das Audio für diese Meditation wird vorbereitet. Schau bald wieder vorbei.",
+    "meditations": {
+      "findingLove": "Liebe im Augenblick finden",
+      "findingLoveDesc": "Ras erste Übung: Lerne, die Liebe in jedem Augenblick, in jedem Bewusstsein zu sehen. Eine sanfte Praxis des Innehaltens, Beobachtens und Findens des Liebe/Lichts in deiner gegenwärtigen Erfahrung.",
+      "findingLoveQuote": "Der Augenblick enthält Liebe. Das ist die Lektion/das Ziel dieser Illusion oder dieses Tanzes. Der erste Versuch ist der Grundstein. Auf dieser Wahl ruht der Rest der Lebenserfahrung eines Wesens.",
+      "seeingCreator": "Den Schöpfer sehen",
+      "seeingCreatorDesc": "Ras Übungen zwei bis vier: Eine fortschreitende Meditation, die sich vom Sehen des Schöpfers in einem anderen Selbst, zum Sehen des Schöpfers im Spiegel, bis zum Sehen des Schöpfers in der gesamten Schöpfung bewegt.",
+      "seeingCreatorQuote": "Die zweite Suche nach Liebe im Augenblick ist das Sehen des Selbst durch das Selbst. Die dritte ist das Sehen des Schöpfers. Die vierte, das Sehen der Liebe in der Schöpfung um dich herum.",
+      "balancingSelf": "Das Selbst ins Gleichgewicht bringen",
+      "balancingSelfDesc": "Ras Ausgleichstechnik: Überprüfe den Katalysator deines Tages, finde emotionale Ladungen, erfahre jedes Gefühl vollständig, dann erfahre sein Gegenteil, und lass das Gleichgewicht natürlich entstehen.",
+      "balancingSelfQuote": "Die Technik der Selbstannahme ist der Grundstein dieser Arbeit. Der Polarisierungsprozess basiert auf der täglichen Überprüfung des Katalysators, während die Erfahrung des Tages verarbeitet wird."
+    }
   },
   "thinking": {
     "1": "Durchsuche die kosmischen Aufzeichnungen...",
