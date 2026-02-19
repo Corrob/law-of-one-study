@@ -36,6 +36,7 @@
     "explore": "Explorar",
     "study": "Estudiar",
     "search": "Buscar",
+    "meditate": "Meditar",
     "about": "Acerca de",
     "support": "Apoyar",
     "install": "Instalar"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Buscar",
       "description": "Busca cualquier cita"
+    },
+    "meditate": {
+      "title": "Meditar",
+      "description": "Meditaciones guiadas"
     }
   },
   "explorePage": {
@@ -440,6 +445,29 @@
     "metaphysics": "Metafísica",
     "practice": "Práctica Espiritual",
     "archetypes": "Mente Arquetípica"
+  },
+  "meditate": {
+    "title": "Meditar",
+    "subtitle": "Meditaciones guiadas inspiradas en los ejercicios de Ra",
+    "selectMeditation": "Elige una meditación",
+    "nowPlaying": "Reproduciendo",
+    "references": "Referencias del Material de Ra",
+    "duration": "{minutes} min",
+    "play": "Reproducir meditación",
+    "pause": "Pausar meditación",
+    "audioNotAvailable": "Audio próximamente",
+    "audioNotAvailableDesc": "El audio de esta meditación está siendo preparado. Vuelve pronto.",
+    "meditations": {
+      "findingLove": "Encontrar el Amor en el Momento",
+      "findingLoveDesc": "El primer ejercicio de Ra: aprende a ver el amor en cada momento, cada conciencia. Una práctica suave de pausar, observar y encontrar el amor/luz dentro de tu experiencia presente.",
+      "findingLoveQuote": "El momento contiene amor. Esa es la lección/meta de esta ilusión o danza. El primer intento es la piedra angular. Sobre esta elección descansa el resto de la experiencia de vida de una entidad.",
+      "seeingCreator": "Viendo al Creador",
+      "seeingCreatorDesc": "Ejercicios dos a cuatro de Ra: una meditación progresiva que avanza desde ver al Creador en otro yo, hasta ver al Creador en el espejo, hasta ver al Creador en toda la creación a tu alrededor.",
+      "seeingCreatorQuote": "La segunda búsqueda de amor en el momento es la visión del yo por el yo. La tercera es la visión del Creador. La cuarta, la visión del amor en la creación a tu alrededor.",
+      "balancingSelf": "Equilibrando el Yo",
+      "balancingSelfDesc": "La técnica de equilibrio de Ra: revisa el catalizador de tu día, encuentra las cargas emocionales, experimenta cada sentimiento plenamente, luego experimenta su opuesto, y permite que el equilibrio surja naturalmente.",
+      "balancingSelfQuote": "La técnica de aceptación del yo es la piedra angular de este trabajo. El proceso de polarización se basa en la revisión diaria del catalizador a medida que se procesa la experiencia del día."
+    }
   },
   "thinking": {
     "1": "Escaneando los registros cósmicos...",

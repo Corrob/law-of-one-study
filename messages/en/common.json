@@ -36,6 +36,7 @@
     "explore": "Explore",
     "study": "Study",
     "search": "Search",
+    "meditate": "Meditate",
     "about": "About",
     "support": "Support",
     "install": "Install"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Search",
       "description": "Search for any quote"
+    },
+    "meditate": {
+      "title": "Meditate",
+      "description": "Guided meditations"
     }
   },
   "explorePage": {
@@ -440,6 +445,29 @@
     "metaphysics": "Metaphysics",
     "practice": "Spiritual Practice",
     "archetypes": "Archetypical Mind"
+  },
+  "meditate": {
+    "title": "Meditate",
+    "subtitle": "Guided meditations inspired by the exercises of Ra",
+    "selectMeditation": "Choose a meditation",
+    "nowPlaying": "Now Playing",
+    "references": "Ra Material References",
+    "duration": "{minutes} min",
+    "play": "Play meditation",
+    "pause": "Pause meditation",
+    "audioNotAvailable": "Audio coming soon",
+    "audioNotAvailableDesc": "This meditation audio is being prepared. Check back soon.",
+    "meditations": {
+      "findingLove": "Finding Love in the Moment",
+      "findingLoveDesc": "Ra's first exercise: learn to see the love in each moment, each awareness. A gentle practice of pausing, observing, and finding the love/light within your present experience.",
+      "findingLoveQuote": "The moment contains love. That is the lesson/goal of this illusion or dance. The first attempt is the cornerstone. Upon this choosing rests the remainder of the life-experience of an entity.",
+      "seeingCreator": "Seeing the Creator",
+      "seeingCreatorDesc": "Ra's exercises two through four: a progressive meditation moving from seeing the Creator in another self, to seeing the Creator in the mirror, to seeing the Creator in all of the creation around you.",
+      "seeingCreatorQuote": "The second seeking of love within the moment is the seeing of the self by the self. The third is the seeing of the Creator. The fourth, the seeing of the love in the creation around you.",
+      "balancingSelf": "Balancing the Self",
+      "balancingSelfDesc": "Ra's balancing technique: review your day's catalyst, find emotional charges, experience each feeling fully, then experience its opposite, and allow balance to emerge naturally.",
+      "balancingSelfQuote": "The technique of acceptance of self is the cornerstone of this work. The polarization process is based upon the daily review of catalyst as the experience of one's day is processed."
+    }
   },
   "thinking": {
     "1": "Scanning the cosmic records...",

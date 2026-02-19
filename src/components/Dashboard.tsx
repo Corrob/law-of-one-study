@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
-import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
+import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, MeditateIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -31,6 +31,11 @@ const FEATURES = [
     href: "/search",
     icon: SearchIcon,
     titleKey: "search",
+  },
+  {
+    href: "/meditate",
+    icon: MeditateIcon,
+    titleKey: "meditate",
   },
 ];
 
@@ -144,7 +149,7 @@ export default function Dashboard() {
       )}
 
       {/* Feature Cards Grid */}
-      <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+      <div className="grid grid-cols-2 gap-3 max-w-md mx-auto [&>:last-child:nth-child(odd)]:col-span-2 [&>:last-child:nth-child(odd)]:max-w-[calc(50%-0.375rem)] [&>:last-child:nth-child(odd)]:mx-auto">
         {FEATURES.map((feature, index) => (
           <FeatureCard
             key={feature.href}

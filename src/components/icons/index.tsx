@@ -311,6 +311,55 @@ export function DownloadIcon({ className }: IconProps) {
   );
 }
 
+export function MeditateIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Seated figure in meditation */}
+      <circle cx="12" cy="5" r="2" />
+      <path d="M8 22v-2a4 4 0 0 1 8 0v2" />
+      <path d="M12 11v3" />
+      <path d="M8 14l4-3 4 3" />
+      {/* Aura/energy radiating */}
+      <path d="M6 9a8 8 0 0 0 12 0" opacity="0.5" />
+    </svg>
+  );
+}
+
+export function PlayIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      stroke="none"
+    >
+      <polygon points="5 3 19 12 5 21 5 3" />
+    </svg>
+  );
+}
+
+export function PauseIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      stroke="none"
+    >
+      <rect x="6" y="4" width="4" height="16" rx="1" />
+      <rect x="14" y="4" width="4" height="16" rx="1" />
+    </svg>
+  );
+}
+
 export function SparkleIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor">

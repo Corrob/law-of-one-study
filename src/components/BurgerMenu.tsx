@@ -11,6 +11,7 @@ import {
   ExploreIcon,
   BookIcon,
   SearchIcon,
+  MeditateIcon,
   InfoIcon,
   HeartIcon,
   DownloadIcon,
@@ -35,6 +36,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/explore", labelKey: "explore", icon: ExploreIcon },
   { href: "/paths", labelKey: "study", icon: BookIcon },
   { href: "/search", labelKey: "search", icon: SearchIcon },
+  { href: "/meditate", labelKey: "meditate", icon: MeditateIcon },
 ];
 
 const SECONDARY_ITEMS: NavItem[] = [
