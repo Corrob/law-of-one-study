@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown, { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface AnimatedMarkdownProps {
   content: string;
@@ -11,6 +12,7 @@ interface AnimatedMarkdownProps {
 }
 
 export default function AnimatedMarkdown({ content, onComplete, speed = 50 }: AnimatedMarkdownProps) {
+  const reducedMotion = useReducedMotion();
   const [isVisible, setIsVisible] = useState(false);
   const hasCompletedRef = useRef(false);
   const onCompleteRef = useRef(onComplete);
@@ -31,6 +33,16 @@ export default function AnimatedMarkdown({ content, onComplete, speed = 50 }: An
       return;
     }
 
+    // Skip animation for reduced motion — show immediately
+    if (reducedMotion) {
+      setIsVisible(true);
+      if (!hasCompletedRef.current) {
+        hasCompletedRef.current = true;
+        onCompleteRef.current();
+      }
+      return;
+    }
+
     // Small delay before showing, then fade in
     const showTimeout = setTimeout(() => {
       setIsVisible(true);
@@ -48,7 +60,7 @@ export default function AnimatedMarkdown({ content, onComplete, speed = 50 }: An
       clearTimeout(showTimeout);
       clearTimeout(completeTimeout);
     };
-  }, [content, speed]);
+  }, [content, speed, reducedMotion]);
 
   // Custom components with consistent styling
   const markdownComponents: Components = {

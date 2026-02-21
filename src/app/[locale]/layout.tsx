@@ -8,6 +8,7 @@ import { PopoverProvider } from "@/contexts/PopoverContext";
 import { CitationModalProvider } from "@/contexts/CitationModalContext";
 import { type AvailableLanguage } from "@/lib/language-config";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import ReducedMotionProvider from "@/providers/ReducedMotionProvider";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -38,14 +39,16 @@ export default async function LocaleLayout({
   return (
     <PostHogProvider>
       <ThemeProvider>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <PopoverProvider>
-            <CitationModalProvider>
-              <ServiceWorkerRegistration />
-              {children}
-            </CitationModalProvider>
-          </PopoverProvider>
-        </NextIntlClientProvider>
+        <ReducedMotionProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <PopoverProvider>
+              <CitationModalProvider>
+                <ServiceWorkerRegistration />
+                {children}
+              </CitationModalProvider>
+            </PopoverProvider>
+          </NextIntlClientProvider>
+        </ReducedMotionProvider>
       </ThemeProvider>
     </PostHogProvider>
   );

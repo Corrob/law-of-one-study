@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Link } from "@/i18n/navigation";
-import { motion } from "framer-motion";
 
 interface FeatureCardProps {
   href: string;
@@ -11,6 +11,8 @@ interface FeatureCardProps {
   index?: number;
 }
 
+const SESSION_KEY = "lo1-dashboard-seen";
+
 export default function FeatureCard({
   href,
   icon: Icon,
@@ -18,11 +20,32 @@ export default function FeatureCard({
   description,
   index = 0,
 }: FeatureCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const seen = sessionStorage.getItem(SESSION_KEY);
+    if (seen) {
+      // Skip animation on return visits — show immediately
+      if (cardRef.current) {
+        cardRef.current.style.opacity = "1";
+        cardRef.current.style.transform = "translateY(0)";
+      }
+    } else {
+      // First visit this session — animate, then mark as seen
+      if (cardRef.current) {
+        const delay = index * 80;
+        cardRef.current.style.transition = `opacity 0.3s ease-out ${delay}ms, transform 0.3s ease-out ${delay}ms`;
+        cardRef.current.style.opacity = "1";
+        cardRef.current.style.transform = "translateY(0)";
+      }
+      sessionStorage.setItem(SESSION_KEY, "1");
+    }
+  }, [index]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.1 }}
+    <div
+      ref={cardRef}
+      style={{ opacity: 0, transform: "translateY(16px)" }}
     >
       <Link
         href={href}
@@ -44,6 +67,6 @@ export default function FeatureCard({
           {description}
         </p>
       </Link>
-    </motion.div>
+    </div>
   );
 }

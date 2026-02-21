@@ -51,7 +51,7 @@ describe("ThinkingIndicator", () => {
     it("should display a message", () => {
       render(<ThinkingIndicator />);
 
-      // The message should be from the thinkingMessages array
+      // The indicator should contain text from the thinking messages
       const indicator = screen.getByTestId("thinking-indicator");
       expect(indicator.textContent).toBeTruthy();
       expect(indicator.textContent!.length).toBeGreaterThan(0);
@@ -63,21 +63,26 @@ describe("ThinkingIndicator", () => {
       const messageElement = screen.getByTestId("thinking-indicator").querySelector("div");
       expect(messageElement).toHaveClass("italic");
     });
+
+    it("should render two crossfade elements", () => {
+      render(<ThinkingIndicator />);
+
+      const divs = screen.getByTestId("thinking-indicator").querySelectorAll("div");
+      // Two overlapping divs for crossfade
+      expect(divs.length).toBe(2);
+    });
   });
 
   describe("message rotation", () => {
     it("should change message after interval", () => {
       render(<ThinkingIndicator />);
 
-      const initialMessage = screen.getByTestId("thinking-indicator").textContent;
-
       // Advance timers by 3.5 seconds
       act(() => {
         jest.advanceTimersByTime(3500);
       });
 
-      // Note: Since messages are random, we can't guarantee the message changed
-      // but we verify the interval mechanism works without errors
+      // Component should still be functioning without errors
       expect(screen.getByTestId("thinking-indicator")).toBeInTheDocument();
     });
 

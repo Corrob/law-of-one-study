@@ -9,6 +9,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { type AvailableLanguage } from "@/lib/language-config";
 import { parseRaText, parseEllipsis, getShortReference, isRaReference } from "@/lib/ra-text-parser";
 import { useQuoteText } from "@/hooks/useBilingualQuote";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface AnimatedQuoteCardProps {
   quote: Quote;
@@ -24,6 +25,7 @@ export default function AnimatedQuoteCard({
   // Get current language setting and translations
   const { language } = useLanguage();
   const t = useTranslations("quote");
+  const reducedMotion = useReducedMotion();
 
   const [isVisible, setIsVisible] = useState(!animate);
   const hasCompletedRef = useRef(false);
@@ -53,6 +55,16 @@ export default function AnimatedQuoteCard({
     hasCompletedRef.current = false;
     setIsVisible(false);
 
+    // Skip animation for reduced motion — show immediately
+    if (reducedMotion) {
+      setIsVisible(true);
+      if (!hasCompletedRef.current) {
+        hasCompletedRef.current = true;
+        onCompleteRef.current?.();
+      }
+      return;
+    }
+
     // Small delay before showing, then fade in
     const showTimeout = setTimeout(() => {
       setIsVisible(true);
@@ -70,7 +82,7 @@ export default function AnimatedQuoteCard({
       clearTimeout(showTimeout);
       clearTimeout(completeTimeout);
     };
-  }, [animate, quote.text]);
+  }, [animate, quote.text, reducedMotion]);
 
   // Parse ellipsis from full quote text
   const { hasLeading, hasTrailing, content: fullTextWithoutEllipsis } = parseEllipsis(quote.text);

@@ -34,11 +34,14 @@ const FEATURES = [
   },
 ];
 
+const DASHBOARD_SEEN_KEY = "lo1-dashboard-seen";
+
 export default function Dashboard() {
   const locale = useLocale() as AvailableLanguage;
   const [quote, setQuote] = useState<LocalizedDailyQuote | null>(null);
   const [bilingualQuote, setBilingualQuote] = useState<DailyQuote | null>(null);
   const [showOriginal, setShowOriginal] = useState(false);
+  const [skipAnimations, setSkipAnimations] = useState(false);
   const t = useTranslations();
 
   useEffect(() => {
@@ -48,6 +51,13 @@ export default function Dashboard() {
     const today = new Date();
     setQuote(getDailyQuote(locale));
     setBilingualQuote(getRawQuoteForDay(today));
+
+    // Skip entrance animations on return visits within this session
+    if (sessionStorage.getItem(DASHBOARD_SEEN_KEY)) {
+      setSkipAnimations(true);
+    } else {
+      sessionStorage.setItem(DASHBOARD_SEEN_KEY, "1");
+    }
   }, [locale]);
 
   // Compute formatted copy text
@@ -62,12 +72,12 @@ export default function Dashboard() {
       {quote && (
         <div className="max-w-xl mx-auto text-center space-y-3">
           {/* Header */}
-          <h2 className="animate-quote-header text-sm uppercase tracking-widest text-[var(--lo1-gold)]/80">
+          <h2 className={`${skipAnimations ? "" : "animate-quote-header"} text-sm uppercase tracking-widest text-[var(--lo1-gold)]/80`}>
             {t("dashboard.dailyWisdom")}
           </h2>
 
           {/* Quote Card */}
-          <div className="light-quote-card animate-quote-wrapper group">
+          <div className={`light-quote-card ${skipAnimations ? "" : "animate-quote-wrapper"} group`}>
             <div
               role="link"
               tabIndex={0}
@@ -87,18 +97,18 @@ export default function Dashboard() {
                        hover:shadow-[0_0_40px_rgba(212,168,83,0.2)]
                        transition-all duration-300 cursor-pointer"
             >
-              <p className="animate-quote-enter font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-4">
+              <p className={`${skipAnimations ? "" : "animate-quote-enter"} font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-4`}>
                 &ldquo;{quote.text}&rdquo;
               </p>
               <div className="flex items-center justify-between gap-4">
                 <Link
                   href={`/chat?q=${encodeURIComponent(t("dashboard.exploreQuoteQuery", { quote: quote.text, reference: quote.reference }))}`}
-                  className="animate-quote-reference text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors"
+                  className={`${skipAnimations ? "" : "animate-quote-reference"} text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors`}
                   onClick={(e) => e.stopPropagation()}
                 >
                   {t("dashboard.exploreThis")} &rarr;
                 </Link>
-                <div className="flex items-center gap-2 animate-quote-reference">
+                <div className={`flex items-center gap-2 ${skipAnimations ? "" : "animate-quote-reference"}`}>
                   <CopyButton textToCopy={copyText} size="md" />
                   <span className="text-[var(--lo1-stardust)] text-sm">
                     &mdash; {quote.reference}
@@ -137,7 +147,7 @@ export default function Dashboard() {
           </div>
 
           {/* Footer */}
-          <p className="animate-quote-footer text-xs text-[var(--lo1-stardust)]/60">
+          <p className={`${skipAnimations ? "" : "animate-quote-footer"} text-xs text-[var(--lo1-stardust)]/60`}>
             {t("dashboard.newReflectionTomorrow")}
           </p>
         </div>

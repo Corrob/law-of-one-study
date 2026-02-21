@@ -638,8 +638,8 @@ h6 {
 
 /* Quote wrapper - background/border fades in first */
 .animate-quote-wrapper {
-  animation: quote-wrapper-enter 600ms ease-out forwards;
-  animation-delay: 100ms;
+  animation: quote-wrapper-enter 400ms ease-out forwards;
+  animation-delay: 50ms;
   opacity: 0;
 }
 
@@ -657,28 +657,28 @@ h6 {
 }
 
 .animate-quote-enter {
-  animation: quote-enter 700ms ease-out forwards;
-  animation-delay: 400ms;
+  animation: quote-enter 400ms ease-out forwards;
+  animation-delay: 150ms;
   opacity: 0;
 }
 
 .animate-quote-reference {
-  animation: quote-enter 500ms ease-out forwards;
-  animation-delay: 700ms;
+  animation: quote-enter 350ms ease-out forwards;
+  animation-delay: 300ms;
   opacity: 0;
 }
 
 /* Header - appears first, before the card */
 .animate-quote-header {
-  animation: quote-enter 500ms ease-out forwards;
-  animation-delay: 50ms;
+  animation: quote-enter 350ms ease-out forwards;
+  animation-delay: 0ms;
   opacity: 0;
 }
 
 /* Footer - appears last, after the reference */
 .animate-quote-footer {
-  animation: quote-enter 500ms ease-out forwards;
-  animation-delay: 900ms;
+  animation: quote-enter 350ms ease-out forwards;
+  animation-delay: 400ms;
   opacity: 0;
 }
 
@@ -695,27 +695,27 @@ h6 {
 }
 
 .animate-starter-0 {
-  animation: starter-enter 400ms ease-out forwards;
-  animation-delay: 800ms;
+  animation: starter-enter 300ms ease-out forwards;
+  animation-delay: 350ms;
   opacity: 0;
 }
 
 .animate-starter-1 {
-  animation: starter-enter 400ms ease-out forwards;
-  animation-delay: 900ms;
+  animation: starter-enter 300ms ease-out forwards;
+  animation-delay: 420ms;
   opacity: 0;
 }
 
 .animate-starter-2 {
-  animation: starter-enter 400ms ease-out forwards;
-  animation-delay: 1000ms;
+  animation: starter-enter 300ms ease-out forwards;
+  animation-delay: 490ms;
   opacity: 0;
 }
 
 /* Input entrance animation */
 .animate-input-enter {
-  animation: quote-enter 500ms ease-out forwards;
-  animation-delay: 500ms;
+  animation: quote-enter 350ms ease-out forwards;
+  animation-delay: 200ms;
   opacity: 0;
 }
 
@@ -873,4 +873,53 @@ h6 {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* ============================================
+   Reduced Motion Support
+   ============================================ */
+
+/* Disable all animations and transitions for users who prefer reduced motion.
+   This covers CSS keyframe animations, Tailwind transitions, and custom animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Ensure all welcome/dashboard elements are immediately visible */
+  .animate-quote-wrapper,
+  .animate-quote-enter,
+  .animate-quote-reference,
+  .animate-quote-header,
+  .animate-quote-footer,
+  .animate-starter-0,
+  .animate-starter-1,
+  .animate-starter-2,
+  .animate-input-enter,
+  .animate-fade-in,
+  .animate-opacity-fade-in,
+  .animate-welcome-exit {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Stop continuous background animations */
+  .starfield::before,
+  .starfield::after,
+  .starburst,
+  .welcome-input-glow {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Disable pulse animations (skeletons, graph selection) */
+  .animate-pulse {
+    animation: none !important;
+  }
 }
