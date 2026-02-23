@@ -9,9 +9,8 @@ interface FeatureCardProps {
   title: string;
   description: string;
   index?: number;
+  skipAnimation?: boolean;
 }
-
-const SESSION_KEY = "lo1-dashboard-seen";
 
 export default function FeatureCard({
   href,
@@ -19,28 +18,23 @@ export default function FeatureCard({
   title,
   description,
   index = 0,
+  skipAnimation = false,
 }: FeatureCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const seen = sessionStorage.getItem(SESSION_KEY);
-    if (seen) {
-      // Skip animation on return visits — show immediately
-      if (cardRef.current) {
-        cardRef.current.style.opacity = "1";
-        cardRef.current.style.transform = "translateY(0)";
-      }
+    if (!cardRef.current) return;
+
+    if (skipAnimation) {
+      cardRef.current.style.opacity = "1";
+      cardRef.current.style.transform = "translateY(0)";
     } else {
-      // First visit this session — animate, then mark as seen
-      if (cardRef.current) {
-        const delay = index * 80;
-        cardRef.current.style.transition = `opacity 0.3s ease-out ${delay}ms, transform 0.3s ease-out ${delay}ms`;
-        cardRef.current.style.opacity = "1";
-        cardRef.current.style.transform = "translateY(0)";
-      }
-      sessionStorage.setItem(SESSION_KEY, "1");
+      const delay = index * 80;
+      cardRef.current.style.transition = `opacity 0.3s ease-out ${delay}ms, transform 0.3s ease-out ${delay}ms`;
+      cardRef.current.style.opacity = "1";
+      cardRef.current.style.transform = "translateY(0)";
     }
-  }, [index]);
+  }, [index, skipAnimation]);
 
   return (
     <div

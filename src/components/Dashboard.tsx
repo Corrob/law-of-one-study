@@ -163,6 +163,7 @@ export default function Dashboard() {
             title={t(`features.${feature.titleKey}.title`)}
             description={t(`features.${feature.titleKey}.description`)}
             index={index}
+            skipAnimation={skipAnimations}
           />
         ))}
       </div>

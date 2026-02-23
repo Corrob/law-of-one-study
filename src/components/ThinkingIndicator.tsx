@@ -20,6 +20,7 @@ export default function ThinkingIndicator() {
     return [key, key];
   });
   const [showSecond, setShowSecond] = useState(false);
+  const showSecondRef = useRef(false);
   const mountedRef = useRef(true);
 
   const getRandomKey = useCallback((exclude: string) => {
@@ -30,6 +31,11 @@ export default function ThinkingIndicator() {
     return key;
   }, []);
 
+  // Keep ref in sync with state
+  useEffect(() => {
+    showSecondRef.current = showSecond;
+  }, [showSecond]);
+
   useEffect(() => {
     mountedRef.current = true;
 
@@ -37,11 +43,13 @@ export default function ThinkingIndicator() {
     const interval = setInterval(() => {
       if (!mountedRef.current) return;
 
+      const flipped = showSecondRef.current;
+
       setMessages(([a, b]) => {
-        const current = showSecond ? b : a;
+        const current = flipped ? b : a;
         const next = getRandomKey(current);
         // Place the new message in the hidden slot
-        return showSecond ? [next, b] : [a, next];
+        return flipped ? [next, b] : [a, next];
       });
 
       // Flip which element is visible (triggers the CSS transition)
@@ -52,21 +60,21 @@ export default function ThinkingIndicator() {
       mountedRef.current = false;
       clearInterval(interval);
     };
-  }, [getRandomKey, showSecond]);
+  }, [getRandomKey]);
 
   const [keyA, keyB] = messages;
 
   return (
-    <div className="mb-6 relative h-5" data-testid="thinking-indicator">
-      {/* Message A */}
+    <div className="mb-6 relative" data-testid="thinking-indicator">
+      {/* Message A — flows normally to set parent height */}
       <div
-        className="absolute inset-0 text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500 ease-in-out"
+        className="text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500 ease-in-out"
         style={{ opacity: showSecond ? 0 : 1 }}
         aria-hidden={showSecond}
       >
         {t(keyA)}
       </div>
-      {/* Message B */}
+      {/* Message B — overlays A */}
       <div
         className="absolute inset-0 text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500 ease-in-out"
         style={{ opacity: showSecond ? 1 : 0 }}
