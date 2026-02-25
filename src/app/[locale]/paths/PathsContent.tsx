@@ -56,34 +56,6 @@ export default function PathsContent() {
     [allPaths, progress]
   );
 
-  // Show skeleton while loading progress
-  if (!isLoaded) {
-    return (
-      <main className="h-dvh flex flex-col cosmic-bg relative">
-        {/* Starfield background */}
-        <div className="starfield" />
-
-        <NavigationWrapper>
-          <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-2xl font-semibold text-[var(--lo1-starlight)] mb-6">
-                {t("title")}
-              </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="h-44 rounded-xl bg-[var(--lo1-space)]/50 border border-[var(--lo1-celestial)]/20 animate-pulse"
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </NavigationWrapper>
-      </main>
-    );
-  }
-
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
       {/* Starfield background */}
@@ -91,7 +63,7 @@ export default function PathsContent() {
 
       <NavigationWrapper>
         <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
-          <div className="max-w-4xl mx-auto">
+          <div className={`max-w-4xl mx-auto transition-opacity duration-500 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}>
             {/* Page Header */}
             <MotionFadeIn className="mb-8" variant="title">
               <h1 className="text-2xl font-semibold text-[var(--lo1-starlight)] mb-2">

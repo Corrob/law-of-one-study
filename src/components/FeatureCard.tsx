@@ -31,8 +31,12 @@ export default function FeatureCard({
     } else {
       const delay = index * 80;
       cardRef.current.style.transition = `opacity 0.3s ease-out ${delay}ms, transform 0.3s ease-out ${delay}ms`;
-      cardRef.current.style.opacity = "1";
-      cardRef.current.style.transform = "translateY(0)";
+      // Separate frame so browser registers initial state before animating
+      requestAnimationFrame(() => {
+        if (!cardRef.current) return;
+        cardRef.current.style.opacity = "1";
+        cardRef.current.style.transform = "translateY(0)";
+      });
     }
   }, [index, skipAnimation]);
 

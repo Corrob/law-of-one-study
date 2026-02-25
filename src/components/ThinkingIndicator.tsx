@@ -31,11 +31,6 @@ export default function ThinkingIndicator() {
     return key;
   }, []);
 
-  // Keep ref in sync with state
-  useEffect(() => {
-    showSecondRef.current = showSecond;
-  }, [showSecond]);
-
   useEffect(() => {
     mountedRef.current = true;
 
@@ -53,7 +48,10 @@ export default function ThinkingIndicator() {
       });
 
       // Flip which element is visible (triggers the CSS transition)
-      setShowSecond((prev) => !prev);
+      setShowSecond((prev) => {
+        showSecondRef.current = !prev;
+        return !prev;
+      });
     }, 3500);
 
     return () => {
@@ -65,18 +63,21 @@ export default function ThinkingIndicator() {
   const [keyA, keyB] = messages;
 
   return (
-    <div className="mb-6 relative" data-testid="thinking-indicator">
-      {/* Message A — flows normally to set parent height */}
+    <div
+      className="mb-6 grid grid-cols-1 grid-rows-1"
+      data-testid="thinking-indicator"
+    >
+      {/* Message A */}
       <div
-        className="text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500 ease-in-out"
+        className="col-start-1 row-start-1 text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500 ease-in-out"
         style={{ opacity: showSecond ? 0 : 1 }}
         aria-hidden={showSecond}
       >
         {t(keyA)}
       </div>
-      {/* Message B — overlays A */}
+      {/* Message B */}
       <div
-        className="absolute inset-0 text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500 ease-in-out"
+        className="col-start-1 row-start-1 text-sm text-[var(--lo1-stardust)] italic transition-opacity duration-500 ease-in-out"
         style={{ opacity: showSecond ? 1 : 0 }}
         aria-hidden={!showSecond}
       >

@@ -11,11 +11,7 @@ import ConceptPanel from "@/components/ConceptPanel";
 // Dynamic import for ConceptGraph - d3 is ~50KB+ and only needed on this page
 const ConceptGraph = dynamic(() => import("@/components/ConceptGraph"), {
   ssr: false,
-  loading: () => (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="text-[var(--lo1-stardust)] animate-pulse">Loading graph...</div>
-    </div>
-  ),
+  loading: () => <div className="w-full h-full" />,
 });
 import { useConceptGraph } from "@/hooks/useConceptGraph";
 import type { ConceptNode, GraphConcept, ConceptCategory } from "@/lib/graph/types";
@@ -44,6 +40,9 @@ export default function ExploreContent() {
   const [selectedConcept, setSelectedConcept] = useState<GraphConcept | null>(
     null
   );
+  const [ready, setReady] = useState(false);
+
+  const handleGraphReady = useCallback(() => setReady(true), []);
 
   const handleSelectConcept = useCallback((node: ConceptNode) => {
     setSelectedConcept(node.concept);
@@ -61,7 +60,7 @@ export default function ExploreContent() {
   }, []);
 
   return (
-    <main className="h-dvh flex flex-col cosmic-bg relative">
+    <main className={`h-dvh flex flex-col cosmic-bg relative transition-opacity duration-500 ease-out ${ready ? "opacity-100" : "opacity-0"}`}>
       {/* Starfield background */}
       <div className="starfield" />
 
@@ -80,6 +79,7 @@ export default function ExploreContent() {
                 expandedCategories={expandedCategories}
                 categoriesTitle={t("explorePage.categoriesTitle")}
                 getCategoryLabel={getCategoryLabel}
+                onReady={handleGraphReady}
               />
 
               {/* Stats overlay - only show when concepts visible */}

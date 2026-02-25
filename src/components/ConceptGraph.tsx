@@ -32,6 +32,8 @@ interface ConceptGraphProps {
   categoriesTitle?: string;
   /** Function to get translated category label */
   getCategoryLabel?: (category: ConceptCategory) => string;
+  /** Called once after the graph has mounted and measured its container */
+  onReady?: () => void;
 }
 
 export default function ConceptGraph({
@@ -40,6 +42,7 @@ export default function ConceptGraph({
   onSelectConcept,
   onExpandCluster,
   onExpandSubcluster,
+  onReady,
   selectedConceptId,
   expandedCategories,
   categoriesTitle = "Categories",
@@ -92,9 +95,10 @@ export default function ConceptGraph({
     positionsRef.current.clear();
 
     updateDimensions();
+    onReady?.();
     window.addEventListener("resize", updateDimensions);
     return () => window.removeEventListener("resize", updateDimensions);
-  }, [positionsRef]);
+  }, [positionsRef, onReady]);
 
   // Setup zoom behavior
   useEffect(() => {

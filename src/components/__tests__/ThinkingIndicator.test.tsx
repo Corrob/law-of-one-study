@@ -171,11 +171,12 @@ describe("ThinkingIndicator", () => {
   });
 
   describe("styling", () => {
-    it("should have margin-bottom class", () => {
+    it("should have margin-bottom and grid classes", () => {
       render(<ThinkingIndicator />);
 
       const container = screen.getByTestId("thinking-indicator");
       expect(container).toHaveClass("mb-6");
+      expect(container).toHaveClass("grid");
     });
 
     it("should have text color class", () => {

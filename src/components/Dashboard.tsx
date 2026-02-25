@@ -42,6 +42,7 @@ export default function Dashboard() {
   const [bilingualQuote, setBilingualQuote] = useState<DailyQuote | null>(null);
   const [showOriginal, setShowOriginal] = useState(false);
   const [skipAnimations, setSkipAnimations] = useState(false);
+  const [ready, setReady] = useState(false);
   const t = useTranslations();
 
   useEffect(() => {
@@ -55,8 +56,11 @@ export default function Dashboard() {
     // Skip entrance animations on return visits within this session
     if (sessionStorage.getItem(DASHBOARD_SEEN_KEY)) {
       setSkipAnimations(true);
+      setReady(true);
     } else {
       sessionStorage.setItem(DASHBOARD_SEEN_KEY, "1");
+      // Delay ready to allow fade-in transition
+      requestAnimationFrame(() => setReady(true));
     }
   }, [locale]);
 
@@ -67,7 +71,11 @@ export default function Dashboard() {
   }, [quote]);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 space-y-8">
+    <div
+      className={`max-w-2xl mx-auto px-4 py-8 space-y-8 transition-opacity duration-500 ease-out ${
+        ready ? "opacity-100" : "opacity-0"
+      }`}
+    >
       {/* Daily Quote */}
       {quote && (
         <div className="max-w-xl mx-auto text-center space-y-3">

@@ -65,17 +65,15 @@ export default function SearchWelcome({
         </motion.div>
       )}
 
-      {/* Greeting */}
-      {greeting && (
-        <motion.h2
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          className="font-[family-name:var(--font-cormorant)] text-2xl md:text-3xl text-[var(--lo1-starlight)] mb-6 text-center"
-        >
-          {greeting}
-        </motion.h2>
-      )}
+      {/* Greeting — always rendered to reserve space, text fades in */}
+      <motion.h2
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: greeting ? 1 : 0, scale: greeting ? 1 : 0.95 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+        className="font-[family-name:var(--font-cormorant)] text-2xl md:text-3xl text-[var(--lo1-starlight)] mb-6 text-center min-h-[1.5em]"
+      >
+        {greeting ?? "\u00A0"}
+      </motion.h2>
 
       {/* Search Input with glow */}
       <div className="relative w-full max-w-lg mb-6">
