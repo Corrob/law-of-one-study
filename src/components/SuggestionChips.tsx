@@ -85,7 +85,7 @@ export default function SuggestionChips({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.8, duration: 0.4, ease: "easeOut" }}
+      transition={{ delay: 0.2, duration: 0.3, ease: "easeOut" }}
       className="mt-4 pt-4 border-t border-[var(--lo1-celestial)]/20"
     >
       <p id="suggestions-label" className="text-[var(--lo1-stardust)]/60 text-xs mb-3">
@@ -105,7 +105,7 @@ export default function SuggestionChips({
             }}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.9 + index * 0.1, duration: 0.3 }}
+            transition={{ delay: 0.3 + index * 0.07, duration: 0.25 }}
             onClick={() => handleClick(suggestion)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             disabled={disabled}

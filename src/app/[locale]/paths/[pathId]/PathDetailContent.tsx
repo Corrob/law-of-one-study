@@ -157,40 +157,12 @@ export default function PathDetailContent({ pathId }: PathDetailContentProps) {
   }
 
   // Loading state (only need currentLesson when not showing intro)
-  if (!isLoaded || (!showingIntro && !currentLesson)) {
-    return (
-      <main className="h-dvh flex flex-col cosmic-bg relative">
-        <NavigationWrapper>
-          <div className="flex-1 overflow-auto relative z-10 px-4 py-6">
-            <div className="max-w-3xl mx-auto">
-              {/* Skeleton stepper */}
-              <div className="flex items-center justify-center gap-1 py-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-3 h-3 rounded-full bg-[var(--lo1-celestial)]/20 animate-pulse"
-                  />
-                ))}
-              </div>
-              {/* Skeleton title */}
-              <div className="h-8 w-64 bg-[var(--lo1-celestial)]/20 rounded animate-pulse mb-8" />
-              {/* Skeleton content */}
-              <div className="space-y-4">
-                <div className="h-4 w-full bg-[var(--lo1-celestial)]/20 rounded animate-pulse" />
-                <div className="h-4 w-3/4 bg-[var(--lo1-celestial)]/20 rounded animate-pulse" />
-                <div className="h-24 w-full bg-[var(--lo1-celestial)]/20 rounded animate-pulse" />
-              </div>
-            </div>
-          </div>
-        </NavigationWrapper>
-      </main>
-    );
-  }
+  const contentReady = isLoaded && (showingIntro || !!currentLesson);
 
   // Show intro for new users
   if (showingIntro && !pathProgress) {
     return (
-      <main className="h-dvh flex flex-col cosmic-bg relative">
+      <main className={`h-dvh flex flex-col cosmic-bg relative transition-opacity duration-500 ease-out ${contentReady ? "opacity-100" : "opacity-0"}`}>
         <NavigationWrapper>
           <PathHeader />
           <div className="flex-1 overflow-auto relative z-10 px-4">
@@ -202,7 +174,7 @@ export default function PathDetailContent({ pathId }: PathDetailContentProps) {
   }
 
   return (
-    <main className="h-dvh flex flex-col cosmic-bg relative">
+    <main className={`h-dvh flex flex-col cosmic-bg relative transition-opacity duration-500 ease-out ${contentReady ? "opacity-100" : "opacity-0"}`}>
       <NavigationWrapper>
         <PathHeader title={path.title} showProgressBar progressBarRef={progressBarRef} />
 

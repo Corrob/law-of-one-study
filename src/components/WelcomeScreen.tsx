@@ -31,6 +31,7 @@ interface WelcomeScreenProps {
 export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingMode = false, onThinkingModeChange, sourceFilter, onSourceChange }: WelcomeScreenProps) {
   const [greetingKey, setGreetingKey] = useState<typeof GREETING_KEYS[number] | null>(null);
   const [starterKeys, setStarterKeys] = useState<number[]>([]);
+  const [ready, setReady] = useState(false);
   const t = useTranslations("welcome");
   const tStarters = useTranslations("starters");
 
@@ -45,6 +46,7 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
     // Only run on client to avoid hydration mismatch
     setGreetingKey(GREETING_KEYS[Math.floor(Math.random() * GREETING_KEYS.length)]);
     setStarterKeys(getRandomStarterKeys(3));
+    requestAnimationFrame(() => setReady(true));
   }, [getRandomStarterKeys]);
 
   // Get translated starters from the keys
@@ -59,7 +61,7 @@ export default function WelcomeScreen({ onSelectStarter, inputElement, thinkingM
   }, [greetingKey, t]);
 
   return (
-    <div className="flex flex-col items-center justify-center flex-1 px-4 py-8">
+    <div className={`flex flex-col items-center justify-center flex-1 px-4 py-8 transition-opacity duration-500 ease-out ${ready ? "opacity-100" : "opacity-0"}`}>
       {/* Welcome Greeting */}
       {greeting && (
         <div className="animate-quote-wrapper text-center mb-8">

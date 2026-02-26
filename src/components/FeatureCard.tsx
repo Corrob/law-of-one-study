@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Link } from "@/i18n/navigation";
-import { motion } from "framer-motion";
 
 interface FeatureCardProps {
   href: string;
@@ -9,6 +9,7 @@ interface FeatureCardProps {
   title: string;
   description: string;
   index?: number;
+  skipAnimation?: boolean;
 }
 
 export default function FeatureCard({
@@ -17,12 +18,32 @@ export default function FeatureCard({
   title,
   description,
   index = 0,
+  skipAnimation = false,
 }: FeatureCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!cardRef.current) return;
+
+    if (skipAnimation) {
+      cardRef.current.style.opacity = "1";
+      cardRef.current.style.transform = "translateY(0)";
+    } else {
+      const delay = index * 80;
+      cardRef.current.style.transition = `opacity 0.3s ease-out ${delay}ms, transform 0.3s ease-out ${delay}ms`;
+      // Separate frame so browser registers initial state before animating
+      requestAnimationFrame(() => {
+        if (!cardRef.current) return;
+        cardRef.current.style.opacity = "1";
+        cardRef.current.style.transform = "translateY(0)";
+      });
+    }
+  }, [index, skipAnimation]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: index * 0.1 }}
+    <div
+      ref={cardRef}
+      style={{ opacity: 0, transform: "translateY(16px)" }}
     >
       <Link
         href={href}
@@ -44,6 +65,6 @@ export default function FeatureCard({
           {description}
         </p>
       </Link>
-    </motion.div>
+    </div>
   );
 }
