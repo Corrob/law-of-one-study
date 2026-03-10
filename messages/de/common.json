@@ -36,6 +36,7 @@
     "explore": "Erkunden",
     "study": "Studieren",
     "search": "Suche",
+    "meditate": "Meditieren",
     "about": "Über uns",
     "support": "Unterstützen",
     "install": "Installieren"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Suche",
       "description": "Nach Zitaten suchen"
+    },
+    "meditate": {
+      "title": "Meditieren",
+      "description": "Geführte Meditationen"
     }
   },
   "explorePage": {
@@ -441,6 +446,31 @@
     "metaphysics": "Metaphysik",
     "practice": "Spirituelle Praxis",
     "archetypes": "Archetypischer Geist"
+  },
+  "meditate": {
+    "title": "Geführte Meditationen",
+    "subtitle": "Praktiken aus den Übungen im Ra-Material",
+    "selectMeditation": "Wähle eine Meditation",
+    "nowPlaying": "Wird abgespielt",
+    "references": "Quelle",
+    "duration": "{minutes} Min.",
+    "play": "Meditation abspielen",
+    "pause": "Meditation pausieren",
+    "loopOn": "Wiederholen an",
+    "loopOff": "Wiederholen aus",
+    "audioNotAvailable": "Audio kommt bald",
+    "audioNotAvailableDesc": "Das Audio für diese Meditation wird vorbereitet. Schau bald wieder vorbei.",
+    "meditations": {
+      "findingLove": "Liebe im Augenblick finden",
+      "findingLoveDesc": "Ras erste Übung: Lerne, in jedem Augenblick bewusst nach Liebe zu suchen. Eine Praxis des Innehaltens, Beobachtens und Erkennens der Liebe, die bereits in deine gegenwärtige Erfahrung eingewoben ist.",
+      "findingLoveQuote": "Der Augenblick enthält Liebe. Das ist die Lektion/das Ziel dieser Illusion oder Dichte. Die Übung besteht darin, diese Liebe bewusst in Bewusstsein und Verständnisverzerrungen zu suchen. Der erste Versuch ist der Grundstein. Auf dieser Wahl ruht der Rest der Lebenserfahrung eines Wesens.",
+      "seeingCreator": "Den Schöpfer sehen",
+      "seeingCreatorDesc": "Ras Übungen zwei bis vier: Eine fortschreitende Meditation, die sich vom Sehen des Schöpfers in einem anderen Selbst, zum Sehen des Schöpfers im Spiegel, bis zum Sehen des Schöpfers in der gesamten Schöpfung bewegt.",
+      "seeingCreatorQuote": "Das Universum ist ein einziges Wesen. Wenn ein Geist/Körper/Seele-Komplex einen anderen Geist/Körper/Seele-Komplex betrachtet, seht den Schöpfer. Dies ist eine hilfreiche Übung.",
+      "balancingSelf": "Das Selbst ins Gleichgewicht bringen",
+      "balancingSelfDesc": "Ras Ausgleichstechnik: Überprüfe den Katalysator deines Tages, finde emotionale Ladungen, erfahre jedes Gefühl vollständig, dann erfahre sein Gegenteil, und lass das Gleichgewicht natürlich entstehen.",
+      "balancingSelfQuote": "Jeder Gedanke, den ein Wesen hat, hat seinerseits eine Antithese. Die Disziplinen des Geistes beinhalten zunächst das Identifizieren sowohl jener Dinge, die du in dir selbst billigst, als auch jener, die du missbilligst, und dann das Ausgleichen jeder positiven und negativen Ladung mit ihrem Gleichen. Der Geist enthält alle Dinge. Daher musst du diese Vollständigkeit in dir selbst entdecken."
+    }
   },
   "thinking": {
     "1": "Durchsuche die kosmischen Aufzeichnungen...",

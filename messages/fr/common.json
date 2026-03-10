@@ -36,6 +36,7 @@
     "explore": "Explorer",
     "study": "Étudier",
     "search": "Recherche",
+    "meditate": "Méditer",
     "about": "À propos",
     "support": "Soutenir",
     "install": "Installer"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Recherche",
       "description": "Recherchez n'importe quelle citation"
+    },
+    "meditate": {
+      "title": "Méditer",
+      "description": "Méditations guidées"
     }
   },
   "explorePage": {
@@ -441,6 +446,31 @@
     "metaphysics": "Métaphysique",
     "practice": "Pratique Spirituelle",
     "archetypes": "Esprit Archétypique"
+  },
+  "meditate": {
+    "title": "Méditations Guidées",
+    "subtitle": "Pratiques tirées des exercices du Matériel de Ra",
+    "selectMeditation": "Choisissez une méditation",
+    "nowPlaying": "En cours de lecture",
+    "references": "Source",
+    "duration": "{minutes} min",
+    "play": "Lire la méditation",
+    "pause": "Mettre en pause la méditation",
+    "loopOn": "Répétition activée",
+    "loopOff": "Répétition désactivée",
+    "audioNotAvailable": "Audio à venir",
+    "audioNotAvailableDesc": "L'audio de cette méditation est en préparation. Revenez bientôt.",
+    "meditations": {
+      "findingLove": "Trouver l'Amour dans l'Instant",
+      "findingLoveDesc": "Le premier exercice de Ra : apprenez à chercher consciemment l'amour dans chaque instant. Une pratique de pause, d'observation et de reconnaissance de l'amour déjà tissé dans votre expérience présente.",
+      "findingLoveQuote": "L'instant contient l'amour. C'est la leçon/l'objectif de cette illusion ou densité. L'exercice est de chercher consciemment cet amour dans la conscience et les distorsions de compréhension. La première tentative est la pierre angulaire. Sur ce choix repose le reste de l'expérience de vie d'une entité.",
+      "seeingCreator": "Voir le Créateur",
+      "seeingCreatorDesc": "Exercices deux à quatre de Ra : une méditation progressive allant de voir le Créateur dans un autre soi, à voir le Créateur dans le miroir, jusqu'à voir le Créateur dans toute la création autour de vous.",
+      "seeingCreatorQuote": "L'univers est un seul être. Quand un complexe mental/corporel/spirituel regarde un autre complexe mental/corporel/spirituel, voyez le Créateur. C'est un exercice utile.",
+      "balancingSelf": "Équilibrer le Soi",
+      "balancingSelfDesc": "La technique d'équilibrage de Ra : passez en revue le catalyseur de votre journée, trouvez les charges émotionnelles, vivez chaque sentiment pleinement, puis vivez son opposé, et laissez l'équilibre émerger naturellement.",
+      "balancingSelfQuote": "Chaque pensée qu'un être a, a à son tour une antithèse. Les disciplines de l'esprit impliquent, tout d'abord, d'identifier les choses que vous approuvez et celles que vous désapprouvez en vous-même, puis d'équilibrer chaque charge positive et négative avec son égale. L'esprit contient toutes choses. Par conséquent, vous devez découvrir cette complétude en vous-même."
+    }
   },
   "thinking": {
     "1": "Analyse des archives cosmiques...",
