@@ -9,6 +9,7 @@ interface FeatureCardProps {
   title: string;
   description: string;
   index?: number;
+  featured?: boolean;
 }
 
 export default function FeatureCard({
@@ -17,6 +18,7 @@ export default function FeatureCard({
   title,
   description,
   index = 0,
+  featured = false,
 }: FeatureCardProps) {
   return (
     <motion.div
@@ -26,21 +28,25 @@ export default function FeatureCard({
     >
       <Link
         href={href}
-        className="group flex flex-col items-center justify-center text-center
-                   aspect-square p-4 rounded-2xl
+        className={`group flex flex-col items-center justify-center text-center
+                   rounded-2xl
                    bg-[var(--lo1-indigo)]/60 backdrop-blur-sm
                    border border-[var(--lo1-celestial)]/30
                    shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]
                    hover:border-[var(--lo1-gold)]/50 hover:bg-[var(--lo1-indigo)]/80
                    hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_35px_rgba(212,168,83,0.15)]
                    hover:scale-[1.02]
-                   transition-all duration-300"
+                   transition-all duration-300 ${
+                     featured ? "py-6 px-4" : "aspect-square p-4"
+                   }`}
       >
-        <Icon className="w-8 h-8 text-[var(--lo1-gold)] mb-3" />
-        <h3 className="text-base font-semibold text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors">
+        <Icon className={`text-[var(--lo1-gold)] mb-3 ${featured ? "w-10 h-10" : "w-8 h-8"}`} />
+        <h3 className={`font-semibold text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors ${
+          featured ? "text-lg" : "text-base"
+        }`}>
           {title}
         </h3>
-        <p className="mt-1 text-sm text-[var(--lo1-stardust)]">
+        <p className={`mt-1 text-[var(--lo1-stardust)] ${featured ? "text-base" : "text-sm"}`}>
           {description}
         </p>
       </Link>

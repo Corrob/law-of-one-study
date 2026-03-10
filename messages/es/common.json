@@ -36,6 +36,7 @@
     "explore": "Explorar",
     "study": "Estudiar",
     "search": "Buscar",
+    "meditate": "Meditar",
     "about": "Acerca de",
     "support": "Apoyar",
     "install": "Instalar"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Buscar",
       "description": "Busca cualquier cita"
+    },
+    "meditate": {
+      "title": "Meditar",
+      "description": "Meditaciones guiadas"
     }
   },
   "explorePage": {
@@ -441,6 +446,31 @@
     "metaphysics": "Metafísica",
     "practice": "Práctica Espiritual",
     "archetypes": "Mente Arquetípica"
+  },
+  "meditate": {
+    "title": "Meditaciones Guiadas",
+    "subtitle": "Prácticas extraídas de los ejercicios del Material de Ra",
+    "selectMeditation": "Elige una meditación",
+    "nowPlaying": "Reproduciendo",
+    "references": "Fuente",
+    "duration": "{minutes} min",
+    "play": "Reproducir meditación",
+    "pause": "Pausar meditación",
+    "loopOn": "Repetir activado",
+    "loopOff": "Repetir desactivado",
+    "audioNotAvailable": "Audio próximamente",
+    "audioNotAvailableDesc": "El audio de esta meditación está siendo preparado. Vuelve pronto.",
+    "meditations": {
+      "findingLove": "Encontrar el Amor en el Momento",
+      "findingLoveDesc": "El primer ejercicio de Ra: aprende a buscar conscientemente el amor en cada momento. Una práctica de pausar, observar y reconocer el amor ya entretejido en tu experiencia presente.",
+      "findingLoveQuote": "El momento contiene amor. Esa es la lección/meta de esta ilusión o densidad. El ejercicio es buscar conscientemente ese amor en la conciencia y las distorsiones de comprensión. El primer intento es la piedra angular. Sobre esta elección descansa el resto de la experiencia de vida de una entidad.",
+      "seeingCreator": "Viendo al Creador",
+      "seeingCreatorDesc": "Ejercicios dos a cuatro de Ra: una meditación progresiva que avanza desde ver al Creador en otro yo, hasta ver al Creador en el espejo, hasta ver al Creador en toda la creación a tu alrededor.",
+      "seeingCreatorQuote": "El universo es un solo ser. Cuando un complejo mente/cuerpo/espíritu observa a otro complejo mente/cuerpo/espíritu, ve al Creador. Este es un ejercicio útil.",
+      "balancingSelf": "Equilibrando el Yo",
+      "balancingSelfDesc": "La técnica de equilibrio de Ra: revisa el catalizador de tu día, encuentra las cargas emocionales, experimenta cada sentimiento plenamente, luego experimenta su opuesto, y permite que el equilibrio surja naturalmente.",
+      "balancingSelfQuote": "Cada pensamiento que un ser tiene, tiene a su vez una antítesis. Las disciplinas de la mente implican, en primer lugar, identificar tanto aquellas cosas que apruebas como aquellas que desapruebas dentro de ti mismo, y luego equilibrar cada carga positiva y negativa con su igual. La mente contiene todas las cosas. Por lo tanto, debes descubrir esta totalidad dentro de ti mismo."
+    }
   },
   "thinking": {
     "1": "Escaneando los registros cósmicos...",

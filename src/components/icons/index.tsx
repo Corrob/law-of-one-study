@@ -311,6 +311,77 @@ export function DownloadIcon({ className }: IconProps) {
   );
 }
 
+export function MeditateIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Lotus flower — stroke only, Lucide style */}
+      {/* Center petal */}
+      <path d="M12 2c-2 4.5-2 9 0 13 2-4 2-8.5 0-13z" />
+      {/* Left petals */}
+      <path d="M12 15C9.5 11 6 8.5 2 8c1.5 4.5 5.5 7 10 7z" />
+      {/* Right petals */}
+      <path d="M12 15c2.5-4 6-6.5 10-7-1.5 4.5-5.5 7-10 7z" />
+      {/* Base wave */}
+      <path d="M7 20c2-2 3.5-4 5-5 1.5 1 3 3 5 5" />
+    </svg>
+  );
+}
+
+export function PlayIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      stroke="none"
+    >
+      <polygon points="5 3 19 12 5 21 5 3" />
+    </svg>
+  );
+}
+
+export function PauseIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      stroke="none"
+    >
+      <rect x="6" y="4" width="4" height="16" rx="1" />
+      <rect x="14" y="4" width="4" height="16" rx="1" />
+    </svg>
+  );
+}
+
+export function LoopIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* Repeat/loop arrows */}
+      <path d="M17 2l4 4-4 4" />
+      <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+      <path d="M7 22l-4-4 4-4" />
+      <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+    </svg>
+  );
+}
+
 export function SparkleIcon({ className }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor">

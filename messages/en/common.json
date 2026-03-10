@@ -36,6 +36,7 @@
     "explore": "Explore",
     "study": "Study",
     "search": "Search",
+    "meditate": "Meditate",
     "about": "About",
     "support": "Support",
     "install": "Install"
@@ -92,6 +93,10 @@
     "search": {
       "title": "Search",
       "description": "Search for any quote"
+    },
+    "meditate": {
+      "title": "Meditate",
+      "description": "Guided meditations"
     }
   },
   "explorePage": {
@@ -441,6 +446,31 @@
     "metaphysics": "Metaphysics",
     "practice": "Spiritual Practice",
     "archetypes": "Archetypical Mind"
+  },
+  "meditate": {
+    "title": "Guided Meditations",
+    "subtitle": "Practices drawn from the exercises in the Ra Material",
+    "selectMeditation": "Choose a meditation",
+    "nowPlaying": "Now Playing",
+    "references": "Source",
+    "duration": "{minutes} min",
+    "play": "Play meditation",
+    "pause": "Pause meditation",
+    "loopOn": "Repeat on",
+    "loopOff": "Repeat off",
+    "audioNotAvailable": "Audio coming soon",
+    "audioNotAvailableDesc": "This meditation audio is being prepared. Check back soon.",
+    "meditations": {
+      "findingLove": "Finding Love in the Moment",
+      "findingLoveDesc": "Ra's first exercise: learn to consciously seek love in each moment. A practice of pausing, observing, and recognizing the love already woven into your present experience.",
+      "findingLoveQuote": "The moment contains love. That is the lesson/goal of this illusion or density. The exercise is to consciously seek that love in awareness and understanding distortions. The first attempt is the cornerstone. Upon this choosing rests the remainder of the life-experience of an entity.",
+      "seeingCreator": "Seeing the Creator",
+      "seeingCreatorDesc": "Ra's exercises two through four: a progressive meditation moving from seeing the Creator in another self, to seeing the Creator in the mirror, to seeing the Creator in all of the creation around you.",
+      "seeingCreatorQuote": "The universe is one being. When a mind/body/spirit complex views another mind/body/spirit complex, see the Creator. This is an helpful exercise.",
+      "balancingSelf": "Balancing the Self",
+      "balancingSelfDesc": "Ra's balancing technique: review your day's catalyst, find emotional charges, experience each feeling fully, then experience its opposite, and allow balance to emerge naturally.",
+      "balancingSelfQuote": "Each thought that a being has, has in its turn an antithesis. The disciplines of the mind involve, first of all, identifying both those things of which you approve and those things of which you disapprove within yourself, and then balancing each and every positive and negative charge with its equal. The mind contains all things. Therefore, you must discover this completeness within yourself."
+    }
   },
   "thinking": {
     "1": "Scanning the cosmic records...",

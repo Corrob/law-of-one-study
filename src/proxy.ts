@@ -115,7 +115,8 @@ export const config = {
      * - ingest (PostHog proxy)
      * - sections (static JSON files for Ra Material quotes)
      * - images (static images like tarot cards)
+     * - meditations (meditation audio files)
      */
-    "/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|manifest\\.webmanifest|sw\\.js|icons|ingest|sections|images).*)",
+    "/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|manifest\\.webmanifest|sw\\.js|icons|ingest|sections|images|meditations).*)",
   ],
 };

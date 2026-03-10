@@ -5,22 +5,23 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
-import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
+import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, MeditateIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 // Feature card configuration with translation keys
+const FEATURED = {
+  href: "/chat",
+  icon: ChatIcon,
+  titleKey: "seek",
+};
+
 const FEATURES = [
   {
-    href: "/chat",
-    icon: ChatIcon,
-    titleKey: "seek",
-  },
-  {
-    href: "/explore",
-    icon: ExploreIcon,
-    titleKey: "explore",
+    href: "/search",
+    icon: SearchIcon,
+    titleKey: "search",
   },
   {
     href: "/paths",
@@ -28,9 +29,14 @@ const FEATURES = [
     titleKey: "study",
   },
   {
-    href: "/search",
-    icon: SearchIcon,
-    titleKey: "search",
+    href: "/meditate",
+    icon: MeditateIcon,
+    titleKey: "meditate",
+  },
+  {
+    href: "/explore",
+    icon: ExploreIcon,
+    titleKey: "explore",
   },
 ];
 
@@ -145,6 +151,17 @@ export default function Dashboard() {
 
       {/* Feature Cards Grid */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+        {/* Featured: Seek - full width */}
+        <div className="col-span-2">
+          <FeatureCard
+            href={FEATURED.href}
+            icon={FEATURED.icon}
+            title={t(`features.${FEATURED.titleKey}.title`)}
+            description={t(`features.${FEATURED.titleKey}.description`)}
+            index={0}
+            featured
+          />
+        </div>
         {FEATURES.map((feature, index) => (
           <FeatureCard
             key={feature.href}
@@ -152,7 +169,7 @@ export default function Dashboard() {
             icon={feature.icon}
             title={t(`features.${feature.titleKey}.title`)}
             description={t(`features.${feature.titleKey}.description`)}
-            index={index}
+            index={index + 1}
           />
         ))}
       </div>
