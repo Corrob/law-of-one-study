@@ -8,6 +8,7 @@ import { PopoverProvider } from "@/contexts/PopoverContext";
 import { CitationModalProvider } from "@/contexts/CitationModalContext";
 import { type AvailableLanguage } from "@/lib/language-config";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 import ReducedMotionProvider from "@/providers/ReducedMotionProvider";
 
 interface LocaleLayoutProps {
@@ -44,6 +45,7 @@ export default async function LocaleLayout({
             <PopoverProvider>
               <CitationModalProvider>
                 <ServiceWorkerRegistration />
+                <PwaInstallPrompt />
                 {children}
               </CitationModalProvider>
             </PopoverProvider>
