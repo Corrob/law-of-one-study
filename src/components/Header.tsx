@@ -39,7 +39,7 @@ export default function Header({ onMenuClick, onNewChat, showNewChat, onNewSearc
   const pageTitle = pageTitleKey ? t(`nav.${pageTitleKey}`) : "";
 
   return (
-    <header className="light-header relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white py-3 px-4 border-b border-[var(--lo1-gold)]/20">
+    <header className="safe-area-header light-header relative z-10 bg-[var(--lo1-indigo)]/80 backdrop-blur-sm text-white border-b border-[var(--lo1-gold)]/20">
       <div className="flex items-center justify-between gap-3">
         {/* Left side: Logo/Title or Back button */}
         <div className="flex items-center gap-3">

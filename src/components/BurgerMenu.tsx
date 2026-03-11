@@ -102,13 +102,13 @@ export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
-            className="fixed right-0 top-0 bottom-0 z-50 w-72 max-w-[80vw] bg-[var(--lo1-void)] border-l border-[var(--lo1-gold)]/20 shadow-2xl"
+            className="safe-area-drawer fixed right-0 top-0 bottom-0 z-50 w-72 max-w-[80vw] bg-[var(--lo1-void)] border-l border-[var(--lo1-gold)]/20 shadow-2xl"
             role="dialog"
             aria-modal="true"
             aria-label={t("header.navigationMenu")}
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-[var(--lo1-gold)]/20">
+            <div className="safe-area-drawer-header flex items-center justify-between p-4 border-b border-[var(--lo1-gold)]/20">
               <span className="text-lg font-semibold text-[var(--lo1-starlight)]">
                 {t("labels.menu")}
               </span>

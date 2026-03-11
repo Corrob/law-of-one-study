@@ -144,6 +144,22 @@ body {
   min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
 }
 
+/* Safe area insets for iOS notch/Dynamic Island (PWA standalone mode) */
+.safe-area-header {
+  padding-top: calc(env(safe-area-inset-top) + 0.75rem);
+  padding-bottom: 0.75rem;
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+.safe-area-drawer {
+  padding-right: env(safe-area-inset-right);
+}
+
+.safe-area-drawer-header {
+  padding-top: calc(env(safe-area-inset-top) + 1rem);
+}
+
 /* Prevent buttons and interactive elements from being copied */
 button,
 [role="button"],
