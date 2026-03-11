@@ -8,6 +8,7 @@ import { PopoverProvider } from "@/contexts/PopoverContext";
 import { CitationModalProvider } from "@/contexts/CitationModalContext";
 import { type AvailableLanguage } from "@/lib/language-config";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
+import PwaResumeReload from "@/components/PwaResumeReload";
 import PwaInstallPrompt from "@/components/PwaInstallPrompt";
 import ReducedMotionProvider from "@/providers/ReducedMotionProvider";
 
@@ -45,6 +46,7 @@ export default async function LocaleLayout({
             <PopoverProvider>
               <CitationModalProvider>
                 <ServiceWorkerRegistration />
+                <PwaResumeReload />
                 <PwaInstallPrompt />
                 {children}
               </CitationModalProvider>
