@@ -1,43 +1,39 @@
 # Law of One Study
 
-An AI-powered study companion for the Ra Material (Law of One). Ask questions, explore concepts, and discover relevant passages from all 106 sessions.
+A study companion for the Ra Material (Law of One). Explore concepts, follow guided study paths, meditate, and discover daily wisdom from all 106 sessions.
 
 **Live site:** [lawofone.study](https://lawofone.study)
+
+Community-funded, open source, free for all.
 
 ---
 
 ## Features
 
-### Core Experience
-- **Conversational AI** — Ask questions in natural language and receive thoughtful responses grounded in the Ra Material
-- **Smart Quote Integration** — Relevant passages are automatically retrieved and beautifully displayed with links to the source
-- **Concept Linking** — Key terms (densities, polarity, catalyst, etc.) are subtly highlighted; hover for definitions, click to explore
-
 ### Discovery Tools
-- **Semantic Search** — Search by sentence or passage with semantic matching across all 106 sessions
 - **Concept Explorer** — Interactive graph visualization of 100+ Law of One concepts and their relationships
 - **Guided Study Paths** — Curated learning journeys with lessons, quizzes, and reflection prompts
 - **Daily Quote** — Fresh wisdom from Ra each day on the home page
 
 ### Experience
-- **Streaming Responses** — Real-time word-by-word animation for a natural reading experience
+- **Guided Meditations** — Browse and listen to guided meditation audio with looping support
 - **Dark & Light Themes** — Choose your preferred reading experience
-- **Mobile Friendly** — Fully responsive design
+- **Mobile Friendly** — Fully responsive design with PWA support (installable on mobile)
+- **Multilingual** — Available in English, Spanish, German, and French
+
+> **Note:** The AI chat (Seek) and semantic search features were removed in March 2026 at the request of L/L Research. See the [About page](https://lawofone.study/en/about) for details.
 
 ---
 
 ## Tech Stack
 
-| Layer         | Technology                                     |
-| ------------- | ---------------------------------------------- |
-| Framework     | [Next.js 16](https://nextjs.org/) (App Router) |
-| Styling       | [Tailwind CSS](https://tailwindcss.com/)       |
-| AI Model      | OpenAI GPT-5-mini                              |
-| Vector Search | [Pinecone](https://www.pinecone.io/)           |
-| Embeddings    | OpenAI text-embedding-3-small                  |
-| i18n          | [next-intl](https://next-intl-docs.vercel.app/) |
-| Analytics     | [PostHog](https://posthog.com/)                |
-| Hosting       | [Vercel](https://vercel.com/)                  |
+| Layer     | Technology                                     |
+| --------- | ---------------------------------------------- |
+| Framework | [Next.js 16](https://nextjs.org/) (App Router) |
+| Styling   | [Tailwind CSS](https://tailwindcss.com/)       |
+| i18n      | [next-intl](https://next-intl-docs.vercel.app/) |
+| Analytics | [PostHog](https://posthog.com/)                |
+| Hosting   | [Vercel](https://vercel.com/)                  |
 
 ---
 
@@ -46,9 +42,7 @@ An AI-powered study companion for the Ra Material (Law of One). Ask questions, e
 ### Prerequisites
 
 - Node.js 18+
-- npm or yarn
-- OpenAI API key
-- Pinecone API key and index
+- npm
 
 ### Installation
 
@@ -69,21 +63,8 @@ cp .env.local.example .env.local
 Create a `.env.local` file with:
 
 ```env
-OPENAI_API_KEY=your_openai_api_key
-PINECONE_API_KEY=your_pinecone_api_key
-PINECONE_INDEX=law-of-one
 NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key  # Optional: for analytics
 ```
-
-### Indexing the Ra Material
-
-Before running the app, you need to index the Ra Material into Pinecone:
-
-```bash
-npm run index
-```
-
-This processes all 106 sessions from the `public/sections/` directory and creates embeddings in your Pinecone index.
 
 ### Running Locally
 
@@ -101,133 +82,42 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 law-of-one-study/
 ├── src/
 │   ├── app/                 # Next.js App Router
-│   │   ├── [locale]/        # Locale-specific routes (en, es)
-│   │   ├── api/chat/        # Streaming chat endpoint
-│   │   └── api/search/      # Semantic search endpoint
+│   │   └── [locale]/        # Locale-specific routes (en, es, de, fr)
 │   ├── components/          # React components with co-located tests
-│   │   ├── ChatInterface.tsx
-│   │   ├── QuoteCard.tsx
-│   │   ├── BilingualQuoteCard.tsx
-│   │   └── ...
 │   ├── contexts/            # React context providers
-│   │   ├── LanguageContext.tsx
-│   │   └── PopoverContext.tsx
-│   ├── data/
-│   │   ├── concepts.ts      # Law of One glossary (100+ terms)
-│   │   ├── concept-graph.json
-│   │   └── study-paths/     # Guided learning content
-│   ├── hooks/               # Custom React hooks
+│   ├── hooks/               # Custom React hooks with tests
 │   ├── i18n/                # Internationalization config
 │   ├── lib/                 # Business logic and utilities
-│   │   ├── chat/            # Chat pipeline modules
-│   │   ├── prompts/         # LLM prompts
+│   │   ├── graph/           # Concept graph layout and rendering
 │   │   └── schemas/         # Zod validation schemas
-│   └── providers/           # App-level providers (PostHog, Theme)
-├── messages/                # Translation files
-│   ├── en/                  # English translations
-│   └── es/                  # Spanish translations
-├── scripts/                 # Data processing scripts
-├── public/sections/         # Ra Material source
-│   ├── en/                  # English (106 JSON files)
-│   └── es/                  # Spanish translations
-└── e2e/                     # Playwright E2E tests
-```
-
----
-
-## How It Works
-
-### Unified Search-First Architecture
-
-Every message flows through a streamlined pipeline:
-
-1. **Query Augmentation** — A fast LLM call analyzes your question, detects intent (quote-seeking vs. conceptual), and enhances the query with Ra Material terminology for better search results
-2. **Semantic Search** — The augmented query searches Pinecone for the most relevant Ra passages
-3. **Adaptive Response** — The AI generates a response tailored to your intent:
-   - **Quote searches** ("where does Ra talk about...") → Leads with quotes, minimal commentary
-   - **Conceptual questions** ("what is harvest?") → Leads with explanation, weaves in supporting quotes
-
-This architecture provides fast, relevant responses without requiring special syntax or keywords.
-
-### Concept Auto-Linking
-
-The app maintains a glossary of 100+ Law of One terms (`src/data/concepts.ts`). When these appear in AI responses:
-
-- Terms get a subtle dotted underline
-- Hovering shows a popover with the definition
-- Clicking "Explore this concept" triggers a new search
-
-### Quote Cards
-
-Quotes from the Ra Material are displayed as formatted cards showing:
-
-- The questioner's question
-- Ra's response
-- Session and question number (linked to lawofone.info)
-
----
-
-## Customization
-
-### Adding Concepts
-
-Edit `src/data/concepts.ts` to add new terms:
-
-```typescript
-{
-  term: "Your Term",
-  aliases: ["your term", "alternate spelling"],
-  definition: "Brief definition for the hover card."
-}
-```
-
-### Modifying Prompts
-
-AI behavior is controlled by `src/lib/prompts.ts`. Key prompts:
-
-- `QUERY_AUGMENTATION_PROMPT` — Detects intent and enhances queries with Ra terminology
-- `UNIFIED_RESPONSE_PROMPT` — Generates adaptive responses based on detected intent
-
-### Theming
-
-Colors are defined as CSS variables in `src/app/globals.css`:
-
-```css
-:root {
-  --lo1-indigo: #1a1f4e;
-  --lo1-deep-space: #0a0d1f;
-  --lo1-gold: #d4a853;
-  --lo1-starlight: #e8e6f2;
-  /* ... */
-}
+│   ├── providers/           # App-level providers (PostHog, Theme)
+│   └── data/                # Static data (concepts, study paths, etc.)
+├── messages/                # UI translation files (en/, es/, de/, fr/)
+├── e2e/                     # Playwright E2E tests
+└── docs/                    # Project documentation
 ```
 
 ---
 
 ## Internationalization
 
-The app supports multiple languages with bilingual quote display.
+The app supports multiple languages.
 
 ### Supported Languages
 
 - **English** — `/en/` (default)
 - **Spanish** — `/es/` (Español)
+- **German** — `/de/` (Deutsch)
+- **French** — `/fr/` (Français)
 
 ### How It Works
 
-- **UI translations** are in `messages/{locale}/common.json`
-- **Ra Material translations** are in `public/sections/{locale}/`
-- **Bilingual quotes** show the translated text with an option to view the English original
-- **Semantic search** works cross-lingually (search in any language, find relevant quotes)
+- **UI translations** are in `messages/{locale}/`
+- Each locale has its own set of translation JSON files for different pages and components
 
 ### Adding a New Language
 
-1. Create translation files in `messages/{locale}/common.json`
-2. Add translated Ra Material to `public/sections/{locale}/`
-3. Update `src/i18n/config.ts` to include the new locale
-4. Add the locale to the middleware matcher
-
-See [docs/multilingual-implementation-plan.md](docs/multilingual-implementation-plan.md) for technical details.
+See [docs/adding-a-new-language.md](docs/adding-a-new-language.md) for details.
 
 ---
 
@@ -247,9 +137,9 @@ Contributions are welcome! Please:
 - [ ] UI/UX improvements
 - [ ] Accessibility enhancements
 - [ ] Performance optimizations
-- [ ] Mobile experience
-- [x] Internationalization (Spanish live, more languages welcome!)
 - [ ] Additional language translations
+- [ ] New guided study paths
+- [ ] Meditation content
 
 ---
 
@@ -261,11 +151,11 @@ The Ra Material is sourced from [lawofone.info](https://www.lawofone.info/), the
 
 ## Philosophy
 
-This tool is built with respect for the Ra Material and its students. The AI is designed to:
+This tool is built with respect for the Ra Material and its students:
 
 - **Illuminate, not indoctrinate** — Present Ra's teachings without pushing interpretation
-- **Honor the seeker's journey** — Meet users where they are emotionally and intellectually
-- **Let Ra's words speak** — Use quotes as primary evidence, not paraphrasing
+- **Honor the seeker's journey** — Meet users where they are
+- **Let Ra's words speak** — Use quotes as primary evidence
 - **Acknowledge uncertainty** — Be honest when information is limited
 
 ---
@@ -273,8 +163,6 @@ This tool is built with respect for the Ra Material and its students. The AI is 
 ## License
 
 This project is open source under the [MIT License](LICENSE).
-
-The Ra Material itself is in the public domain, generously made available by L/L Research.
 
 ---
 

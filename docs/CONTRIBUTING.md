@@ -1,6 +1,6 @@
-# Contributing to Law of One Study Companion
+# Contributing to Law of One Study
 
-Thank you for your interest in contributing to the Law of One Study Companion! This project is built with love by seekers, for seekers. We welcome contributions from developers, designers, writers, and anyone passionate about making the Ra Material more accessible.
+Thank you for your interest in contributing to the Law of One Study tool! This project is built with love by seekers, for seekers. We welcome contributions from developers, designers, writers, and anyone passionate about making the Ra Material more accessible.
 
 ## Table of Contents
 
@@ -29,11 +29,7 @@ In the words of Ra: *"The heart of the discipline of the personality is threefol
 
 ## How Can I Contribute?
 
-### 🗳️ Vote on Features
-
-The easiest way to contribute is to [vote on the roadmap](/roadmap)! Your input helps us prioritize what to build next.
-
-### 🐛 Report Bugs
+### Report Bugs
 
 Found a bug? Please [open an issue](https://github.com/Corrob/law-of-one-study/issues/new?template=bug_report.md) with:
 
@@ -43,24 +39,23 @@ Found a bug? Please [open an issue](https://github.com/Corrob/law-of-one-study/i
 - Screenshots (if applicable)
 - Your browser and OS
 
-### 💡 Suggest Features
+### Suggest Features
 
-Have an idea for a new feature? [Open a feature request](https://github.com/Corrob/law-of-one-study/issues/new?template=feature_request.md) or vote on existing ones in the [roadmap](/roadmap).
+Have an idea for a new feature? [Open a feature request](https://github.com/Corrob/law-of-one-study/issues/new?template=feature_request.md).
 
-### 📝 Improve Documentation
+### Improve Documentation
 
 Documentation improvements are always welcome! This includes:
 
 - Fixing typos or unclear wording
 - Adding examples or tutorials
 - Improving the README or other docs
-- Writing guides for using the tool
 
-### 💻 Write Code
+### Write Code
 
 Ready to contribute code? Here's how:
 
-1. Check the [roadmap](/roadmap) or [open issues](https://github.com/Corrob/law-of-one-study/issues) for something to work on
+1. Check [open issues](https://github.com/Corrob/law-of-one-study/issues) for something to work on
 2. Comment on the issue to let us know you're working on it
 3. Fork the repository and create a branch
 4. Make your changes following our [style guidelines](#style-guidelines)
@@ -74,7 +69,7 @@ Ready to contribute code? Here's how:
 ### Prerequisites
 
 - Node.js 18 or higher
-- npm, yarn, or pnpm
+- npm
 - Git
 
 ### Local Setup
@@ -94,16 +89,13 @@ Ready to contribute code? Here's how:
 
 3. **Set up environment variables:**
 
-   Copy `.env.local.example` to `.env.local` and fill in the required values:
+   Copy `.env.local.example` to `.env.local`:
 
    ```bash
    cp .env.local.example .env.local
    ```
 
-   You'll need:
-   - OpenAI API key
-   - Pinecone API key and environment
-   - PostHog API key (optional, for analytics)
+   Optional: add a PostHog API key for analytics.
 
 4. **Run the development server:**
 
@@ -129,22 +121,18 @@ Ready to contribute code? Here's how:
 
 ```
 src/
-├── app/                    # Next.js app router pages and API routes
-│   ├── [locale]/           # Locale-specific routes (en, es)
-│   └── api/chat/           # Chat API route
+├── app/                    # Next.js app router pages
+│   └── [locale]/           # Locale-specific routes (en, es, de, fr)
 ├── components/             # React components with co-located tests
-├── contexts/               # React context providers (Language, Popover)
+├── contexts/               # React context providers
 ├── hooks/                  # Custom React hooks with tests
 ├── i18n/                   # Internationalization config
 ├── lib/                    # Business logic and utilities
-│   ├── chat/               # Chat pipeline modules
-│   ├── prompts/            # LLM prompts
+│   ├── graph/              # Concept graph layout and rendering
 │   └── schemas/            # Zod validation schemas
 ├── providers/              # App-level providers (PostHog, Theme)
 ├── data/                   # Static data (concepts, study paths, etc.)
-messages/                   # UI translation files (en/, es/)
-scripts/                    # Data processing scripts
-public/sections/            # Ra Material source (en/, es/)
+messages/                   # UI translation files (en/, es/, de/, fr/)
 e2e/                        # Playwright E2E tests
 ```
 
@@ -179,8 +167,8 @@ e2e/                        # Playwright E2E tests
    ```
 
    Use clear, descriptive commit messages:
-   - `Add feature: favorite quotes with localStorage`
-   - `Fix bug: quote card not expanding on mobile`
+   - `Add feature: new concept definitions for archetypes`
+   - `Fix bug: concept panel not expanding on mobile`
    - `Update docs: add contributing guide`
 
 5. **Push to your fork:**
@@ -214,22 +202,7 @@ e2e/                        # Playwright E2E tests
 - Use functional components with hooks (no class components)
 - Prefer `const` over `let`, avoid `var`
 - Use descriptive variable and function names
-- Add comments for complex logic
 - Keep functions small and focused
-
-**Example:**
-
-```typescript
-// Good
-const calculateDensityProgress = (currentDensity: number): number => {
-  return (currentDensity / 7) * 100;
-};
-
-// Avoid
-function calc(d) {
-  return (d / 7) * 100;
-}
-```
 
 ### React Components
 
@@ -238,51 +211,18 @@ function calc(d) {
 - Keep components small and composable
 - Use meaningful component and prop names
 
-**Example:**
-
-```typescript
-interface QuoteCardProps {
-  quote: string;
-  reference: string;
-  url: string;
-  onFavorite?: () => void;
-}
-
-export function QuoteCard({ quote, reference, url, onFavorite }: QuoteCardProps) {
-  // Component implementation
-}
-```
-
 ### Styling
 
 - Use Tailwind CSS for all styling
 - Use CSS variables for theme colors (defined in `globals.css`)
-- Maintain the dark cosmic theme
 - Ensure mobile responsiveness
-
-**Example:**
-
-```tsx
-<div className="bg-[var(--lo1-indigo)]/40 border border-[var(--lo1-gold)]/20 rounded-xl p-6">
-  <h2 className="text-[var(--lo1-starlight)] text-xl font-semibold">Title</h2>
-</div>
-```
+- Dark theme is the default
 
 ### Git Commits
 
 - Use the imperative mood ("Add feature" not "Added feature")
 - Keep the first line under 72 characters
 - Reference issues when applicable
-
-**Examples:**
-
-```
-Add favorite quotes feature with localStorage support
-
-Fix quote card expansion on mobile devices (#42)
-
-Update README with new contribution guidelines
-```
 
 ---
 
@@ -315,7 +255,6 @@ npm run test:e2e
 
 ### Getting Help
 
-- **GitHub Discussions:** Ask questions, share ideas
 - **GitHub Issues:** Report bugs, request features
 - **Pull Requests:** Code reviews and feedback
 
@@ -329,12 +268,11 @@ All contributors will be recognized in our README. Significant contributions may
 
 If you have any questions about contributing, feel free to:
 
-- Open a [GitHub Discussion](https://github.com/Corrob/law-of-one-study/discussions)
 - Comment on an existing issue
-- Reach out via the contact information in the README
+- Open a new issue with your question
 
 ---
 
 *"In forgiveness lies the stoppage of the wheel of action, or what you call karma." - Ra, 18.12*
 
-Thank you for helping make the Law of One more accessible to seekers everywhere! 🙏
+Thank you for helping make the Law of One more accessible to seekers everywhere!
