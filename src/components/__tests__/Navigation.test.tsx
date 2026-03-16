@@ -40,17 +40,14 @@ jest.mock("next-intl", () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
       "nav.home": "Home",
-      "nav.seek": "Seek",
       "nav.explore": "Explore",
       "nav.study": "Study",
-      "nav.search": "Search",
+      "nav.meditate": "Meditate",
       "nav.about": "About",
       "nav.support": "Support",
       "header.appTitle": "Law of One Study Companion",
       "header.subtitle": "The Ra Material",
       "header.goToHome": "Go to home",
-      "header.startNewConversation": "Start new conversation",
-      "header.startNewSearch": "Start new search",
       "header.openMenu": "Open menu",
       "header.closeMenu": "Close menu",
       "header.navigationMenu": "Navigation menu",
@@ -58,8 +55,6 @@ jest.mock("next-intl", () => ({
       "labels.language": "Language",
       "labels.theme": "Theme",
       "buttons.new": "New",
-      "buttons.export": "Export",
-      "header.exportChat": "Export chat",
     };
     return translations[key] || key;
   },
@@ -75,7 +70,6 @@ const renderWithProviders = (ui: React.ReactElement) => {
 
 describe("Header", () => {
   const mockOnMenuClick = jest.fn();
-  const mockOnNewChat = jest.fn();
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -90,19 +84,17 @@ describe("Header", () => {
   });
 
   it("renders back button on feature pages", () => {
-    mockPathname.mockReturnValue("/chat");
+    mockPathname.mockReturnValue("/explore");
     render(<Header onMenuClick={mockOnMenuClick} />);
 
     expect(screen.getByLabelText("Go to home")).toBeInTheDocument();
-    expect(screen.getByText("Seek")).toBeInTheDocument();
+    expect(screen.getByText("Explore")).toBeInTheDocument();
   });
 
   it("shows correct page title for each route", () => {
     const routes = [
-      { path: "/chat", title: "Seek" },
       { path: "/explore", title: "Explore" },
       { path: "/paths", title: "Study" },
-      { path: "/search", title: "Search" },
       { path: "/about", title: "About" },
     ];
 
@@ -119,155 +111,6 @@ describe("Header", () => {
 
     fireEvent.click(screen.getByLabelText("Open menu"));
     expect(mockOnMenuClick).toHaveBeenCalledTimes(1);
-  });
-
-  it("shows New button on chat page when showNewChat is true", () => {
-    mockPathname.mockReturnValue("/chat");
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onNewChat={mockOnNewChat}
-        showNewChat={true}
-      />
-    );
-
-    expect(screen.getByLabelText("Start new conversation")).toBeInTheDocument();
-  });
-
-  it("hides New button when showNewChat is false", () => {
-    mockPathname.mockReturnValue("/chat");
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onNewChat={mockOnNewChat}
-        showNewChat={false}
-      />
-    );
-
-    expect(screen.queryByLabelText("Start new conversation")).not.toBeInTheDocument();
-  });
-
-  it("calls onNewChat when New button is clicked", () => {
-    mockPathname.mockReturnValue("/chat");
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onNewChat={mockOnNewChat}
-        showNewChat={true}
-      />
-    );
-
-    fireEvent.click(screen.getByLabelText("Start new conversation"));
-    expect(mockOnNewChat).toHaveBeenCalledTimes(1);
-  });
-
-  it("shows Export button on chat page when showExportChat is true", () => {
-    mockPathname.mockReturnValue("/chat");
-    const mockOnExportChat = jest.fn();
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onExportChat={mockOnExportChat}
-        showExportChat={true}
-      />
-    );
-
-    expect(screen.getByLabelText("Export chat")).toBeInTheDocument();
-  });
-
-  it("hides Export button when showExportChat is false", () => {
-    mockPathname.mockReturnValue("/chat");
-    const mockOnExportChat = jest.fn();
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onExportChat={mockOnExportChat}
-        showExportChat={false}
-      />
-    );
-
-    expect(screen.queryByLabelText("Export chat")).not.toBeInTheDocument();
-  });
-
-  it("hides Export button on non-chat pages", () => {
-    mockPathname.mockReturnValue("/explore");
-    const mockOnExportChat = jest.fn();
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onExportChat={mockOnExportChat}
-        showExportChat={true}
-      />
-    );
-
-    expect(screen.queryByLabelText("Export chat")).not.toBeInTheDocument();
-  });
-
-  it("calls onExportChat when Export button is clicked", () => {
-    mockPathname.mockReturnValue("/chat");
-    const mockOnExportChat = jest.fn();
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onExportChat={mockOnExportChat}
-        showExportChat={true}
-      />
-    );
-
-    fireEvent.click(screen.getByLabelText("Export chat"));
-    expect(mockOnExportChat).toHaveBeenCalledTimes(1);
-  });
-
-  it("renders Export button before New button", () => {
-    mockPathname.mockReturnValue("/chat");
-    const mockOnExportChat = jest.fn();
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onNewChat={mockOnNewChat}
-        showNewChat={true}
-        onExportChat={mockOnExportChat}
-        showExportChat={true}
-      />
-    );
-
-    const exportBtn = screen.getByLabelText("Export chat");
-    const newBtn = screen.getByLabelText("Start new conversation");
-
-    // Export should appear before New in the DOM
-    expect(exportBtn.compareDocumentPosition(newBtn) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  });
-
-  it("disables Export button when disableExportChat is true", () => {
-    mockPathname.mockReturnValue("/chat");
-    const mockOnExportChat = jest.fn();
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onExportChat={mockOnExportChat}
-        showExportChat={true}
-        disableExportChat={true}
-      />
-    );
-
-    const exportBtn = screen.getByLabelText("Export chat");
-    expect(exportBtn).toBeDisabled();
-  });
-
-  it("does not call onExportChat when Export button is disabled", () => {
-    mockPathname.mockReturnValue("/chat");
-    const mockOnExportChat = jest.fn();
-    render(
-      <Header
-        onMenuClick={mockOnMenuClick}
-        onExportChat={mockOnExportChat}
-        showExportChat={true}
-        disableExportChat={true}
-      />
-    );
-
-    fireEvent.click(screen.getByLabelText("Export chat"));
-    expect(mockOnExportChat).not.toHaveBeenCalled();
   });
 });
 
@@ -296,10 +139,9 @@ describe("BurgerMenu", () => {
     renderWithProviders(<BurgerMenu isOpen={true} onClose={mockOnClose} />);
 
     expect(screen.getByText("Home")).toBeInTheDocument();
-    expect(screen.getByText("Seek")).toBeInTheDocument();
     expect(screen.getByText("Explore")).toBeInTheDocument();
     expect(screen.getByText("Study")).toBeInTheDocument();
-    expect(screen.getByText("Search")).toBeInTheDocument();
+    expect(screen.getByText("Meditate")).toBeInTheDocument();
     expect(screen.getByText("About")).toBeInTheDocument();
   });
 
@@ -328,11 +170,11 @@ describe("BurgerMenu", () => {
   });
 
   it("highlights current page in navigation", () => {
-    mockPathname.mockReturnValue("/chat");
+    mockPathname.mockReturnValue("/explore");
     renderWithProviders(<BurgerMenu isOpen={true} onClose={mockOnClose} />);
 
-    const seekLink = screen.getByRole("menuitem", { name: "Seek" });
-    expect(seekLink).toHaveAttribute("aria-current", "page");
+    const exploreLink = screen.getByRole("menuitem", { name: "Explore" });
+    expect(exploreLink).toHaveAttribute("aria-current", "page");
   });
 
   it("includes theme toggle", () => {

@@ -71,29 +71,6 @@ test.describe("Concept Explorer", () => {
 
     // Panel should appear with concept details (use first() since desktop+mobile both render)
     await expect(page.getByText("Definition").first()).toBeVisible();
-    await expect(page.getByText("Explore this concept").first()).toBeVisible();
-  });
-
-  test("should navigate to chat when 'Explore this concept' is clicked", async ({
-    page,
-  }) => {
-    // Expand a cluster
-    await page.waitForSelector('[data-testid^="node-cluster-"]');
-    await page.click('[data-testid="node-cluster-polarity"]');
-    await page.waitForTimeout(500);
-
-    // Click on a concept node
-    const conceptNodes = page.locator('[data-testid^="node-"]:not([data-testid^="node-cluster-"])');
-    await conceptNodes.first().click();
-
-    // Wait for panel (use first() since desktop+mobile both render)
-    await expect(page.getByText("Explore this concept").first()).toBeVisible();
-
-    // Click the explore button (first one is the desktop panel)
-    await page.getByText("Explore this concept").first().click();
-
-    // Should navigate to chat with query parameter
-    await expect(page).toHaveURL(/\/chat\?q=/);
   });
 
   test("should close panel when close button is clicked", async ({ page }) => {

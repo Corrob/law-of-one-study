@@ -1,7 +1,9 @@
 "use client";
 
 import { memo, ReactNode } from "react";
-import { useCitationModal } from "@/contexts/CitationModalContext";
+import { useLocale } from "next-intl";
+import { getRaMaterialUrl } from "@/lib/quote-utils";
+import type { AvailableLanguage } from "@/lib/language-config";
 
 /**
  * Regex to match inline Ra material references like (92.9) or (Ra 92.9)
@@ -16,31 +18,34 @@ interface ReferenceButtonProps {
 }
 
 /**
- * Clickable reference button that opens the citation modal
+ * Clickable reference link that opens llresearch.org in a new tab
  */
-const ReferenceButton = memo(function ReferenceButton({
+const ReferenceLink = memo(function ReferenceLink({
   session,
   question,
   displayText,
 }: ReferenceButtonProps) {
-  const { openCitation } = useCitationModal();
+  const locale = useLocale() as AvailableLanguage;
+  const url = getRaMaterialUrl(session, question, locale);
 
   return (
-    <button
-      onClick={() => openCitation(session, question)}
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
       className="inline text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] hover:underline cursor-pointer font-medium"
       title={`View Ra ${session}.${question}`}
     >
       {displayText}
-    </button>
+    </a>
   );
 });
 
 /**
- * Parse text and replace inline references with clickable buttons
+ * Parse text and replace inline references with clickable links
  *
  * Transforms patterns like "(92.9)" or "(Ra 92.9)" into clickable
- * buttons that open the citation modal.
+ * links that open llresearch.org in a new tab.
  */
 export function parseInlineReferences(text: string): ReactNode[] {
   const parts: ReactNode[] = [];
@@ -63,7 +68,7 @@ export function parseInlineReferences(text: string): ReactNode[] {
 
     // Add the clickable reference
     parts.push(
-      <ReferenceButton
+      <ReferenceLink
         key={`ref-${key++}`}
         session={session}
         question={question}

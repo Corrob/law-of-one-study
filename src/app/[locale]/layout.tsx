@@ -4,8 +4,6 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { PostHogProvider } from "@/providers/PostHogProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { PopoverProvider } from "@/contexts/PopoverContext";
-import { CitationModalProvider } from "@/contexts/CitationModalContext";
 import { type AvailableLanguage } from "@/lib/language-config";
 import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import PwaResumeReload from "@/components/PwaResumeReload";
@@ -43,14 +41,10 @@ export default async function LocaleLayout({
       <ThemeProvider>
         <ReducedMotionProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
-            <PopoverProvider>
-              <CitationModalProvider>
-                <ServiceWorkerRegistration />
-                <PwaResumeReload />
-                <PwaInstallPrompt />
-                {children}
-              </CitationModalProvider>
-            </PopoverProvider>
+            <ServiceWorkerRegistration />
+            <PwaResumeReload />
+            <PwaInstallPrompt />
+            {children}
           </NextIntlClientProvider>
         </ReducedMotionProvider>
       </ThemeProvider>

@@ -5,42 +5,26 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
-import { ChatIcon, ExploreIcon, BookIcon, SearchIcon, MeditateIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
+import { ExploreIcon, BookIcon, MeditateIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
 
-// Feature card configuration with translation keys
-const FEATURED = {
-  href: "/chat",
-  icon: ChatIcon,
-  titleKey: "seek",
-};
-
 const FEATURES = [
   {
-    href: "/search",
-    icon: SearchIcon,
-    titleKey: "search",
-  },
-  {
-    href: "/paths",
-    icon: BookIcon,
-    titleKey: "study",
+    href: "/explore",
+    icon: ExploreIcon,
+    titleKey: "explore",
   },
   {
     href: "/meditate",
     icon: MeditateIcon,
     titleKey: "meditate",
   },
-  {
-    href: "/explore",
-    icon: ExploreIcon,
-    titleKey: "explore",
-  },
 ];
 
 const DASHBOARD_SEEN_KEY = "lo1-dashboard-seen";
+const NOTICE_DISMISSED_KEY = "lo1-notice-dismissed";
 
 export default function Dashboard() {
   const locale = useLocale() as AvailableLanguage;
@@ -49,6 +33,7 @@ export default function Dashboard() {
   const [showOriginal, setShowOriginal] = useState(false);
   const [skipAnimations, setSkipAnimations] = useState(false);
   const [ready, setReady] = useState(false);
+  const [noticeDismissed, setNoticeDismissed] = useState(true);
   const t = useTranslations();
 
   useEffect(() => {
@@ -58,6 +43,9 @@ export default function Dashboard() {
     const today = new Date();
     setQuote(getDailyQuote(locale));
     setBilingualQuote(getRawQuoteForDay(today));
+
+    // Check if notice was previously dismissed
+    setNoticeDismissed(!!localStorage.getItem(NOTICE_DISMISSED_KEY));
 
     // Skip entrance animations on return visits within this session
     if (sessionStorage.getItem(DASHBOARD_SEEN_KEY)) {
@@ -114,14 +102,7 @@ export default function Dashboard() {
               <p className={`${skipAnimations ? "" : "animate-quote-enter"} font-[family-name:var(--font-cormorant)] italic text-xl md:text-2xl text-[var(--lo1-starlight)] leading-relaxed mb-4`}>
                 &ldquo;{quote.text}&rdquo;
               </p>
-              <div className="flex items-center justify-between gap-4">
-                <Link
-                  href={`/chat?q=${encodeURIComponent(t("dashboard.exploreQuoteQuery", { quote: quote.text, reference: quote.reference }))}`}
-                  className={`${skipAnimations ? "" : "animate-quote-reference"} text-sm text-[var(--lo1-gold)] hover:text-[var(--lo1-gold-light)] transition-colors`}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {t("dashboard.exploreThis")} &rarr;
-                </Link>
+              <div className="flex items-center justify-end gap-4">
                 <div className={`flex items-center gap-2 ${skipAnimations ? "" : "animate-quote-reference"}`}>
                   <CopyButton textToCopy={copyText} size="md" />
                   <span className="text-[var(--lo1-stardust)] text-sm">
@@ -167,15 +148,46 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* Feature Change Notice */}
+      {!noticeDismissed && (
+        <div className="max-w-md mx-auto p-3 bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 rounded-xl">
+          <div className="flex items-start gap-2.5">
+            <svg className="w-4 h-4 text-[var(--lo1-gold)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-[var(--lo1-stardust)] leading-relaxed">
+                {t("dashboard.featureNotice")}{" "}
+                <Link href="/about" className="text-[var(--lo1-gold)] hover:underline">
+                  {t("dashboard.learnMore")}
+                </Link>
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                localStorage.setItem(NOTICE_DISMISSED_KEY, "1");
+                setNoticeDismissed(true);
+              }}
+              className="flex-shrink-0 text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)] cursor-pointer"
+              aria-label={t("dashboard.dismissNotice")}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Feature Cards Grid */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-        {/* Featured: Seek - full width */}
+        {/* Featured: Study Paths - full width */}
         <div className="col-span-2">
           <FeatureCard
-            href={FEATURED.href}
-            icon={FEATURED.icon}
-            title={t(`features.${FEATURED.titleKey}.title`)}
-            description={t(`features.${FEATURED.titleKey}.description`)}
+            href="/paths"
+            icon={BookIcon}
+            title={t("features.study.title")}
+            description={t("features.study.description")}
             index={0}
             featured
             skipAnimation={skipAnimations}
@@ -193,9 +205,6 @@ export default function Dashboard() {
           />
         ))}
       </div>
-
-      {/* Continue Studying - Placeholder for now */}
-      {/* TODO: Show when user has progress in Step 5 */}
 
       {/* Footer Links */}
       <footer className="mt-12 pt-6 border-t border-[var(--lo1-celestial)]/20">

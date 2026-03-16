@@ -6,24 +6,10 @@ import BurgerMenu from "./BurgerMenu";
 
 interface NavigationWrapperProps {
   children: React.ReactNode;
-  showNewChat?: boolean;
-  onNewChat?: () => void;
-  showNewSearch?: boolean;
-  onNewSearch?: () => void;
-  showExportChat?: boolean;
-  onExportChat?: () => void;
-  disableExportChat?: boolean;
 }
 
 export default function NavigationWrapper({
   children,
-  showNewChat,
-  onNewChat,
-  showNewSearch,
-  onNewSearch,
-  showExportChat,
-  onExportChat,
-  disableExportChat,
 }: NavigationWrapperProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -37,16 +23,7 @@ export default function NavigationWrapper({
 
   return (
     <>
-      <Header
-        onMenuClick={handleMenuOpen}
-        showNewChat={showNewChat}
-        onNewChat={onNewChat}
-        showNewSearch={showNewSearch}
-        onNewSearch={onNewSearch}
-        showExportChat={showExportChat}
-        onExportChat={onExportChat}
-        disableExportChat={disableExportChat}
-      />
+      <Header onMenuClick={handleMenuOpen} />
       <BurgerMenu isOpen={isMenuOpen} onClose={handleMenuClose} />
       {children}
     </>

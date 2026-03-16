@@ -1,12 +1,8 @@
 {
   "title": "Acerca de Esta Herramienta",
-  "subtitle": "Un compañero impulsado por IA para explorar el Material de Ra",
+  "subtitle": "Un compañero de estudio para el Material de Ra",
   "features": {
     "title": "Características",
-    "seek": {
-      "title": "Consultar",
-      "description": "Haz preguntas y recibe respuestas impulsadas por IA con citas verificadas del Material de Ra. Cada respuesta incluye citas directas que puedes verificar."
-    },
     "explore": {
       "title": "Explorar",
       "description": "Navega por un gráfico interactivo de conceptos que muestra las relaciones entre ideas clave del Material de Ra. Descubre conexiones y explora citas relacionadas."
@@ -15,38 +11,17 @@
       "title": "Estudiar",
       "description": "Sigue caminos de aprendizaje guiados con lecciones estructuradas, ejercicios de reflexión y cuestionarios. Sigue tu progreso mientras profundizas tu comprensión."
     },
-    "search": {
-      "title": "Buscar",
-      "description": "Busca en el Material de Ra por significado. Encuentra citas específicas con el modo Frase, o explora conceptos más amplios con el modo Pasaje."
+    "meditate": {
+      "title": "Meditar",
+      "description": "Practica meditaciones guiadas basadas en los ejercicios descritos en el Material de Ra, incluyendo encontrar el amor en el momento, ver al Creador y equilibrar el yo."
     }
   },
-  "howItWorks": {
-    "title": "Cómo Funciona Consultar",
-    "subtitle": "Cuando haces una pregunta en la función Consultar, esto es lo que sucede detrás de escena:",
-    "step1": {
-      "number": "1",
-      "title": "Haz una Pregunta",
-      "description": "Escribe cualquier pregunta sobre la Ley del Uno, conceptos del Material de Ra, o temas espirituales cubiertos en las sesiones."
-    },
-    "step2": {
-      "number": "2",
-      "title": "La IA Busca",
-      "description": "Tu pregunta se convierte en una representación matemática y se compara con los ~1,500 pares de preguntas y respuestas de las 106 sesiones."
-    },
-    "step3": {
-      "number": "3",
-      "title": "Obtén Respuesta",
-      "description": "Recibe explicaciones contextuales con:",
-      "bullets": {
-        "quotes": "Citas directas de Ra en tarjetas resaltadas",
-        "explanations": "Explicaciones contextuales",
-        "concepts": "Conceptos clave vinculados"
-      }
-    },
-    "warning": {
-      "label": "Importante:",
-      "text": "El texto explicativo de la IA está diseñado para ayudarte a comprender, pero no debe considerarse autoritativo y puede contener errores. Como todos los modelos de lenguaje de IA, este chatbot a veces puede \"alucinar\" o generar información inexacta. Solo las citas directas de Ra (mostradas en las tarjetas de citas resaltadas) son pasajes auténticos del Material de Ra."
-    }
+  "featureChanges": {
+    "title": "Cambios en las Funciones",
+    "message": "Las funciones Consultar (chat con IA) y Búsqueda han sido eliminadas a petición de L/L Research. Respetamos su custodia del Material de Ra y sus protecciones de derechos de autor.",
+    "remaining": "Aún puedes explorar las enseñanzas a través del Explorador de Conceptos, los Caminos de Estudio guiados y las Meditaciones.",
+    "readMaterial": "Lee el Material de Ra completo en",
+    "llresearchLink": "llresearch.org"
   },
   "llResearch": {
     "title": "Acerca de L/L Research",
@@ -98,28 +73,13 @@
     "supportNote": "Si encuentras útil esta herramienta, por favor considera <link>apoyar a L/L Research directamente</link>."
   },
   "technical": {
-    "title": "Detalles Técnicos",
-    "intro": "Para quienes estén interesados en la implementación técnica:",
-    "labels": {
-      "aiModel": "Modelo de IA:",
-      "vectorSearch": "Búsqueda Vectorial:",
-      "embeddings": "Embeddings:",
-      "framework": "Framework:"
-    },
-    "values": {
-      "aiModel": "OpenAI GPT-5-mini",
-      "vectorSearch": "Pinecone",
-      "embeddings": "text-embedding-3-small",
-      "framework": "Next.js 16"
-    },
+    "title": "Código Fuente",
     "githubLink": "Ver código fuente en GitHub"
   },
   "disclaimer": {
-    "title": "Descargo de Responsabilidad Importante",
-    "mainWarning": "Esta herramienta está lejos de ser un estudio primario del Material de Ra y solo debe usarse para complementar tu estudio o por curiosidad.",
-    "notReplacement": "No es un reemplazo para leer las sesiones originales directamente.",
-    "limitations": "Como todos los modelos de lenguaje de IA, este chatbot tiene limitaciones y potencialmente puede proporcionar información inexacta o engañosa. La IA a veces puede \"alucinar\" (generar información que no existe en el material fuente) o malinterpretar las enseñanzas de Ra. Solo las tarjetas de citas resaltadas contienen pasajes verificados del Material de Ra—todo el resto del texto explicativo es interpretación generada por IA que puede contener errores.",
-    "verification": "<strong>Siempre verifica la información importante</strong> consultando el Material de Ra original en <lawofoneLink>lawofone.info</lawofoneLink> o en los libros publicados disponibles en <llresearchLink>L/L Research</llresearchLink>. Para un estudio serio de la Ley del Uno, no hay sustituto para leer el material fuente primario."
+    "title": "Nota Importante",
+    "mainWarning": "Esta herramienta complementa tu estudio del Material de Ra — no es un reemplazo para leer las sesiones originales directamente.",
+    "verification": "<strong>Siempre consulta el material original</strong> en <lawofoneLink>lawofone.info</lawofoneLink> o en los libros publicados disponibles en <llresearchLink>L/L Research</llresearchLink>. Para un estudio serio de la Ley del Uno, no hay sustituto para leer el material fuente primario."
   },
   "feedback": {
     "title": "Comentarios y Preguntas",

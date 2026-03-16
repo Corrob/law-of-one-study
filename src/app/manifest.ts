@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Law of One Study Companion",
     short_name: "Law of One",
     description:
-      "AI-powered companion for exploring the Ra Material. Search 1,500+ Q&A pairs from 106 sessions.",
+      "Study companion for exploring the Ra Material (Law of One) across 106 sessions.",
     start_url: "/",
     display: "standalone",
     background_color: "#1a1f4e",

@@ -1,12 +1,8 @@
 {
   "title": "Über dieses Tool",
-  "subtitle": "Ein KI-gestützter Begleiter zur Erforschung des Ra-Materials",
+  "subtitle": "Ein Studienbegleiter für das Ra-Material",
   "features": {
     "title": "Funktionen",
-    "seek": {
-      "title": "Suchen",
-      "description": "Stelle Fragen und erhalte KI-gestützte Antworten mit verifizierten Zitaten aus dem Ra-Material. Jede Antwort enthält direkte Quellenangaben, die du überprüfen kannst."
-    },
     "explore": {
       "title": "Erkunden",
       "description": "Navigiere durch einen interaktiven Konzeptgraphen, der Beziehungen zwischen Schlüsselideen im Ra-Material zeigt. Entdecke Verbindungen und erkunde verwandte Zitate."
@@ -15,38 +11,17 @@
       "title": "Studieren",
       "description": "Folge geführten Lernpfaden mit strukturierten Lektionen, Reflexionsanregungen und Quizfragen. Verfolge deinen Fortschritt, während du dein Verständnis vertiefst."
     },
-    "search": {
-      "title": "Suche",
-      "description": "Durchsuche das Ra-Material nach Bedeutung. Finde spezifische Zitate mit dem Satzmodus oder erkunde breitere Konzepte mit dem Passagenmodus."
+    "meditate": {
+      "title": "Meditieren",
+      "description": "Übe geführte Meditationen, die auf den im Ra-Material beschriebenen Übungen basieren, einschließlich Liebe im Augenblick finden, den Schöpfer sehen und das Selbst ins Gleichgewicht bringen."
     }
   },
-  "howItWorks": {
-    "title": "Wie die Suche funktioniert",
-    "subtitle": "Wenn du eine Frage in der Suchfunktion stellst, passiert Folgendes im Hintergrund:",
-    "step1": {
-      "number": "1",
-      "title": "Stelle eine Frage",
-      "description": "Tippe eine beliebige Frage über das Gesetz des Einen, Konzepte aus dem Ra-Material oder spirituelle Themen ein, die in den Sitzungen behandelt werden."
-    },
-    "step2": {
-      "number": "2",
-      "title": "KI durchsucht",
-      "description": "Deine Frage wird in eine mathematische Darstellung umgewandelt und mit allen ~1.500 Frage-Antwort-Paaren aus den 106 Sitzungen verglichen."
-    },
-    "step3": {
-      "number": "3",
-      "title": "Erhalte Antwort",
-      "description": "Erhalte kontextbezogene Erklärungen mit:",
-      "bullets": {
-        "quotes": "Direkten Zitaten von Ra in hervorgehobenen Karten",
-        "explanations": "Kontextbezogenen Erklärungen",
-        "concepts": "Verlinkten Schlüsselkonzepten"
-      }
-    },
-    "warning": {
-      "label": "Wichtig:",
-      "text": "Der erklärende Text der KI soll dir beim Verstehen helfen, sollte aber nicht als maßgeblich angesehen werden und kann Fehler enthalten. Wie alle KI-Sprachmodelle kann dieser Chatbot manchmal 'halluzinieren' oder ungenaue Informationen generieren. Nur die direkten Zitate von Ra (in den hervorgehobenen Zitatkarten) sind authentische Passagen aus dem Ra-Material."
-    }
+  "featureChanges": {
+    "title": "Funktionsänderungen",
+    "message": "Die Funktionen Suche (KI-Chat) und Durchsuchen wurden auf Wunsch von L/L Research entfernt. Wir respektieren ihre Bewahrung des Ra-Materials und ihre Urheberrechtsschutzmaßnahmen.",
+    "remaining": "Du kannst die Lehren weiterhin über den Konzepterkunder, geführte Studienpfade und Meditationen erkunden.",
+    "readMaterial": "Lies das vollständige Ra-Material auf",
+    "llresearchLink": "llresearch.org"
   },
   "llResearch": {
     "title": "Über L/L Research",
@@ -98,28 +73,13 @@
     "supportNote": "Wenn du dieses Tool hilfreich findest, erwäge bitte, <link>L/L Research direkt zu unterstützen</link>."
   },
   "technical": {
-    "title": "Technische Details",
-    "intro": "Für alle, die an der technischen Umsetzung interessiert sind:",
-    "labels": {
-      "aiModel": "KI-Modell:",
-      "vectorSearch": "Vektorsuche:",
-      "embeddings": "Embeddings:",
-      "framework": "Framework:"
-    },
-    "values": {
-      "aiModel": "OpenAI GPT-5-mini",
-      "vectorSearch": "Pinecone",
-      "embeddings": "text-embedding-3-small",
-      "framework": "Next.js 16"
-    },
+    "title": "Quellcode",
     "githubLink": "Quellcode auf GitHub ansehen"
   },
   "disclaimer": {
     "title": "Wichtiger Hinweis",
-    "mainWarning": "Dieses Tool ist kein Ersatz für ein primäres Studium des Ra-Materials und sollte nur zur Ergänzung deines Studiums oder aus Neugierde verwendet werden.",
-    "notReplacement": "Es ersetzt nicht das direkte Lesen der Originalsitzungen.",
-    "limitations": "Wie alle KI-Sprachmodelle hat dieser Chatbot Einschränkungen und kann möglicherweise ungenaue oder irreführende Informationen liefern. Die KI kann manchmal 'halluzinieren' (Informationen generieren, die nicht im Quellmaterial existieren) oder Ras Lehren falsch interpretieren. Nur die hervorgehobenen Zitatkarten enthalten verifizierte Passagen aus dem Ra-Material – aller andere erklärende Text ist KI-generierte Interpretation, die Fehler enthalten kann.",
-    "verification": "<strong>Überprüfe wichtige Informationen immer</strong>, indem du das originale Ra-Material auf <lawofoneLink>lawofone.info</lawofoneLink> oder in den veröffentlichten Büchern von <llresearchLink>L/L Research</llresearchLink> konsultierst. Für ein ernsthaftes Studium des Gesetzes des Einen gibt es keinen Ersatz für das Lesen des primären Quellmaterials."
+    "mainWarning": "Dieses Tool ergänzt dein Studium des Ra-Materials — es ersetzt nicht das direkte Lesen der Originalsitzungen.",
+    "verification": "<strong>Konsultiere immer das Originalmaterial</strong> auf <lawofoneLink>lawofone.info</lawofoneLink> oder in den veröffentlichten Büchern von <llresearchLink>L/L Research</llresearchLink>. Für ein ernsthaftes Studium des Gesetzes des Einen gibt es keinen Ersatz für das Lesen des primären Quellmaterials."
   },
   "feedback": {
     "title": "Feedback und Fragen",

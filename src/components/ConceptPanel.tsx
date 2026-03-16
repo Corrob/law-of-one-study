@@ -1,13 +1,12 @@
 "use client";
 
-import { useRouter } from "@/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { motion, useDragControls } from "framer-motion";
 import type { GraphConcept } from "@/lib/graph/types";
 import { findConceptById } from "@/lib/concept-graph";
 import { getLocalizedText } from "@/lib/types-graph";
 import { CATEGORY_COLORS } from "@/lib/graph/layout";
-import { CloseIcon, ChatIcon } from "@/components/icons";
+import { CloseIcon } from "@/components/icons";
 import { getRaMaterialUrlFromReference } from "@/lib/quote-utils";
 import type { AvailableLanguage } from "@/lib/language-config";
 
@@ -23,15 +22,8 @@ export default function ConceptPanel({
   onSelectConcept,
 }: ConceptPanelProps) {
   const locale = useLocale() as AvailableLanguage;
-  const router = useRouter();
   const dragControls = useDragControls();
   const t = useTranslations();
-
-  const handleExploreInChat = () => {
-    const term = getLocalizedText(concept.term, locale);
-    const query = t("concept.exploreConceptQuery", { concept: term });
-    router.push(`/chat?q=${encodeURIComponent(query)}`);
-  };
 
   // Get related concepts that exist (deduplicated)
   const relatedConceptIds = [
@@ -68,7 +60,6 @@ export default function ConceptPanel({
           t={t}
           onClose={onClose}
           onSelectConcept={onSelectConcept}
-          onExploreInChat={handleExploreInChat}
         />
       </motion.div>
 
@@ -109,7 +100,6 @@ export default function ConceptPanel({
             t={t}
             onClose={onClose}
             onSelectConcept={onSelectConcept}
-            onExploreInChat={handleExploreInChat}
           />
         </div>
       </motion.div>
@@ -135,7 +125,6 @@ function PanelContent({
   t,
   onClose,
   onSelectConcept,
-  onExploreInChat,
 }: {
   concept: GraphConcept;
   categoryColor: string;
@@ -144,7 +133,6 @@ function PanelContent({
   t: ReturnType<typeof useTranslations>;
   onClose: () => void;
   onSelectConcept: (conceptId: string) => void;
-  onExploreInChat: () => void;
 }) {
   // Get localized text
   const term = getLocalizedText(concept.term, locale);
@@ -251,19 +239,6 @@ function PanelContent({
             </div>
           </div>
         )}
-      </div>
-
-      {/* Footer with CTA */}
-      <div className="p-4 border-t border-[var(--lo1-celestial)]/10">
-        <button
-          onClick={onExploreInChat}
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 cursor-pointer
-                   rounded-xl bg-[var(--lo1-gold)] text-[var(--lo1-deep-space)]
-                   font-medium hover:bg-[var(--lo1-gold-light)] transition-colors"
-        >
-          <ChatIcon className="w-5 h-5" />
-          {t("concept.explore")}
-        </button>
       </div>
     </div>
   );

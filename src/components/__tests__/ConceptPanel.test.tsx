@@ -34,7 +34,6 @@ jest.mock("next-intl", () => ({
       "concept.keyPassages": "Key Passages",
       "concept.relatedConcepts": "Related Concepts",
       "concept.explore": "Explore this concept",
-      "concept.exploreConceptQuery": "Help me understand {concept}",
       "concept.teachingLevel.foundational": "Foundational",
       "concept.teachingLevel.intermediate": "Intermediate",
       "concept.teachingLevel.advanced": "Advanced",
@@ -53,10 +52,9 @@ jest.mock("next-intl", () => ({
 }));
 
 // Mock @/i18n/navigation for locale-aware routing
-const mockPush = jest.fn();
 jest.mock("@/i18n/navigation", () => ({
   useRouter: () => ({
-    push: mockPush,
+    push: jest.fn(),
   }),
   usePathname: () => "/explore",
   Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
@@ -264,24 +262,6 @@ describe("ConceptPanel", () => {
     await user.click(relatedButtons[0]);
 
     expect(mockOnSelectConcept).toHaveBeenCalledWith("related-concept");
-  });
-
-  it("navigates to chat when 'Explore this concept' is clicked", async () => {
-    const user = userEvent.setup();
-    render(
-      <ConceptPanel
-        concept={mockConcept}
-        onClose={mockOnClose}
-        onSelectConcept={mockOnSelectConcept}
-      />
-    );
-
-    const exploreButtons = screen.getAllByText("Explore this concept");
-    await user.click(exploreButtons[0]);
-
-    expect(mockPush).toHaveBeenCalledWith(
-      "/chat?q=Help%20me%20understand%20Test%20Concept"
-    );
   });
 
   it("renders passage reference as link", () => {
