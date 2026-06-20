@@ -116,7 +116,8 @@ export const config = {
      * - sections (static JSON files for Ra Material quotes)
      * - images (static images like tarot cards)
      * - meditations (meditation audio files)
+     * - album (music album audio + cover art)
      */
-    "/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|manifest\\.webmanifest|sw\\.js|icons|ingest|sections|images|meditations).*)",
+    "/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|manifest\\.webmanifest|sw\\.js|icons|ingest|sections|images|meditations|album).*)",
   ],
 };

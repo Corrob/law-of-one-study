@@ -30,7 +30,8 @@
     "meditate": "Meditate",
     "about": "About",
     "support": "Support",
-    "install": "Install"
+    "install": "Install",
+    "music": "Music"
   },
   "header": {
     "appTitle": "Law of One Study Companion",
@@ -60,6 +61,10 @@
     "meditate": {
       "title": "Meditate",
       "description": "Guided meditations"
+    },
+    "music": {
+      "title": "The Album",
+      "description": "Seven songs through the densities"
     }
   },
   "explorePage": {

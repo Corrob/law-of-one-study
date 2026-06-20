@@ -20,7 +20,7 @@ The album's emotional core is a revelation that only becomes clear by Song 6.
 
 **Song 3 plants a seed.** In "Behind the Veil," the protagonist (a third-density being mid-catalyst) sings of an inexplicable sense of guidance — a voice they cannot identify, a pull toward the light that feels like it comes from outside them. The listener hears this as intuition or faith.
 
-**Song 6 reveals the truth.** In "The Higher Self Remembers," we shift perspective entirely to a sixth-density being who is simultaneously the grown version of the Song 3 protagonist. They look back across a million years and reveal: they were the voice. The higher self — which in Ra's cosmology is literally the future version of the same soul at sixth density — was whispering encouragement to their own third-density incarnation across the veil. The listener who is hearing the album for the first time has a flash of retroactive recognition. On second listen, Song 3 becomes heartbreaking in a new way.
+**Song 6 reveals the truth.** In "A Million Years Ahead," we shift perspective entirely to a sixth-density being who is simultaneously the grown version of the Song 3 protagonist. They look back across a million years and reveal: they were the voice. The higher self — which in Ra's cosmology is literally the future version of the same soul at sixth density — was whispering encouragement to their own third-density incarnation across the veil. The listener who is hearing the album for the first time has a flash of retroactive recognition. On second listen, Song 3 becomes heartbreaking in a new way.
 
 This arc is doctrinally accurate to the Ra Material (see sessions 36.7–36.18 on the higher self) and creates genuine emotional depth without requiring any familiarity with the source material.
 
@@ -28,7 +28,7 @@ This arc is doctrinally accurate to the Ra Material (see sessions 36.7–36.18 o
 
 The album is designed to loop seamlessly:
 
-- Song 7 ("Gateway to Intelligent Infinity") gradually dissolves all musical elements over its final two minutes, reducing to a single sustained tone that mirrors the opening microseconds of Song 1
+- Song 7 ("Gateway") arrives at vast bliss and then, *by choice*, contracts to a single sustained tone — the seed of the new octave — mirroring the opening microseconds of Song 1
 - Song 1 ("First Breath") opens from near-silence, so when the album cycles, the transition is imperceptible — a listener on shuffle-off repeat hears the end of the journey become the beginning of the next octave
 - Lyrically, the final words of Song 7 ("…and begins again") grammatically complete the opening phrase of Song 1 ("The universe breathes out…") if you read them together
 
@@ -41,9 +41,10 @@ The album is designed to loop seamlessly:
 **Density themes:** Elemental consciousness, the four elements gaining awareness, intelligent infinity speaking its first thought into manifestation.
 
 **Key Ra passages to draw from:**
-- Session 13.7–13.9 — the logos, first and second density
-- Session 27.7 — intelligent infinity, the octave
-- Session 28.1 — the universe breathes
+- Session 13.7 — the Logos / Love
+- Session 13.9 — light as the building block of creation
+- Session 27.7 — intelligent infinity
+- Session 16.51 — the octave (Ra's musical-octave analogy for the densities)
 
 **Lyric direction:**
 The song speaks in the voice of the universe itself, or perhaps of pure elemental awareness without ego. No "I" in the conventional sense. Images of fire learning it is fire, water remembering it is water, stone pressing toward something it cannot name. Sparse and wonder-filled.
@@ -52,7 +53,7 @@ The song speaks in the voice of the universe itself, or perhaps of pure elementa
 > *"…and begins again"* (final line, designed to complete Song 7's closing phrase)
 
 **Musical style:**
-Near-ambient. Sparse acoustic plucking over field recordings of wind and water. A distant drone (tanpura-like). Gentle electronic texture that feels primordial. Builds very slowly. Ends before it fully resolves — momentum carries into Song 2.
+Near-ambient. Sparse acoustic plucking over field recordings of wind and water. A distant drone (tanpura-like). Gentle electronic texture that feels primordial. Faint pitched vocal-chop textures surface from the silence — the first thoughts of form. Builds very slowly. Ends before it fully resolves — momentum carries into Song 2.
 
 ---
 
@@ -61,9 +62,9 @@ Near-ambient. Sparse acoustic plucking over field recordings of wind and water. 
 **Density themes:** Plants and animals yearning toward light without self-awareness, the drive upward, the first stirrings of social memory in herds and groves.
 
 **Key Ra passages to draw from:**
-- Session 19.2 — second density striving
-- Session 20.3 — transfer to third density
-- Sessions 41.11–41.14 — second density consciousness
+- Sessions 13.17–13.19 — second-density growth striving toward light ("the leaf striving towards the source of light")
+- Session 13.21 — second density strives toward third
+- Session 20.3 — graduation/transfer from second to third density
 
 **Lyric direction:**
 Written from the point of view of a being that senses more than it understands. Images of roots pressing toward water they cannot see, birds flying south by a knowing that predates thought, wolves moving as one. An ache that has no name. The song ends with a moment of almost-self-awareness — a plant turning toward the sun and for one impossible second *knowing* it is turning.
@@ -78,20 +79,18 @@ More organic than Song 1. Finger-picked acoustic guitar, hand percussion (tabla 
 **Density themes:** Free will, the veil of forgetting, the great choice between service-to-others and service-to-self, catalyst and suffering as the engine of growth.
 
 **Key Ra passages to draw from:**
-- Session 17.1 — the nature of the veil
-- Session 22.3 — the 75,000-year cycle
-- Sessions 26.38–26.40 — polarity
-- Session 83.3–83.5 — the veil and its purpose
+- Sessions 82.21 & 82.28 — the purpose of the veil (polarization made more available; entities won't excel without a reason to)
+- Sessions 19.17–19.18 — the choice of polarity ("some love the light, some love the darkness")
 
 **Lyric direction:**
 The most human-sounding song on the album. A protagonist who is genuinely lost — feels the weight of the illusion, senses something more but cannot reach it. Two verses that represent the two polarities as possibilities. A chorus that holds the tension of free will without resolving it. A bridge that introduces the unexplained "voice" — the cyclical seed.
 
 **The cyclical seed (bridge):**
 > *I feel a pull I cannot name*
-> *a voice that lights this dark*
-> *as if some wiser part of me*
-> *is reaching through the heart*
-> *I cannot see the source of this*
+> *a voice beneath the dark*
+> *as if some part of me I lost*
+> *is reaching for my heart*
+> *I cannot see the hand that pulls*
 > *I cannot know the guide*
 > *but something in me recognizes*
 > *what lives on the other side*
@@ -99,25 +98,25 @@ The most human-sounding song on the album. A protagonist who is genuinely lost �
 The listener hears this as metaphor for intuition or spiritual longing. It will not be decoded until Song 6.
 
 **Musical style:**
-The album's most accessible and emotionally direct track. Full arrangement from the start — acoustic guitar, piano, soft kick drum, bass. Builds to a full emotional release at the chorus. The electronic elements that were embryonic in Songs 1–2 become more present here, suggesting the possibility of what lies ahead. This is the track most likely to connect a new listener.
+The album's most accessible and emotionally direct track. Full arrangement from the start — acoustic guitar, piano, soft kick drum, bass. Builds to a full emotional release at the chorus. The electronic elements that were embryonic in Songs 1–2 become more present here, suggesting the possibility of what lies ahead. This is the track most likely to connect a new listener. Plant a brief echo of Song 2's melodic motif here (a "breadcrumb") so the album's web of callbacks is dense enough that something connects on first listen.
 
 ---
 
-### Song 4 — "Graduation Day" (4th Density)
+### Song 4 — "Known" (4th Density)
 
 **Density themes:** The harvest, unconditional love as the defining lesson, the beginning of social memory complex, telepathic understanding replacing the veil.
 
 **Key Ra passages to draw from:**
-- Session 16.50 — fourth density positive
-- Sessions 40.1–40.3 — the nature of fourth density
-- Session 17.32 — the harvest
-- Sessions 48.6–48.7 — social memory complex
+- Session 16.50 — fourth density positive (compassion striving toward wisdom/light)
+- Session 40.12 — revealed information; selves not hidden to self or other-selves (telepathy / veil lifted)
+- Session 17.31 — the positive harvest (more than 50% service to others)
+- Session 48.6 — the positive social memory complex
 
 **Lyric direction:**
 A song about the experience of the veil lifting — suddenly being able to know others from the inside, the overwhelming beauty of true telepathic connection, the discovery that everyone is the Creator. Imagery of hearts becoming transparent, minds becoming shared. Joyful but not saccharine — there is still learning here, still the beginning of a longer journey.
 
 **Musical style:**
-Warm and expansive. Choral harmonies (voices blending as a nod to social memory complex). The acoustic folk elements remain but are enriched with orchestral-feeling pads. The electronic drop from the Avicii-like influence appears here in a restrained way — uplifting, light-filled, not aggressive.
+Warm and expansive. Choral harmonies (voices blending as a nod to social memory complex). Lean into dense self-harmonized vocal stacking — one voice multiplied into a choir — so the production itself enacts the social memory complex. Intimate verses open into a euphoric chorus. The acoustic folk elements remain but are enriched with orchestral-feeling pads. The electronic drop from the Avicii-like influence appears here in a restrained way — uplifting, light-filled, not aggressive.
 
 ---
 
@@ -126,9 +125,7 @@ Warm and expansive. Choral harmonies (voices blending as a nod to social memory 
 **Density themes:** Pure wisdom, the danger of wisdom without love, the "cold light" that illuminates but does not warm, the correction that leads to sixth density.
 
 **Key Ra passages to draw from:**
-- Session 34.15 — wisdom and love
-- Sessions 82.29–82.30 — fifth density on the negative path
-- Sessions 19.17–19.18 — densities of wisdom
+- Session 41.26 — fifth density balances the intense compassion gained in fourth (the density of wisdom/light)
 
 **Lyric direction:**
 The album's most intellectually complex track, intentionally so. A voice that knows everything but has lost touch with why it matters. Beautiful and slightly unsettling. The second verse introduces the first recognition of the error — wisdom that cannot be used for service is no wisdom at all. The song ends as an open question rather than a resolution, because fifth density does not yet have the answer.
@@ -138,14 +135,15 @@ More cerebral and architectural. Complex rhythmic patterns, possibly in 7/4 or 5
 
 ---
 
-### Song 6 — "The Higher Self Remembers" (6th Density)
+### Song 6 — "A Million Years Ahead" (6th Density)
 
 **Density themes:** The unity of love and wisdom, the higher self as literally the future version of the same soul, the revelation that sixth-density beings guide their third-density selves across the veil.
 
 **Key Ra passages to draw from:**
-- Sessions 36.7–36.18 — the higher self in depth
-- Session 83.13 — the relationship between self and higher self
-- Sessions 52.7–52.9 — wanderers and their origin densities
+- Session 36.1 — the higher self defined (resource for examining third-density experience)
+- Session 36.6 — the higher self operates from the entity's future
+- Sessions 36.8–36.9 — the higher self is of a sixth-density nature ("going into the seventh")
+- Sessions 12.26–12.28 — most wanderers are of the sixth density
 
 **Lyric direction:**
 This is the emotional climax of the album. The perspective shifts from within the journey to a sixth-density being looking back on the entire arc. The revelation of the cyclical arc must feel inevitable in retrospect — the listener who has been paying attention will feel a recognition, not a surprise.
@@ -156,9 +154,9 @@ This is the emotional climax of the album. The perspective shifts from within th
 > *I heard you asking for a sign*
 > *you'd heard a thousand times before*
 > *and I was there — I sent the pull*
-> *I lit the voice you felt*
+> *I lit the spark you couldn't see*
 > *because the one who needed guiding*
-> *was the self I used to be myself*
+> *was the self I used to be*
 
 > *I am your higher self*
 > *I am the you a million years ahead*
@@ -169,24 +167,27 @@ This is the emotional climax of the album. The perspective shifts from within th
 > *was reaching back across the veil*
 > *to help you home to me*
 
-The Song 2 melodic hook returns here transformed — the fragile, yearning motif from "The Reaching" is now fully orchestrated, triumphant, recognized.
+The Song 2 melodic hook returns here transformed — the fragile, yearning motif from "The Reaching" is now fully orchestrated, triumphant, recognized. Additionally, **the melody of Song 3's bridge (the seed) is quoted underneath the verse-2 reveal** — a sonic fingerprint of "the voice/hand/pull" so a first-time listener feels the connection land, not just re-listeners.
 
 **Musical style:**
-The album's most euphoric moment. Full production, the electronic drop that was hinted at in Song 4 arrives here fully — massive, warm, light-filled. It never loses its acoustic, devotional core (the Trevor Hall influence is strongest here), but the Avicii-style melodic synthesis gives it a sense of overwhelming release. This is where people cry.
+The album's most euphoric moment. Full production, the electronic drop that was hinted at in Song 4 arrives here fully — massive, warm, light-filled. It never loses its acoustic, devotional core (the Trevor Hall influence is strongest here), but the Avicii-style melodic synthesis gives it a sense of overwhelming release. Verses stay intimate and conversational, then detonate into a euphoric, stacked gang-vocal chorus — a choir built from a single voice. This is where people cry.
 
 ---
 
-### Song 7 — "Gateway to Intelligent Infinity" (7th Density)
+### Song 7 — "Gateway" (7th Density)
 
-**Density themes:** The dissolution of individual identity, the return to the One, the moment before the new octave begins.
+**Density themes:** The return to the One and the all-knowing bliss of the mind/body/spirit complex totality — the separate self dissolving into unity — and then the free, loving choice to begin a new octave: the deliberate dive back into finitude (the eighth density, which is also the first of the next octave).
 
 **Key Ra passages to draw from:**
-- Session 28.1 — the octave
-- Sessions 16.21–16.22 — seventh density
-- Session 77.12 — intelligent infinity
+- Session 16.22 — unity; "existing in the all"
+- Session 36.1 — the mind/body/spirit complex totality
+- Session 27.8 — "the Creator will know Itself" (the motive to begin again)
+- Session 27.9 — total freedom of choice
+- Session 28.15 — the eighth density is also the first density of the next octave (the loop)
+- Session 16.51 — the octave
 
 **Lyric direction:**
-Language begins to break down as the song progresses — this is intentional. Early verses still have coherent narrative structure. By the bridge, syntax loosens. By the outro, individual words are sustained like tones, and eventually only vowel sounds remain, dissolving into a held note that becomes indistinguishable from the opening silence of Song 1.
+Not a dissolution but a *choice*. The mind/body/spirit complex totality, having returned to the all — omniscient, in complete bliss — feels the old creative stir and freely chooses, out of love and the desire to know itself anew, to begin a new octave: to wrap itself in forgetting and dive back down to first density. Verse 1 arrives at unity and resolves Song 5's "cold light" (the wisdom that could not warm now warms everything). Verse 2 finds the stirring of desire within the bliss. The bridge is the choice itself — drawing the new octave "like a map." The outro is the glad, deliberate dive that contracts to a single thought of light — the opening of Song 1. The eighth density is the hinge: Ra's octave point, simultaneously the end and the first density of the next octave.
 
 **Final lines (designed to complete with Song 1's opening):**
 > *the universe breathes in*
@@ -194,7 +195,7 @@ Language begins to break down as the song progresses — this is intentional. Ea
 > *and begins again…*
 
 **Musical style:**
-Opens with full ensemble from Song 6's ending, then gradually subtracts elements over 5+ minutes. Electronic elements dissolve first, then rhythm, then harmony, then melody, until only a single sustained drone remains — which fades and becomes the first microsecond of Song 1 on loop.
+Opens with the full ensemble from Song 6 and expands into something vast, oceanic, and still — the sound of omniscient bliss rather than a fade. Gathers intention through the bridge and re-ignites with hope, then in the final minute contracts to a single sustained tone and breath — pitched vocal chops folding into one held note — the seed of the new octave — which becomes the near-silent opening of Song 1 on loop. The quiet at the end is a held in-breath before creation, not an ending.
 
 ---
 
@@ -237,7 +238,7 @@ src/data/music/
     ├── song-06.json
     └── song-07.json
 
-public/music/
+public/album/
 ├── song-01.mp3                 # Generated audio per song
 ├── song-02.mp3
 ├── song-03.mp3
@@ -352,7 +353,7 @@ Song descriptions should be translatable; lyric content is too nuanced for machi
 2. Compose style prompt for each track (see below)
 3. Generate in Suno, iterate on versions
 4. Download highest-quality audio files
-5. Place in `/public/music/`
+5. Place in `/public/album/`
 6. Time-stamp lyrics against final audio to create the JSON cue files
 
 ### Style Prompt Template
@@ -363,20 +364,21 @@ Suno does not permit referencing artists by name. Describe the target aesthetic 
 - Melodic electronic production with uplifting synthesizer pads, layered vocal harmonies, and festival-ready emotional builds
 - Introspective lyrics sung in a clear, expressive male tenor voice
 - Progressive song structures that build and release rather than verse-chorus-verse loops
+- Dense self-harmonized vocal stacking — a "choir from one voice" — at the communal, social-memory-complex peaks (Songs 4 and 6), with pitched vocal-chop textures as color in the ambient bookends (Songs 1 and 7); intimate verses that open into euphoric, anthemic choruses
 
 **Per-song style prompt examples:**
 
 Song 1 ("First Breath"):
-> *Ambient acoustic meditation, near-silence opening, tanpura drone, sparse finger-picked acoustic guitar, field recordings of wind and flowing water, gentle organic electronic texture, wordless vocal harmonics, very slow build, 4/4 at 60 BPM, devotional world music feel, meditative, primordial*
+> *Ambient acoustic meditation, near-silence opening, tanpura drone, sparse finger-picked acoustic guitar, field recordings of wind and flowing water, gentle organic electronic texture, wordless vocal harmonics with faint pitched vocal-chop textures surfacing like first thoughts, very slow build, 4/4 at 60 BPM, devotional world music feel, meditative, primordial*
 
 Song 3 ("Behind the Veil"):
 > *Acoustic folk rock, emotional male vocalist, clear expressive tenor, acoustic guitar and piano, soft kick drum and bass, building verse-chorus structure, introspective and searching lyrics, organic yet cinematic, layered harmonies in chorus, 4/4 at 88 BPM, festival folk spiritual feel*
 
-Song 6 ("The Higher Self Remembers"):
-> *Epic devotional folk with electronic elements, massive melodic synthesizer build, acoustic guitar and sitar foundation, driving electronic percussion, layered male vocals, soaring chorus, full emotional release, sacred geometry-inspired production, festival anthem structure, 4/4 at 124 BPM, deeply moving, triumphant yet tender*
+Song 6 ("A Million Years Ahead"):
+> *Epic devotional folk with electronic elements, massive melodic synthesizer build, acoustic guitar and sitar foundation, driving electronic percussion, intimate conversational verses exploding into a euphoric stacked gang-vocal chorus, dense self-harmonized vocal layers forming a choir from one voice, full emotional release, sacred geometry-inspired production, festival anthem structure, 4/4 at 124 BPM, deeply moving, triumphant yet tender*
 
-Song 7 ("Gateway to Intelligent Infinity"):
-> *Ethereal ambient dissolution, begins with full ensemble then gradually removes elements, male vocals becoming extended pure tones, acoustic guitar fading to sustained drone, long outro where all music reduces to a single held note, 7+ minutes, meditative, cosmic, 4/4 at 72 BPM gradually slowing*
+Song 7 ("Gateway"):
+> *Vast oceanic devotional ambient-orchestral, opens full and serene carrying the previous track's warmth into something immense and still, shimmering pads and choir suggesting omniscient bliss, a single radiant male tenor, gathers intention and re-ignites with hope rather than dissolving, then contracts in the final minute to a single sustained tone and breath — the seed of a new beginning — resolving into near-silence, 4/4 around 72 BPM, cosmic, blissful, the joyful choice to begin again*
 
 ---
 
@@ -428,7 +430,7 @@ The music feature can deepen engagement with existing content:
 
 ## Open Questions
 
-1. **Audio hosting**: MP3s in `/public/music/` work for prototype but may be costly on Vercel bandwidth for larger files (Song 7 especially). Consider a CDN or object storage (e.g., Cloudflare R2) for v1 production.
+1. **Audio hosting**: MP3s in `/public/album/` work for prototype but may be costly on Vercel bandwidth for larger files (Song 7 especially). Consider a CDN or object storage (e.g., Cloudflare R2) for v1 production.
 
 2. **Suno licensing**: Confirm the current Suno terms around commercial use for a community-funded, free-access tool. The site is donation-funded and free, which may affect which Suno plan applies.
 

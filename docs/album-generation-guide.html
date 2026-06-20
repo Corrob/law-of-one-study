@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Wanderer's Return — Suno Generation Guide</title>
+<style>
+  :root{
+    --bg:#0a0d1f; --panel:#141a38; --panel2:#1a2147; --gold:#d4a853; --gold-soft:#e6c785;
+    --star:#e8e6f2; --dust:#9a98ab; --celest:#4a5899; --line:rgba(120,130,200,.18);
+    --green:#7fd1a8;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#161d42 0%,var(--bg) 55%);
+    color:var(--star);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:880px;margin:0 auto;padding:40px 20px 120px}
+  header.top{text-align:center;margin-bottom:36px}
+  header.top h1{font-size:2rem;margin:.2em 0;color:var(--star);letter-spacing:.5px}
+  header.top .sub{color:var(--gold);font-style:italic;font-size:1.05rem}
+  header.top .meta{color:var(--dust);font-size:.9rem;margin-top:8px}
+  h2{color:var(--gold);border-bottom:1px solid var(--line);padding-bottom:8px;margin-top:48px;font-size:1.35rem}
+  h3{color:var(--gold-soft);margin:0}
+  a{color:var(--gold-soft)}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:18px 0}
+  .panel.tight{padding:16px 20px}
+  ul{margin:.4em 0;padding-left:1.2em}
+  li{margin:.3em 0}
+  code{background:rgba(120,130,200,.16);padding:1px 6px;border-radius:5px;font-size:.92em}
+  /* callouts */
+  .callout{border-left:4px solid var(--gold);background:rgba(212,168,83,.08);border-radius:0 10px 10px 0;padding:14px 18px;margin:18px 0}
+  .callout.warn{border-color:#e58a5a;background:rgba(229,138,90,.09)}
+  .callout .lbl{font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;font-size:.74rem}
+  .callout.warn .lbl{color:#e89b73}
+  /* order badges */
+  .orderflow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+  .chip{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:.85rem;white-space:nowrap}
+  .chip b{color:var(--gold)}
+  .arrow{color:var(--celest)}
+  /* song cards */
+  .song{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin:26px 0;overflow:hidden}
+  .song .head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:18px 22px;background:linear-gradient(90deg,rgba(212,168,83,.10),rgba(212,168,83,0));border-bottom:1px solid var(--line)}
+  .step{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--gold);color:#1b1402;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .song .titles{flex:1 1 auto;min-width:200px}
+  .song .titles .t{font-size:1.2rem;font-weight:700;color:var(--star)}
+  .song .titles .d{color:var(--dust);font-size:.85rem}
+  .badges{display:flex;gap:6px;flex-wrap:wrap}
+  .badge{font-size:.72rem;padding:3px 9px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);color:var(--gold-soft);white-space:nowrap}
+  .body{padding:6px 22px 22px}
+  .moment{margin:14px 0;font-size:.96rem}
+  .moment .lbl{color:var(--gold);font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em}
+  .field{margin:18px 0 6px}
+  .field .flabel{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+  .field .flabel span{font-weight:700;color:var(--gold-soft);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em}
+  pre{background:#0c1024;border:1px solid var(--line);border-radius:10px;padding:14px 16px;white-space:pre-wrap;word-wrap:break-word;
+    font:13.5px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#dfe0f0;margin:0;max-height:none}
+  pre.prompt{color:#f0e3c6;font-style:normal}
+  .copybtn{cursor:pointer;background:var(--gold);color:#1b1402;border:none;border-radius:7px;padding:6px 14px;font-weight:700;font-size:.8rem;transition:background .15s}
+  .copybtn:hover{background:var(--gold-soft)}
+  .copybtn.copied{background:var(--green);color:#06200f}
+  .prodnotes{margin-top:14px;font-size:.92rem;color:#d6d4e6}
+  .prodnotes .lbl{color:var(--gold);font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:4px}
+  /* table */
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.88rem}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}
+  th{color:var(--gold);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+  tr:hover td{background:rgba(120,130,200,.06)}
+  .toc{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+  .toc a{font-size:.85rem;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:5px 11px;text-decoration:none}
+  .foot{color:var(--dust);font-size:.82rem;text-align:center;margin-top:50px;border-top:1px solid var(--line);padding-top:18px}
+  .num{color:var(--gold);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div class="sub">Suno Generation Guide</div>
+  <h1>"The Wanderer's Return"</h1>
+  <div class="meta">A 7-track journey through the densities · follow the steps top to bottom</div>
+  <div class="toc">
+    <a href="#prep">Before you start</a>
+    <a href="#order">The order</a>
+    <a href="#rules">2 non-negotiables</a>
+    <a href="#steps">The 7 steps</a>
+    <a href="#assemble">Final assembly</a>
+    <a href="#cheat">Cheat sheet</a>
+  </div>
+</header>
+
+<section id="prep">
+<h2>Before you start — settings that apply to every track</h2>
+<div class="panel">
+<ul>
+  <li><b>One voice for all 7 tracks.</b> A warm, expressive <b>male tenor</b> — intimate by default, powerful only at the peaks. After your first good generation, <b>save that vocal as a Suno Persona and reuse it</b> on every other song so the album sounds like one singer.</li>
+  <li><b>Constant palette, shifting density.</b> Acoustic guitar + one world instrument (sitar / harmonium / tabla) + tenor + tasteful electronic/orchestral color. The palette <b>thickens</b> from Song&nbsp;1 to the Song&nbsp;6 peak, then <b>dissolves</b> by Song&nbsp;7.</li>
+  <li><b>Energy arc — master to preserve it:</b> 1 quietest → 2–3 rising → 4 warm lift → <b>5 cool dip</b> → <b>6 PEAK</b> → 7 settle to silence.</li>
+  <li><b>Key / tempo continuity.</b> Keep tracks within a couple of related keys so the loop seam (7→1) and the reprises (2→6, 3→6) sit naturally.</li>
+  <li><b>Length.</b> Suno caps a generation at ~4&nbsp;min. Songs 1, 6, 7 are long/dynamic — use <b>Extend / Continue</b> or stitch sections in a DAW.</li>
+</ul>
+</div>
+
+<div class="callout">
+  <div class="lbl">How each step works</div>
+  Paste the <b>Style prompt</b> into Suno's <i>Style</i> field and the <b>Lyrics</b> into the <i>Lyrics</i> field (use the Copy buttons). Generate a few takes; if a take misses <b>"The moment,"</b> regenerate. Then read the <b>Production notes</b> before moving on.
+</div>
+
+<div class="callout warn">
+  <div class="lbl">Tip on the bracket tags</div>
+  The <code>[Section — description]</code> tags and the small parentheticals like <code>(breathe...)</code> are guidance. Suno may try to <i>sing</i> parentheticals, and the final production note in Song&nbsp;7 — <code>(contracts to a single thought of light…)</code> — is an instruction, <b>not</b> a lyric. If you get spoken/odd artifacts, shorten tags to plain <code>[Verse]</code>/<code>[Chorus]</code>/<code>[Bridge]</code>/<code>[Outro]</code> and delete any parenthetical you don't want sung.
+</div>
+</section>
+
+<section id="order">
+<h2>The order to generate in</h2>
+<p>Not track order — <b>dependency order</b>, so the recurring melodies exist before the songs that reuse them.</p>
+<div class="orderflow">
+  <span class="chip"><b>1.</b> Song 2 <span style="color:var(--dust)">(source the motif)</span></span><span class="arrow">→</span>
+  <span class="chip"><b>2.</b> Song 3 <span style="color:var(--dust)">(source the seed)</span></span><span class="arrow">→</span>
+  <span class="chip"><b>3.</b> Song 1</span><span class="arrow">→</span>
+  <span class="chip"><b>4.</b> Song 4</span><span class="arrow">→</span>
+  <span class="chip"><b>5.</b> Song 5</span><span class="arrow">→</span>
+  <span class="chip"><b>6.</b> Song 7</span><span class="arrow">→</span>
+  <span class="chip"><b>7.</b> Song 6 <span style="color:var(--dust)">(reprises converge)</span></span>
+</div>
+<p style="color:var(--dust);font-size:.9rem">Steps 3–6 (Songs 1, 4, 5, 7) can be done in any order; only Song&nbsp;2 (first) and Song&nbsp;6 (last) are fixed.</p>
+</section>
+
+<section id="rules">
+<h2>The two non-negotiables</h2>
+<div class="callout warn">
+  <div class="lbl">1 · The melodic reprises (this is what makes the album land)</div>
+  Suno generates each song <b>independently</b> and won't reuse a melody on its own. So:
+  <ul>
+    <li>When you generate <b>Song 2</b>, bounce its <b>yearning motif</b> as a clean stem.</li>
+    <li>When you generate <b>Song 3</b>, bounce its <b>bridge ("seed") melody</b> as a stem.</li>
+    <li>In <b>Song 6</b>, layer <b>both stems</b> back in (the Song&nbsp;2 motif = triumphant; the Song&nbsp;3 seed melody = <i>underneath the verse-2 reveal</i>). This is the "chills on first listen" moment. Do it in a DAW, or approximate with Suno's audio-upload / cover feature.</li>
+  </ul>
+</div>
+<div class="callout warn">
+  <div class="lbl">2 · The seamless loop (7 → 1)</div>
+  Song&nbsp;1 opens from near-silence; Song&nbsp;7 ends contracting to near-silence. Render Song&nbsp;7's tail and Song&nbsp;1's head so they <b>crossfade gaplessly</b> — the album is designed to loop forever. Build a short <code>song-07-into-song-01</code> seam clip if needed.
+</div>
+</section>
+
+<h2 id="steps">The 7 steps</h2>
+
+<!-- STEP 1 — SONG 2 -->
+<div class="song" id="s2">
+  <div class="head">
+    <div class="step">1</div>
+    <div class="titles"><div class="t">Song 2 — "The Reaching"</div><div class="d">2nd density · saves as <code>song-02.mp3</code></div></div>
+    <div class="badges"><span class="badge">72 BPM · 4/4</span><span class="badge">GENERATE FIRST</span></div>
+  </div>
+  <div class="body">
+    <div class="moment"><span class="lbl">The moment</span> — the <b>yearning hook</b> ("reaching toward a light I cannot name" / the moth-to-flame). This melody is the seed that returns triumphant in Song 6 — make it simple, singable, unforgettable.</div>
+    <div class="field"><div class="flabel"><span>Style prompt</span><button class="copybtn" onclick="copyEl('p2',this)">Copy</button></div>
+      <pre class="prompt" id="p2">Organic world-folk, 72 BPM. Finger-picked acoustic guitar, tabla and frame drum, harmonium drone, layered wordless vocal harmonies like a forest of voices. A fragile, yearning melodic hook introduced on a solo voice/woodwind and carried by the chorus vocal. Warm male tenor building from gentle to full-bodied. Earthy, alive, aching, reverent.</pre></div>
+    <div class="field"><div class="flabel"><span>Lyrics</span><button class="copybtn" onclick="copyEl('l2',this)">Copy</button></div>
+      <pre id="l2">[Intro — finger-picked guitar, distant voices]
+(hmm...)
+
+[Verse 1 — organic, hand percussion]
+The roots press down toward water
+that they cannot see or know
+the wolves move as a single will
+the wild green wants to grow
+the birds turn south by a knowing
+that is older than the mind
+an ache without a reason
+a name they cannot find
+
+[Pre-Chorus — the motif, fragile]
+And I am reaching, reaching
+toward a light I cannot name
+like a moth that spends its only life
+to reach the very flame
+
+[Chorus — yearning, wordless harmonies bloom]
+Reaching toward a light I cannot name
+reaching though I do not know the way
+and for one impossible second
+as I turn to meet the sun
+I almost feel that I am turning
+I almost feel I'm one
+
+[Outro — the almost-waking]
+(one... one...)
+I almost knew it
+I almost saw
+and then the knowing closed
+like a wave back to the shore</pre></div>
+    <div class="prodnotes"><span class="lbl">Production notes</span> Pick the take with the strongest, most singable hook. <b>Save the Persona</b> (reuse on all other tracks) and <b>bounce the motif as a clean stem</b> — Songs 3 and 6 need it.</div>
+  </div>
+</div>
+
+<!-- STEP 2 — SONG 3 -->
+<div class="song" id="s3">
+  <div class="head">
+    <div class="step">2</div>
+    <div class="titles"><div class="t">Song 3 — "Behind the Veil"</div><div class="d">3rd density · saves as <code>song-03.mp3</code></div></div>
+    <div class="badges"><span class="badge">88 BPM · 4/4</span><span class="badge">source the seed</span></div>
+  </div>
+  <div class="body">
+    <div class="moment"><span class="lbl">The moment</span> — the <b>bridge (the seed)</b>: pull the arrangement <i>way down</i> so "a voice beneath the dark / the hand that pulls" lands as a distinct, memorable melody. It must stand out from the chorus — it's planted to be recognized in Song 6.</div>
+    <div class="field"><div class="flabel"><span>Style prompt</span><button class="copybtn" onclick="copyEl('p3',this)">Copy</button></div>
+      <pre class="prompt" id="p3">Cinematic folk-rock, 88 BPM. Acoustic guitar and piano foundation, soft kick and bass entering, building to a full-band emotional release at the chorus. Clear expressive male tenor — intimate in the verses, soaring in the chorus — with layered harmonies. Embryonic electronic textures hint at what's ahead. Searching, human; the album's most accessible track.</pre></div>
+    <div class="field"><div class="flabel"><span>Lyrics</span><button class="copybtn" onclick="copyEl('l3',this)">Copy</button></div>
+      <pre id="l3">[Intro — acoustic guitar and piano]
+
+[Verse 1 — human, lost]
+Then the veil came down upon me
+and I woke up in the dark
+I am lost behind a curtain
+I cannot find the spark
+there's a hunger that would take the world
+and keep it all alone
+or a quiet, stranger longing
+to love it as my own
+
+[Chorus — dramatize the choice; plant the title]
+The road splits here in the dark
+no torch, no guide, no sign
+two hands are reaching out of me
+one is yours and one is mine
+I can't see behind the veil
+I can't tell the false from true
+but the choosing is the only torch
+I carry, walking through
+
+[Bridge — THE SEED]
+I feel a pull I cannot name
+a voice beneath the dark
+as if some part of me I lost
+is reaching for my heart
+I cannot see the hand that pulls
+I cannot know the guide
+but something in me recognizes
+what lives on the other side
+
+[Outro — builds, unresolved hope]
+(something on the other side...)
+I choose the light, I choose the light
+I cannot see where it will lead
+but something in me chooses
+and that choosing sets me free</pre></div>
+    <div class="prodnotes"><span class="lbl">Production notes</span> (1) Weave a faint echo of <b>Song 2's motif</b> under the bridge (a breadcrumb). (2) <b>Bounce the bridge melody as a stem</b> — it returns under Song 6's reveal.</div>
+  </div>
+</div>
+
+<!-- STEP 3 — SONG 1 -->
+<div class="song" id="s1">
+  <div class="head">
+    <div class="step">3</div>
+    <div class="titles"><div class="t">Song 1 — "First Breath"</div><div class="d">1st density · saves as <code>song-01.mp3</code></div></div>
+    <div class="badges"><span class="badge">60 BPM · 4/4</span><span class="badge">loop entry</span></div>
+  </div>
+  <div class="body">
+    <div class="moment"><span class="lbl">The moment</span> — the first dim spark of awareness. Keep it <b>weightless and pre-emotional</b>: wonder, not feeling.</div>
+    <div class="field"><div class="flabel"><span>Style prompt</span><button class="copybtn" onclick="copyEl('p1',this)">Copy</button></div>
+      <pre class="prompt" id="p1">Ambient devotional meditation, 60 BPM. Opens from near-silence — low tanpura drone, field recordings of wind and flowing water, sparse finger-picked nylon-string guitar. Wordless vocal harmonics with faint pitched vocal-chop textures surfacing like first thoughts. Hushed, almost-spoken male tenor. Very slow patient build that never settles into a groove. Primordial, weightless, reverent.</pre></div>
+    <div class="field"><div class="flabel"><span>Lyrics</span><button class="copybtn" onclick="copyEl('l1',this)">Copy</button></div>
+      <pre id="l1">[Intro — near silence, drone, wind and water]
+(breathe...)
+The universe breathes out
+a single thought of light
+
+[Verse 1 — sparse, primordial]
+The fire learns that it is fire
+the water finds the night
+the stone has no name to call its own
+but leans toward the light
+the first dim spark of knowing
+in a world without a why
+
+[Verse 2 — wonder]
+And from the silence something stirs
+too quiet yet to hear
+the elements remembering
+they all began from here
+no word for what is rising
+no self to call it mine
+just light learning to hold a shape
+and shape learning to keep time
+
+[Outro — unresolved, carries forward]
+(the first breath...)
+not finished, only starting
+just opening its eyes
+already pulled toward a brightness
+it has no name to call
+the universe is dreaming
+and the dream is waking now
+(the first breath... the first breath...)</pre></div>
+    <div class="prodnotes"><span class="lbl">Production notes</span> This is the <b>loop entry point</b>. Keep the first ~10 seconds soft enough to crossfade with Song 7's near-silent tail.</div>
+  </div>
+</div>
+
+<!-- STEP 4 — SONG 4 -->
+<div class="song" id="s4">
+  <div class="head">
+    <div class="step">4</div>
+    <div class="titles"><div class="t">Song 4 — "Known"</div><div class="d">4th density · saves as <code>song-04.mp3</code></div></div>
+    <div class="badges"><span class="badge">104 BPM · 4/4</span><span class="badge">choir of one</span></div>
+  </div>
+  <div class="body">
+    <div class="moment"><span class="lbl">The moment</span> — the chorus: the lonely "I" dissolving into "we." <b>Stack the vocals into a congregation</b> right on "we are many voices singing … a single rising tone."</div>
+    <div class="field"><div class="flabel"><span>Style prompt</span><button class="copybtn" onclick="copyEl('p4',this)">Copy</button></div>
+      <pre class="prompt" id="p4">Warm expansive devotional folk-gospel, 104 BPM. Acoustic guitar with orchestral pads and strings. DENSE self-harmonized vocal stacking — one tenor multiplied into a full choir, the social memory complex made audible — hitting hardest on "we are many voices singing." Intimate verses opening into a euphoric, light-filled chorus with a restrained uplifting electronic lift. Radiant, communal, joyful but never saccharine.</pre></div>
+    <div class="field"><div class="flabel"><span>Lyrics</span><button class="copybtn" onclick="copyEl('l4',this)">Copy</button></div>
+      <pre id="l4">[Intro — warm pads, choral hum]
+(ahh...)
+
+[Verse 1 — the veil lifting]
+And the veil lifts like the dawn
+and I know you from inside
+every heart becomes transparent
+there is nowhere left to hide
+the walls I built to keep me safe
+dissolve like morning frost
+and everything I thought I'd lost
+was never really lost
+
+[Chorus — lead with the felt revelation, full choir]
+And the one I called a stranger
+was always only me
+I can feel you from the inside
+the way the blind must finally see
+we are many voices singing
+in a single rising tone
+we were never cut apart
+we were always, always known
+
+[Verse 2 — still learning]
+there's so much farther still to go —
+I can hear you think before you speak,
+and love is only half the light;
+the colder half is what I seek
+but oh — to feel you as myself,
+to lose the lonely "I" —
+every tear I left behind me
+was a seed beneath this sky
+
+[Outro — communal, glowing]
+(we are one... fully known...)</pre></div>
+    <div class="prodnotes"><span class="lbl">Production notes</span> The <b>"choir from one voice"</b> is the signature — push the stacks hard. Verse 2 quietly plants the Song 5 setup ("the colder half is what I seek") — keep it audible, don't oversell it.</div>
+  </div>
+</div>
+
+<!-- STEP 5 — SONG 5 -->
+<div class="song" id="s5">
+  <div class="head">
+    <div class="step">5</div>
+    <div class="titles"><div class="t">Song 5 — "Cold Light"</div><div class="d">5th density · saves as <code>song-05.mp3</code></div></div>
+    <div class="badges"><span class="badge">~100 BPM · 7/4</span><span class="badge">the cool dip</span></div>
+  </div>
+  <div class="body">
+    <div class="moment"><span class="lbl">The moment</span> — "I can hold the shape of everything / and warm not even one." The album's best line — deliver it <b>cold and clear</b>, no vocal warmth.</div>
+    <div class="field"><div class="flabel"><span>Style prompt</span><button class="copybtn" onclick="copyEl('p5',this)">Copy</button></div>
+      <pre class="prompt" id="p5">Cerebral art-folk in 7/4 time, ~100 BPM. Cool geometric crystalline synth tones, muted acoustic guitar and cello, a precise and slightly distant male vocal. Beautiful but unsettling. A brief dissonance that resolves imperfectly. Sparse, architectural, glassy. Ends on an unresolved open question — a held, unfinished chord.</pre></div>
+    <div class="field"><div class="flabel"><span>Lyrics</span><button class="copybtn" onclick="copyEl('l5',this)">Copy</button></div>
+      <pre id="l5">[Intro — 7/4, crystalline synth, cool]
+
+[Verse 1 — knows everything, feels nothing]
+The light grew cold and brilliant
+I can see but cannot feel
+I know the name of every star
+and forget the ones are real
+I have mapped the whole cathedral
+every arch and every stone
+and I am standing in the center
+of a knowing — all alone
+
+[Chorus — beautiful, austere, unsettling]
+All this wisdom, all this light
+and a question I can't drown:
+what is knowing for, if knowing
+only ever weighs me down?
+I can hold the shape of everything
+and warm not even one —
+is this the whole of wisdom,
+or only half the sun?
+
+[Verse 2 — first recognition of the error]
+For wisdom still awaiting love
+is a lantern with no flame
+it shows me every doorway
+but it cannot say my name
+and somewhere past the brilliance
+something soft begins to ache —
+the first cold hint that knowing
+was never the whole shape
+
+[Outro — open question, imperfect resolve]
+(what is the way... what is the way...)
+I do not have the answer yet
+I only have the ache —
+and maybe that's the doorway
+that the wisdom couldn't make</pre></div>
+    <div class="prodnotes"><span class="lbl">Production notes</span> Deliberately the <b>coolest, most withdrawn track</b> — the dip before the peak. Pull back reverb-warmth and the choir; leave it lonely and architectural. The unresolved ending is intentional — don't button it up.</div>
+  </div>
+</div>
+
+<!-- STEP 6 — SONG 7 -->
+<div class="song" id="s7">
+  <div class="head">
+    <div class="step">6</div>
+    <div class="titles"><div class="t">Song 7 — "Gateway"</div><div class="d">7th density · saves as <code>song-07.mp3</code></div></div>
+    <div class="badges"><span class="badge">~72 BPM · 4/4</span><span class="badge">loop close</span></div>
+  </div>
+  <div class="body">
+    <div class="moment"><span class="lbl">The moment</span> — the <b>chosen dive</b>: "not pushed, but diving, glad and bright." It must read as a glad, deliberate choice, not exhaustion. Energy stays <i>up</i> through the choice, then contracts to a seed.</div>
+    <div class="field"><div class="flabel"><span>Style prompt</span><button class="copybtn" onclick="copyEl('p7',this)">Copy</button></div>
+      <pre class="prompt" id="p7">Vast oceanic devotional ambient-orchestral, ~72 BPM. Opens full and serene, carrying the previous track's warmth into something immense and still — shimmering pads, a choir of stacked voices suggesting omniscient bliss, a single radiant male tenor. Gathers intention through the bridge and re-ignites with hope (NOT a fade-out), then in the final minute contracts to a single sustained tone and breath — pitched vocal chops folding into one held note — resolving into near-silence. Cosmic, blissful, the joyful choice to begin again.</pre></div>
+    <div class="field"><div class="flabel"><span>Lyrics</span><button class="copybtn" onclick="copyEl('l7',this)">Copy</button></div>
+      <pre id="l7">[Intro — full ensemble, opening into something vast and still]
+
+[Verse 1 — the human memory, a handhold]
+I remember being small,
+I remember the dark, the cold,
+every hand I ever held,
+every story I was told,
+all of it is gathered, nothing strayed —
+I am holding, unafraid
+
+[Verse 2 — arrival: the all, omniscience, bliss]
+Now the many fall to one
+and the one falls into none
+and I can hold the whole of it
+and warm now every one
+the cold light learned to love at last
+the wisdom found its flame
+and I know the name of everything
+and I have no more name
+
+[Verse 3 — the bliss, and the stirring of the choice]
+And this is all the bliss there is
+no want, no wound, no end
+and still I feel the old stir rise
+the way it rose back then —
+not out of lack but out of love
+the One that longs to be
+the many and the dark again,
+to wake, and learn, and see
+
+[Bridge — the choice: dreaming the new octave]
+This is the gateway — here I choose
+I draw the octave like a map:
+seven notes to fall and climb,
+the long way out and back
+I'll wrap myself in forgetting
+I'll dim the light I am
+and let go of all of heaven
+just to find my way again
+
+[Outro — the glad, chosen dive; the loop]
+And so I fall — I fall like light,
+not pushed, but diving, glad and bright,
+back down into the dark to climb,
+the wanderer sets out one more time
+(leaving home to find the way home...)
+the eighth note and the first are one
+the universe breathes in
+and breathes out
+and begins again...</pre></div>
+    <div class="prodnotes"><span class="lbl">Production notes</span> This is the <b>loop close</b>. Its final sustained near-silent tone must match Song 1's near-silent opening for a gapless loop. (The line "<i>contracts to a single thought of light — the silence that opens Song 1</i>" in the source doc is a production cue, not a lyric — leave it out of Suno.)</div>
+  </div>
+</div>
+
+<!-- STEP 7 — SONG 6 -->
+<div class="song" id="s6">
+  <div class="head">
+    <div class="step">7</div>
+    <div class="titles"><div class="t">Song 6 — "A Million Years Ahead"</div><div class="d">6th density · saves as <code>song-06.mp3</code> · <b style="color:var(--gold)">the peak</b></div></div>
+    <div class="badges"><span class="badge">124 BPM · 4/4</span><span class="badge">GENERATE LAST</span></div>
+  </div>
+  <div class="body">
+    <div class="moment"><span class="lbl">The moment</span> — <b>THE REVEAL</b> (verse 2 → chorus): "I sent the pull / I lit the spark you couldn't see … the voice you couldn't place was mine." The cry moment. Keep verse 2 intimate and restrained so the chorus drop hits like a sunrise.</div>
+    <div class="field"><div class="flabel"><span>Style prompt</span><button class="copybtn" onclick="copyEl('p6',this)">Copy</button></div>
+      <pre class="prompt" id="p6">Epic devotional folk-electronic anthem, 124 BPM. Acoustic guitar and sitar foundation, driving electronic percussion, a massive melodic synth build. Intimate, conversational verses EXPLODING into a euphoric stacked gang-vocal chorus — a choir from one voice. Full emotional release, the album's peak; triumphant yet tender; sacred-geometry production.</pre></div>
+    <div class="field"><div class="flabel"><span>Lyrics</span><button class="copybtn" onclick="copyEl('l6',this)">Copy</button></div>
+      <pre id="l6">[Intro — building, the Song 2 motif returns, fuller]
+
+[Verse 1 — sixth density, looking back]
+I have walked the whole long stair now
+the cold light and the flame, now one
+and I turn and look back down
+at the roads that I have run
+and there — so small, so frightened —
+behind a veil of years
+is the one I used to be
+in a world of doubt and tears
+
+[Verse 2 — THE REVEAL]
+I remember standing in the dark
+behind the veil you wore
+I heard you asking for a sign
+you'd heard a thousand times before
+and I was there — I sent the pull
+I lit the spark you couldn't see
+because the one who needed guiding
+was the self I used to be
+
+[Chorus — euphoric drop]
+I am your higher self
+I am the you a million years ahead
+I watched you choose the light
+from where the seventh meets the thread
+the voice you couldn't place was mine
+the hand you couldn't see
+was reaching back across the veil
+to help you home to me
+
+[Bridge — the motif fully triumphant]
+The light you reached for in the dark —
+it was always, always me
+the name you could not find back then
+was the name of who you'd be
+so reach, my love, keep reaching
+I'm standing where it ends:
+you become the very light
+you were reaching for back then
+
+[Outro — overwhelming release]
+(home to me... home to me...)</pre></div>
+    <div class="prodnotes"><span class="lbl">Production notes — the most important task on the album</span> <b>Two reprises converge here.</b> (1) Song 2's <b>motif</b> returns, now fully orchestrated and triumphant (intro + bridge). (2) Song 3's <b>seed melody</b> plays <i>underneath</i> the verse-2 reveal vocal — the fingerprint that makes the connection land on first listen. Layer both bounced stems. <b>Do not ship Song 6 without the Song 3 seed melody audible under the reveal.</b></div>
+  </div>
+</div>
+
+<section id="assemble">
+<h2>Final assembly (DAW)</h2>
+<div class="panel">
+<ol>
+  <li><b>Order the tracks 1 → 7</b> (track order, not generation order) for the album.</li>
+  <li><b>Layer the reprises into Song 6</b> — the Song 2 motif (triumphant) and the Song 3 seed melody (under the verse-2 reveal).</li>
+  <li><b>Master to the energy arc:</b> 1 quietest → 6 peak → 7 to silence. Don't let auto-loudness flatten it.</li>
+  <li><b>Build the 7→1 seamless loop:</b> crossfade Song 7's near-silent tail into Song 1's near-silent head (or render a dedicated seam clip).</li>
+  <li><b>Export</b> as <code>song-01.mp3</code> … <code>song-07.mp3</code> into <code>public/album/</code>; note each final duration.</li>
+</ol>
+</div>
+</section>
+
+<section id="cheat">
+<h2>One-screen cheat sheet</h2>
+<table>
+  <tr><th>Gen #</th><th>Song</th><th>BPM</th><th>Must-nail moment</th><th>Reprise / seam</th></tr>
+  <tr><td><span class="num">1</span></td><td>2 · The Reaching</td><td>72</td><td>the yearning motif</td><td>source motif stem + Persona</td></tr>
+  <tr><td><span class="num">2</span></td><td>3 · Behind the Veil</td><td>88</td><td>the hushed bridge (seed)</td><td>S2 breadcrumb; bounce seed stem</td></tr>
+  <tr><td><span class="num">3</span></td><td>1 · First Breath</td><td>60</td><td>weightless first spark</td><td>loop entry (match S7 tail)</td></tr>
+  <tr><td><span class="num">4</span></td><td>4 · Known</td><td>104</td><td>choir-of-one chorus</td><td>—</td></tr>
+  <tr><td><span class="num">5</span></td><td>5 · Cold Light</td><td>100 (7/4)</td><td>"warm not even one"</td><td>coolest track (pre-peak dip)</td></tr>
+  <tr><td><span class="num">6</span></td><td>7 · Gateway</td><td>72</td><td>the glad chosen dive</td><td>loop close (match S1 open)</td></tr>
+  <tr><td><span class="num">7</span></td><td>6 · A Million Years Ahead</td><td>124</td><td>THE REVEAL drop</td><td><b>layer S2 motif + S3 seed melody</b></td></tr>
+</table>
+</section>
+
+<div class="foot">
+  Lyrics &amp; concept: <code>docs/album-lyrics.md</code> · Full feature plan: <code>docs/MUSIC_FEATURE_PLAN.md</code><br>
+  Generated for "The Wanderer's Return" — community-funded, free, open source.
+</div>
+
+</div>
+
+<script>
+function fallbackCopy(text, done){
+  var ta=document.createElement('textarea');
+  ta.value=text; ta.setAttribute('readonly','');
+  ta.style.position='fixed'; ta.style.top='-1000px'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done(); }catch(e){}
+  document.body.removeChild(ta);
+}
+function copyEl(id, btn){
+  var text=document.getElementById(id).innerText;
+  var done=function(){
+    var o=btn.textContent;
+    btn.textContent='✓ Copied'; btn.classList.add('copied');
+    setTimeout(function(){ btn.textContent=o; btn.classList.remove('copied'); },1500);
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text,done); });
+  } else { fallbackCopy(text, done); }
+}
+</script>
+</body>
+</html>

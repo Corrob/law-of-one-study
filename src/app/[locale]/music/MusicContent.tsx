@@ -1,0 +1,63 @@
+"use client";
+
+import { useCallback, useState } from "react";
+import NavigationWrapper from "@/components/NavigationWrapper";
+import AlbumLanding from "@/components/music/AlbumLanding";
+import SongPlayer from "@/components/music/SongPlayer";
+import TrackDrawer from "@/components/music/TrackDrawer";
+import { ALBUM } from "@/data/music/album";
+import { type Song } from "@/lib/schemas/music";
+
+export default function MusicContent() {
+  const [selectedSong, setSelectedSong] = useState<Song | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const selectSong = useCallback((song: Song) => {
+    setSelectedSong(song);
+    setDrawerOpen(false);
+  }, []);
+
+  const goToOffset = useCallback((offset: number) => {
+    setSelectedSong((current) => {
+      if (!current) return current;
+      const i = ALBUM.songs.findIndex((s) => s.id === current.id);
+      // Wrap around so Song 7 → Song 1 completes the octave loop.
+      const next = (i + offset + ALBUM.songs.length) % ALBUM.songs.length;
+      return ALBUM.songs[next];
+    });
+  }, []);
+
+  return (
+    <>
+      {selectedSong ? (
+        <SongPlayer
+          key={selectedSong.id}
+          song={selectedSong}
+          onClose={() => setSelectedSong(null)}
+          onPrev={() => goToOffset(-1)}
+          onNext={() => goToOffset(1)}
+          onOpenList={() => setDrawerOpen(true)}
+        />
+      ) : (
+        <main className="h-dvh flex flex-col cosmic-bg relative">
+          <div className="starfield" />
+          <NavigationWrapper>
+            <div className="flex-1 flex flex-col relative z-10">
+              <AlbumLanding
+                onPlay={() => selectSong(ALBUM.songs[0])}
+                onOpenList={() => setDrawerOpen(true)}
+              />
+            </div>
+          </NavigationWrapper>
+        </main>
+      )}
+
+      <TrackDrawer
+        open={drawerOpen}
+        currentSongId={selectedSong?.id}
+        onClose={() => setDrawerOpen(false)}
+        onSelect={selectSong}
+      />
+    </>
+  );
+}

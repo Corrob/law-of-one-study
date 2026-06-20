@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
-import { ExploreIcon, BookIcon, MeditateIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
+import { ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -204,6 +204,20 @@ export default function Dashboard() {
             skipAnimation={skipAnimations}
           />
         ))}
+        {/* Music album — English only for now */}
+        {locale === "en" && (
+          <div className="col-span-2">
+            <FeatureCard
+              href="/music"
+              icon={MusicIcon}
+              title={t("features.music.title")}
+              description={t("features.music.description")}
+              index={FEATURES.length + 1}
+              featured
+              skipAnimation={skipAnimations}
+            />
+          </div>
+        )}
       </div>
 
       {/* Footer Links */}

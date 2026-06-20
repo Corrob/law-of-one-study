@@ -1,0 +1,53 @@
+{
+  "_comment": "PLACEHOLDER: UI strings here are English for now (the album is English-only). Translate when localizing; see album.englishOnly for the user-facing notice.",
+  "album": {
+    "title": "The Wanderer's Return",
+    "subtitle": "Seven songs through the densities",
+    "description": "A journey through the seven densities of consciousness — and the cycle that begins again.",
+    "play": "Play the album",
+    "songList": "Song list",
+    "englishOnly": "Cet album n'est disponible qu'en anglais pour le moment."
+  },
+  "densityLabel": "{ordinal} density",
+  "player": {
+    "play": "Play",
+    "pause": "Pause",
+    "previous": "Previous track",
+    "next": "Next track",
+    "back": "Back",
+    "seek": "Seek",
+    "close": "Close",
+    "lyricsComing": "Lyrics coming soon",
+    "audioComing": "Audio coming soon"
+  },
+  "songs": {
+    "firstBreath": {
+      "title": "First Breath",
+      "description": "Elemental awareness — the first spark of knowing."
+    },
+    "theReaching": {
+      "title": "The Reaching",
+      "description": "Life straining toward a light it cannot name."
+    },
+    "behindTheVeil": {
+      "title": "Behind the Veil",
+      "description": "The veil, the choice, and a voice from the other side."
+    },
+    "known": {
+      "title": "Known",
+      "description": "The veil lifts — every heart becomes transparent."
+    },
+    "coldLight": {
+      "title": "Cold Light",
+      "description": "Wisdom that can see everything, and warm nothing."
+    },
+    "aMillionYearsAhead": {
+      "title": "A Million Years Ahead",
+      "description": "The higher self remembers — and answers."
+    },
+    "gateway": {
+      "title": "Gateway",
+      "description": "The return to the One, and the choice to begin again."
+    }
+  }
+}
