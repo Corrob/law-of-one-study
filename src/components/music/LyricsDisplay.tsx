@@ -146,7 +146,11 @@ export default function LyricsDisplay({
                   aria-current={isActive ? "true" : undefined}
                   className={`block w-full cursor-pointer transition-all duration-500 ease-out leading-snug ${
                     isActive
-                      ? "text-[var(--lo1-starlight)] text-2xl md:text-3xl font-medium scale-[1.04]"
+                      ? // On mobile, keep the active line the same font size as the
+                        // rest and grow it with a transform (which doesn't reflow,
+                        // so a one-line line stays one line). Wider screens have
+                        // room for the larger type.
+                        "text-[var(--lo1-starlight)] text-lg md:text-3xl font-medium scale-[1.12] md:scale-[1.04]"
                       : "text-[var(--lo1-stardust)] text-lg md:text-xl"
                   }`}
                   style={

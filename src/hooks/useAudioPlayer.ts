@@ -13,6 +13,13 @@ export interface UseAudioPlayerArgs {
   /** Shown as the duration until the real value loads from metadata. */
   durationFallback?: number;
   autoPlay?: boolean;
+  /**
+   * Identifier of the current source (e.g. song id). When it changes, autoplay
+   * is re-armed so a *persistent* <audio> element keeps playing track-to-track —
+   * the key to uninterrupted mobile/PWA background playback, where creating a
+   * fresh element per track gets its play() blocked.
+   */
+  srcKey?: string;
   /** Called when the track finishes (e.g. to advance the album). */
   onEnded?: () => void;
 }
@@ -20,6 +27,7 @@ export interface UseAudioPlayerArgs {
 export function useAudioPlayer({
   durationFallback = 0,
   autoPlay = false,
+  srcKey,
   onEnded,
 }: UseAudioPlayerArgs = {}) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -38,6 +46,18 @@ export function useAudioPlayer({
   useEffect(() => {
     shouldAutoPlay.current = autoPlay;
   }, [autoPlay]);
+
+  // On track change, re-arm autoplay and reset the displayed clock so the
+  // persistent element flows from one song into the next.
+  useEffect(() => {
+    if (srcKey === undefined) return;
+    shouldAutoPlay.current = autoPlay;
+    setCurrentTime(0);
+    setDuration(durationFallback);
+    setAudioError(false);
+    setAudioAvailable(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [srcKey]);
 
   const handleTimeUpdate = useCallback(() => {
     if (audioRef.current) setCurrentTime(audioRef.current.currentTime);

@@ -40,8 +40,10 @@ export default function MusicContent() {
   return (
     <div ref={fullscreenRef}>
       {selectedSong ? (
+        // No `key` on the song id: the player (and its single <audio> element)
+        // must persist across track changes so playback continues uninterrupted,
+        // especially in the background on mobile/PWA.
         <SongPlayer
-          key={selectedSong.id}
           song={selectedSong}
           onClose={() => setSelectedSong(null)}
           onPrev={() => goToOffset(-1)}

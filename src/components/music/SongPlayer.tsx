@@ -7,7 +7,8 @@ import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { useAudioClock } from "@/hooks/useAudioClock";
 import { useLyricSync } from "@/hooks/useLyricSync";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { getAudioPath } from "@/data/music/album";
+import { useMediaSession } from "@/hooks/useMediaSession";
+import { getAudioPath, getCoverPath } from "@/data/music/album";
 import { loadSongLyrics } from "@/data/music/loadLyrics";
 import { type LyricCue, type Song } from "@/lib/schemas/music";
 import LyricsDisplay from "./LyricsDisplay";
@@ -54,9 +55,33 @@ export default function SongPlayer({
   const player = useAudioPlayer({
     durationFallback: song.durationSeconds,
     autoPlay: true,
+    srcKey: song.id,
     onEnded: onNext,
   });
   const { audioRef, isPlaying, currentTime, duration, audioError } = player;
+
+  // Publish the track to the OS media session so playback continues in the
+  // background (mobile/PWA) and shows lock-screen / media-key controls.
+  useMediaSession(
+    {
+      title: t(song.titleKey),
+      artist: t("album.title"),
+      album: t("album.title"),
+      artworkSrc: getCoverPath(song),
+    },
+    isPlaying,
+    {
+      play: () => {
+        if (!isPlaying) player.togglePlay();
+      },
+      pause: () => {
+        if (isPlaying) player.togglePlay();
+      },
+      previousTrack: onPrev,
+      nextTrack: onNext,
+      seekTo: player.seek,
+    }
+  );
 
   const clock = useAudioClock(audioRef, isPlaying, { smooth: !reducedMotion });
   const { activeIndex, lit, activeHint } = useLyricSync(cues, clock);
