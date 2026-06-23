@@ -180,19 +180,6 @@ export default function SongPlayer({
             {t("densityLabel", { ordinal: ORDINAL[song.density] })}
           </p>
         </div>
-        {canFullscreen && (
-          <button
-            onClick={onToggleFullscreen}
-            aria-label={
-              isFullscreen
-                ? t("player.exitFullscreen")
-                : t("player.fullscreen")
-            }
-            className="flex items-center justify-center w-10 h-10 rounded-full bg-[var(--lo1-indigo)]/60 text-[var(--lo1-starlight)] hover:bg-[var(--lo1-indigo)]/90 transition-colors cursor-pointer shrink-0"
-          >
-            {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
-          </button>
-        )}
         <button
           onClick={onOpenList}
           aria-label={t("album.songList")}
@@ -255,8 +242,18 @@ export default function SongPlayer({
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center justify-center gap-8">
+        {/* Buttons — fullscreen and download flank the transport controls. */}
+        <div className="flex items-center justify-center gap-6">
+          {/* Left flank: download the mp3. */}
+          <a
+            href={getAudioPath(song)}
+            download={`Density ${song.density} - ${t(song.titleKey)}.mp3`}
+            aria-label={`${t("player.download")} – ${t(song.titleKey)}`}
+            title={t("player.download")}
+            className="text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors cursor-pointer"
+          >
+            <DownloadIcon />
+          </a>
           <button
             onClick={handlePrev}
             aria-label={t("player.previous")}
@@ -282,6 +279,22 @@ export default function SongPlayer({
           >
             <SkipIcon direction="next" />
           </button>
+          {/* Right flank: fullscreen (placeholder keeps play centered when unsupported). */}
+          {canFullscreen ? (
+            <button
+              onClick={onToggleFullscreen}
+              aria-label={
+                isFullscreen
+                  ? t("player.exitFullscreen")
+                  : t("player.fullscreen")
+              }
+              className="text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors cursor-pointer"
+            >
+              {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
+            </button>
+          ) : (
+            <span className="w-5" aria-hidden="true" />
+          )}
         </div>
       </div>
     </main>
@@ -345,6 +358,25 @@ function ExitFullscreenIcon() {
       <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
       <path d="M3 16h3a2 2 0 0 1 2 2v3" />
       <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 3v12" />
+      <path d="m7 10 5 5 5-5" />
+      <path d="M5 21h14" />
     </svg>
   );
 }

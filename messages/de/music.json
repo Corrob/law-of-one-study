@@ -20,7 +20,8 @@
     "fullscreen": "Full screen",
     "exitFullscreen": "Exit full screen",
     "lyricsComing": "Lyrics coming soon",
-    "audioComing": "Audio coming soon"
+    "audioComing": "Audio coming soon",
+    "download": "Herunterladen"
   },
   "songs": {
     "firstBreath": {

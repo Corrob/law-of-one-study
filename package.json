@@ -18,6 +18,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "generate:icons": "tsx scripts/generate-pwa-icons.ts",
+    "tag:album": "tsx scripts/tag-album-audio.ts",
     "prepare": "husky"
   },
   "dependencies": {
