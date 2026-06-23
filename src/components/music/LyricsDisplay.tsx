@@ -12,8 +12,6 @@ interface LyricsDisplayProps {
   /** Density ray color of the current song — tints the active line's glow. */
   densityColor: string;
   reducedMotion: boolean;
-  /** Seek the audio to a line's start time when tapped. */
-  onSeekToLine: (time: number) => void;
 }
 
 // Depth-of-field tiers indexed by distance from the active line (clamped 0..3).
@@ -52,11 +50,10 @@ export default function LyricsDisplay({
   lit,
   densityColor,
   reducedMotion,
-  onSeekToLine,
 }: LyricsDisplayProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
   const columnRef = useRef<HTMLDivElement>(null);
-  const lineRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const lineRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   const targetRef = useRef(0);
   const currentRef = useRef(0);
@@ -138,13 +135,12 @@ export default function LyricsDisplay({
             const distance = activeIndex < 0 ? i : Math.abs(i - activeIndex);
             return (
               <li key={`${cue.start}-${i}`}>
-                <button
+                <p
                   ref={(el) => {
                     lineRefs.current[i] = el;
                   }}
-                  onClick={() => onSeekToLine(cue.start)}
                   aria-current={isActive ? "true" : undefined}
-                  className={`block w-full cursor-pointer transition-all duration-500 ease-out leading-snug ${
+                  className={`block w-full transition-all duration-500 ease-out leading-snug ${
                     isActive
                       ? // On mobile, keep the active line the same font size as the
                         // rest and grow it with a transform (which doesn't reflow,
@@ -166,7 +162,7 @@ export default function LyricsDisplay({
                   ) : (
                     cue.text
                   )}
-                </button>
+                </p>
               </li>
             );
           })}

@@ -8,6 +8,7 @@ import { useAudioClock } from "@/hooks/useAudioClock";
 import { useLyricSync } from "@/hooks/useLyricSync";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useMediaSession } from "@/hooks/useMediaSession";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import { getAudioPath, getCoverPath } from "@/data/music/album";
 import { loadSongLyrics } from "@/data/music/loadLyrics";
 import { type LyricCue, type Song } from "@/lib/schemas/music";
@@ -82,6 +83,9 @@ export default function SongPlayer({
       seekTo: player.seek,
     }
   );
+
+  // Keep the screen awake while playing so the synced lyrics stay visible.
+  useWakeLock(isPlaying);
 
   const clock = useAudioClock(audioRef, isPlaying, { smooth: !reducedMotion });
   const { activeIndex, lit, activeHint } = useLyricSync(cues, clock);
@@ -197,7 +201,6 @@ export default function SongPlayer({
           lit={lit}
           densityColor={song.densityColor}
           reducedMotion={reducedMotion}
-          onSeekToLine={player.seek}
         />
       ) : (
         <div className="relative z-10 flex-1 flex items-center justify-center px-6 text-center">
