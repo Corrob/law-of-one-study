@@ -121,7 +121,7 @@
     },
     {
       "start": 108.72,
-      "end": 128.84,
+      "end": 114.0,
       "text": "to help you home to me"
     },
     {
@@ -157,7 +157,8 @@
     {
       "start": 149.3,
       "end": 151.88,
-      "text": "you become the very light"
+      "text": "you become the very light",
+      "animationHint": "expand"
     },
     {
       "start": 152.88,

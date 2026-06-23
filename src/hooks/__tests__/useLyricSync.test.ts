@@ -1,4 +1,4 @@
-import { findActiveCueIndex, lineProgress } from "../useLyricSync";
+import { findActiveCueIndex, isCueLit } from "../useLyricSync";
 import { type LyricCue } from "@/lib/schemas/music";
 
 const cues: LyricCue[] = [
@@ -36,29 +36,33 @@ describe("findActiveCueIndex", () => {
   });
 });
 
-describe("lineProgress", () => {
-  it("returns 0 at the start of a cue", () => {
-    expect(lineProgress(cues[1], 2)).toBe(0);
+describe("isCueLit", () => {
+  it("is unlit when there is no active line", () => {
+    expect(isCueLit(cues, -1, 1)).toBe(false);
   });
 
-  it("returns ~0.5 halfway through", () => {
-    expect(lineProgress(cues[1], 3.5)).toBeCloseTo(0.5);
+  it("is lit while the line is being sung", () => {
+    expect(isCueLit(cues, 1, 3.5)).toBe(true);
+    expect(isCueLit(cues, 1, 5)).toBe(true); // at the end
   });
 
-  it("clamps to 1 past the end", () => {
-    expect(lineProgress(cues[1], 99)).toBe(1);
+  it("stays lit through a short gap so lines hand off cleanly", () => {
+    // cue[1].end = 5, cue[2].start = 6 → 1s gap (< 4s)
+    expect(isCueLit(cues, 1, 5.5)).toBe(true);
   });
 
-  it("clamps to 0 before the start", () => {
-    expect(lineProgress(cues[1], 0)).toBe(0);
+  it("turns off during a long instrumental gap after a brief linger", () => {
+    const gapped: LyricCue[] = [
+      { start: 0, end: 2, text: "a" },
+      { start: 10, end: 12, text: "b" }, // 8s gap (> 4s)
+    ];
+    expect(isCueLit(gapped, 0, 3)).toBe(true); // within the 1.5s linger
+    expect(isCueLit(gapped, 0, 4)).toBe(false); // past the linger
+    expect(isCueLit(gapped, 0, 9)).toBe(false);
   });
 
-  it("returns 0 for an undefined cue", () => {
-    expect(lineProgress(undefined, 5)).toBe(0);
-  });
-
-  it("treats a zero-length cue as fully complete once reached", () => {
-    expect(lineProgress({ start: 4, end: 4, text: "x" }, 4)).toBe(1);
-    expect(lineProgress({ start: 4, end: 4, text: "x" }, 3)).toBe(0);
+  it("does not linger forever on the final line", () => {
+    expect(isCueLit(cues, 2, 8.5)).toBe(true); // within linger of end (8)
+    expect(isCueLit(cues, 2, 12)).toBe(false); // long after the song's last word
   });
 });

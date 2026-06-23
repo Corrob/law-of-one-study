@@ -24,7 +24,8 @@
     {
       "start": 39.0,
       "end": 42.72,
-      "text": "I have mapped the whole cathedral"
+      "text": "I have mapped the whole cathedral",
+      "animationHint": "expand"
     },
     {
       "start": 43.7,
@@ -44,7 +45,8 @@
     {
       "start": 59.26,
       "end": 62.28,
-      "text": "All this wisdom, all this light"
+      "text": "All this wisdom, all this light",
+      "animationHint": "bloom"
     },
     {
       "start": 63.88,
@@ -78,7 +80,7 @@
     },
     {
       "start": 90.46,
-      "end": 101.0,
+      "end": 93.0,
       "text": "or only half the sun?"
     },
     {
@@ -109,7 +111,8 @@
     {
       "start": 122.48,
       "end": 127.06,
-      "text": "something soft begins to ache —"
+      "text": "something soft begins to ache —",
+      "animationHint": "warm"
     },
     {
       "start": 127.22,
@@ -134,7 +137,8 @@
     {
       "start": 156.66,
       "end": 159.42,
-      "text": "and maybe that's the doorway"
+      "text": "and maybe that's the doorway",
+      "animationHint": "shimmer"
     },
     {
       "start": 160.0,

@@ -17,6 +17,8 @@
     "back": "Back",
     "seek": "Seek",
     "close": "Close",
+    "fullscreen": "Full screen",
+    "exitFullscreen": "Exit full screen",
     "lyricsComing": "Lyrics coming soon",
     "audioComing": "Audio coming soon"
   },

@@ -26,7 +26,11 @@ test.describe("Music album", () => {
 
   test("starts from the beginning when Play is pressed", async ({ page }) => {
     await page.goto("/music");
-    await page.getByRole("button", { name: "Play the album" }).click();
+    // The cover gently floats (album-cover-float), so it never settles for
+    // Playwright's stability check — force the click; it's visible and enabled.
+    await page
+      .getByRole("button", { name: "Play the album" })
+      .click({ force: true });
     // Song 1 opens (it has no cues yet → the lyrics-coming-soon state).
     await expect(
       page.getByRole("heading", { name: "First Breath" })

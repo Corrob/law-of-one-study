@@ -14,7 +14,9 @@ import { z } from "zod";
 
 /**
  * A single timed lyric line. `animationHint` lets a specific moment trigger a
- * special scene state (e.g. "higher-self-reveal" in Song 6).
+ * synced visual — either a generic meaning-driven FX overlay or a scene-specific
+ * state (e.g. "higher-self-reveal" in Song 6). See the vocabulary in
+ * src/data/music/animationHints.ts.
  */
 export const LyricCueSchema = z.object({
   start: z.number().min(0),

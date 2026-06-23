@@ -14,7 +14,8 @@
     {
       "start": 22.5,
       "end": 25.34,
-      "text": "every heart becomes transparent"
+      "text": "every heart becomes transparent",
+      "animationHint": "shimmer"
     },
     {
       "start": 25.96,
@@ -78,8 +79,9 @@
     },
     {
       "start": 66.86,
-      "end": 82.76,
-      "text": "we were always, always known"
+      "end": 73.0,
+      "text": "we were always, always known",
+      "animationHint": "bloom"
     },
     {
       "start": 82.76,
@@ -119,7 +121,8 @@
     {
       "start": 107.46,
       "end": 110.0,
-      "text": "was a seed beneath this sky"
+      "text": "was a seed beneath this sky",
+      "animationHint": "rise"
     }
   ]
 }

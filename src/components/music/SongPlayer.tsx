@@ -22,12 +22,19 @@ function formatTime(seconds: number): string {
 
 const ORDINAL = ["", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th"];
 
+/** Past this point, skip-back restarts the song instead of going to the previous track. */
+const PREV_RESTART_THRESHOLD_SECONDS = 3;
+
 interface SongPlayerProps {
   song: Song;
   onClose: () => void;
   onPrev: () => void;
   onNext: () => void;
   onOpenList: () => void;
+  /** Fullscreen controls — owned by a stable parent so they survive track changes. */
+  canFullscreen: boolean;
+  isFullscreen: boolean;
+  onToggleFullscreen: () => void;
 }
 
 export default function SongPlayer({
@@ -36,6 +43,9 @@ export default function SongPlayer({
   onPrev,
   onNext,
   onOpenList,
+  canFullscreen,
+  isFullscreen,
+  onToggleFullscreen,
 }: SongPlayerProps) {
   const t = useTranslations("music");
   const reducedMotion = useReducedMotion();
@@ -49,7 +59,8 @@ export default function SongPlayer({
   const { audioRef, isPlaying, currentTime, duration, audioError } = player;
 
   const clock = useAudioClock(audioRef, isPlaying, { smooth: !reducedMotion });
-  const { activeIndex, activeHint } = useLyricSync(cues, clock);
+  const { activeIndex, lit, activeHint } = useLyricSync(cues, clock);
+
 
   // Load this song's timed cues.
   useEffect(() => {
@@ -83,15 +94,25 @@ export default function SongPlayer({
       } else if (e.key === "ArrowLeft") {
         if (e.shiftKey) onPrev();
         else seek(Math.max(0, currentTime - 5));
+      } else if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        onToggleFullscreen();
       } else if (e.key === "Escape") {
         onClose();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [onNext, onPrev, onClose]);
+  }, [onNext, onPrev, onClose, onToggleFullscreen]);
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // Skip-back restarts the current song first (standard music-player behavior);
+  // only when already near the start does it jump to the previous track.
+  const handlePrev = () => {
+    if (currentTime > PREV_RESTART_THRESHOLD_SECONDS) player.seek(0);
+    else onPrev();
+  };
 
   return (
     <main className="h-dvh flex flex-col relative overflow-hidden bg-[var(--lo1-deep-space)]">
@@ -100,6 +121,7 @@ export default function SongPlayer({
         density={song.density}
         clock={clock}
         activeHint={activeHint}
+        lineIndex={activeIndex}
         reducedMotion={reducedMotion}
         color={song.densityColor}
         durationSeconds={duration || song.durationSeconds}
@@ -130,6 +152,19 @@ export default function SongPlayer({
             {t("densityLabel", { ordinal: ORDINAL[song.density] })}
           </p>
         </div>
+        {canFullscreen && (
+          <button
+            onClick={onToggleFullscreen}
+            aria-label={
+              isFullscreen
+                ? t("player.exitFullscreen")
+                : t("player.fullscreen")
+            }
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-[var(--lo1-indigo)]/60 text-[var(--lo1-starlight)] hover:bg-[var(--lo1-indigo)]/90 transition-colors cursor-pointer shrink-0"
+          >
+            {isFullscreen ? <ExitFullscreenIcon /> : <FullscreenIcon />}
+          </button>
+        )}
         <button
           onClick={onOpenList}
           aria-label={t("album.songList")}
@@ -144,6 +179,8 @@ export default function SongPlayer({
         <LyricsDisplay
           cues={cues}
           activeIndex={activeIndex}
+          lit={lit}
+          densityColor={song.densityColor}
           reducedMotion={reducedMotion}
           onSeekToLine={player.seek}
         />
@@ -193,7 +230,7 @@ export default function SongPlayer({
         {/* Buttons */}
         <div className="flex items-center justify-center gap-8">
           <button
-            onClick={onPrev}
+            onClick={handlePrev}
             aria-label={t("player.previous")}
             className="text-[var(--lo1-starlight)] hover:text-[var(--lo1-gold)] transition-colors cursor-pointer"
           >
@@ -240,6 +277,46 @@ function ListIcon() {
       <circle cx="4" cy="6" r="1" fill="currentColor" stroke="none" />
       <circle cx="4" cy="12" r="1" fill="currentColor" stroke="none" />
       <circle cx="4" cy="18" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FullscreenIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+      <path d="M16 3h3a2 2 0 0 1 2 2v3" />
+      <path d="M8 21H5a2 2 0 0 1-2-2v-3" />
+      <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+    </svg>
+  );
+}
+
+function ExitFullscreenIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className="w-5 h-5"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+      <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+      <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+      <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
     </svg>
   );
 }

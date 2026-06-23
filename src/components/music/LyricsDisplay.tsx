@@ -7,16 +7,41 @@ interface LyricsDisplayProps {
   cues: LyricCue[];
   /** Active cue index from useLyricSync (-1 = none yet). */
   activeIndex: number;
+  /** Whether the active line's highlight is lit now (off during instrumental gaps). */
+  lit: boolean;
+  /** Density ray color of the current song — tints the active line's glow. */
+  densityColor: string;
   reducedMotion: boolean;
   /** Seek the audio to a line's start time when tapped. */
   onSeekToLine: (time: number) => void;
 }
 
+// Depth-of-field tiers indexed by distance from the active line (clamped 0..3).
+const BLUR_PX = [0, 1, 2.5, 4];
+const PAST_OPACITY = [0.5, 0.45, 0.32, 0.2];
+const UPCOMING_OPACITY = [0.8, 0.7, 0.55, 0.42];
+
+/** Per-line focus style by distance from the active line (Apple-style depth of field). */
+function focusStyle(
+  isPast: boolean,
+  distance: number,
+  reducedMotion: boolean
+): React.CSSProperties {
+  const tier = Math.min(distance, 3);
+  const blur = reducedMotion ? 0 : BLUR_PX[tier];
+  const opacity = (isPast ? PAST_OPACITY : UPCOMING_OPACITY)[tier];
+  return { opacity, filter: blur ? `blur(${blur}px)` : undefined };
+}
+
 /**
- * Karaoke-style synced lyrics. The active line is spotlit; the column eases
- * to keep it vertically centered. Scroll is animated imperatively via a small
- * self-settling rAF loop (no per-frame React re-render); under reduced motion
- * the column snaps instantly and the loop never runs.
+ * Karaoke-style synced lyrics with an Apple-Music-style depth of field: the
+ * active line is sharp, scaled and glows in the song's density color while
+ * surrounding lines blur and dim by distance. Each line glows in with a quick
+ * entrance when it becomes active, and the highlight turns off during long
+ * instrumental gaps (`lit`) so a line never lingers lit while the music plays on.
+ *
+ * The column eases to keep the active line centered (animated imperatively — no
+ * per-frame React re-render); under reduced motion it snaps.
  *
  * The lyrics are the page's semantic content — a labelled list with the active
  * line marked `aria-current`.
@@ -24,6 +49,8 @@ interface LyricsDisplayProps {
 export default function LyricsDisplay({
   cues,
   activeIndex,
+  lit,
+  densityColor,
   reducedMotion,
   onSeekToLine,
 }: LyricsDisplayProps) {
@@ -35,7 +62,8 @@ export default function LyricsDisplay({
   const currentRef = useRef(0);
   const rafRef = useRef<number | null>(null);
 
-  // Compute where the column must sit to center the active line.
+  // Compute where the column must sit to center the active line. During an
+  // instrumental gap the line stays the scroll anchor even though it's unlit.
   const computeTarget = (): number => {
     const viewport = viewportRef.current;
     if (!viewport) return 0;
@@ -87,7 +115,7 @@ export default function LyricsDisplay({
   return (
     <div
       ref={viewportRef}
-      className="relative flex-1 overflow-hidden"
+      className="relative z-10 flex-1 overflow-hidden"
       aria-label="Lyrics"
       style={{
         maskImage:
@@ -102,8 +130,12 @@ export default function LyricsDisplay({
       >
         <ul className="space-y-3 text-center max-w-xl mx-auto">
           {cues.map((cue, i) => {
-            const isActive = i === activeIndex;
-            const isPast = activeIndex >= 0 && i < activeIndex;
+            const isActive = i === activeIndex && lit;
+            // The current line, once it stops being lit, reads as just-sung.
+            const isPast =
+              (activeIndex >= 0 && i < activeIndex) ||
+              (i === activeIndex && !lit);
+            const distance = activeIndex < 0 ? i : Math.abs(i - activeIndex);
             return (
               <li key={`${cue.start}-${i}`}>
                 <button
@@ -114,13 +146,22 @@ export default function LyricsDisplay({
                   aria-current={isActive ? "true" : undefined}
                   className={`block w-full cursor-pointer transition-all duration-500 ease-out leading-snug ${
                     isActive
-                      ? "text-[var(--lo1-starlight)] text-2xl md:text-3xl font-medium scale-[1.02] drop-shadow-[0_0_18px_rgba(232,230,242,0.25)]"
-                      : isPast
-                        ? "text-[var(--lo1-stardust)]/40 text-lg md:text-xl"
-                        : "text-[var(--lo1-stardust)]/70 text-lg md:text-xl"
+                      ? "text-[var(--lo1-starlight)] text-2xl md:text-3xl font-medium scale-[1.04]"
+                      : "text-[var(--lo1-stardust)] text-lg md:text-xl"
                   }`}
+                  style={
+                    isActive
+                      ? { filter: `drop-shadow(0 0 18px ${densityColor}66)` }
+                      : focusStyle(isPast, distance, reducedMotion)
+                  }
                 >
-                  {cue.text}
+                  {isActive ? (
+                    <span key={`lit-${activeIndex}`} className="inline-block lyric-glow-in">
+                      {cue.text}
+                    </span>
+                  ) : (
+                    cue.text
+                  )}
                 </button>
               </li>
             );

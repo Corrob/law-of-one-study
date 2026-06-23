@@ -4,7 +4,8 @@
     {
       "start": 14.0,
       "end": 17.0,
-      "text": "The universe breathes out"
+      "text": "The universe breathes out",
+      "animationHint": "expand"
     },
     {
       "start": 19.0,
@@ -34,11 +35,12 @@
     {
       "start": 48.48,
       "end": 57.36,
-      "text": "the first dim spark of knowing"
+      "text": "the first dim spark of knowing",
+      "animationHint": "spark"
     },
     {
       "start": 51.0,
-      "end": 64.16,
+      "end": 55.0,
       "text": "in a world without a why"
     },
     {
@@ -74,11 +76,12 @@
     {
       "start": 86.0,
       "end": 98.61,
-      "text": "just light learning to hold a shape"
+      "text": "just light learning to hold a shape",
+      "animationHint": "rise"
     },
     {
       "start": 90.0,
-      "end": 110.2,
+      "end": 96.0,
       "text": "and shape learning to keep time"
     },
     {
@@ -109,7 +112,8 @@
     {
       "start": 139.0,
       "end": 144.03,
-      "text": "and the dream is waking now"
+      "text": "and the dream is waking now",
+      "animationHint": "bloom"
     }
   ]
 }

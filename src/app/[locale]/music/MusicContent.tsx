@@ -6,11 +6,21 @@ import AlbumLanding from "@/components/music/AlbumLanding";
 import SongPlayer from "@/components/music/SongPlayer";
 import TrackDrawer from "@/components/music/TrackDrawer";
 import { ALBUM } from "@/data/music/album";
+import { useFullscreen } from "@/hooks/useFullscreen";
 import { type Song } from "@/lib/schemas/music";
 
 export default function MusicContent() {
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Fullscreen lives on this stable wrapper (not the per-song player, which
+  // remounts on each track change) so it persists across the whole album.
+  const {
+    ref: fullscreenRef,
+    isFullscreen,
+    canFullscreen,
+    toggle: toggleFullscreen,
+  } = useFullscreen<HTMLDivElement>();
 
   const selectSong = useCallback((song: Song) => {
     setSelectedSong(song);
@@ -28,7 +38,7 @@ export default function MusicContent() {
   }, []);
 
   return (
-    <>
+    <div ref={fullscreenRef}>
       {selectedSong ? (
         <SongPlayer
           key={selectedSong.id}
@@ -37,6 +47,9 @@ export default function MusicContent() {
           onPrev={() => goToOffset(-1)}
           onNext={() => goToOffset(1)}
           onOpenList={() => setDrawerOpen(true)}
+          canFullscreen={canFullscreen}
+          isFullscreen={isFullscreen}
+          onToggleFullscreen={toggleFullscreen}
         />
       ) : (
         <main className="h-dvh flex flex-col cosmic-bg relative">
@@ -58,6 +71,6 @@ export default function MusicContent() {
         onClose={() => setDrawerOpen(false)}
         onSelect={selectSong}
       />
-    </>
+    </div>
   );
 }

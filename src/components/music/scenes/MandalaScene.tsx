@@ -18,12 +18,21 @@ export default function MandalaScene({
 }: SceneProps) {
   const [bloom, setBloom] = useState(false);
   const [reveal, setReveal] = useState(false);
+  const [motif, setMotif] = useState(false);
 
   // Trigger the cued states from the active lyric hint.
   useEffect(() => {
     if (activeHint === "chorus-bloom") setBloom(true);
     if (activeHint === "higher-self-reveal") setReveal(true);
+    if (activeHint === "motif-return") setMotif(true);
   }, [activeHint]);
+
+  // A gentle pulse when the opening motif returns, then settle.
+  useEffect(() => {
+    if (!motif) return;
+    const id = setTimeout(() => setMotif(false), 3000);
+    return () => clearTimeout(id);
+  }, [motif]);
 
   // Auto-clear the reveal flash-back after ~7s. The timer is tied to `reveal`,
   // NOT to `activeHint` — otherwise the next line changing the hint would cancel
@@ -55,7 +64,10 @@ export default function MandalaScene({
         animate={
           reducedMotion
             ? {}
-            : { rotate: 360, scale: bloom ? [1, 1.15, 1] : 1 }
+            : {
+                rotate: 360,
+                scale: bloom ? [1, 1.15, 1] : motif ? [1, 1.08, 1] : 1,
+              }
         }
         transition={{
           rotate: { duration: 70, repeat: Infinity, ease: "linear" },

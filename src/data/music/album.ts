@@ -120,6 +120,15 @@ export function getAudioPath(song: Song): string {
   return `/album/${song.audioFile}`;
 }
 
+/**
+ * Public path to a song's cover art. Derived from the track number so the seven
+ * covers live alongside the audio: /album/song-0N-cover.webp.
+ */
+export function getCoverPath(song: Song): string {
+  const n = song.trackNumber.toString().padStart(2, "0");
+  return `/album/song-${n}-cover.webp`;
+}
+
 /** Find a song by id. */
 export function getSongById(id: string): Song | undefined {
   return ALBUM.songs.find((s) => s.id === id);

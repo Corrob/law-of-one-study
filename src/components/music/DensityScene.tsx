@@ -2,7 +2,9 @@
 
 import dynamic from "next/dynamic";
 import { type ComponentType } from "react";
+import { motion } from "framer-motion";
 import { type AudioClock } from "@/hooks/useAudioClock";
+import LyricFx from "./scenes/LyricFx";
 
 /**
  * Props shared by every density scene. Scenes are decorative (aria-hidden);
@@ -53,18 +55,46 @@ const BESPOKE_SCENES: Record<number, ComponentType<SceneProps>> = {
 /**
  * Picks and renders the scene for a song's density. Songs without a bespoke
  * scene (2–5 for now) fall back to the generic color/particle scene.
+ *
+ * Every scene also gets a shared, tasteful pulse on each new lyric line
+ * (`lineIndex`) — a soft radial breath in the density color that ties the whole
+ * visual field to the rhythm of the words. Disabled under reduced motion.
  */
 export default function DensityScene({
   density,
+  lineIndex = -1,
   ...sceneProps
-}: { density: number } & SceneProps) {
+}: { density: number; lineIndex?: number } & SceneProps) {
   const Scene = BESPOKE_SCENES[density] ?? GenericDensityScene;
+  const { color, reducedMotion, activeHint } = sceneProps;
   return (
     <div
       aria-hidden="true"
       className="absolute inset-0 overflow-hidden pointer-events-none"
     >
       <Scene {...sceneProps} />
+
+      {/* Meaning-driven FX for hinted lines, echoing the words. */}
+      <LyricFx
+        effect={activeHint}
+        trigger={lineIndex}
+        color={color}
+        reducedMotion={reducedMotion}
+      />
+
+      {!reducedMotion && lineIndex >= 0 && (
+        <motion.div
+          // Remount on every new line so the breath replays.
+          key={lineIndex}
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(ellipse at 50% 55%, ${color}24 0%, transparent 60%)`,
+          }}
+          initial={{ opacity: 0.32 }}
+          animate={{ opacity: 0 }}
+          transition={{ duration: 1.3, ease: "easeOut" }}
+        />
+      )}
     </div>
   );
 }

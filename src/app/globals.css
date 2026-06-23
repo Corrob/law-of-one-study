@@ -357,6 +357,50 @@ input[type="button"] {
   animation: gentle-glow 3s ease-in-out infinite;
 }
 
+/* Album landing — gentle breathing float for the hero cover */
+@keyframes album-cover-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.012);
+  }
+}
+
+.album-cover-float {
+  animation: album-cover-float 7s ease-in-out infinite;
+}
+
+/* Album landing — slow rotation of the density-ray ring behind the cover */
+@keyframes density-ring-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.density-ring-spin {
+  animation: density-ring-spin 48s linear infinite;
+}
+
+/* Lyrics — a quick glow/rise when a line becomes the active one */
+@keyframes lyric-glow-in {
+  0% {
+    opacity: 0.2;
+    filter: brightness(1.9);
+    transform: translateY(4px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1);
+    transform: translateY(0) scale(1);
+  }
+}
+
+.lyric-glow-in {
+  animation: lyric-glow-in 0.5s ease-out;
+}
+
 /* Fade-in animation for streaming elements */
 @keyframes fade-in {
   from {

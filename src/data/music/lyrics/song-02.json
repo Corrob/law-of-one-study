@@ -19,7 +19,8 @@
     {
       "start": 40.08,
       "end": 42.58,
-      "text": "the wild green wants to grow"
+      "text": "the wild green wants to grow",
+      "animationHint": "rise"
     },
     {
       "start": 43.04,
@@ -49,7 +50,8 @@
     {
       "start": 60.48,
       "end": 63.6,
-      "text": "toward a light I cannot name"
+      "text": "toward a light I cannot name",
+      "animationHint": "spark"
     },
     {
       "start": 64.22,
@@ -64,7 +66,8 @@
     {
       "start": 71.0,
       "end": 75.76,
-      "text": "Reaching toward a light I cannot name"
+      "text": "Reaching toward a light I cannot name",
+      "animationHint": "bloom"
     },
     {
       "start": 78.0,
@@ -104,7 +107,8 @@
     {
       "start": 129.0,
       "end": 129.4,
-      "text": "and then the knowing closed"
+      "text": "and then the knowing closed",
+      "animationHint": "contract"
     },
     {
       "start": 131.0,
