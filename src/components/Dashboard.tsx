@@ -10,19 +10,6 @@ import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDa
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
 
-const FEATURES = [
-  {
-    href: "/explore",
-    icon: ExploreIcon,
-    titleKey: "explore",
-  },
-  {
-    href: "/meditate",
-    icon: MeditateIcon,
-    titleKey: "meditate",
-  },
-];
-
 const DASHBOARD_SEEN_KEY = "lo1-dashboard-seen";
 const NOTICE_DISMISSED_KEY = "lo1-notice-dismissed";
 
@@ -179,45 +166,43 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Feature Cards Grid */}
+      {/* Feature Cards Grid — four equal tiles: Study & Listen on top,
+          Explore & Meditate below. Listen (English-only) sits top-right. */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-        {/* Featured: Study Paths - full width */}
-        <div className="col-span-2">
-          <FeatureCard
-            href="/paths"
-            icon={BookIcon}
-            title={t("features.study.title")}
-            description={t("features.study.description")}
-            index={0}
-            featured
-            skipAnimation={skipAnimations}
-          />
-        </div>
-        {FEATURES.map((feature, index) => (
-          <FeatureCard
-            key={feature.href}
-            href={feature.href}
-            icon={feature.icon}
-            title={t(`features.${feature.titleKey}.title`)}
-            description={t(`features.${feature.titleKey}.description`)}
-            index={index + 1}
-            skipAnimation={skipAnimations}
-          />
-        ))}
-        {/* Music album — English only for now */}
+        <FeatureCard
+          href="/paths"
+          icon={BookIcon}
+          title={t("features.study.title")}
+          description={t("features.study.description")}
+          index={0}
+          skipAnimation={skipAnimations}
+        />
         {locale === "en" && (
-          <div className="col-span-2">
-            <FeatureCard
-              href="/music"
-              icon={MusicIcon}
-              title={t("features.music.title")}
-              description={t("features.music.description")}
-              index={FEATURES.length + 1}
-              featured
-              skipAnimation={skipAnimations}
-            />
-          </div>
+          <FeatureCard
+            href="/listen"
+            icon={MusicIcon}
+            title={t("features.music.title")}
+            description={t("features.music.description")}
+            index={1}
+            skipAnimation={skipAnimations}
+          />
         )}
+        <FeatureCard
+          href="/explore"
+          icon={ExploreIcon}
+          title={t("features.explore.title")}
+          description={t("features.explore.description")}
+          index={2}
+          skipAnimation={skipAnimations}
+        />
+        <FeatureCard
+          href="/meditate"
+          icon={MeditateIcon}
+          title={t("features.meditate.title")}
+          description={t("features.meditate.description")}
+          index={3}
+          skipAnimation={skipAnimations}
+        />
       </div>
 
       {/* Footer Links */}

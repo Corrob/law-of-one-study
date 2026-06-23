@@ -13,7 +13,7 @@ const PAGE_TITLE_KEYS: Record<string, string> = {
   "/explore": "explore",
   "/paths": "study",
   "/meditate": "meditate",
-  "/music": "music",
+  "/listen": "music",
   "/about": "about",
   "/donate": "support",
   "/app": "install",

@@ -45,6 +45,7 @@ export default function TrackDrawer({
             transition={{ type: "spring", damping: 30, stiffness: 300 }}
             role="dialog"
             aria-label={t("album.songList")}
+            data-theme="dark"
             className="fixed left-0 top-0 h-dvh w-[82%] max-w-xs z-50 overflow-y-auto
                        bg-[var(--lo1-indigo)] border-r border-[var(--lo1-gold)]/20 p-4"
           >

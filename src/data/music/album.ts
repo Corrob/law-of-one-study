@@ -112,9 +112,9 @@ export const ALBUM: Album = {
 };
 
 /**
- * Public path to a song's audio file. Served from /album/ (not /music/) because
- * /music/* collides with the localized `/music` route and the i18n proxy —
- * the same reason meditation audio lives under /meditations/, not /meditate/.
+ * Public path to a song's audio file. Served from /album/ so the asset path
+ * can't collide with a localized page route or the i18n proxy — the same reason
+ * meditation audio lives under /meditations/, not /meditate/.
  */
 export function getAudioPath(song: Song): string {
   return `/album/${song.audioFile}`;

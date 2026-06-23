@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
-:root {
-  /* Law of One Color Palette - Dark Cosmic Theme */
+:root,
+[data-theme="dark"] {
+  /* Law of One Color Palette - Dark Cosmic Theme.
+     Also applied to any [data-theme="dark"] subtree so an immersive view (the
+     /listen player & song list) can stay dark even when the app is in light mode. */
 
   /* Primary */
   --lo1-indigo: #1a1f4e;

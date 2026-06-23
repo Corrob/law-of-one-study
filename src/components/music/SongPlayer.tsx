@@ -115,7 +115,10 @@ export default function SongPlayer({
   };
 
   return (
-    <main className="h-dvh flex flex-col relative overflow-hidden bg-[var(--lo1-deep-space)]">
+    <main
+      data-theme="dark"
+      className="h-dvh flex flex-col relative overflow-hidden bg-[var(--lo1-deep-space)]"
+    >
       {/* Animated density scene (decorative, behind the lyrics). */}
       <DensityScene
         density={song.density}

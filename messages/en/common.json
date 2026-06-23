@@ -31,7 +31,7 @@
     "about": "About",
     "support": "Support",
     "install": "Install",
-    "music": "Music"
+    "music": "Listen"
   },
   "header": {
     "appTitle": "Law of One Study Companion",
@@ -63,8 +63,8 @@
       "description": "Guided meditations"
     },
     "music": {
-      "title": "The Album",
-      "description": "Seven songs through the densities"
+      "title": "Listen",
+      "description": "Density Songs"
     }
   },
   "explorePage": {

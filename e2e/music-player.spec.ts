@@ -4,7 +4,7 @@ test.describe("Music album", () => {
   test("landing → open song list → play a track with synced lyrics", async ({
     page,
   }) => {
-    await page.goto("/music");
+    await page.goto("/listen");
 
     // The play-first landing.
     await expect(page.getByText("The Wanderer's Return")).toBeVisible();
@@ -25,7 +25,7 @@ test.describe("Music album", () => {
   });
 
   test("starts from the beginning when Play is pressed", async ({ page }) => {
-    await page.goto("/music");
+    await page.goto("/listen");
     // The cover gently floats (album-cover-float), so it never settles for
     // Playwright's stability check — force the click; it's visible and enabled.
     await page
