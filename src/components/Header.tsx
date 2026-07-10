@@ -10,6 +10,7 @@ interface HeaderProps {
 
 // Map paths to translation keys
 const PAGE_TITLE_KEYS: Record<string, string> = {
+  "/ask": "ask",
   "/explore": "explore",
   "/paths": "study",
   "/meditate": "meditate",

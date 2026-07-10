@@ -31,7 +31,8 @@
     "about": "Acerca de",
     "support": "Apoyar",
     "install": "Instalar",
-    "music": "Escuchar"
+    "music": "Escuchar",
+    "ask": "Preguntar"
   },
   "header": {
     "appTitle": "Compañero de Estudio de la Ley del Uno",
@@ -44,10 +45,7 @@
   "dashboard": {
     "dailyWisdom": "Sabiduría Diaria",
     "readOnLawOfOneInfo": "Leer {reference} en lawofone.info",
-    "newReflectionTomorrow": "Una nueva reflexión te espera mañana",
-    "featureNotice": "Las funciones Consultar y Búsqueda han sido eliminadas a petición de L/L Research. Agradecemos su custodia de este material.",
-    "learnMore": "Más información",
-    "dismissNotice": "Cerrar aviso"
+    "newReflectionTomorrow": "Una nueva reflexión te espera mañana"
   },
   "features": {
     "explore": {
@@ -61,6 +59,10 @@
     "meditate": {
       "title": "Meditar",
       "description": "Meditaciones guiadas"
+    },
+    "ask": {
+      "title": "Preguntar",
+      "description": "Pregunta sobre el Material de Ra"
     }
   },
   "explorePage": {

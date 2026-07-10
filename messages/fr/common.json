@@ -31,7 +31,8 @@
     "about": "À propos",
     "support": "Soutenir",
     "install": "Installer",
-    "music": "Écouter"
+    "music": "Écouter",
+    "ask": "Demander"
   },
   "header": {
     "appTitle": "Compagnon d'Étude de la Loi Une",
@@ -44,10 +45,7 @@
   "dashboard": {
     "dailyWisdom": "Sagesse du jour",
     "readOnLawOfOneInfo": "Lire {reference} sur lawofone.info",
-    "newReflectionTomorrow": "Une nouvelle réflexion vous attend demain",
-    "featureNotice": "Les fonctions Chercher et Recherche ont été retirées à la demande de L/L Research. Nous sommes reconnaissants de leur protection de ce matériel.",
-    "learnMore": "En savoir plus",
-    "dismissNotice": "Fermer l'avis"
+    "newReflectionTomorrow": "Une nouvelle réflexion vous attend demain"
   },
   "features": {
     "explore": {
@@ -61,6 +59,10 @@
     "meditate": {
       "title": "Méditer",
       "description": "Méditations guidées"
+    },
+    "ask": {
+      "title": "Demander",
+      "description": "Poser une question sur le Matériau Ra"
     }
   },
   "explorePage": {

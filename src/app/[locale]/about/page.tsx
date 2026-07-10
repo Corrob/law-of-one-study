@@ -5,7 +5,6 @@ import MotionFadeIn from "@/components/MotionFadeIn";
 import { MotionStaggerGroup, MotionStaggerItem } from "@/components/MotionStaggerGroup";
 import { type AvailableLanguage } from "@/lib/quote-utils";
 import { MeditateIcon } from "@/components/icons";
-import FeatureChangesSection from "./FeatureChangesSection";
 import AboutSections from "./AboutSections";
 
 // Feature icons (pure SVG - no client JS needed)
@@ -114,7 +113,6 @@ export default async function AboutPage() {
               </MotionStaggerGroup>
             </section>
 
-            <FeatureChangesSection t={t} />
             <AboutSections t={t} locale={locale} />
           </article>
         </div>

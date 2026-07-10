@@ -31,7 +31,8 @@
     "about": "Über uns",
     "support": "Unterstützen",
     "install": "Installieren",
-    "music": "Hören"
+    "music": "Hören",
+    "ask": "Fragen"
   },
   "header": {
     "appTitle": "Gesetz des Einen Studienbegleiter",
@@ -44,10 +45,7 @@
   "dashboard": {
     "dailyWisdom": "Tägliche Weisheit",
     "readOnLawOfOneInfo": "{reference} auf lawofone.info lesen",
-    "newReflectionTomorrow": "Eine neue Reflexion erwartet dich morgen",
-    "featureNotice": "Die Funktionen Suche und Durchsuchen wurden auf Wunsch von L/L Research entfernt. Wir sind dankbar für ihre Bewahrung dieses Materials.",
-    "learnMore": "Mehr erfahren",
-    "dismissNotice": "Hinweis schließen"
+    "newReflectionTomorrow": "Eine neue Reflexion erwartet dich morgen"
   },
   "features": {
     "explore": {
@@ -61,6 +59,10 @@
     "meditate": {
       "title": "Meditieren",
       "description": "Geführte Meditationen"
+    },
+    "ask": {
+      "title": "Fragen",
+      "description": "Frag etwas über das Ra-Material"
     }
   },
   "explorePage": {

@@ -11,6 +11,7 @@ Community-funded, open source, free for all.
 ## Features
 
 ### Discovery Tools
+- **Ask** — An LLM guide to the Ra Material, grounded entirely in our own concept graph. It explains teachings in its own words and links every claim to the authorized source at lawofone.info — it never reproduces the Ra Material verbatim.
 - **Concept Explorer** — Interactive graph visualization of 100+ Law of One concepts and their relationships
 - **Guided Study Paths** — Curated learning journeys with lessons, quizzes, and reflection prompts
 - **Daily Quote** — Fresh wisdom from Ra each day on the home page
@@ -20,8 +21,6 @@ Community-funded, open source, free for all.
 - **Dark & Light Themes** — Choose your preferred reading experience
 - **Mobile Friendly** — Fully responsive design with PWA support (installable on mobile)
 - **Multilingual** — Available in English, Spanish, German, and French
-
-> **Note:** The AI chat (Seek) and semantic search features were removed in March 2026 at the request of L/L Research. See the [About page](https://lawofone.study/en/about) for details.
 
 ---
 
@@ -60,11 +59,17 @@ cp .env.local.example .env.local
 
 ### Environment Variables
 
-Create a `.env.local` file with:
+Create a `.env.local` file (see `.env.local.example`):
 
 ```env
-NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key  # Optional: for analytics
+NEXT_PUBLIC_POSTHOG_KEY=your_posthog_key   # Optional: analytics
+OPENAI_API_KEY=sk-...                      # Required for the Ask feature (server-side only)
+UPSTASH_REDIS_REST_URL=https://...         # Optional: distributed rate limiting for Ask
+UPSTASH_REDIS_REST_TOKEN=...               # (falls back to an in-memory limiter when unset)
 ```
+
+Without `OPENAI_API_KEY`, the `/ask` route returns a 503 and the rest of the
+site works normally.
 
 ### Running Locally
 

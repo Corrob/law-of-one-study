@@ -16,13 +16,6 @@
       "description": "Pratiquez des méditations guidées tirées des exercices décrits dans le Matériel Ra, notamment trouver l'amour dans l'instant, voir le Créateur et équilibrer le soi."
     }
   },
-  "featureChanges": {
-    "title": "Changements de fonctionnalités",
-    "message": "Les fonctions Chercher (chat IA) et Recherche ont été retirées à la demande de L/L Research. Nous respectons leur protection du Matériel Ra et leurs droits d'auteur.",
-    "remaining": "Vous pouvez toujours explorer les enseignements via l'Explorateur de Concepts, les Parcours d'Étude guidés et les Méditations.",
-    "readMaterial": "Lisez le Matériel Ra complet sur",
-    "llresearchLink": "llresearch.org"
-  },
   "llResearch": {
     "title": "À propos de L/L Research",
     "intro": "Le Matériel Ra, également connu sous le nom de <emphasis>La Loi Une</emphasis>, a été canalisé entre 1981 et 1984 par Carla Rueckert par le complexe mémoriel sociétal Ra. Les sessions ont été facilitées par Don Elkins (questionneur) et Jim McCarty (scribe).",

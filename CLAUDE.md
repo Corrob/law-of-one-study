@@ -8,11 +8,13 @@ A study companion for the Ra Material. Community-funded, open source, free for a
 
 ## Tech Stack
 
-| Component | Technology              |
-| --------- | ----------------------- |
-| Frontend  | Next.js 16 (App Router) |
-| Analytics | PostHog                 |
-| Hosting   | Vercel                  |
+| Component | Technology                        |
+| --------- | --------------------------------- |
+| Frontend  | Next.js 16 (App Router)           |
+| Ask (LLM) | OpenAI (gpt-5-mini) via SSE       |
+| Rate limit| Upstash Redis (in-memory fallback)|
+| Analytics | PostHog                           |
+| Hosting   | Vercel                            |
 
 ---
 
@@ -39,6 +41,7 @@ e2e/                        # Playwright E2E tests
 
 ## Features
 
+- **Ask** - LLM guide to the Ra Material, grounded in the concept graph (no RAG, no verbatim reproduction); paraphrases and links citations to lawofone.info
 - **Explore** - Interactive concept graph visualization
 - **Study Paths** - Guided lessons through the Ra Material
 - **Meditations** - Guided meditation audio player

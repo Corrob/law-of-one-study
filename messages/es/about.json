@@ -16,13 +16,6 @@
       "description": "Practica meditaciones guiadas basadas en los ejercicios descritos en el Material de Ra, incluyendo encontrar el amor en el momento, ver al Creador y equilibrar el yo."
     }
   },
-  "featureChanges": {
-    "title": "Cambios en las Funciones",
-    "message": "Las funciones Consultar (chat con IA) y Búsqueda han sido eliminadas a petición de L/L Research. Respetamos su custodia del Material de Ra y sus protecciones de derechos de autor.",
-    "remaining": "Aún puedes explorar las enseñanzas a través del Explorador de Conceptos, los Caminos de Estudio guiados y las Meditaciones.",
-    "readMaterial": "Lee el Material de Ra completo en",
-    "llresearchLink": "llresearch.org"
-  },
   "llResearch": {
     "title": "Acerca de L/L Research",
     "intro": "El Material de Ra, también conocido como <emphasis>La Ley del Uno</emphasis>, fue canalizado entre 1981 y 1984 a través de Carla Rueckert por el complejo de memoria social Ra. Las sesiones fueron facilitadas por Don Elkins (interrogador) y Jim McCarty (escriba).",
