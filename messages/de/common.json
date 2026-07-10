@@ -31,7 +31,8 @@
     "about": "Über uns",
     "support": "Unterstützen",
     "install": "Installieren",
-    "music": "Hören"
+    "music": "Hören",
+    "ask": "Fragen"
   },
   "header": {
     "appTitle": "Gesetz des Einen Studienbegleiter",
@@ -61,6 +62,10 @@
     "meditate": {
       "title": "Meditieren",
       "description": "Geführte Meditationen"
+    },
+    "ask": {
+      "title": "Fragen",
+      "description": "Frag etwas über das Ra-Material"
     }
   },
   "explorePage": {

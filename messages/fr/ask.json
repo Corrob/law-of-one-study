@@ -1,0 +1,16 @@
+{
+  "welcomeTitle": "Interroger la Loi de l'Un",
+  "welcomeBody": "Explorez les enseignements de Ra en conversation. Les réponses s'appuient sur le graphe de concepts de la Loi de l'Un et renvoient aux sessions originales ; elles ne reproduisent jamais le Matériau Ra lui-même.",
+  "placeholder": "Posez une question sur le Matériau Ra...",
+  "inputLabel": "Votre question",
+  "send": "Envoyer",
+  "newConversation": "Nouvelle conversation",
+  "thinking": "Réflexion...",
+  "attribution": "Résumés générés par IA fondés sur le graphe de concepts, et non des reproductions du texte protégé. Lisez les originaux sur",
+  "starters": [
+    "Qu'est-ce que la Loi de l'Un ?",
+    "Que veut dire Ra par la moisson ?",
+    "Comment le catalyseur favorise-t-il la croissance spirituelle ?",
+    "Quelles sont les densités de la conscience ?"
+  ]
+}

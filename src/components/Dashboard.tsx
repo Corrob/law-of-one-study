@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
-import { ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
+import { AskIcon, ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -170,11 +170,19 @@ export default function Dashboard() {
           Explore & Meditate below. Listen (English-only) sits top-right. */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
         <FeatureCard
+          href="/ask"
+          icon={AskIcon}
+          title={t("features.ask.title")}
+          description={t("features.ask.description")}
+          index={0}
+          skipAnimation={skipAnimations}
+        />
+        <FeatureCard
           href="/paths"
           icon={BookIcon}
           title={t("features.study.title")}
           description={t("features.study.description")}
-          index={0}
+          index={1}
           skipAnimation={skipAnimations}
         />
         {locale === "en" && (
@@ -183,7 +191,7 @@ export default function Dashboard() {
             icon={MusicIcon}
             title={t("features.music.title")}
             description={t("features.music.description")}
-            index={1}
+            index={2}
             skipAnimation={skipAnimations}
           />
         )}
@@ -192,7 +200,7 @@ export default function Dashboard() {
           icon={ExploreIcon}
           title={t("features.explore.title")}
           description={t("features.explore.description")}
-          index={2}
+          index={3}
           skipAnimation={skipAnimations}
         />
         <FeatureCard
@@ -200,7 +208,7 @@ export default function Dashboard() {
           icon={MeditateIcon}
           title={t("features.meditate.title")}
           description={t("features.meditate.description")}
-          index={3}
+          index={4}
           skipAnimation={skipAnimations}
         />
       </div>

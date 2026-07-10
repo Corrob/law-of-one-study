@@ -1,0 +1,16 @@
+{
+  "welcomeTitle": "Ask the Law of One",
+  "welcomeBody": "Explore Ra's teachings in conversation. Answers are grounded in the Law of One concept graph and link back to the original sessions — they never reproduce the Ra Material itself.",
+  "placeholder": "Ask about the Ra Material...",
+  "inputLabel": "Your question",
+  "send": "Send",
+  "newConversation": "New conversation",
+  "thinking": "Thinking...",
+  "attribution": "AI-generated summaries grounded in the concept graph, not reproductions of the copyrighted text. Read the originals at",
+  "starters": [
+    "What is the Law of One?",
+    "What does Ra mean by the harvest?",
+    "How does catalyst help spiritual growth?",
+    "What are the densities of consciousness?"
+  ]
+}

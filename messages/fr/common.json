@@ -31,7 +31,8 @@
     "about": "À propos",
     "support": "Soutenir",
     "install": "Installer",
-    "music": "Écouter"
+    "music": "Écouter",
+    "ask": "Demander"
   },
   "header": {
     "appTitle": "Compagnon d'Étude de la Loi Une",
@@ -61,6 +62,10 @@
     "meditate": {
       "title": "Méditer",
       "description": "Méditations guidées"
+    },
+    "ask": {
+      "title": "Demander",
+      "description": "Poser une question sur le Matériau Ra"
     }
   },
   "explorePage": {

@@ -31,7 +31,8 @@
     "about": "Acerca de",
     "support": "Apoyar",
     "install": "Instalar",
-    "music": "Escuchar"
+    "music": "Escuchar",
+    "ask": "Preguntar"
   },
   "header": {
     "appTitle": "Compañero de Estudio de la Ley del Uno",
@@ -61,6 +62,10 @@
     "meditate": {
       "title": "Meditar",
       "description": "Meditaciones guiadas"
+    },
+    "ask": {
+      "title": "Preguntar",
+      "description": "Pregunta sobre el Material de Ra"
     }
   },
   "explorePage": {

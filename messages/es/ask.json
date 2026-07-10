@@ -1,0 +1,16 @@
+{
+  "welcomeTitle": "Pregunta a la Ley del Uno",
+  "welcomeBody": "Explora las enseñanzas de Ra en una conversación. Las respuestas se basan en el grafo de conceptos de la Ley del Uno y enlazan con las sesiones originales; nunca reproducen el Material de Ra.",
+  "placeholder": "Pregunta sobre el Material de Ra...",
+  "inputLabel": "Tu pregunta",
+  "send": "Enviar",
+  "newConversation": "Nueva conversación",
+  "thinking": "Pensando...",
+  "attribution": "Resúmenes generados por IA basados en el grafo de conceptos, no reproducciones del texto con derechos de autor. Lee los originales en",
+  "starters": [
+    "¿Qué es la Ley del Uno?",
+    "¿Qué quiere decir Ra con la cosecha?",
+    "¿Cómo ayuda el catalizador al crecimiento espiritual?",
+    "¿Cuáles son las densidades de la conciencia?"
+  ]
+}

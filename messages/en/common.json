@@ -31,7 +31,8 @@
     "about": "About",
     "support": "Support",
     "install": "Install",
-    "music": "Listen"
+    "music": "Listen",
+    "ask": "Ask"
   },
   "header": {
     "appTitle": "Law of One Study Companion",
@@ -65,6 +66,10 @@
     "music": {
       "title": "Listen",
       "description": "Density Songs"
+    },
+    "ask": {
+      "title": "Ask",
+      "description": "Ask about the Ra Material"
     }
   },
   "explorePage": {

@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
-    "index": "tsx scripts/index-ra.ts",
+    "validate:citations": "tsx scripts/validate-ra-citations.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -22,6 +22,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.111.0",
     "d3-dag": "^1.1.0",
     "d3-force": "^3.0.0",
     "d3-selection": "^3.0.0",
