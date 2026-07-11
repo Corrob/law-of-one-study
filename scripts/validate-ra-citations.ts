@@ -30,6 +30,7 @@ import { join } from "path";
 const ROOT = join(__dirname, "..");
 const GRAPH_PATH = join(ROOT, "src/data/concept-graph.json");
 const KNOWN_REFS_PATH = join(ROOT, "src/data/known-references.json");
+const SUPPLEMENTS_PATH = join(ROOT, "src/data/ask-supplements.json");
 
 const MAX_SESSION = 106; // The Ra contact ran for 106 sessions.
 const THIN_DEFINITION_CHARS = 60;
@@ -192,6 +193,57 @@ function collectPassages(graph: Graph): PassageRecord[] {
   return passages;
 }
 
+interface Supplement {
+  id: string;
+  references: string[];
+}
+
+/**
+ * Hidden Ask supplements (src/data/ask-supplements.json). Their references must
+ * be citable, so they join the known-references whitelist and the online
+ * resolution check. Summaries are our-words (not verbatim), so no wording check.
+ */
+function collectSupplements(): { references: string[]; passages: PassageRecord[] } {
+  const references: string[] = [];
+  const passages: PassageRecord[] = [];
+  const emptyExcerpt: BilingualText = { en: "", es: "", de: "", fr: "" };
+
+  let supplements: Supplement[] = [];
+  try {
+    supplements = (JSON.parse(readFileSync(SUPPLEMENTS_PATH, "utf8")).supplements ??
+      []) as Supplement[];
+  } catch {
+    return { references, passages }; // no supplements file — fine
+  }
+
+  const seen = new Set<string>();
+  for (const s of supplements) {
+    for (const ref of s.references ?? []) {
+      if (!REFERENCE_PATTERN.test(ref)) {
+        errors.push(`Supplement "${s.id}": malformed reference "${ref}".`);
+        continue;
+      }
+      const session = Number(ref.split(".")[0]);
+      if (session < 1 || session > MAX_SESSION) {
+        errors.push(
+          `Supplement "${s.id}": reference "${ref}" out of range (valid 1-${MAX_SESSION}).`
+        );
+        continue;
+      }
+      if (seen.has(ref)) continue; // a reference may be shared by several supplements
+      seen.add(ref);
+      references.push(ref);
+      passages.push({
+        conceptId: `supplement:${s.id}`,
+        reference: ref,
+        excerpt: emptyExcerpt,
+        verbatim: false,
+      });
+    }
+  }
+  return { references, passages };
+}
+
 /** llresearch.org ra-contact base for a locale (English has no path prefix). */
 function raContactBase(locale: string): string {
   const prefix = locale === "en" ? "" : `/${locale}`;
@@ -343,8 +395,16 @@ async function main(): Promise<void> {
   const online = process.argv.includes("--online");
   const graph = loadGraph();
   const references = validateStructure(graph);
+
+  // Fold in hidden Ask supplements so their references are citable.
+  const supplements = collectSupplements();
+  for (const ref of supplements.references) references.add(ref);
+  if (supplements.references.length > 0) {
+    console.log(`Supplement references:    ${supplements.references.length}\n`);
+  }
+
   syncKnownReferences(references);
-  if (online) await checkOnline(collectPassages(graph));
+  if (online) await checkOnline([...collectPassages(graph), ...supplements.passages]);
 
   if (warnings.length > 0) {
     console.log(`--- Warnings (${warnings.length}) ---`);

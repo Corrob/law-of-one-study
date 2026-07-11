@@ -1,0 +1,131 @@
+{
+  "note": "Hidden LLM-only grounding supplements for the Ask feature. These are keywords/phrases Ra discusses that are NOT concepts in the visual graph. Each entry gives our-words summaries (never verbatim Ra text) and the source references, so the model can be grounded and cite them. English is required; es/de/fr are optional and fall back to English. References must resolve on llresearch.org (see scripts/validate-ra-citations.ts).",
+  "supplements": [
+    {
+      "id": "men-in-black",
+      "aliases": { "en": ["men in black", "man in black", "men-in-black", "MIB"] },
+      "summary": { "en": "Ra addresses the so-called \"Men in Black\" directly, describing them as a type of thought-form entity that has been given some beingness and certain physical characteristics, but whose true vibrational nature is not third-density — which is why they are able to materialize and dematerialize as needed." },
+      "references": ["12.21"]
+    },
+    {
+      "id": "bigfoot",
+      "aliases": { "en": ["bigfoot", "sasquatch"] },
+      "summary": { "en": "Ra says there are three types of \"Bigfoot.\" Two are second-density physical forms — one connected to Maldekian entities working through karmic restitution who dwell in underground passageways, and a hard-to-detect race sometimes noticed as glowing eyes — and the third is a thought-form." },
+      "references": ["9.18", "9.21", "9.22"]
+    },
+    {
+      "id": "atlantis",
+      "aliases": { "en": ["atlantis", "atlantean"] },
+      "summary": { "en": "Ra describes Atlantis as an advanced ancient civilization whose people developed considerable technical and spiritual understanding — including using the body's energy centers to reach the gateway to intelligent infinity — understanding that later became distorted and misused." },
+      "references": ["10.15", "11.10"]
+    },
+    {
+      "id": "lemuria",
+      "aliases": { "en": ["lemuria", "lemurian"] },
+      "summary": { "en": "Ra describes Lemuria (also called Mu) as an early, spiritually inclined but relatively primitive civilization destroyed by natural catastrophe roughly 50,000 years ago; its survivors carried their learning elsewhere, including into the Americas." },
+      "references": ["21.24", "21.25", "10.15"]
+    },
+    {
+      "id": "great-pyramid",
+      "aliases": { "en": ["great pyramid", "pyramid at giza", "giza pyramid"] },
+      "summary": { "en": "Ra says the Great Pyramid was built by Ra's social memory complex using thought (thought-forms) with \"everlasting rock,\" and was intended as a place of healing and of initiation, preparing the mind, body, and spirit as a channel for love/light." },
+      "references": ["3.12", "3.15"]
+    },
+    {
+      "id": "easter-island",
+      "aliases": { "en": ["easter island"] },
+      "summary": { "en": "Ra connects the stone heads of Easter Island — and similar stone arrangements in the Pacific and Central American regions — to the Orion group's attempt to influence third-density peoples by suggesting strong impressions of power." },
+      "references": ["20.30", "20.31"]
+    },
+    {
+      "id": "ark-of-the-covenant",
+      "aliases": { "en": ["ark of the covenant"] },
+      "summary": { "en": "Ra describes the Ark of the Covenant as a container built to hold what was most holy to \"the one called Moishe\" (Moses) — noting it actually held a single written scroll rather than two tablets — and discusses its intended purpose and later misuse." },
+      "references": ["60.17"]
+    },
+    {
+      "id": "hall-of-records",
+      "aliases": { "en": ["hall of records", "akashic record", "akashic records", "akasha"] },
+      "summary": { "en": "Ra explains the \"Hall of Records\" or \"Akashic Record\" as the planet's potential social memory complex, which sensitive individuals such as the one known as Edgar Cayce accessed through the gateway to intelligent infinity from the octave (eighth density)." },
+      "references": ["14.32"]
+    },
+    {
+      "id": "windows-effect",
+      "aliases": { "en": ["window effect", "windows effect"] },
+      "summary": { "en": "Ra describes the \"window\" effect — the mechanism by which the quarantine around Earth is periodically opened, allowing positive or negative entities through in a balance governed by the planet's calling and polarity." },
+      "references": ["24.8", "67.20"]
+    },
+    {
+      "id": "ufo",
+      "aliases": { "en": ["ufo", "ufos", "unidentified flying object", "flying saucer"] },
+      "summary": { "en": "Ra addresses UFOs and \"landings,\" distinguishing craft of human/technological origin from Confederation and Orion-group activity, and elsewhere frames the timing of sightings through the \"window\" effect." },
+      "references": ["8.2"]
+    },
+    {
+      "id": "jesus",
+      "aliases": { "en": ["jesus", "jesus of nazareth", "jehoshua", "christ"] },
+      "summary": { "en": "Ra describes Jesus of Nazareth as a wanderer of fifth-density origin who chose to incarnate in order to share the love vibration as purely as possible." },
+      "references": ["17.11", "17.16"]
+    },
+    {
+      "id": "abraham-lincoln",
+      "aliases": { "en": ["abraham lincoln", "lincoln"] },
+      "summary": { "en": "Ra says Abraham Lincoln was not a wanderer but a rare case in which the original Earth entity departed and a fourth-density entity took over the body permanently — what is sometimes called a \"walk-in.\"" },
+      "references": ["26.15", "35.6"]
+    },
+    {
+      "id": "nikola-tesla",
+      "aliases": { "en": ["nikola tesla", "tesla"] },
+      "summary": { "en": "Ra describes Nikola Tesla as a highly (even \"angelically\") positive wanderer who received information from Confederation sources to better humanity, though third-density distortions later affected his perceptions." },
+      "references": ["11.25"]
+    },
+    {
+      "id": "adolf-hitler",
+      "aliases": { "en": ["adolf hitler", "hitler"] },
+      "summary": { "en": "Ra discusses Adolf Hitler as an intensely confused entity often raised as an example in the study of negative polarity; after the death of the physical body he was described as undergoing healing in the astral planes." },
+      "references": ["11.7", "35.4"]
+    },
+    {
+      "id": "albert-einstein",
+      "aliases": { "en": ["albert einstein", "einstein"] },
+      "summary": { "en": "Ra notes that information offered to Albert Einstein by Confederation sources was later perverted by others into instruments of destruction." },
+      "references": ["26.20"]
+    },
+    {
+      "id": "genghis-khan",
+      "aliases": { "en": ["genghis khan", "genghis"] },
+      "summary": { "en": "Ra names Genghis Khan as an example of a negatively-oriented (service-to-self) entity who joined the Orion group and was later described as disseminating material of thought-control." },
+      "references": ["11.13", "11.15"]
+    },
+    {
+      "id": "taras-bulba",
+      "aliases": { "en": ["taras bulba"] },
+      "summary": { "en": "Ra names Taras Bulba, alongside Genghis Khan and Rasputin, as an example of an entity harvestable toward the negative, service-to-self path." },
+      "references": ["11.9"]
+    },
+    {
+      "id": "rasputin",
+      "aliases": { "en": ["rasputin"] },
+      "summary": { "en": "Ra names Rasputin, alongside Genghis Khan and Taras Bulba, as an example of an entity oriented toward the negative, service-to-self path." },
+      "references": ["11.9"]
+    },
+    {
+      "id": "thought-form",
+      "aliases": { "en": ["thought-form", "thought form", "thoughtform", "thought-forms"] },
+      "summary": { "en": "Ra uses \"thought-form\" for constructs brought into being by focused thought or consciousness — for example the pyramids, which Ra's social memory complex built from thought-forms, and certain entities such as the so-called \"men in black.\"" },
+      "references": ["3.11", "12.21"]
+    },
+    {
+      "id": "telepathy",
+      "aliases": { "en": ["telepathy", "telepathic"] },
+      "summary": { "en": "Ra describes telepathy as a primary channel of contact and communication — used by both Confederation and Orion sources to convey information and philosophy to receptive minds." },
+      "references": ["11.22", "12.13"]
+    },
+    {
+      "id": "sexual-energy-transfer",
+      "aliases": { "en": ["sexual energy transfer", "sexual energy transfers"] },
+      "summary": { "en": "Ra discusses sexual energy transfer, distinguishing the red-ray transfer — biological and random, which can enable offspring — from higher-ray transfers such as the green-ray sharing of energy between partners." },
+      "references": ["31.4", "31.5"]
+    }
+  ]
+}

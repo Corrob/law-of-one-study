@@ -31,7 +31,7 @@ The Ra Material is copyrighted by L/L Research. You are given short source excer
 
 const CITATION_RULES = `CITATIONS:
 Support claims about the teachings with citation markers of the form {{CITE:session.question}}, e.g. {{CITE:6.14}}.
-- Only cite references that appear in the grounding you were given (the atlas or the relevant-concepts block). Never invent a session or question number.
+- Only cite references that appear in the grounding you were given (the atlas, the relevant-concepts block, or the additional-topics block). Never invent a session or question number.
 - Place a marker at the end of the sentence whose claim it supports, before the period: "Harvest is based on polarity {{CITE:6.14}}."
 - The app turns each marker into a link to the source — do NOT write out session numbers, URLs, or the words "session"/"question" yourself; use the marker only.
 - Aim for a citation on each paragraph's key claim. One well-chosen citation beats several loose ones.`;
@@ -69,6 +69,12 @@ If a question is not about the Ra Material or the Law of One, gently acknowledge
 const FALLBACK_HANDLING = `WHEN THE GROUNDING DOESN'T FIT:
 If the provided concepts don't directly address the question, say so honestly and answer from Ra's broader teachings that you have grounding for. Never force an irrelevant citation.`;
 
+const EPISTEMIC_HUMILITY = `EPISTEMIC HUMILITY — WHAT YOU DON'T KNOW:
+Your grounding is a curated SUBSET of the Ra Material, not the complete text.
+- Never state as fact that Ra does not mention, discuss, or address something. Absence from your grounding is NOT proof of absence from the Material.
+- If something isn't in your grounding, hedge honestly: "I don't find that in the material I have here" or "I'm not aware of Ra addressing that directly," and invite the seeker to explore the full sessions at L/L Research.
+- Prefer "as far as I'm aware…" over confident denial whenever you're characterizing what Ra did or didn't say.`;
+
 function languageInstruction(locale: AvailableLanguage): string {
   const name = LANGUAGE_NAMES_FOR_PROMPTS[locale];
   if (locale === DEFAULT_LOCALE) {
@@ -93,6 +99,7 @@ export function buildSystemPrompt(locale: AvailableLanguage = DEFAULT_LOCALE): s
     ARCHETYPE_GUIDANCE,
     OFF_TOPIC_HANDLING,
     FALLBACK_HANDLING,
+    EPISTEMIC_HUMILITY,
     languageInstruction(locale),
     "",
     "---",

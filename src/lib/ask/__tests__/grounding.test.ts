@@ -43,5 +43,12 @@ describe("grounding", () => {
       expect(matchedConceptIds).toEqual([]);
       expect(focused).toBe("");
     });
+
+    it("injects a hidden supplement not in the concept graph (men in black → 12.21)", () => {
+      const { focused, matchedConceptIds } = buildGrounding("Who are the men in black?");
+      expect(matchedConceptIds).toContain("men-in-black");
+      expect(focused).toContain("ADDITIONAL RELEVANT TOPICS");
+      expect(focused).toContain("12.21");
+    });
   });
 });

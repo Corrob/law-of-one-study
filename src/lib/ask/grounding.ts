@@ -18,6 +18,7 @@ import {
 import type { GraphConcept } from "@/lib/types-graph";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 import { ASK_MAX_FOCUSED_CONCEPTS } from "./config";
+import { identifySupplements, buildSupplementGrounding } from "./supplements";
 
 export interface AskHistoryTurn {
   role: "user" | "assistant";
@@ -79,7 +80,29 @@ export function selectConcepts(
 }
 
 /**
- * Build the full grounding (atlas + focused context) for a query.
+ * Match hidden, LLM-only supplements (keywords Ra discusses that aren't in the
+ * concept graph). Uses the same message-then-recent-history fallback as
+ * `selectConcepts`.
+ */
+function selectSupplements(
+  message: string,
+  history: AskHistoryTurn[],
+  locale: AvailableLanguage
+) {
+  let found = identifySupplements(message, locale);
+  if (found.length === 0 && history.length > 0) {
+    const recent = history
+      .slice(-2)
+      .map((turn) => turn.content)
+      .join("\n");
+    found = identifySupplements(recent, locale);
+  }
+  return found;
+}
+
+/**
+ * Build the full grounding (atlas + focused context) for a query. The focused
+ * block combines relevant concepts with any matched hidden supplements.
  */
 export function buildGrounding(
   message: string,
@@ -87,9 +110,18 @@ export function buildGrounding(
   locale: AvailableLanguage = DEFAULT_LOCALE
 ): Grounding {
   const concepts = selectConcepts(message, history, locale);
+  const supplements = selectSupplements(message, history, locale);
+
+  const focused = [
+    buildGroundingContext(concepts, locale),
+    buildSupplementGrounding(supplements, locale),
+  ]
+    .filter(Boolean)
+    .join("\n\n---\n\n");
+
   return {
-    focused: buildGroundingContext(concepts, locale),
-    matchedConceptIds: concepts.map((c) => c.id),
+    focused,
+    matchedConceptIds: [...concepts.map((c) => c.id), ...supplements.map((s) => s.id)],
     excerpts: getConceptExcerpts(concepts, locale),
   };
 }
