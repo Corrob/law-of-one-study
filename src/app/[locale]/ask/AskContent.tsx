@@ -7,6 +7,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import AskWelcome from "@/components/ask/AskWelcome";
 import AskAnswer from "@/components/ask/AskAnswer";
 import AskComposer from "@/components/ask/AskComposer";
+import AskThinking from "@/components/ask/AskThinking";
 import AskAttribution from "@/components/ask/AskAttribution";
 import { useAskStream } from "@/hooks/useAskStream";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -70,14 +71,7 @@ export default function AskContent() {
                         {message.content ? (
                           <AskAnswer content={message.content} />
                         ) : (
-                          <span
-                            className="inline-flex gap-1 text-[var(--lo1-gold)]"
-                            aria-label={t("thinking")}
-                          >
-                            <span className="animate-pulse">&bull;</span>
-                            <span className="animate-pulse [animation-delay:150ms]">&bull;</span>
-                            <span className="animate-pulse [animation-delay:300ms]">&bull;</span>
-                          </span>
+                          <AskThinking />
                         )}
                       </div>
                     </div>
