@@ -41,6 +41,13 @@ describe("supplements", () => {
       );
       expect(ids).toContain("men-in-black");
     });
+
+    it("matches 'dreams' but not the substring in 'daydream'", () => {
+      expect(identifySupplements("what do dreams mean?").map((s) => s.id)).toContain("dreams");
+      expect(identifySupplements("I was daydreaming today").map((s) => s.id)).not.toContain(
+        "dreams"
+      );
+    });
   });
 
   describe("buildSupplementGrounding", () => {
