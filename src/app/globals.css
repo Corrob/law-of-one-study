@@ -1018,5 +1018,7 @@ h6 {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  animation: ask-shimmer 4s linear infinite;
+  /* One pass per phrase (the component remounts the text to replay it), then
+     hold the end state until the next phrase swaps in. */
+  animation: ask-shimmer 3s linear forwards;
 }

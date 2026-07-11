@@ -1,27 +1,25 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
 
 // Number of thinking phrases in ask.thinkingPhrases (keys "1".."69").
 const THINKING_PHRASE_COUNT = 69;
+// How long each phrase is shown — a touch longer than the shimmer pass (3s in
+// globals.css) so the light finishes sweeping before the next phrase arrives.
+const ROTATE_MS = 3600;
 
 /**
- * Loading indicator shown while an answer streams: crossfades between random
- * Ra-themed phrases ("Consulting the Confederation…") every 3.5s. Two
- * overlapping elements are used instead of a key-based remount so the change is
- * a smooth fade rather than a hard cut.
+ * Loading indicator shown while an answer streams: a Ra-themed phrase whose
+ * gold shimmer sweeps across once, then the next phrase swaps in and sweeps
+ * again. The text element is remounted (via `key`) each rotation so its
+ * single-pass shimmer replays. Rotation is timer-driven so it still advances
+ * when motion is reduced (the shimmer itself is disabled there).
  */
 export default function AskThinking() {
   const t = useTranslations("ask");
 
-  // Start deterministic (key "1") to avoid a hydration mismatch, then randomize.
-  const [messages, setMessages] = useState<[string, string]>(["1", "1"]);
-  const [showSecond, setShowSecond] = useState(false);
-  const showSecondRef = useRef(false);
-  const mountedRef = useRef(true);
-
-  const getRandomKey = useCallback((exclude: string) => {
+  const randomKey = useCallback((exclude: string) => {
     let key: string;
     do {
       key = String(Math.floor(Math.random() * THINKING_PHRASE_COUNT) + 1);
@@ -29,54 +27,19 @@ export default function AskThinking() {
     return key;
   }, []);
 
+  // Deterministic first render (key "1") to avoid a hydration mismatch, then
+  // randomize on mount and rotate.
+  const [phraseKey, setPhraseKey] = useState("1");
   useEffect(() => {
-    mountedRef.current = true;
-    // Randomize the first phrase on mount (client-only).
-    setMessages([getRandomKey(""), getRandomKey("")]);
-
-    const interval = setInterval(() => {
-      if (!mountedRef.current) return;
-      const flipped = showSecondRef.current;
-      setMessages(([a, b]) => {
-        const current = flipped ? b : a;
-        const next = getRandomKey(current);
-        return flipped ? [next, b] : [a, next];
-      });
-      setShowSecond((prev) => {
-        showSecondRef.current = !prev;
-        return !prev;
-      });
-    }, 3500);
-
-    return () => {
-      mountedRef.current = false;
-      clearInterval(interval);
-    };
-  }, [getRandomKey]);
-
-  const [keyA, keyB] = messages;
+    setPhraseKey(randomKey(""));
+    const id = setInterval(() => setPhraseKey((prev) => randomKey(prev)), ROTATE_MS);
+    return () => clearInterval(id);
+  }, [randomKey]);
 
   return (
-    <div
-      className="grid grid-cols-1 grid-rows-1"
-      data-testid="ask-thinking"
-      role="status"
-      aria-label={t("thinking")}
-    >
-      {/* Crossfading, shimmering phrase (no dots). */}
-      <span
-        className="ask-shimmer col-start-1 row-start-1 text-sm italic transition-opacity duration-500 ease-in-out"
-        style={{ opacity: showSecond ? 0 : 1 }}
-        aria-hidden
-      >
-        {t(`thinkingPhrases.${keyA}`)}
-      </span>
-      <span
-        className="ask-shimmer col-start-1 row-start-1 text-sm italic transition-opacity duration-500 ease-in-out"
-        style={{ opacity: showSecond ? 1 : 0 }}
-        aria-hidden
-      >
-        {t(`thinkingPhrases.${keyB}`)}
+    <div data-testid="ask-thinking" role="status" aria-label={t("thinking")}>
+      <span key={phraseKey} className="ask-shimmer text-sm italic" aria-hidden>
+        {t(`thinkingPhrases.${phraseKey}`)}
       </span>
     </div>
   );
