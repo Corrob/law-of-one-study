@@ -85,7 +85,12 @@
     "serve": "¿Cómo puedo servir?",
     "wanderer": "Saludos, errante."
   },
-  "warning": "Una guía, no una autoridad: las respuestas son resúmenes generados por IA de las enseñanzas de Ra y pueden ser imperfectas. Para algo importante, lee las sesiones originales en L/L Research.",
+  "disclaimers": [
+    "Toma lo que resuene y deja con suavidad lo demás. Estas respuestas son la síntesis, por un compañero de IA, de las enseñanzas de Ra: una ayuda para tu propia contemplación, no una autoridad.",
+    "Esta guía puede cometer errores y simplificar ideas sutiles. Usa tu propio discernimiento: conserva lo que te resuene, suelta lo que no, y vuelve a las sesiones originales cuando algo importe.",
+    "Considera estas palabras una puerta, no un destino. Son reflexiones generadas por IA sobre la Ley del Uno: sostenlas con ligereza, confía en tu saber interior y verifica en la fuente.",
+    "Tú eres tu mejor autoridad. Este compañero puede equivocarse; toma lo que sirva a tu búsqueda, deja el resto y que el material original sea tu guía final."
+  ],
   "characterCount": "{count} / {max} caracteres",
   "overLimit": "(límite superado)",
   "placeholders": [

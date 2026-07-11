@@ -85,7 +85,12 @@
     "serve": "How may I serve?",
     "wanderer": "Greetings, wanderer."
   },
-  "warning": "A guide, not an authority: answers are AI-generated summaries of Ra's teachings and may be imperfect. For anything important, read the original sessions at L/L Research.",
+  "disclaimers": [
+    "Take what resonates, and gently leave the rest. These answers are an AI companion's synthesis of Ra's teachings — an aid to your own contemplation, not an authority.",
+    "This guide can make mistakes and flatten subtle ideas. Use your own discernment: keep what rings true, release what doesn't, and return to the original sessions when something matters.",
+    "Consider these words a doorway, not a destination. They are AI-generated reflections on the Law of One — hold them lightly, trust your inner knowing, and verify at the source.",
+    "You are your own best authority. This companion may err; take what serves your seeking, leave the rest, and let the original material be your final guide."
+  ],
   "characterCount": "{count} / {max} characters",
   "overLimit": "(over limit)",
   "placeholders": [

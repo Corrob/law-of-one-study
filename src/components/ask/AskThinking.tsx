@@ -58,24 +58,39 @@ export default function AskThinking() {
 
   return (
     <div
-      className="grid grid-cols-1 grid-rows-1"
+      className="flex items-center gap-2"
       data-testid="ask-thinking"
       role="status"
       aria-label={t("thinking")}
     >
-      <span
-        className="col-start-1 row-start-1 text-sm italic text-[var(--lo1-stardust)] transition-opacity duration-500 ease-in-out"
-        style={{ opacity: showSecond ? 0 : 1 }}
-        aria-hidden
-      >
-        {t(`thinkingPhrases.${keyA}`)}
+      {/* Crossfading, shimmering phrase */}
+      <span className="grid grid-cols-1 grid-rows-1">
+        <span
+          className="ask-shimmer col-start-1 row-start-1 text-sm italic transition-opacity duration-500 ease-in-out"
+          style={{ opacity: showSecond ? 0 : 1 }}
+          aria-hidden
+        >
+          {t(`thinkingPhrases.${keyA}`)}
+        </span>
+        <span
+          className="ask-shimmer col-start-1 row-start-1 text-sm italic transition-opacity duration-500 ease-in-out"
+          style={{ opacity: showSecond ? 1 : 0 }}
+          aria-hidden
+        >
+          {t(`thinkingPhrases.${keyB}`)}
+        </span>
       </span>
-      <span
-        className="col-start-1 row-start-1 text-sm italic text-[var(--lo1-stardust)] transition-opacity duration-500 ease-in-out"
-        style={{ opacity: showSecond ? 1 : 0 }}
-        aria-hidden
-      >
-        {t(`thinkingPhrases.${keyB}`)}
+      {/* Pulsing dots */}
+      <span className="flex flex-shrink-0 items-center gap-1" aria-hidden>
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--lo1-gold)]/80 animate-pulse" />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-[var(--lo1-gold)]/80 animate-pulse"
+          style={{ animationDelay: "150ms" }}
+        />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-[var(--lo1-gold)]/80 animate-pulse"
+          style={{ animationDelay: "300ms" }}
+        />
       </span>
     </div>
   );

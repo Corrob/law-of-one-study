@@ -985,4 +985,38 @@ h6 {
   .animate-pulse {
     animation: none !important;
   }
+
+  /* Thinking indicator: drop the shimmer, keep the text readable */
+  .ask-shimmer {
+    animation: none !important;
+    background: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: var(--lo1-stardust) !important;
+  }
+}
+
+/* Gentle gold shimmer sweeping across the "thinking" phrase while loading. */
+@keyframes ask-shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+.ask-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--lo1-stardust) 0%,
+    var(--lo1-stardust) 40%,
+    var(--lo1-gold) 50%,
+    var(--lo1-stardust) 60%,
+    var(--lo1-stardust) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ask-shimmer 4s linear infinite;
 }

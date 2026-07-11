@@ -85,7 +85,12 @@
     "serve": "Wie kann ich dienen?",
     "wanderer": "Sei gegrüßt, Wanderer."
   },
-  "warning": "Ein Wegweiser, keine Autorität: Die Antworten sind KI-generierte Zusammenfassungen von Ras Lehren und können ungenau sein. Lies bei allem Wichtigen die Originalsitzungen bei L/L Research.",
+  "disclaimers": [
+    "Nimm, was bei dir anklingt, und lass den Rest sanft los. Diese Antworten sind die Synthese eines KI-Begleiters von Ras Lehren — eine Hilfe für deine eigene Betrachtung, keine Autorität.",
+    "Dieser Begleiter kann Fehler machen und feine Gedanken vereinfachen. Nutze dein eigenes Unterscheidungsvermögen: behalte, was stimmig ist, lass los, was nicht passt, und kehre zu den Originalsitzungen zurück, wenn etwas wichtig ist.",
+    "Betrachte diese Worte als Tür, nicht als Ziel. Es sind KI-generierte Reflexionen über das Gesetz des Einen — halte sie leicht, vertraue deinem inneren Wissen und prüfe an der Quelle.",
+    "Du bist deine eigene beste Autorität. Dieser Begleiter kann irren; nimm, was deiner Suche dient, lass den Rest, und lass das Originalmaterial deine letzte Richtschnur sein."
+  ],
   "characterCount": "{count} / {max} Zeichen",
   "overLimit": "(Limit überschritten)",
   "placeholders": [
