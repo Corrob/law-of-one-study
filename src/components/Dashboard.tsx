@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
+import EmailSignup from "./EmailSignup";
 import { ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
@@ -134,6 +135,9 @@ export default function Dashboard() {
           </p>
         </div>
       )}
+
+      {/* Weekly Quote Email Signup */}
+      <EmailSignup />
 
       {/* Feature Change Notice */}
       {!noticeDismissed && (

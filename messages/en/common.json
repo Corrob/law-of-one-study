@@ -49,6 +49,17 @@
     "learnMore": "Learn more",
     "dismissNotice": "Dismiss notice"
   },
+  "emailSignup": {
+    "description": "Receive a quote from the Ra Material in your inbox each week.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "subscribe": "Subscribe",
+    "submitting": "Subscribing…",
+    "success": "You are subscribed 🙏 Check your inbox to confirm.",
+    "error": "Something went wrong. Please try again.",
+    "privacyNote": "We store only your email and language, and use MailerLite to send. Unsubscribe anytime.",
+    "dismiss": "Dismiss email signup"
+  },
   "features": {
     "explore": {
       "title": "Explore",

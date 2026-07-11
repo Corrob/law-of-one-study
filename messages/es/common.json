@@ -49,6 +49,17 @@
     "learnMore": "Más información",
     "dismissNotice": "Cerrar aviso"
   },
+  "emailSignup": {
+    "description": "Recibe una cita del Material de Ra en tu correo cada semana.",
+    "emailLabel": "Dirección de correo electrónico",
+    "emailPlaceholder": "tu@ejemplo.com",
+    "subscribe": "Suscribirse",
+    "submitting": "Suscribiendo…",
+    "success": "Estás suscrito 🙏 Revisa tu correo para confirmar.",
+    "error": "Algo salió mal. Inténtalo de nuevo.",
+    "privacyNote": "Solo guardamos tu correo e idioma, y usamos MailerLite para el envío. Cancela cuando quieras.",
+    "dismiss": "Cerrar formulario de suscripción"
+  },
   "features": {
     "explore": {
       "title": "Explorar",
