@@ -89,14 +89,16 @@ export function useAskStream(
         role: "user",
         content: trimmed,
       };
+      const isFirstTurn = messages.length === 0;
       const assistantId = nextId();
       const assistantMessage: AskMessage = {
         id: assistantId,
         role: "assistant",
         content: "",
-        // Pick one of the saved discernment notes for this turn (instant, local).
+        // Show a discernment note only on the first answer of a thread (one of
+        // the saved variations, chosen locally so it loads instantly).
         disclaimer:
-          disclaimers.length > 0
+          isFirstTurn && disclaimers.length > 0
             ? disclaimers[Math.floor(Math.random() * disclaimers.length)]
             : undefined,
       };
