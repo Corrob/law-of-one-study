@@ -4855,18 +4855,33 @@
       },
       "keyPassages": [
         {
-          "reference": "6.9",
+          "reference": "71.6",
           "excerpt": {
-            "en": "Do you request space/time present information or space/time continuum information?",
-            "es": "¿Solicitas información del presente espacio/tiempo o información del espacio/tiempo continuo?",
-            "de": "Fragst du nach Raum/Zeit-Gegenwart-Informationen oder Raum/Zeit-Kontinuum-Informationen?",
-            "fr": "Demandez-vous des informations de présent espace/temps, ou bien des informations de continuum espace/temps?"
+            "en": "Time/space is the metaphysical counterpart of the physical world, where time rather than space is the dominant property. Experience there is intangible in the ordinary sense — the seen and the unseen simply trade which dimension holds them.",
+            "es": "El tiempo/espacio es la contraparte metafísica del mundo físico, donde el tiempo, y no el espacio, es la propiedad dominante. La experiencia allí es intangible en el sentido ordinario: lo visto y lo no visto simplemente intercambian qué dimensión los sostiene.",
+            "de": "Zeit/Raum ist das metaphysische Gegenstück zur physischen Welt, in dem die Zeit und nicht der Raum die vorherrschende Eigenschaft ist. Erfahrung ist dort im gewöhnlichen Sinne ungreifbar — das Sichtbare und das Unsichtbare tauschen einfach, welche Dimension sie trägt.",
+            "fr": "Le temps/espace est la contrepartie métaphysique du monde physique, où le temps, et non l'espace, est la propriété dominante. L'expérience y est intangible au sens ordinaire : le visible et l'invisible échangent simplement quelle dimension les porte."
           },
           "context": {
-            "en": "Distinction between space/time and time/space perspectives",
-            "es": "Distinción entre las perspectivas de espacio/tiempo y tiempo/espacio.",
-            "de": "Unterscheidung zwischen Raum/Zeit- und Zeit/Raum-Perspektiven",
-            "fr": "Distinction entre les perspectives espace/temps et temps/espace"
+            "en": "Time/space: the intangible, time-dominant realm",
+            "es": "Tiempo/espacio: el reino intangible dominado por el tiempo",
+            "de": "Zeit/Raum: das ungreifbare, von der Zeit dominierte Reich",
+            "fr": "Temps/espace : le royaume intangible dominé par le temps"
+          }
+        },
+        {
+          "reference": "70.17",
+          "excerpt": {
+            "en": "After the death of the physical body, the being moves into a region of time/space where the indigo (etheric) body allows deep healing and a review of the life just lived, before any step is taken toward a new incarnation.",
+            "es": "Tras la muerte del cuerpo físico, el ser se traslada a una región del tiempo/espacio donde el cuerpo índigo (etérico) permite una profunda sanación y una revisión de la vida recién vivida, antes de dar cualquier paso hacia una nueva encarnación.",
+            "de": "Nach dem Tod des physischen Körpers geht das Wesen in einen Bereich von Zeit/Raum über, in dem der Indigo-Körper (der etherische) tiefe Heilung und einen Rückblick auf das eben gelebte Leben ermöglicht, bevor ein Schritt zu einer neuen Inkarnation getan wird.",
+            "fr": "Après la mort du corps physique, l'être passe dans une région du temps/espace où le corps indigo (éthérique) permet une profonde guérison et une revue de la vie qui vient d'être vécue, avant tout mouvement vers une nouvelle incarnation."
+          },
+          "context": {
+            "en": "Time/space as the between-incarnation realm of healing and review",
+            "es": "El tiempo/espacio como el reino de sanación y revisión entre encarnaciones",
+            "de": "Zeit/Raum als Bereich der Heilung und des Rückblicks zwischen den Inkarnationen",
+            "fr": "Le temps/espace comme royaume de guérison et de revue entre les incarnations"
           }
         }
       ],
@@ -4942,18 +4957,18 @@
       },
       "keyPassages": [
         {
-          "reference": "6.9",
+          "reference": "71.6",
           "excerpt": {
-            "en": "Do you request space/time present information or space/time continuum information?",
-            "es": "¿Solicitas información del presente espacio/tiempo o información del espacio/tiempo continuo?",
-            "de": "Fragst du nach Raum/Zeit-Gegenwart-Informationen oder Raum/Zeit-Kontinuum-Informationen?",
-            "fr": "Demandez-vous des informations de présent espace/temps, ou bien des informations de continuum espace/temps?"
+            "en": "Space/time is our familiar physical realm, where space is the dominant framework. Matter has a tangible spatial orientation, which gives the everyday illusion its solidity and its sense of an unfolding present moment.",
+            "es": "El espacio/tiempo es nuestro conocido reino físico, donde el espacio es el marco dominante. La materia tiene una orientación espacial tangible, lo que da a la ilusión cotidiana su solidez y su sensación de un momento presente que se despliega.",
+            "de": "Raum/Zeit ist unser vertrautes physisches Reich, in dem der Raum der vorherrschende Rahmen ist. Materie hat eine greifbare räumliche Ausrichtung, die der alltäglichen Illusion ihre Festigkeit und ihr Gefühl eines sich entfaltenden gegenwärtigen Augenblicks verleiht.",
+            "fr": "L'espace/temps est notre royaume physique familier, où l'espace est le cadre dominant. La matière possède une orientation spatiale tangible, ce qui donne à l'illusion quotidienne sa solidité et son sentiment d'un moment présent qui se déploie."
           },
           "context": {
-            "en": "Space/time as the physical realm",
-            "es": "El espacio/tiempo como el reino físico.",
-            "de": "Raum/Zeit als physisches Reich",
-            "fr": "L'espace/temps en tant que domaine physique"
+            "en": "Space/time: the tangible, space-dominant realm",
+            "es": "Espacio/tiempo: el reino tangible dominado por el espacio",
+            "de": "Raum/Zeit: das greifbare, vom Raum dominierte Reich",
+            "fr": "Espace/temps : le royaume tangible dominé par l'espace"
           }
         }
       ],
