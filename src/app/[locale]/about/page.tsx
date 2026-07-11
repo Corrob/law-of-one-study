@@ -4,7 +4,7 @@ import NavigationWrapper from "@/components/NavigationWrapper";
 import MotionFadeIn from "@/components/MotionFadeIn";
 import { MotionStaggerGroup, MotionStaggerItem } from "@/components/MotionStaggerGroup";
 import { type AvailableLanguage } from "@/lib/quote-utils";
-import { MeditateIcon } from "@/components/icons";
+import { MeditateIcon, AskIcon } from "@/components/icons";
 import AboutSections from "./AboutSections";
 
 // Feature icons (pure SVG - no client JS needed)
@@ -54,6 +54,25 @@ export default async function AboutPage() {
                 {t("features.title")}
               </h2>
               <MotionStaggerGroup className="grid md:grid-cols-3 gap-4">
+                <MotionStaggerItem>
+                  <Link
+                    href="/ask"
+                    className="block h-full bg-[var(--lo1-indigo)]/40 backdrop-blur-sm border border-[var(--lo1-celestial)]/40 rounded-2xl p-6 hover:border-[var(--lo1-gold)]/40 hover:shadow-[0_0_30px_rgba(212,168,83,0.1)] transition-all duration-300 group"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-[var(--lo1-gold)]/20 flex items-center justify-center">
+                        <AskIcon className="w-5 h-5 text-[var(--lo1-gold)]" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-[var(--lo1-starlight)] group-hover:text-[var(--lo1-gold)] transition-colors">
+                        {t("features.ask.title")}
+                      </h3>
+                    </div>
+                    <p className="text-[var(--lo1-stardust)] text-sm leading-relaxed">
+                      {t("features.ask.description")}
+                    </p>
+                  </Link>
+                </MotionStaggerItem>
+
                 <MotionStaggerItem>
                   <Link
                     href="/explore"

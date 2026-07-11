@@ -3,6 +3,10 @@
   "subtitle": "A study companion for the Ra Material",
   "features": {
     "title": "Features",
+    "ask": {
+      "title": "Ask",
+      "description": "Explore the Ra Material in conversation. Ask is grounded in our concept graph and links every point back to the original sessions — a companion for your seeking, not a replacement for the source."
+    },
     "explore": {
       "title": "Explore",
       "description": "Navigate an interactive concept graph showing relationships between key ideas in the Ra Material. Discover connections and explore related quotes."
@@ -15,6 +19,13 @@
       "title": "Meditate",
       "description": "Practice guided meditations drawn from the exercises described in the Ra Material, including finding love in the moment, seeing the Creator, and balancing the self."
     }
+  },
+  "ask": {
+    "title": "How Ask Works",
+    "intro": "Ask is an AI companion for exploring the Law of One in conversation.",
+    "grounding": "Rather than searching the full copyrighted text, Ask is grounded in our own curated concept graph. The AI explains ideas in its own words and never reproduces the Ra Material; each point links to the exact session on L/L Research so you can always read the original.",
+    "discernment": "Like any AI, it can be imperfect or oversimplify. Take what resonates, gently leave the rest, and verify anything important at the source.",
+    "attribution": "AI-generated summaries grounded in the concept graph, not reproductions of the copyrighted text. Read the originals at L/L Research."
   },
   "llResearch": {
     "title": "About L/L Research",

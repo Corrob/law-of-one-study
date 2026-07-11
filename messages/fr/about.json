@@ -3,6 +3,10 @@
   "subtitle": "Un compagnon d'étude pour le Matériel Ra",
   "features": {
     "title": "Fonctionnalités",
+    "ask": {
+      "title": "Demander",
+      "description": "Explorez le Matériel Ra en conversation. Demander s'appuie sur notre graphe de concepts et relie chaque point aux sessions originales — un compagnon pour votre quête, non un substitut à la source."
+    },
     "explore": {
       "title": "Explorer",
       "description": "Naviguez dans un graphe de concepts interactif montrant les relations entre les idées clés du Matériel Ra. Découvrez des connexions et explorez des citations liées."
@@ -15,6 +19,13 @@
       "title": "Méditer",
       "description": "Pratiquez des méditations guidées tirées des exercices décrits dans le Matériel Ra, notamment trouver l'amour dans l'instant, voir le Créateur et équilibrer le soi."
     }
+  },
+  "ask": {
+    "title": "Comment fonctionne Demander",
+    "intro": "Demander est un compagnon IA pour explorer la Loi de l'Un en conversation.",
+    "grounding": "Plutôt que de parcourir le texte intégral protégé par le droit d'auteur, Demander s'appuie sur notre propre graphe de concepts. L'IA explique les idées avec ses propres mots et ne reproduit jamais le Matériel Ra ; chaque point renvoie à la session exacte sur L/L Research afin que vous puissiez toujours lire l'original.",
+    "discernment": "Comme toute IA, il peut être imparfait ou simplifier à l'excès. Prenez ce qui résonne, laissez doucement le reste, et vérifiez l'important à la source.",
+    "attribution": "Résumés générés par IA fondés sur le graphe de concepts, et non des reproductions du texte protégé. Lisez les originaux sur L/L Research."
   },
   "llResearch": {
     "title": "À propos de L/L Research",

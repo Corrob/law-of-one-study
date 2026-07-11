@@ -8,7 +8,6 @@ import AskWelcome from "@/components/ask/AskWelcome";
 import AskAnswer from "@/components/ask/AskAnswer";
 import AskComposer from "@/components/ask/AskComposer";
 import AskThinking from "@/components/ask/AskThinking";
-import AskAttribution from "@/components/ask/AskAttribution";
 import { useAskStream } from "@/hooks/useAskStream";
 import { askAnalytics } from "@/lib/ask/analytics";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -214,11 +213,10 @@ export default function AskContent() {
               )}
             </div>
 
-            {/* Composer + attribution */}
+            {/* Composer */}
             <div className="px-4 pb-4 pt-2 border-t border-[var(--lo1-gold)]/10 bg-[var(--lo1-void)]/40 backdrop-blur-sm">
-              <div className="max-w-2xl mx-auto space-y-2">
+              <div className="max-w-2xl mx-auto">
                 <AskComposer onSend={handleSend} disabled={isStreaming} />
-                <AskAttribution />
               </div>
             </div>
           </div>
