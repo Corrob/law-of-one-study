@@ -11,7 +11,7 @@ A study companion for the Ra Material. Community-funded, open source, free for a
 | Component | Technology                        |
 | --------- | --------------------------------- |
 | Frontend  | Next.js 16 (App Router)           |
-| Ask (LLM) | OpenAI (gpt-5-mini) via SSE       |
+| Ask (LLM) | OpenAI (gpt-5.6-luna) via SSE      |
 | Rate limit| Upstash Redis (in-memory fallback)|
 | Analytics | PostHog                           |
 | Hosting   | Vercel                            |

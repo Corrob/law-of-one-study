@@ -8,13 +8,14 @@
  */
 
 /**
- * OpenAI model powering Ask responses.
+ * OpenAI model powering Ask responses (and the follow-up suggestion call).
  *
- * `gpt-5-mini` is the quality/cost pick for tightly-grounded, no-reproduction
- * answers on a free, community-funded site. Bump to `gpt-5` here if answer
- * quality needs it — the call site is provider-agnostic beyond this constant.
+ * `gpt-5.6-luna` is the current quality pick for tightly-grounded,
+ * no-reproduction answers. Swap to a cheaper tier here (e.g. `gpt-5-mini`) if
+ * traffic/cost grows — the call sites are provider-agnostic beyond this
+ * constant and the reasoning-effort setting below.
  */
-export const ASK_MODEL = "gpt-5-mini";
+export const ASK_MODEL = "gpt-5.6-luna";
 
 /**
  * Reasoning effort for the model. Grounded paraphrase does not need deep
@@ -46,9 +47,10 @@ export const ASK_RATE_LIMIT = {
 } as const;
 
 /**
- * gpt-5-mini pricing (USD per 1M tokens) for approximate cost tracking in
- * analytics. Update if OpenAI changes pricing — used only for observability,
- * never for billing.
+ * Approximate per-1M-token pricing (USD) for cost tracking in analytics only —
+ * never billing. NOTE: these are placeholder rates carried over from gpt-5-mini
+ * and should be updated to gpt-5.6-luna's published pricing so the PostHog cost
+ * estimates are accurate.
  */
 export const ASK_MODEL_PRICING = {
   inputPer1M: 0.25,
