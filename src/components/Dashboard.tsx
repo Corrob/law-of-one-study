@@ -130,8 +130,9 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Feature Cards Grid — four equal tiles: Study & Listen on top,
-          Explore & Meditate below. Listen (English-only) sits top-right. */}
+      {/* Feature Cards Grid — Ask spans a full-width row on top, then four
+          equal tiles below (Study & Listen, Explore & Meditate). Listen is
+          English-only. */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
         <FeatureCard
           href="/ask"
@@ -139,6 +140,8 @@ export default function Dashboard() {
           title={t("features.ask.title")}
           description={t("features.ask.description")}
           index={0}
+          featured
+          className="col-span-2"
           skipAnimation={skipAnimations}
         />
         <FeatureCard
