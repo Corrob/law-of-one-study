@@ -152,7 +152,7 @@ Features to revisit based on community demand:
 | Feature | Notes |
 |---------|-------|
 | Guided Meditations (expanded) | More meditation content and categories |
-| Weekly Newsletter | Editorial overhead, but high engagement potential |
+| Weekly Newsletter | Editorial overhead, but high engagement potential — design spec in [EMAIL_SIGNUP_FEATURE_PLAN.md](EMAIL_SIGNUP_FEATURE_PLAN.md) (email signup + daily/weekly Ra quote via MailerLite) |
 | Community Paths | User-contributed study paths (moderation needed) |
 | Native Mobile Apps | Perfect web experience first |
 | Discussion Boards | Significant moderation resources |
