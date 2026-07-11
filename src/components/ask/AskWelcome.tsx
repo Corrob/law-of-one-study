@@ -10,21 +10,26 @@ interface AskWelcomeProps {
   onPickStarter: (prompt: string) => void;
 }
 
+// Rotating greeting keys (map to ask.greetings.* translations).
+const GREETING_KEYS = ["seeker", "loveLight", "journey", "serve", "wanderer"] as const;
+
 /**
- * Empty-state for the Ask feature: a short intro plus a random handful of
- * starter questions (from the localized pool) the seeker can tap to begin.
+ * Empty-state for the Ask feature: a rotating greeting, a short intro, a random
+ * handful of starter questions, and a gentle on-load caution.
  */
 export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
   const t = useTranslations("ask");
 
-  // Chosen on mount (client-side) so the random pick doesn't cause a
+  // Chosen on mount (client-side) so the random picks don't cause a
   // server/client hydration mismatch.
   const [starters, setStarters] = useState<string[]>([]);
+  const [greetingKey, setGreetingKey] = useState<(typeof GREETING_KEYS)[number] | null>(null);
 
   useEffect(() => {
     const pool = t.raw("starters") as string[];
     const picked = pickRandomStarters(Array.isArray(pool) ? pool : []);
     setStarters(picked);
+    setGreetingKey(GREETING_KEYS[Math.floor(Math.random() * GREETING_KEYS.length)]);
     askAnalytics.welcomeScreenViewed({ starterCount: picked.length });
     // Pick once on mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,9 +45,14 @@ export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
       <div className="w-14 h-14 rounded-full bg-[var(--lo1-gold)]/15 flex items-center justify-center mb-4">
         <AskIcon className="w-7 h-7 text-[var(--lo1-gold)]" />
       </div>
-      <h2 className="text-xl font-semibold text-[var(--lo1-starlight)] mb-2">
+      <h2 className="text-xl font-semibold text-[var(--lo1-starlight)] mb-1">
         {t("welcomeTitle")}
       </h2>
+      {greetingKey && (
+        <p className="text-sm italic text-[var(--lo1-gold)]/80 mb-2">
+          {t(`greetings.${greetingKey}`)}
+        </p>
+      )}
       <p className="text-sm text-[var(--lo1-stardust)] max-w-md mb-6 leading-relaxed">
         {t("welcomeBody")}
       </p>
@@ -63,6 +73,11 @@ export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
           </button>
         ))}
       </div>
+
+      {/* Gentle on-load caution. */}
+      <p className="text-xs text-[var(--lo1-stardust)]/60 max-w-md mt-6 leading-relaxed">
+        {t("warning")}
+      </p>
     </div>
   );
 }

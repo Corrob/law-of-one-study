@@ -7,6 +7,22 @@
   "newConversation": "Neues Gespräch",
   "thinking": "Denkt nach...",
   "attribution": "KI-generierte Zusammenfassungen auf Basis des Konzeptgraphen, keine Wiedergabe des urheberrechtlich geschützten Textes. Lies die Originale auf",
+  "greetings": {
+    "seeker": "Willkommen, Suchender.",
+    "loveLight": "In Liebe und Licht.",
+    "journey": "Die Reise geht weiter.",
+    "serve": "Wie kann ich dienen?",
+    "wanderer": "Sei gegrüßt, Wanderer."
+  },
+  "warning": "Ein Wegweiser, keine Autorität: Die Antworten sind KI-generierte Zusammenfassungen von Ras Lehren und können ungenau sein. Lies bei allem Wichtigen die Originalsitzungen bei L/L Research.",
+  "characterCount": "{count} / {max} Zeichen",
+  "overLimit": "(Limit überschritten)",
+  "placeholders": [
+    "Frage zum Ra-Material…",
+    "Wonach suchst du?",
+    "Welches Geheimnis ruft dich?",
+    "Beginne deine Reise…"
+  ],
   "starters": [
     "Was ist das Gesetz des Einen?",
     "Was meint Ra mit der Ernte?",

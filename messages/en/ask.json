@@ -7,6 +7,22 @@
   "newConversation": "New conversation",
   "thinking": "Thinking...",
   "attribution": "AI-generated summaries grounded in the concept graph, not reproductions of the copyrighted text. Read the originals at",
+  "greetings": {
+    "seeker": "Welcome, seeker.",
+    "loveLight": "In love and light.",
+    "journey": "The journey continues.",
+    "serve": "How may I serve?",
+    "wanderer": "Greetings, wanderer."
+  },
+  "warning": "A guide, not an authority: answers are AI-generated summaries of Ra's teachings and may be imperfect. For anything important, read the original sessions at L/L Research.",
+  "characterCount": "{count} / {max} characters",
+  "overLimit": "(over limit)",
+  "placeholders": [
+    "Ask about the Ra Material…",
+    "What are you seeking?",
+    "What mystery calls to you?",
+    "Begin your journey…"
+  ],
   "starters": [
     "What is the Law of One?",
     "What does Ra mean by the harvest?",

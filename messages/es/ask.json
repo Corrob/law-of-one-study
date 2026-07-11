@@ -7,6 +7,22 @@
   "newConversation": "Nueva conversación",
   "thinking": "Pensando...",
   "attribution": "Resúmenes generados por IA basados en el grafo de conceptos, no reproducciones del texto con derechos de autor. Lee los originales en",
+  "greetings": {
+    "seeker": "Bienvenido, buscador.",
+    "loveLight": "En amor y luz.",
+    "journey": "El viaje continúa.",
+    "serve": "¿Cómo puedo servir?",
+    "wanderer": "Saludos, errante."
+  },
+  "warning": "Una guía, no una autoridad: las respuestas son resúmenes generados por IA de las enseñanzas de Ra y pueden ser imperfectas. Para algo importante, lee las sesiones originales en L/L Research.",
+  "characterCount": "{count} / {max} caracteres",
+  "overLimit": "(límite superado)",
+  "placeholders": [
+    "Pregunta sobre el Material de Ra…",
+    "¿Qué estás buscando?",
+    "¿Qué misterio te llama?",
+    "Comienza tu viaje…"
+  ],
   "starters": [
     "¿Qué es la Ley del Uno?",
     "¿Qué quiere decir Ra con la cosecha?",

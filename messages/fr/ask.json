@@ -7,6 +7,22 @@
   "newConversation": "Nouvelle conversation",
   "thinking": "Réflexion...",
   "attribution": "Résumés générés par IA fondés sur le graphe de concepts, et non des reproductions du texte protégé. Lisez les originaux sur",
+  "greetings": {
+    "seeker": "Bienvenue, chercheur.",
+    "loveLight": "Dans l'amour et la lumière.",
+    "journey": "Le voyage continue.",
+    "serve": "Comment puis-je servir ?",
+    "wanderer": "Salutations, errant."
+  },
+  "warning": "Un guide, non une autorité : les réponses sont des résumés générés par IA des enseignements de Ra et peuvent être imparfaites. Pour tout point important, lisez les sessions originales sur L/L Research.",
+  "characterCount": "{count} / {max} caractères",
+  "overLimit": "(limite dépassée)",
+  "placeholders": [
+    "Posez une question sur le Matériel Ra…",
+    "Que cherchez-vous ?",
+    "Quel mystère vous appelle ?",
+    "Commencez votre voyage…"
+  ],
   "starters": [
     "Qu'est-ce que la Loi de l'Un ?",
     "Que veut dire Ra par la moisson ?",
