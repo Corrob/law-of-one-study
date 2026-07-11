@@ -27,6 +27,7 @@ export default function AskContent() {
   );
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
   const prevUserCount = useRef(0);
   const [showScrollDown, setShowScrollDown] = useState(false);
 
@@ -44,25 +45,57 @@ export default function AskContent() {
     el?.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, []);
 
-  // Pin a newly asked question near the top of the view so the answer grows
-  // beneath it. We deliberately do NOT auto-scroll while the answer streams —
-  // that would pull the reader off their place. (Standard chat pattern.)
-  useEffect(() => {
+  // Size a trailing spacer so the latest turn can always be scrolled to the top
+  // (otherwise a short answer leaves too little room to lift the question up).
+  // The spacer shrinks toward zero as the answer grows past the viewport.
+  const measureSpacer = useCallback(() => {
+    const el = scrollRef.current;
+    const spacer = spacerRef.current;
+    if (!el || !spacer) return;
+    const nodes = el.querySelectorAll<HTMLElement>('[data-role="user"]');
+    const last = nodes[nodes.length - 1];
+    if (!last) {
+      spacer.style.height = "0px";
+      return;
+    }
+    // Height of the current turn = last question top → start of the spacer.
+    const lastTurnHeight = spacer.offsetTop - last.offsetTop;
+    const needed = Math.max(0, el.clientHeight - lastTurnHeight - 16);
+    spacer.style.height = `${needed}px`;
+  }, []);
+
+  const pinLastQuestion = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
+    measureSpacer(); // make room first
+    const nodes = el.querySelectorAll<HTMLElement>('[data-role="user"]');
+    const last = nodes[nodes.length - 1];
+    if (!last) return;
+    const delta = last.getBoundingClientRect().top - el.getBoundingClientRect().top - 8;
+    el.scrollTo({ top: el.scrollTop + delta, behavior: "smooth" });
+  }, [measureSpacer]);
+
+  // On a NEW question, pin it near the top so the answer grows beneath it. While
+  // the answer streams we don't auto-scroll (that pulls the reader off their
+  // place); we only resize the spacer so it shrinks as the answer fills in.
+  useEffect(() => {
     if (messages.length === 0) prevUserCount.current = 0;
     const userCount = messages.reduce((n, m) => (m.role === "user" ? n + 1 : n), 0);
-    if (userCount > prevUserCount.current) {
-      prevUserCount.current = userCount;
-      const nodes = el.querySelectorAll<HTMLElement>('[data-role="user"]');
-      const last = nodes[nodes.length - 1];
-      if (last) {
-        const delta = last.getBoundingClientRect().top - el.getBoundingClientRect().top - 8;
-        el.scrollTo({ top: el.scrollTop + delta, behavior: "smooth" });
-      }
-    }
-    updateScrollDown();
-  }, [messages, updateScrollDown]);
+    const isNewQuestion = userCount > prevUserCount.current;
+    prevUserCount.current = userCount;
+    requestAnimationFrame(() => {
+      if (isNewQuestion) pinLastQuestion();
+      else measureSpacer();
+      updateScrollDown();
+    });
+  }, [messages, suggestions, pinLastQuestion, measureSpacer, updateScrollDown]);
+
+  // Recompute the spacer on viewport resize.
+  useEffect(() => {
+    const onResize = () => measureSpacer();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [measureSpacer]);
 
   const handleSend = useCallback(
     (message: string) => {
@@ -158,6 +191,9 @@ export default function AskContent() {
                     {error}
                   </div>
                 )}
+
+                {/* Dynamic spacer so the latest question can pin to the top. */}
+                <div ref={spacerRef} aria-hidden className="shrink-0" />
               </div>
             </div>
 
