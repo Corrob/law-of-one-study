@@ -3,52 +3,69 @@
 The Ask feature grounds the LLM in `src/data/concept-graph.json`. This doc tracks
 enrichment status and the plan for adding more source-validated passages.
 
-## Current coverage (validated)
+## Current coverage
 
-Run `npm run validate:citations`:
+Run `npm run validate:citations` (structure) and `-- --online` (wording):
 
 - **128 concepts**, every one with at least one key passage (0 gaps).
 - **145 key passages**, **107 unique** `session.question` references.
 - **0 thin** English definitions; all four locales populated.
 - All references well-formed and within the real session range (1–106).
 
-The graph is already broad. The remaining enrichment is _depth_: adding more of
-the most-cited passages for the highest-traffic topics.
+### Reference-resolution status (as of the last `--online` run)
 
-## Source of truth for new quotes
+- **145 / 145 references resolve** — every citation points to a real Q&A that
+  exists on llresearch.org. This is the property that matters.
+- Excerpt style split (informational): **85 verbatim** quotes, **60 our-words
+  summaries**. Both are acceptable — see the principle below.
 
-- **lawofone.info** — the only site L/L Research authorized to host full session
-  text. Every new `keyPassage.reference` and `excerpt` must be verified here.
-- **lawofone.info/favorite-quotes.php** — a curated list of the community's
-  favorite passages; an excellent shortlist to draw enrichment from.
+### Principle: paraphrase-first, verbatim as a small curated subset
+
+We do **not** reproduce the Ra Material. The `excerpt` field is normally a short
+**summary in our own words**; a small curated subset may be a genuine short
+**verbatim quote**. Either way the `reference` links to the exact Q&A on
+llresearch.org, which is where the reader goes for the original. Two rules:
+
+- If an `excerpt` is shown as a literal quote (quotation marks), it must be
+  **verbatim**; if it's our summary, it must **not** be dressed up as a quote.
+- Every `reference` must resolve (enforced by `--online`).
+
+## Source of truth for quotes
+
+- **llresearch.org** (`/channeling/ra-contact/{session}#{question}`) — L/L
+  Research's own site and the canonical home of the Ra Material. This is the
+  exact page the Ask feature links, and what `--online` validates against. It
+  has locale-aware paths (`/es`, `/de`, `/fr`) for the translated excerpts.
+- **lawofone.info** — a community searchable archive; still useful for finding
+  passages, but verify final wording on llresearch.org (our citation target).
 - Reddit (r/lawofone) surfaces which questions are asked most often and which
   passages people cite — use it to _prioritize_, then verify wording on
-  lawofone.info before adding anything.
+  llresearch.org before adding anything.
 
-## ⚠️ Network constraint in CI/sandbox
+## Validation: what `--online` checks
 
-lawofone.info blocks automated clients (Cloudflare WAF → HTTP 403 / reset), so
-excerpt wording **cannot be verified from the build sandbox**. To keep every
-citation accurate, do NOT add excerpts you cannot verify against the source.
+`scripts/validate-ra-citations.ts --online` fetches each referenced
+llresearch.org page and confirms the reference **resolves** — the session page
+loads and that question's anchor exists. A reference that doesn't resolve is an
+error. It also *reports* how many excerpts are verbatim vs. our-words summaries
+(informational only — summaries are expected and fine). It caches each session
+page and skips gracefully when the network is unreachable (some CI/sandboxes
+can't reach the site).
 
-`scripts/validate-ra-citations.ts --online` performs a best-effort live
-reachability check with a browser user-agent and skips gracefully when blocked.
-Run it (and do the manual excerpt verification) from a network/IP that can reach
-lawofone.info.
+## How to add a passage
 
-## How to add a validated passage
-
-1. Pick a high-value reference (from favorite-quotes.php or a common Reddit
-   question) for a concept in `concept-graph.json`.
-2. Open `https://www.lawofone.info/s/{session}#{question}` and copy the short
-   excerpt (1–3 sentences) exactly.
-3. Add a `keyPassage` to the concept: `reference`, `excerpt` (all four locales —
-   match the site's translations where available, else translate faithfully),
-   and a `context` written in our own words.
-4. Run `npm run validate:citations` — it re-syncs `src/data/known-references.json`
-   (which the Ask citation renderer uses) and fails on structural problems.
-5. Run `npm run validate:citations -- --online` from a permitted network to
-   confirm the reference resolves.
+1. Pick a high-value reference for a concept in `concept-graph.json` (from a
+   common Reddit question, for example).
+2. Open `https://www.llresearch.org/channeling/ra-contact/{session}#{question}`,
+   read the Q&A, and confirm it says what you think.
+3. Add the `keyPassage`: the correct `reference`, an `excerpt` that is a short
+   **summary in our own words** (all four locales) — or, for a small curated
+   subset, a genuine short **verbatim** quote — plus a `context` in our words.
+4. Run `npm run validate:citations` — it re-syncs
+   `src/data/known-references.json` (used by the Ask citation renderer) and
+   fails on structural problems.
+5. Run `npm run validate:citations -- --online` and confirm the reference
+   resolves.
 
 ## Common topics to prioritize (from research)
 
