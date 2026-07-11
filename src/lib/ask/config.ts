@@ -47,14 +47,12 @@ export const ASK_RATE_LIMIT = {
 } as const;
 
 /**
- * Approximate per-1M-token pricing (USD) for cost tracking in analytics only —
- * never billing. NOTE: these are placeholder rates carried over from gpt-5-mini
- * and should be updated to gpt-5.6-luna's published pricing so the PostHog cost
- * estimates are accurate.
+ * gpt-5.6-luna pricing (USD per 1M tokens) for cost tracking in analytics only —
+ * never billing. Update if OpenAI changes pricing.
  */
 export const ASK_MODEL_PRICING = {
-  inputPer1M: 0.25,
-  outputPer1M: 2.0,
+  inputPer1M: 1.0,
+  outputPer1M: 6.0,
 } as const;
 
 /** Approximate USD cost of a generation, for PostHog LLM analytics. */
