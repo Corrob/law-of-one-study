@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback, useMemo } from "react";
+import { useEffect, useRef, useCallback, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -27,12 +27,42 @@ export default function AskContent() {
   );
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const prevUserCount = useRef(0);
+  const [showScrollDown, setShowScrollDown] = useState(false);
 
-  // Keep the latest message (and follow-up chips) in view.
+  // Show the "jump to latest" affordance whenever the reader isn't near the bottom.
+  const updateScrollDown = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const scrollable = el.scrollHeight > el.clientHeight + 40;
+    const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+    setShowScrollDown(scrollable && !nearBottom);
+  }, []);
+
+  const scrollToBottom = useCallback(() => {
+    const el = scrollRef.current;
+    el?.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
+  }, []);
+
+  // Pin a newly asked question near the top of the view so the answer grows
+  // beneath it. We deliberately do NOT auto-scroll while the answer streams —
+  // that would pull the reader off their place. (Standard chat pattern.)
   useEffect(() => {
     const el = scrollRef.current;
-    if (el) el.scrollTop = el.scrollHeight;
-  }, [messages, suggestions]);
+    if (!el) return;
+    if (messages.length === 0) prevUserCount.current = 0;
+    const userCount = messages.reduce((n, m) => (m.role === "user" ? n + 1 : n), 0);
+    if (userCount > prevUserCount.current) {
+      prevUserCount.current = userCount;
+      const nodes = el.querySelectorAll<HTMLElement>('[data-role="user"]');
+      const last = nodes[nodes.length - 1];
+      if (last) {
+        const delta = last.getBoundingClientRect().top - el.getBoundingClientRect().top - 8;
+        el.scrollTo({ top: el.scrollTop + delta, behavior: "smooth" });
+      }
+    }
+    updateScrollDown();
+  }, [messages, updateScrollDown]);
 
   const handleSend = useCallback(
     (message: string) => {
@@ -62,14 +92,19 @@ export default function AskContent() {
               </div>
             )}
 
-            {/* Message area */}
-            <div ref={scrollRef} className="chat-scroll flex-1 overflow-y-auto px-4 py-4">
+            {/* Message area (relative wrapper anchors the jump-to-latest button) */}
+            <div className="relative flex-1 flex flex-col overflow-hidden">
+            <div
+              ref={scrollRef}
+              onScroll={updateScrollDown}
+              className="chat-scroll flex-1 overflow-y-auto px-4 py-4"
+            >
               <div className="max-w-2xl mx-auto space-y-4">
                 {!hasMessages && <AskWelcome onPickStarter={handleSend} />}
 
                 {messages.map((message) =>
                   message.role === "user" ? (
-                    <div key={message.id} className="flex justify-end">
+                    <div key={message.id} data-role="user" className="flex justify-end scroll-mt-2">
                       <div className="max-w-[85%] rounded-2xl rounded-br-sm bg-[var(--lo1-gold)]/15 px-4 py-2.5 text-[var(--lo1-starlight)] whitespace-pre-wrap">
                         {message.content}
                       </div>
@@ -124,6 +159,23 @@ export default function AskContent() {
                   </div>
                 )}
               </div>
+            </div>
+
+              {/* Jump to latest — only when scrolled away from the bottom */}
+              {showScrollDown && (
+                <button
+                  type="button"
+                  onClick={scrollToBottom}
+                  aria-label={t("scrollToLatest")}
+                  className="absolute bottom-3 right-4 z-10 flex h-9 w-9 items-center justify-center rounded-full
+                             border border-[var(--lo1-gold)]/30 bg-[var(--lo1-indigo)]/85 text-[var(--lo1-gold)]
+                             shadow-lg backdrop-blur-sm hover:bg-[var(--lo1-indigo)] transition-colors cursor-pointer"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                </button>
+              )}
             </div>
 
             {/* Composer + attribution */}

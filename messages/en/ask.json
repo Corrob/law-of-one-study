@@ -5,6 +5,7 @@
   "inputLabel": "Your question",
   "send": "Send",
   "newConversation": "New conversation",
+  "scrollToLatest": "Scroll to latest",
   "thinking": "Thinking...",
   "attribution": "AI-generated summaries grounded in the concept graph, not reproductions of the copyrighted text. Read the originals at",
   "thinkingPhrases": {
