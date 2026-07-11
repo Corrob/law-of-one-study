@@ -16,19 +16,26 @@ Run `npm run validate:citations` (structure) and `-- --online` (wording):
 
 - **145 / 145 references resolve** — every citation points to a real Q&A that
   exists on llresearch.org. This is the property that matters.
-- Excerpt style split (informational): **85 verbatim** quotes, **60 our-words
-  summaries**. Both are acceptable — see the principle below.
+- **7 passages** are flagged `verbatim: true` (a curated subset) and are
+  verified to match the source **in all four locales**. The rest are our-words
+  summaries.
 
 ### Principle: paraphrase-first, verbatim as a small curated subset
 
 We do **not** reproduce the Ra Material. The `excerpt` field is normally a short
 **summary in our own words**; a small curated subset may be a genuine short
-**verbatim quote**. Either way the `reference` links to the exact Q&A on
-llresearch.org, which is where the reader goes for the original. Two rules:
+**verbatim quote**, marked `"verbatim": true`. Either way the `reference` links
+to the exact Q&A on llresearch.org, which is where the reader goes for the
+original. Rules enforced by `--online`:
 
-- If an `excerpt` is shown as a literal quote (quotation marks), it must be
-  **verbatim**; if it's our summary, it must **not** be dressed up as a quote.
-- Every `reference` must resolve (enforced by `--online`).
+- Every `reference` must resolve.
+- A `verbatim: true` excerpt must match the source **verbatim in every locale**
+  (en/es/de/fr), because ConceptPanel displays it in quotation marks. A summary
+  (no flag) is shown without quotes and is not wording-checked.
+
+The curated verbatim quotes so far cover: harvest (6.14), catalyst (34.6),
+density (16.51), veil (50.7), wanderers (16.59), service to others (50.5), and
+the archetypical mind (76.10).
 
 ## Source of truth for quotes
 

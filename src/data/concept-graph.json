@@ -433,17 +433,18 @@
         {
           "reference": "16.51",
           "excerpt": {
-            "en": "The term density is a, what you would call, mathematical one. The closest analogy is that of music, whereby after seven notes on your western type of scale, if you will, the eighth note begins a new octave.",
-            "es": "El término densidad es, lo que ustedes llamarían, matemático. La analogía más cercana es la de la música, por la que después de siete notas en tu escala de tipo occidental, si lo deseas, la octava nota comienza una nueva octava.",
-            "de": "Der Begriff Dichte ist ein, wie ihr es nennen würdet, mathematischer. Der naheliegende Vergleich ist der von Musik, der zufolge nach sieben Noten auf eurer westlichen Art von Skala, wenn du so magst, die achte Note eine neue Oktave beginnt.",
-            "fr": "Le terme de ‘densité’ est ce que vous appelleriez un terme mathématique. L’analogie la plus proche est celle de la musique où, après sept notes sur votre échelle de type occidental, si vous voulez, la huitième note entame une nouvelle octave."
+            "en": "The closest analogy is that of music, whereby after seven notes on your western type of scale, if you will, the eighth note begins a new octave.",
+            "es": "La analogía más cercana es la de la música, por la que después de siete notas en tu escala de tipo occidental, si lo deseas, la octava nota comienza una nueva octava.",
+            "de": "Der naheliegende Vergleich ist der von Musik, der zufolge nach sieben Noten auf eurer westlichen Art von Skala, wenn du so magst, die achte Note eine neue Oktave beginnt.",
+            "fr": "L’analogie la plus proche est celle de la musique où, après sept notes sur votre échelle de type occidental, si vous voulez, la huitième note entame une nouvelle octave."
           },
           "context": {
             "en": "The fundamental definition of density as a musical analogy",
             "es": "La definición fundamental de densidad como una analogía musical.",
             "de": "Die grundlegende Definition von Dichte als musikalische Analogie",
             "fr": "Définition fondamentale de la densité comme analogie musicale"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -1466,7 +1467,8 @@
             "es": "Cómo funciona la cosecha",
             "de": "Wie die Ernte funktioniert",
             "fr": "Comment fonctionne la moisson"
-          }
+          },
+          "verbatim": true
         },
         {
           "reference": "1.9",
@@ -1818,7 +1820,8 @@
             "es": "Ejemplo de programación de servicio a los demás",
             "de": "Beispiel für Dienst-an-anderen-Programmierung",
             "fr": "Exemple de programmation de service d'autrui"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -3292,17 +3295,18 @@
         {
           "reference": "34.6",
           "excerpt": {
-            "en": "This creates a potential for learning. The lessons to be learned vary. Almost always these lessons include patience, tolerance, and the ability for the light touch.",
-            "es": "Las lecciones a aprender varían. Casi siempre estas lecciones incluyen la paciencia, la tolerancia y una habilidad para la gentileza. Muy a menudo, el catalizador del dolor emocional, ya sea la muerte del complejo físico de otro-yo al que se ama o alguna otra pérdida aparente, resultará simplemente en lo contrario:",
-            "de": "Dies erzeugt ein Potenzial, um etwas zu lernen. Die Lektionen, die es zu lernen gilt, variieren. Fast immer beinhalten die Lektionen Geduld, Toleranz und die Fähigkeit zur Berührung mit dem Licht.",
-            "fr": "Les leçons à apprendre varient. Presque toujours, ces leçons incluent la patience, la tolérance, et la capacité de légèreté. Très souvent, le catalyseur de douleur émotionnelle, qu’il s’agisse de la mort du complexe physique d’un autre ‘soi’ aimé ou autre perte ou perçue telle, aura simplement le résultat opposé:"
+            "en": "This creates a potential for learning. The lessons to be learned vary.",
+            "es": "Esto crea un potencial de aprendizaje. Las lecciones a aprender varían.",
+            "de": "Dies erzeugt ein Potenzial, um etwas zu lernen. Die Lektionen, die es zu lernen gilt, variieren.",
+            "fr": "Ceci crée un potentiel d’apprentissage. Les leçons à apprendre varient."
           },
           "context": {
             "en": "How catalyst creates learning opportunities",
             "es": "Cómo el catalizador crea oportunidades de aprendizaje.",
             "de": "Wie Katalysator Lernmöglichkeiten schafft",
             "fr": "Comment le catalyseur crée des opportunités d'apprentissage"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -3506,17 +3510,18 @@
         {
           "reference": "50.7",
           "excerpt": {
-            "en": "You cannot remember your hand, their hands, perhaps even the rules of this game. This game can only be won by those who lose their cards in the melting influence of love.",
-            "es": "Este juego sólo puede ser ganado por aquellos que pierden sus cartas en la influencia fundidora del amor; sólo puede ser ganado por aquellos que ponen sus placeres, sus limitaciones, su todo sobre la mesa boca arriba y dicen interiormente: «Todos, todos los jugadores, cada uno de los otros-yo, cualquiera que sea su mano, los amo».",
-            "de": "Du kannst dich nicht an deine Hand, an ihre Hände, vielleicht nicht einmal an die Regeln des Spiels erinnern. Dieses Spiel kann nur von jenen gewonnen werden, die ihre Karten im zerschmelzenden Einfluss der Liebe verlieren; kann nur von jenen gewonnen werden, die ihre Freuden, ihre Einschränkungen, ihr Alles mit der Bildseite nach oben auf den Tisch legen und innerlich sagen:",
-            "fr": "Ce jeu ne peut être gagné que par ceux qui perdent leurs cartes dans l’influence fusionnelle de l’amour; il ne peut être gagné que par ceux qui mettent leurs plaisirs, leurs limitations, leur tout, sur la table, face vers le haut, et qui disent en eux-mêmes: «vous tous, les joueurs, tous les autres ‘soi’, quelles que soient vos cartes, je vous aime»."
+            "en": "Let us give the example of the man who sees all the poker hands. He then knows the game. It is but child’s play to gamble, for it is no risk.",
+            "es": "Pongamos el ejemplo del hombre que ve todas las manos de póquer. Así entonces conoce el juego. El apostar no es más que un juego de niños, ya que no supone ningún riesgo.",
+            "de": "Lass uns das Beispiel des Mannes geben, der alle Pokerhände sieht. Er kennt dadurch das Spiel. Es ist nur ein Kinderspiel, so zu spielen, denn es gibt kein Risiko.",
+            "fr": "Nous allons donner l’exemple de l’homme qui voit toutes les cartes au poker. Il connaît alors le jeu. C’est ensuite un jeu d’enfant de miser, car il n’y a aucun risque."
           },
           "context": {
             "en": "The veil as essential for meaningful choice",
             "es": "El velo como esencial para una elección significativa",
             "de": "Der Schleier als wesentlich für sinnvolle Wahl",
             "fr": "Le voile comme essentiel pour un choix significatif"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -3899,17 +3904,18 @@
         {
           "reference": "16.59",
           "excerpt": {
-            "en": "Wanderers become completely the creature of third density in mind/body complex. There is just as much chance of such influence to a Wanderer entity as to a mind/body/spirit complex of this planetary sphere.",
-            "es": "Como se ha dicho antes, los errantes se convierten completamente en criaturas de tercera densidad en el complejo mente/cuerpo. Hay tantas posibilidades de tal influencia para una entidad errante como para un complejo mente/cuerpo/espíritu de esta esfera planetaria.",
-            "de": "Wie wir bereits gesagt haben, werden Wanderer vollständig zur Kreatur von dritter Dichte in Geist/Körper/Seele-Komplex. Es gibt genauso viel Möglichkeit eines solchen Einflusses für ein Wanderer-Wesen wie für einen Geist/Körper/Seele-Komplex dieser planetaren Sphäre.",
-            "fr": "Comme nous l’avons dit précédemment, les Missionnés deviennent complètement la créature de troisième densité dans le complexe mental/corps. Il y a juste autant de chances d’une telle influence sur un Missionné que sur un complexe mental/corps/esprit de cette sphère planétaire."
+            "en": "As we have said before, wanderers become completely the creature of third density in mind/body complex.",
+            "es": "Como se ha dicho antes, los errantes se convierten completamente en criaturas de tercera densidad en el complejo mente/cuerpo.",
+            "de": "Wie wir bereits gesagt haben, werden Wanderer vollständig zur Kreatur von dritter Dichte in Geist/Körper/Seele-Komplex.",
+            "fr": "Comme nous l’avons dit précédemment, les Missionnés deviennent complètement la créature de troisième densité dans le complexe mental/corps."
           },
           "context": {
             "en": "Wanderers are subject to third density conditions",
             "es": "Los errantes están sujetos a las condiciones de la tercera densidad.",
             "de": "Wanderer unterliegen den Bedingungen der dritten Dichte",
             "fr": "Les errants sont soumis aux conditions de la troisième densité"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -5068,7 +5074,8 @@
             "es": "Definición de mente arquetípica.",
             "de": "Definition des archetypischen Verstandes",
             "fr": "Définition du mental archétypal"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [

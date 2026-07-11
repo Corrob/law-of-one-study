@@ -46,6 +46,7 @@ interface KeyPassage {
   reference: string;
   excerpt: BilingualText;
   context: BilingualText;
+  verbatim?: boolean;
 }
 interface Concept {
   id: string;
@@ -169,10 +170,11 @@ function syncKnownReferences(references: Set<string>): void {
 interface PassageRecord {
   conceptId: string;
   reference: string;
-  excerptEn: string;
+  excerpt: BilingualText;
+  verbatim: boolean;
 }
 
-/** Every well-formed keyPassage with its English excerpt, for online verification. */
+/** Every well-formed keyPassage, for online verification. */
 function collectPassages(graph: Graph): PassageRecord[] {
   const passages: PassageRecord[] = [];
   for (const concept of Object.values(graph.concepts)) {
@@ -181,7 +183,8 @@ function collectPassages(graph: Graph): PassageRecord[] {
         passages.push({
           conceptId: concept.id,
           reference: passage.reference,
-          excerptEn: passage.excerpt?.en ?? "",
+          excerpt: passage.excerpt,
+          verbatim: passage.verbatim === true,
         });
       }
     }
@@ -189,7 +192,11 @@ function collectPassages(graph: Graph): PassageRecord[] {
   return passages;
 }
 
-const RA_CONTACT_BASE = "https://www.llresearch.org/channeling/ra-contact";
+/** llresearch.org ra-contact base for a locale (English has no path prefix). */
+function raContactBase(locale: string): string {
+  const prefix = locale === "en" ? "" : `/${locale}`;
+  return `https://www.llresearch.org${prefix}/channeling/ra-contact`;
+}
 
 const BROWSER_HEADERS = {
   "User-Agent":
@@ -255,35 +262,35 @@ async function checkOnline(passages: PassageRecord[]): Promise<void> {
   console.log(`--- Online reference check (${passages.length} passages, ${sessions.size} sessions) ---`);
 
   const pageCache = new Map<string, string | null>();
-  async function getPage(session: string): Promise<string | null> {
-    if (pageCache.has(session)) return pageCache.get(session)!;
-    const url = `${RA_CONTACT_BASE}/${session}`;
+  async function getPage(locale: string, session: string): Promise<string | null> {
+    const key = `${locale}/${session}`;
+    if (pageCache.has(key)) return pageCache.get(key)!;
+    const url = `${raContactBase(locale)}/${session}`;
     try {
       const res = await fetch(url, { headers: BROWSER_HEADERS });
       if (!res.ok) {
         warnings.push(`Online: ${url} returned HTTP ${res.status} (skipped).`);
-        pageCache.set(session, null);
+        pageCache.set(key, null);
         return null;
       }
       const html = await res.text();
-      pageCache.set(session, html);
+      pageCache.set(key, html);
       return html;
     } catch (err) {
       warnings.push(
         `Online: ${url} failed (${err instanceof Error ? err.message : "network error"}) (skipped).`
       );
-      pageCache.set(session, null);
+      pageCache.set(key, null);
       return null;
     }
   }
 
   let resolved = 0;
   let skipped = 0;
-  let verbatim = 0;
-  let paraphrase = 0;
+  let verbatimOk = 0;
   for (const passage of passages) {
     const [session, question] = passage.reference.split(".");
-    const page = await getPage(session);
+    const page = await getPage("en", session);
     if (page === null) {
       skipped++;
       continue;
@@ -296,16 +303,34 @@ async function checkOnline(passages: PassageRecord[]): Promise<void> {
       continue;
     }
     resolved++;
-    // Informational only: is the stored excerpt a verbatim quote or our summary?
-    if (passage.excerptEn) {
-      if (normalizeForMatch(text).includes(normalizeForMatch(passage.excerptEn))) verbatim++;
-      else paraphrase++;
+
+    // Verbatim passages are displayed as quotes, so they must match the source
+    // exactly in EVERY locale we show.
+    if (passage.verbatim) {
+      let allOk = true;
+      for (const locale of LOCALES) {
+        const lp = locale === "en" ? page : await getPage(locale, session);
+        if (lp === null) {
+          allOk = false;
+          continue; // network issue already warned
+        }
+        const localeText = extractQuestionText(lp, Number(question));
+        const excerpt = passage.excerpt[locale] ?? "";
+        if (!localeText || !excerpt || !normalizeForMatch(localeText).includes(normalizeForMatch(excerpt))) {
+          allOk = false;
+          errors.push(
+            `Online: "${passage.conceptId}" reference ${passage.reference} — verbatim excerpt does not match the source in "${locale}".`
+          );
+        }
+      }
+      if (allOk) verbatimOk++;
     }
   }
 
-  console.log(`References resolved: ${resolved}`);
-  console.log(`Skipped (network):   ${skipped}`);
-  console.log(`  excerpt split — verbatim: ${verbatim}, paraphrase/summary: ${paraphrase}`);
+  const verbatimCount = passages.filter((p) => p.verbatim).length;
+  console.log(`References resolved:      ${resolved}`);
+  console.log(`Skipped (network):        ${skipped}`);
+  console.log(`Verbatim quotes verified: ${verbatimOk}/${verbatimCount} (all locales)`);
   if (skipped > 0 && resolved === 0) {
     console.log(
       "The source appears unreachable from here. Re-run --online from a permitted network."

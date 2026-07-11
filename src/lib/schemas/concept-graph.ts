@@ -83,6 +83,7 @@ export const KeyPassageSchema = z.object({
   reference: z.string(),
   excerpt: BilingualTextSchema,
   context: BilingualTextSchema,
+  verbatim: z.boolean().optional(),
 });
 
 /**

@@ -206,10 +206,17 @@ function PanelContent({
                     {context && (
                       <p className="text-xs text-[var(--lo1-stardust)] mb-1">{context}</p>
                     )}
-                    {/* Our own-words summary of the passage — not a verbatim quote. */}
-                    <p className="text-sm text-[var(--lo1-starlight)] leading-relaxed">
-                      {getLocalizedText(passage.excerpt, locale)}
-                    </p>
+                    {passage.verbatim ? (
+                      // A validated verbatim quote — presented as such.
+                      <p className="text-sm text-[var(--lo1-starlight)] italic leading-relaxed">
+                        &ldquo;{getLocalizedText(passage.excerpt, locale)}&rdquo;
+                      </p>
+                    ) : (
+                      // Our own-words summary of the passage — not a verbatim quote.
+                      <p className="text-sm text-[var(--lo1-starlight)] leading-relaxed">
+                        {getLocalizedText(passage.excerpt, locale)}
+                      </p>
+                    )}
                     <a
                       href={getRaMaterialUrlFromReference(passage.reference, locale)}
                       target="_blank"
