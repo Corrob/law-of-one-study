@@ -22,6 +22,23 @@ const markdownComponents: Components = {
       {children}
     </p>
   ),
+  // Section headings for longer answers — styled on-theme (react-markdown would
+  // otherwise fall back to large unstyled browser defaults).
+  h2: ({ children, ...props }) => (
+    <h2 className="mt-4 mb-2 text-base font-semibold text-[var(--lo1-gold)]" {...props}>
+      {children}
+    </h2>
+  ),
+  h3: ({ children, ...props }) => (
+    <h3 className="mt-4 mb-1.5 text-sm font-semibold text-[var(--lo1-gold)]" {...props}>
+      {children}
+    </h3>
+  ),
+  h4: ({ children, ...props }) => (
+    <h4 className="mt-3 mb-1 text-sm font-semibold text-[var(--lo1-starlight)]" {...props}>
+      {children}
+    </h4>
+  ),
   ul: ({ children, ...props }) => (
     <ul className="list-disc list-outside mb-3 space-y-1.5 pl-5" {...props}>
       {children}

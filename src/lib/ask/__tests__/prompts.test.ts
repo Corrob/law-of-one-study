@@ -12,6 +12,12 @@ describe("prompts", () => {
       expect(buildSystemPrompt("en")).toContain("CONCEPT ATLAS");
     });
 
+    it("includes the warm voice/tone guidance", () => {
+      const sys = buildSystemPrompt("en");
+      expect(sys).toContain("VOICE & TONE");
+      expect(sys).toContain("gently playful");
+    });
+
     it("instructs a non-English locale to respond in that language", () => {
       expect(buildSystemPrompt("es")).toContain("Respond in Spanish");
       expect(buildSystemPrompt("de")).toContain("Respond in German");
