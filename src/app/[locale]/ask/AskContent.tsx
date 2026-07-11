@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -16,7 +16,15 @@ import { type AvailableLanguage } from "@/lib/language-config";
 export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("ask");
-  const { messages, isStreaming, error, suggestions, sendMessage, reset } = useAskStream(locale);
+  // Saved discernment notes — one is chosen per question (instant, local).
+  const disclaimers = useMemo(() => {
+    const raw = t.raw("disclaimers");
+    return Array.isArray(raw) ? (raw as string[]) : [];
+  }, [t]);
+  const { messages, isStreaming, error, suggestions, sendMessage, reset } = useAskStream(
+    locale,
+    disclaimers
+  );
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +77,11 @@ export default function AskContent() {
                   ) : (
                     <div key={message.id} className="flex justify-start">
                       <div className="max-w-full w-full rounded-2xl rounded-bl-sm bg-[var(--lo1-indigo)]/50 px-4 py-3">
+                        {message.disclaimer && (
+                          <p className="animate-fade-in mb-3 text-sm italic leading-relaxed text-[var(--lo1-stardust)]/75">
+                            {message.disclaimer}
+                          </p>
+                        )}
                         {message.content ? (
                           <AskAnswer content={message.content} />
                         ) : (

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { AskIcon, SparkleIcon } from "@/components/icons";
+import { AskIcon } from "@/components/icons";
 import { askAnalytics } from "@/lib/ask/analytics";
 import { pickRandomStarters } from "@/lib/ask/starters";
 
@@ -14,8 +14,9 @@ interface AskWelcomeProps {
 const GREETING_KEYS = ["seeker", "loveLight", "journey", "serve", "wanderer"] as const;
 
 /**
- * Empty-state for the Ask feature: a rotating greeting, a short intro, a random
- * handful of starter questions, and a gentle on-load caution.
+ * Empty-state for the Ask feature: a rotating greeting, a short intro, and a
+ * random handful of starter questions. (The discernment note now appears with
+ * the first response, not here.)
  */
 export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
   const t = useTranslations("ask");
@@ -24,17 +25,12 @@ export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
   // server/client hydration mismatch.
   const [starters, setStarters] = useState<string[]>([]);
   const [greetingKey, setGreetingKey] = useState<(typeof GREETING_KEYS)[number] | null>(null);
-  const [disclaimer, setDisclaimer] = useState<string | null>(null);
 
   useEffect(() => {
     const pool = t.raw("starters") as string[];
     const picked = pickRandomStarters(Array.isArray(pool) ? pool : []);
     setStarters(picked);
     setGreetingKey(GREETING_KEYS[Math.floor(Math.random() * GREETING_KEYS.length)]);
-    const disclaimers = t.raw("disclaimers");
-    if (Array.isArray(disclaimers) && disclaimers.length > 0) {
-      setDisclaimer(disclaimers[Math.floor(Math.random() * disclaimers.length)]);
-    }
     askAnalytics.welcomeScreenViewed({ starterCount: picked.length });
     // Pick once on mount.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,19 +54,9 @@ export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
           {t(`greetings.${greetingKey}`)}
         </p>
       )}
-      <p className="text-sm text-[var(--lo1-stardust)] max-w-md mb-5 leading-relaxed">
+      <p className="text-sm text-[var(--lo1-stardust)] max-w-md mb-6 leading-relaxed">
         {t("welcomeBody")}
       </p>
-
-      {/* A random discernment note, shown right away. */}
-      {disclaimer && (
-        <div className="max-w-md mb-6 flex items-start gap-2.5 rounded-xl border border-[var(--lo1-gold)]/25 bg-[var(--lo1-indigo)]/30 px-4 py-3 text-left">
-          <SparkleIcon className="w-4 h-4 text-[var(--lo1-gold)]/70 flex-shrink-0 mt-0.5" />
-          <p className="text-xs italic leading-relaxed text-[var(--lo1-stardust)]/80">
-            {disclaimer}
-          </p>
-        </div>
-      )}
 
       <div className="grid gap-2 w-full max-w-md">
         {starters.map((starter, index) => (

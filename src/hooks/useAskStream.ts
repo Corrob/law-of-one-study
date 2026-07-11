@@ -10,6 +10,8 @@ export interface AskMessage {
   id: string;
   role: "user" | "assistant";
   content: string;
+  /** For assistant turns: a discernment note shown as the opening paragraph. */
+  disclaimer?: string;
 }
 
 interface UseAskStreamReturn {
@@ -50,7 +52,10 @@ function parseSSE(buffer: string): {
  * appends text deltas to the in-flight assistant message. Citation markers in
  * the streamed text are left intact — the message component renders them.
  */
-export function useAskStream(locale: AvailableLanguage = DEFAULT_LOCALE): UseAskStreamReturn {
+export function useAskStream(
+  locale: AvailableLanguage = DEFAULT_LOCALE,
+  disclaimers: string[] = []
+): UseAskStreamReturn {
   const [messages, setMessages] = useState<AskMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +94,11 @@ export function useAskStream(locale: AvailableLanguage = DEFAULT_LOCALE): UseAsk
         id: assistantId,
         role: "assistant",
         content: "",
+        // Pick one of the saved discernment notes for this turn (instant, local).
+        disclaimer:
+          disclaimers.length > 0
+            ? disclaimers[Math.floor(Math.random() * disclaimers.length)]
+            : undefined,
       };
 
       setMessages((prev) => [...prev, userMessage, assistantMessage]);
@@ -205,7 +215,7 @@ export function useAskStream(locale: AvailableLanguage = DEFAULT_LOCALE): UseAsk
         abortRef.current = null;
       }
     },
-    [messages, isStreaming, locale]
+    [messages, isStreaming, locale, disclaimers]
   );
 
   const reset = useCallback(() => {
