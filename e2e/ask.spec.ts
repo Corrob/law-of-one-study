@@ -13,6 +13,7 @@ const SSE_RESPONSE = [
   'event: meta\ndata: {"concepts":["harvest"]}\n\n',
   'event: chunk\ndata: {"text":"The harvest is a transition between densities "}\n\n',
   'event: chunk\ndata: {"text":"based on polarity {{CITE:6.14}}."}\n\n',
+  'event: suggestions\ndata: {"items":["Tell me about polarity","What are the densities?","How does one meditate?"]}\n\n',
   "event: done\ndata: {}\n\n",
 ].join("");
 
@@ -57,6 +58,11 @@ test.describe("Ask", () => {
       "href",
       "https://www.llresearch.org/channeling/ra-contact/6#14"
     );
+
+    // Follow-up suggestion chips appear after the answer.
+    const suggestions = page.getByTestId("ask-suggestion");
+    await expect(suggestions.first()).toBeVisible();
+    expect(await suggestions.count()).toBe(3);
   });
 
   test("shows an error message when the endpoint is unavailable", async ({ page }) => {

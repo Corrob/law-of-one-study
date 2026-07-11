@@ -16,6 +16,8 @@ interface UseAskStreamReturn {
   messages: AskMessage[];
   isStreaming: boolean;
   error: string | null;
+  /** Follow-up questions for the latest answer (cleared on each new send). */
+  suggestions: string[];
   sendMessage: (content: string) => Promise<void>;
   reset: () => void;
 }
@@ -52,6 +54,7 @@ export function useAskStream(locale: AvailableLanguage = DEFAULT_LOCALE): UseAsk
   const [messages, setMessages] = useState<AskMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const abortRef = useRef<AbortController | null>(null);
   const idRef = useRef(0);
 
@@ -63,6 +66,7 @@ export function useAskStream(locale: AvailableLanguage = DEFAULT_LOCALE): UseAsk
       if (!trimmed || isStreaming) return;
 
       setError(null);
+      setSuggestions([]); // clear the previous turn's follow-ups
 
       // History = the conversation so far (capped), before this new turn.
       const history = messages
@@ -159,6 +163,17 @@ export function useAskStream(locale: AvailableLanguage = DEFAULT_LOCALE): UseAsk
               } catch {
                 /* ignore malformed chunk */
               }
+            } else if (evt.event === "suggestions") {
+              try {
+                const parsed = JSON.parse(evt.data);
+                if (Array.isArray(parsed.items) && parsed.items.length > 0) {
+                  const items = parsed.items.filter((s: unknown): s is string => typeof s === "string");
+                  setSuggestions(items);
+                  askAnalytics.suggestionsDisplayed({ count: items.length });
+                }
+              } catch {
+                /* ignore malformed suggestions */
+              }
             } else if (evt.event === "error") {
               let msg = "Something went wrong.";
               try {
@@ -197,8 +212,9 @@ export function useAskStream(locale: AvailableLanguage = DEFAULT_LOCALE): UseAsk
     abortRef.current?.abort();
     setMessages([]);
     setError(null);
+    setSuggestions([]);
     setIsStreaming(false);
   }, []);
 
-  return { messages, isStreaming, error, sendMessage, reset };
+  return { messages, isStreaming, error, suggestions, sendMessage, reset };
 }

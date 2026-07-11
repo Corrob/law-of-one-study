@@ -15,6 +15,7 @@ import { buildGrounding } from "@/lib/ask/grounding";
 import { checkRateLimit, getClientIp } from "@/lib/ask/rate-limit";
 import { trackLLMGeneration, trackEvent, flushPostHog } from "@/lib/ask/posthog-server";
 import { findReproducedExcerpt } from "@/lib/ask/reproduction";
+import { generateSuggestions } from "@/lib/ask/suggestions";
 import {
   ASK_MODEL,
   ASK_REASONING_EFFORT,
@@ -125,6 +126,11 @@ export async function POST(request: Request): Promise<Response> {
             completionTokens = chunk.usage.completion_tokens;
           }
         }
+
+        // Follow-up suggestions — a small best-effort second call that never
+        // throws (returns a localized fallback on failure).
+        const suggestions = await generateSuggestions(message, output, locale);
+        send("suggestions", { items: suggestions });
 
         send("done", {});
 

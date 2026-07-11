@@ -50,4 +50,9 @@ export const askAnalytics = {
 
   conversationStarterClicked: (p: { starterText: string; starterIndex: number }) =>
     capture("conversation_starter_clicked", p),
+
+  suggestionsDisplayed: (p: { count: number }) => capture("suggestions_displayed", p),
+
+  suggestionClicked: (p: { suggestion: string; index: number }) =>
+    capture("suggestion_clicked", p),
 };

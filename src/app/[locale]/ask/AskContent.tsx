@@ -10,20 +10,21 @@ import AskComposer from "@/components/ask/AskComposer";
 import AskThinking from "@/components/ask/AskThinking";
 import AskAttribution from "@/components/ask/AskAttribution";
 import { useAskStream } from "@/hooks/useAskStream";
+import { askAnalytics } from "@/lib/ask/analytics";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("ask");
-  const { messages, isStreaming, error, sendMessage, reset } = useAskStream(locale);
+  const { messages, isStreaming, error, suggestions, sendMessage, reset } = useAskStream(locale);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Keep the latest message in view as the answer streams in.
+  // Keep the latest message (and follow-up chips) in view.
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  }, [messages, suggestions]);
 
   const handleSend = useCallback(
     (message: string) => {
@@ -76,6 +77,29 @@ export default function AskContent() {
                       </div>
                     </div>
                   )
+                )}
+
+                {/* Follow-up suggestions for the latest answer. */}
+                {!isStreaming && suggestions.length > 0 && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {suggestions.map((suggestion, index) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        data-testid="ask-suggestion"
+                        onClick={() => {
+                          askAnalytics.suggestionClicked({ suggestion, index });
+                          handleSend(suggestion);
+                        }}
+                        className="text-sm text-left px-3 py-1.5 rounded-full border border-[var(--lo1-gold)]/25
+                                   bg-[var(--lo1-indigo)]/40 text-[var(--lo1-stardust)]
+                                   hover:bg-[var(--lo1-gold)]/10 hover:text-[var(--lo1-starlight)] hover:border-[var(--lo1-gold)]/50
+                                   transition-colors cursor-pointer"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
                 )}
 
                 {error && (
