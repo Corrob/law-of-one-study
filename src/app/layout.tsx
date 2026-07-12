@@ -71,6 +71,9 @@ export const viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  // Resize the layout viewport when the on-screen keyboard appears (iOS Safari
+  // 16+/Chrome) so `h-dvh` layouts keep the bottom input above the keyboard.
+  interactiveWidget: "resizes-content",
   themeColor: "#1a1f4e",
 };
 
