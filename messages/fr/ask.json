@@ -9,6 +9,10 @@
   "copy": "Copier",
   "copied": "Copié",
   "citationTitle": "Lire l'original sur L/L Research",
+  "exportTitle": "Étude de la Loi Une — Conversation Demander",
+  "exportedOn": "Exporté le {date}",
+  "exportYou": "Vous",
+  "exportGuide": "Guide",
   "thinking": "Réflexion...",
   "thinkingPhrases": {
     "1": "Analyse des archives cosmiques...",

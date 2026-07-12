@@ -71,6 +71,16 @@ test.describe("Ask", () => {
     await page.reload();
     await expect(page.getByText("What is the harvest?")).toBeVisible();
     await expect(page.getByText(/The harvest is a transition between densities/).first()).toBeVisible();
+
+    // Export downloads the conversation as Markdown with citation links.
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByTestId("ask-export").click();
+    const download = await downloadPromise;
+    expect(download.suggestedFilename()).toMatch(/^law-of-one-ask-.*\.md$/);
+    const content = await (await import("node:fs/promises")).readFile(await download.path(), "utf-8");
+    expect(content).toContain("## ");
+    expect(content).toContain("https://www.llresearch.org/channeling/ra-contact/6#14");
+    expect(content).not.toContain("{{CITE");
   });
 
   test("shows an error with a retry button that re-sends the question", async ({ page }) => {

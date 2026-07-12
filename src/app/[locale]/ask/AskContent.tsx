@@ -13,6 +13,12 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { useAskStream } from "@/hooks/useAskStream";
 import { askAnalytics } from "@/lib/ask/analytics";
 import { renderCitationsToMarkdown } from "@/lib/ask/citations";
+import {
+  exportAskChatToMarkdown,
+  downloadMarkdown,
+  exportFilename,
+  formatExportDate,
+} from "@/lib/ask/export-markdown";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 export default function AskContent() {
@@ -109,6 +115,18 @@ export default function AskContent() {
     [sendMessage]
   );
 
+  // Export the conversation as Markdown (old Seek feature, revived for Ask).
+  const handleExportChat = useCallback(() => {
+    if (messages.length === 0) return;
+    const markdown = exportAskChatToMarkdown(messages, locale, {
+      title: t("exportTitle"),
+      exportedOn: t("exportedOn", { date: formatExportDate(locale) }),
+      you: t("exportYou"),
+      guide: t("exportGuide"),
+    });
+    downloadMarkdown(markdown, exportFilename());
+  }, [messages, locale, t]);
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const handleNewChat = useCallback(() => setConfirmOpen(true), []);
   const handleConfirmNewChat = useCallback(() => {
@@ -130,7 +148,13 @@ export default function AskContent() {
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
       <div className="starfield" />
-      <NavigationWrapper showNewChat={hasMessages} onNewChat={handleNewChat}>
+      <NavigationWrapper
+        showNewChat={hasMessages}
+        onNewChat={handleNewChat}
+        showExportChat={hasMessages}
+        onExportChat={handleExportChat}
+        disableExportChat={isStreaming}
+      >
         <ErrorBoundary>
           <div className="flex-1 flex flex-col overflow-hidden relative z-10">
             {/* Message area (relative wrapper anchors the jump-to-latest button) */}

@@ -9,6 +9,10 @@
   "copy": "Copy",
   "copied": "Copied",
   "citationTitle": "Read the original at L/L Research",
+  "exportTitle": "Law of One Study — Ask Conversation",
+  "exportedOn": "Exported on {date}",
+  "exportYou": "You",
+  "exportGuide": "Guide",
   "thinking": "Thinking...",
   "thinkingPhrases": {
     "1": "Scanning the cosmic records...",

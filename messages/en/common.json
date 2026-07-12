@@ -15,7 +15,8 @@
     "copy": "Copy",
     "copied": "Copied!",
     "new": "New",
-    "close": "Close"
+    "close": "Close",
+    "export": "Export"
   },
   "labels": {
     "menu": "Menu",
@@ -41,7 +42,8 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "navigationMenu": "Navigation menu",
-    "startNewConversation": "Start a new conversation"
+    "startNewConversation": "Start a new conversation",
+    "exportChat": "Export chat"
   },
   "dashboard": {
     "dailyWisdom": "Daily Wisdom",
