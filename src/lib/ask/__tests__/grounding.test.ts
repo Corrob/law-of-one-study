@@ -38,6 +38,14 @@ describe("grounding", () => {
       expect(focused).toContain("do not reproduce");
     });
 
+    it("matches common misspellings via typo aliases", () => {
+      expect(buildGrounding("what is the harvist?").matchedConceptIds).toContain("harvest");
+      expect(buildGrounding("tell me about wanderes and there purpose").matchedConceptIds).toContain(
+        "wanderer"
+      );
+      expect(buildGrounding("what is cataylst").matchedConceptIds).toContain("catalyst");
+    });
+
     it("leaves focused grounding empty when no concept matches", () => {
       const { focused, matchedConceptIds, matchedTerms } = buildGrounding(
         "what is the weather today"

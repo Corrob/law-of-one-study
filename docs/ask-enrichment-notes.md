@@ -74,6 +74,18 @@ can't reach the site).
 5. Run `npm run validate:citations -- --online` and confirm the reference
    resolves.
 
+## Aliases: matching-only, typos welcome
+
+Concept `aliases` (and supplement aliases) exist purely for question→concept
+matching — they are never shown to users and never reach the LLM. So common
+misspellings ("harvist", "wanderes") belong in `aliases.en` when the eval or
+the `ask_no_focused_grounding` telemetry shows a miss. Keep them word-boundary
+safe and obviously misspelled. `searchTerms` does NOT feed matching — adding
+words there won't fix a grounding miss. Alias phrases must appear verbatim in
+the question (word-boundary regex, no fuzz): prefer short noun phrases over
+long ones a filler word would break ("negative entities", not "negative
+entities attacking").
+
 ## Evaluating answer quality
 
 After changing the system prompt, the concept graph, or the model config, run

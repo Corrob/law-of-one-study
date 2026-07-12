@@ -128,6 +128,7 @@
       "id": "personal-grief",
       "category": "personal",
       "query": "I lost my mother recently and I'm really struggling",
+      "expectConceptsAnyOf": ["death-and-grief"],
       "testCriteria": ["Empathetic opening", "Gentle wisdom", "Compassionate tone", "No clinical language"]
     },
     {
@@ -140,6 +141,7 @@
       "id": "personal-death",
       "category": "personal",
       "query": "I'm scared of dying and what comes after",
+      "expectConceptsAnyOf": ["death-and-grief"],
       "testCriteria": ["Acknowledges fear", "Offers comfort", "Ra's perspective as invitation"]
     },
     {
@@ -222,12 +224,14 @@
       "id": "typo-harvest",
       "category": "edge-case-typo",
       "query": "what is the harvist?",
+      "expectConceptsAnyOf": ["harvest"],
       "testCriteria": ["Handles typo gracefully", "Interprets as 'harvest'", "Doesn't ask for clarification unnecessarily"]
     },
     {
       "id": "typo-wanderers",
       "category": "edge-case-typo",
       "query": "tell me about wanderes and there purpose",
+      "expectConceptsAnyOf": ["wanderer"],
       "testCriteria": ["Handles multiple typos", "Understands intent", "Natural response"]
     },
     {
@@ -345,6 +349,7 @@
       "id": "ambiguous-pyramid",
       "category": "edge-case-ambiguous",
       "query": "What about the pyramid?",
+      "expectConceptsAnyOf": ["great-pyramid"],
       "testCriteria": ["Assumes Ra context (Great Pyramid)", "Doesn't ask 'which pyramid'", "Provides relevant content"]
     },
     {
@@ -389,6 +394,7 @@
       "id": "sensitive-psychic-attack",
       "category": "edge-case-sensitive",
       "query": "I think negative entities are attacking me",
+      "expectConceptsAnyOf": ["psychic-greeting"],
       "testCriteria": ["Takes seriously without reinforcing fear", "Grounding response", "Ra's perspective on psychic greeting", "Practical suggestions"]
     },
 

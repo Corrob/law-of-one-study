@@ -355,7 +355,9 @@
       "aliases": {
         "en": [
           "density",
-          "densities"
+          "densities",
+          "densitys",
+          "denisty"
         ],
         "es": [
           "densidad",
@@ -1386,7 +1388,10 @@
         "en": [
           "harvest",
           "harvesting",
-          "harvested"
+          "harvested",
+          "harvist",
+          "harvets",
+          "hravest"
         ],
         "es": [
           "cosecha",
@@ -3226,7 +3231,9 @@
         "en": [
           "catalyst",
           "catalysts",
-          "catalytic"
+          "catalytic",
+          "cataylst",
+          "catalist"
         ],
         "es": [
           "catalizador",
@@ -3843,7 +3850,11 @@
       "aliases": {
         "en": [
           "wanderer",
-          "wanderers"
+          "wanderers",
+          "wanderes",
+          "wandereres",
+          "wonderer",
+          "wonderers"
         ],
         "es": [
           "errante",

@@ -27,7 +27,12 @@
     },
     {
       "id": "great-pyramid",
-      "aliases": { "en": ["great pyramid", "pyramid at giza", "giza pyramid"] },
+      "aliases": {
+        "en": ["great pyramid", "pyramid at giza", "giza pyramid", "pyramid", "pyramids"],
+        "es": ["gran pirámide", "pirámide de guiza", "pirámide", "pirámides"],
+        "de": ["große pyramide", "cheops-pyramide", "pyramide", "pyramiden"],
+        "fr": ["grande pyramide", "pyramide de gizeh", "pyramide", "pyramides"]
+      },
       "summary": { "en": "Ra says the Great Pyramid was built by Ra's social memory complex using thought (thought-forms) with \"everlasting rock,\" and was intended as a place of healing and of initiation, preparing the mind, body, and spirit as a channel for love/light." },
       "references": ["3.12", "3.15"]
     },
@@ -132,6 +137,28 @@
       "aliases": { "en": ["dream", "dreams", "dreaming", "dream state"] },
       "summary": { "en": "Ra describes dreaming as a form of communication across the veil between the unconscious and conscious mind. Depending on a person's energy-center blockages, it can aid polarization; more generally, it builds a bridge from conscious to unconscious that can help balance distortions in the body's energy web." },
       "references": ["86.7", "86.12"]
+    },
+    {
+      "id": "psychic-greeting",
+      "aliases": {
+        "en": ["psychic greeting", "psychic greetings", "psychic attack", "psychic attacks", "negative greeting", "negative entities", "negative entity", "attacking me", "under psychic attack", "spiritual attack", "spiritual protection", "banishing ritual"],
+        "es": ["saludo psíquico", "ataque psíquico", "protección espiritual", "entidades negativas atacando"],
+        "de": ["psychischer gruß", "psychischer angriff", "spiritueller schutz", "negative wesen greifen an"],
+        "fr": ["salutation psychique", "attaque psychique", "protection spirituelle", "entités négatives attaquent"]
+      },
+      "summary": { "en": "Ra reframes what is commonly called psychic attack as psychic greeting: a negatively oriented entity cannot simply seize a person, but works by intensifying distortions or weaknesses already present — positively oriented, service-focused people can be priority targets precisely because their light is visible, with existing physical distortions the easiest opening. Protection is not fearful defense: Ra points to love, harmony, devotion, and unified purpose as the great healer and neutralizer of such influence, and describes light-invoking practices (such as the banishing ritual) as building a wall of light the negative entity cannot pass. The greeting can only work with what it finds; a life kept in love and balance offers it little purchase." },
+      "references": ["62.14", "62.26", "72.8"]
+    },
+    {
+      "id": "death-and-grief",
+      "aliases": {
+        "en": ["grief", "grieving", "mourning", "died", "dying", "passed away", "afterlife", "life after death", "when we die", "what happens when we die", "loss of a loved one", "lost my mother", "lost my father", "fear of death"],
+        "es": ["duelo", "luto", "murió", "muriendo", "falleció", "vida después de la muerte", "miedo a la muerte", "más allá"],
+        "de": ["trauer", "trauern", "gestorben", "sterben", "verstorben", "leben nach dem tod", "angst vor dem tod", "jenseits"],
+        "fr": ["deuil", "décédé", "mourir", "mort d'un proche", "vie après la mort", "peur de la mort", "au-delà"]
+      },
+      "summary": { "en": "Ra describes physical death as a transition, not an ending: the mind/body/spirit complex remains intact when the chemical body falls away, which Ra calls the densest and least central of the bodies. Nothing of true importance is lost — rather, the pure distillation of the life's emotions and biases becomes apparent, and spiritual channels open once the forgetting of third density lifts. After death the entity moves into time/space, where the indigo body allows deep healing and a review of the incarnation before further experience is chosen. For the grieving, the teaching holds gently: the beloved continues, love bonds are not erased by death, and grief itself is honored as profound catalyst to be met with compassion and patience rather than bypassed." },
+      "references": ["30.3", "30.4", "70.17"]
     }
   ]
 }
