@@ -166,7 +166,12 @@ export async function POST(request: Request): Promise<Response> {
 
         // Follow-up suggestions — a small best-effort second call that never
         // throws (returns a localized fallback on failure).
-        const suggestions = await generateSuggestions(message, output, locale);
+        const suggestions = await generateSuggestions(
+          message,
+          output,
+          locale,
+          grounding.matchedTerms
+        );
         send("suggestions", { items: suggestions });
 
         send("done", {});

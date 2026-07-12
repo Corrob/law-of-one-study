@@ -63,11 +63,16 @@ export function parseSuggestions(raw: string): string[] | null {
   return cleaned.length > 0 ? cleaned : null;
 }
 
-function buildPrompt(locale: AvailableLanguage): string {
+function buildPrompt(locale: AvailableLanguage, conceptTerms: string[]): string {
   const language = LANGUAGE_NAMES_FOR_PROMPTS[locale];
+  // Steer follow-ups toward topics the study tool has real grounding for, so a
+  // tapped chip doesn't lead to a question the tool answers poorly.
+  const topicHint = conceptTerms.length
+    ? `\n- Prefer follow-ups about topics this study tool covers well, especially: ${conceptTerms.join(", ")} — or other core Law of One concepts (densities, polarity, catalyst, energy centers, the harvest).`
+    : `\n- Prefer follow-ups about core Law of One concepts the study tool covers well (densities, polarity, catalyst, energy centers, the harvest).`;
   return `You generate follow-up questions for a Law of One (Ra Material) study chat.
 Given the seeker's question and the assistant's answer, propose exactly ${SUGGESTION_COUNT} short, natural follow-up questions the seeker might tap next.
-- Make them varied: one that goes deeper, one that broadens to a related teaching, and one that clarifies or applies the idea.
+- Make them varied: one that goes deeper, one that broadens to a related teaching, and one that clarifies or applies the idea.${topicHint}
 - Each must be a concise question of at most 12 words, phrased in the seeker's voice ("What…", "How…", "Can you…"). No numbering, no quotes.
 - Write them in ${language}.
 Return ONLY JSON in this exact shape: {"suggestions": ["...", "...", "..."]}`;
@@ -80,7 +85,8 @@ Return ONLY JSON in this exact shape: {"suggestions": ["...", "...", "..."]}`;
 export async function generateSuggestions(
   message: string,
   answer: string,
-  locale: AvailableLanguage = DEFAULT_LOCALE
+  locale: AvailableLanguage = DEFAULT_LOCALE,
+  conceptTerms: string[] = []
 ): Promise<string[]> {
   try {
     // Keep the answer context bounded.
@@ -93,7 +99,7 @@ export async function generateSuggestions(
       max_completion_tokens: 400,
       response_format: { type: "json_object" },
       messages: [
-        { role: "system", content: buildPrompt(locale) },
+        { role: "system", content: buildPrompt(locale, conceptTerms) },
         {
           role: "user",
           content: `SEEKER'S QUESTION:\n${message}\n\nASSISTANT'S ANSWER:\n${answerContext}`,

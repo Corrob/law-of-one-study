@@ -39,9 +39,21 @@ describe("grounding", () => {
     });
 
     it("leaves focused grounding empty when no concept matches", () => {
-      const { focused, matchedConceptIds } = buildGrounding("what is the weather today");
+      const { focused, matchedConceptIds, matchedTerms } = buildGrounding(
+        "what is the weather today"
+      );
       expect(matchedConceptIds).toEqual([]);
+      expect(matchedTerms).toEqual([]);
       expect(focused).toBe("");
+    });
+
+    it("exposes localized display terms for the grounded topics", () => {
+      expect(buildGrounding("Explain the harvest", [], "en").matchedTerms).toContain("Harvest");
+      expect(buildGrounding("Explica la cosecha", [], "es").matchedTerms).toContain("Cosecha");
+      // Supplement ids become readable terms.
+      expect(buildGrounding("Who are the men in black?", [], "en").matchedTerms).toContain(
+        "men in black"
+      );
     });
 
     it("injects a hidden supplement not in the concept graph (men in black → 12.21)", () => {

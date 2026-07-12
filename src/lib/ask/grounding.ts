@@ -15,7 +15,7 @@ import {
   buildGroundingContext,
   getConceptExcerpts,
 } from "@/lib/concept-graph";
-import type { GraphConcept } from "@/lib/types-graph";
+import { getLocalizedText, type GraphConcept } from "@/lib/types-graph";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 import { ASK_MAX_FOCUSED_CONCEPTS } from "./config";
 import { identifySupplements, buildSupplementGrounding } from "./supplements";
@@ -30,6 +30,8 @@ export interface Grounding {
   focused: string;
   /** IDs of the concepts injected as focused grounding. */
   matchedConceptIds: string[];
+  /** Localized display terms for the grounded topics (used to steer follow-up suggestions). */
+  matchedTerms: string[];
   /**
    * The private source excerpts for the grounded concepts. Server-only — never
    * sent to the client. Used to detect verbatim reproduction after a response.
@@ -122,6 +124,10 @@ export function buildGrounding(
   return {
     focused,
     matchedConceptIds: [...concepts.map((c) => c.id), ...supplements.map((s) => s.id)],
+    matchedTerms: [
+      ...concepts.map((c) => getLocalizedText(c.term, locale)),
+      ...supplements.map((s) => s.id.replace(/-/g, " ")),
+    ],
     excerpts: getConceptExcerpts(concepts, locale),
   };
 }
