@@ -40,7 +40,8 @@
     "goToHome": "Aller à l'accueil",
     "openMenu": "Ouvrir le menu",
     "closeMenu": "Fermer le menu",
-    "navigationMenu": "Menu de navigation"
+    "navigationMenu": "Menu de navigation",
+    "startNewConversation": "Démarrer une nouvelle conversation"
   },
   "dashboard": {
     "dailyWisdom": "Sagesse du jour",
@@ -200,5 +201,11 @@
       "balancingSelfDesc": "La technique d'équilibrage de Ra : passez en revue le catalyseur de votre journée, trouvez les charges émotionnelles, vivez chaque sentiment pleinement, puis vivez son opposé, et laissez l'équilibre émerger naturellement.",
       "balancingSelfQuote": "Chaque pensée qu'un être a, a à son tour une antithèse. Les disciplines de l'esprit impliquent, tout d'abord, d'identifier les choses que vous approuvez et celles que vous désapprouvez en vous-même, puis d'équilibrer chaque charge positive et négative avec son égale. L'esprit contient toutes choses. Par conséquent, vous devez découvrir cette complétude en vous-même."
     }
+  },
+  "confirmNewChat": {
+    "title": "Démarrer une nouvelle conversation ?",
+    "message": "Votre conversation actuelle sera effacée. Cette action est irréversible.",
+    "confirm": "Nouvelle conversation",
+    "cancel": "Continuer"
   }
 }

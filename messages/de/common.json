@@ -40,7 +40,8 @@
     "goToHome": "Zur Startseite",
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
-    "navigationMenu": "Navigationsmenü"
+    "navigationMenu": "Navigationsmenü",
+    "startNewConversation": "Neues Gespräch beginnen"
   },
   "dashboard": {
     "dailyWisdom": "Tägliche Weisheit",
@@ -200,5 +201,11 @@
       "balancingSelfDesc": "Ras Ausgleichstechnik: Überprüfe den Katalysator deines Tages, finde emotionale Ladungen, erfahre jedes Gefühl vollständig, dann erfahre sein Gegenteil, und lass das Gleichgewicht natürlich entstehen.",
       "balancingSelfQuote": "Jeder Gedanke, den ein Wesen hat, hat seinerseits eine Antithese. Die Disziplinen des Geistes beinhalten zunächst das Identifizieren sowohl jener Dinge, die du in dir selbst billigst, als auch jener, die du missbilligst, und dann das Ausgleichen jeder positiven und negativen Ladung mit ihrem Gleichen. Der Geist enthält alle Dinge. Daher musst du diese Vollständigkeit in dir selbst entdecken."
     }
+  },
+  "confirmNewChat": {
+    "title": "Neues Gespräch beginnen?",
+    "message": "Dein aktuelles Gespräch wird gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Neu beginnen",
+    "cancel": "Weiter chatten"
   }
 }

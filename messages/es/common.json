@@ -40,7 +40,8 @@
     "goToHome": "Ir al inicio",
     "openMenu": "Abrir menú",
     "closeMenu": "Cerrar menú",
-    "navigationMenu": "Menú de navegación"
+    "navigationMenu": "Menú de navegación",
+    "startNewConversation": "Iniciar una nueva conversación"
   },
   "dashboard": {
     "dailyWisdom": "Sabiduría Diaria",
@@ -200,5 +201,11 @@
       "balancingSelfDesc": "La técnica de equilibrio de Ra: revisa el catalizador de tu día, encuentra las cargas emocionales, experimenta cada sentimiento plenamente, luego experimenta su opuesto, y permite que el equilibrio surja naturalmente.",
       "balancingSelfQuote": "Cada pensamiento que un ser tiene, tiene a su vez una antítesis. Las disciplinas de la mente implican, en primer lugar, identificar tanto aquellas cosas que apruebas como aquellas que desapruebas dentro de ti mismo, y luego equilibrar cada carga positiva y negativa con su igual. La mente contiene todas las cosas. Por lo tanto, debes descubrir esta totalidad dentro de ti mismo."
     }
+  },
+  "confirmNewChat": {
+    "title": "¿Iniciar una nueva conversación?",
+    "message": "Tu conversación actual se borrará. Esto no se puede deshacer.",
+    "confirm": "Iniciar Nueva",
+    "cancel": "Seguir Conversando"
   }
 }

@@ -40,7 +40,8 @@
     "goToHome": "Go to home",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "navigationMenu": "Navigation menu"
+    "navigationMenu": "Navigation menu",
+    "startNewConversation": "Start a new conversation"
   },
   "dashboard": {
     "dailyWisdom": "Daily Wisdom",
@@ -204,5 +205,11 @@
       "balancingSelfDesc": "Ra's balancing technique: review your day's catalyst, find emotional charges, experience each feeling fully, then experience its opposite, and allow balance to emerge naturally.",
       "balancingSelfQuote": "Each thought that a being has, has in its turn an antithesis. The disciplines of the mind involve, first of all, identifying both those things of which you approve and those things of which you disapprove within yourself, and then balancing each and every positive and negative charge with its equal. The mind contains all things. Therefore, you must discover this completeness within yourself."
     }
+  },
+  "confirmNewChat": {
+    "title": "Start a new conversation?",
+    "message": "Your current conversation will be cleared. This cannot be undone.",
+    "confirm": "Start New",
+    "cancel": "Keep Chatting"
   }
 }

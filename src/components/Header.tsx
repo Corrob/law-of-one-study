@@ -2,10 +2,12 @@
 
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { UnityIcon, MenuIcon, BackIcon } from "./icons";
+import { UnityIcon, MenuIcon, BackIcon, PlusIcon } from "./icons";
 
 interface HeaderProps {
   onMenuClick: () => void;
+  showNewChat?: boolean;
+  onNewChat?: () => void;
 }
 
 // Map paths to translation keys
@@ -20,7 +22,7 @@ const PAGE_TITLE_KEYS: Record<string, string> = {
   "/app": "install",
 };
 
-export default function Header({ onMenuClick }: HeaderProps) {
+export default function Header({ onMenuClick, showNewChat, onNewChat }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const isDashboard = pathname === "/";
@@ -67,6 +69,18 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
         {/* Right side: Actions */}
         <div className="flex items-center gap-1">
+          {/* New conversation (only on /ask when a conversation is active) */}
+          {pathname === "/ask" && showNewChat && onNewChat && (
+            <button
+              onClick={onNewChat}
+              className="flex items-center gap-1.5 text-[var(--lo1-gold)] hover:text-[var(--lo1-gold)]/80 transition-colors text-sm px-3 py-2 rounded-lg hover:bg-[var(--lo1-gold)]/10 cursor-pointer"
+              aria-label={t("header.startNewConversation")}
+            >
+              <PlusIcon className="w-4 h-4" />
+              <span className="hidden sm:inline">{t("buttons.new")}</span>
+            </button>
+          )}
+
           {/* Burger menu button */}
           <button
             onClick={onMenuClick}

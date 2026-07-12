@@ -8,6 +8,7 @@ import AskWelcome from "@/components/ask/AskWelcome";
 import AskAnswer from "@/components/ask/AskAnswer";
 import AskComposer from "@/components/ask/AskComposer";
 import AskThinking from "@/components/ask/AskThinking";
+import ConfirmModal from "@/components/ConfirmModal";
 import { useAskStream } from "@/hooks/useAskStream";
 import { askAnalytics } from "@/lib/ask/analytics";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -15,6 +16,7 @@ import { type AvailableLanguage } from "@/lib/language-config";
 export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("ask");
+  const tc = useTranslations("confirmNewChat");
   // Saved discernment notes — one is chosen per question (instant, local).
   const disclaimers = useMemo(() => {
     const raw = t.raw("disclaimers");
@@ -103,27 +105,21 @@ export default function AskContent() {
     [sendMessage]
   );
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const handleNewChat = useCallback(() => setConfirmOpen(true), []);
+  const handleConfirmNewChat = useCallback(() => {
+    reset();
+    setConfirmOpen(false);
+  }, [reset]);
+
   const hasMessages = messages.length > 0;
 
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
       <div className="starfield" />
-      <NavigationWrapper>
+      <NavigationWrapper showNewChat={hasMessages} onNewChat={handleNewChat}>
         <ErrorBoundary>
           <div className="flex-1 flex flex-col overflow-hidden relative z-10">
-            {/* New conversation control */}
-            {hasMessages && (
-              <div className="flex justify-end px-4 pt-2">
-                <button
-                  type="button"
-                  onClick={reset}
-                  className="text-xs text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors cursor-pointer"
-                >
-                  {t("newConversation")}
-                </button>
-              </div>
-            )}
-
             {/* Message area (relative wrapper anchors the jump-to-latest button) */}
             <div className="relative flex-1 flex flex-col overflow-hidden">
             <div
@@ -222,6 +218,16 @@ export default function AskContent() {
           </div>
         </ErrorBoundary>
       </NavigationWrapper>
+
+      <ConfirmModal
+        isOpen={confirmOpen}
+        onConfirm={handleConfirmNewChat}
+        onCancel={() => setConfirmOpen(false)}
+        title={tc("title")}
+        message={tc("message")}
+        confirmText={tc("confirm")}
+        cancelText={tc("cancel")}
+      />
     </main>
   );
 }
