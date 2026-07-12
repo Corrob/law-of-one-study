@@ -130,5 +130,14 @@
     "What does Ra say about healing?",
     "How do we see the Creator in others?",
     "What happens to us between incarnations?"
-  ]
+  ],
+  "related": {
+    "title": "Explore further",
+    "types": {
+      "meditation": "Guided meditation",
+      "song": "Song",
+      "path": "Study path",
+      "concept": "Concept"
+    }
+  }
 }

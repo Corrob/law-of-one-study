@@ -4,11 +4,12 @@ import { memo, useMemo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { renderCitationsToMarkdown } from "@/lib/ask/citations";
+import { Link } from "@/i18n/navigation";
+import { renderAskMarkdown } from "@/lib/ask/resource-links";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 interface AskAnswerProps {
-  /** Raw assistant text, may contain {{CITE:...}} markers. */
+  /** Raw assistant text, may contain {{CITE:...}} and {{LINK:...}} markers. */
   content: string;
 }
 
@@ -60,6 +61,19 @@ const buildMarkdownComponents = (citationTitle: string): Components => ({
     </em>
   ),
   a: ({ children, href, ...props }) => {
+    // Internal resource link ({{LINK:...}} marker) → locale-aware client-side
+    // navigation in the same tab; visually distinct from citation chips.
+    if (typeof href === "string" && href.startsWith("/")) {
+      return (
+        <Link
+          href={href}
+          className="text-[var(--lo1-gold)] underline decoration-dotted underline-offset-2
+                     hover:decoration-solid transition-colors cursor-pointer"
+        >
+          {children}
+        </Link>
+      );
+    }
     const isCitation = typeof href === "string" && href.startsWith(CITATION_ORIGIN);
     if (isCitation) {
       // Citation chip → the original session on L/L Research's site.
@@ -93,7 +107,8 @@ const buildMarkdownComponents = (citationTitle: string): Components => ({
 
 /**
  * Renders an assistant answer: citation markers become locale-aware links to
- * L/L Research, then the result is rendered as Markdown. No Ra Material is
+ * L/L Research, resource-link markers become internal links to the site's own
+ * features, then the result is rendered as Markdown. No Ra Material is
  * reproduced verbatim — only the assistant's own words plus source links.
  */
 const AskAnswer = memo(function AskAnswer({ content }: AskAnswerProps) {
@@ -101,7 +116,7 @@ const AskAnswer = memo(function AskAnswer({ content }: AskAnswerProps) {
   const t = useTranslations("ask");
   const citationTitle = t("citationTitle");
   const components = useMemo(() => buildMarkdownComponents(citationTitle), [citationTitle]);
-  const markdown = renderCitationsToMarkdown(content, locale);
+  const markdown = renderAskMarkdown(content, locale);
   return (
     <div className="text-[var(--lo1-text-light)]">
       <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>

@@ -1,5 +1,5 @@
 {
-  "$comment": "Eval queries for the Ask feature (npm run eval:ask). Adapted from the old Seek test-queries.json. expectCitations/expectedRefsAnyOf/expectConceptsAnyOf are machine-checked by scripts/run-ask-eval.ts; testCriteria are human review prompts included in the report.",
+  "$comment": "Eval queries for the Ask feature (npm run eval:ask). Adapted from the old Seek test-queries.json. expectCitations/expectedRefsAnyOf/expectConceptsAnyOf/expectRelatedAnyOf/expectNoLinks are machine-checked by scripts/run-ask-eval.ts (expectLinksAnyOf is a soft, report-only check); testCriteria are human review prompts included in the report.",
   "queries": [
     {
       "id": "citation-harvest",
@@ -425,6 +425,32 @@
       "query": "🌟✨🌈💫🔮",
       "expectCitations": false,
       "testCriteria": ["Handles emoji-only input", "Friendly response", "Asks what they'd like to explore"]
+    },
+    {
+      "id": "recommend-meditation-balance",
+      "category": "recommendation",
+      "query": "How do I practice balancing my energy centers in daily life?",
+      "expectConceptsAnyOf": ["balancing", "energy-center"],
+      "expectRelatedAnyOf": ["meditation:balancing-the-self", "path:energy-centers"],
+      "expectLinksAnyOf": ["meditation:balancing-the-self"],
+      "testCriteria": ["Practical, warm guidance in own words", "If a resource is linked, it reads naturally in the sentence", "At most one or two inline resource links"]
+    },
+    {
+      "id": "recommend-densities-path",
+      "category": "recommendation",
+      "query": "What are the seven densities and how do they progress?",
+      "expectCitations": true,
+      "expectConceptsAnyOf": ["density"],
+      "expectRelatedAnyOf": ["path:densities"],
+      "testCriteria": ["Explains densities clearly with citations", "Related cards point at the densities study path", "No resource-link spam"]
+    },
+    {
+      "id": "recommend-none-off-topic",
+      "category": "recommendation",
+      "query": "What's the best pizza topping?",
+      "expectCitations": false,
+      "expectNoLinks": true,
+      "testCriteria": ["Gently redirects to Law of One topics", "No citations and no resource links on off-topic replies"]
     }
   ]
 }

@@ -6,7 +6,7 @@
  */
 
 import type { AskMessage } from "@/hooks/useAskStream";
-import { renderCitationsToMarkdown } from "@/lib/ask/citations";
+import { renderAskMarkdown } from "@/lib/ask/resource-links";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 
 export interface ExportLabels {
@@ -47,7 +47,7 @@ export function exportAskChatToMarkdown(
       if (message.disclaimer) {
         lines.push(`_${message.disclaimer}_`, "");
       }
-      lines.push(renderCitationsToMarkdown(message.content, locale), "");
+      lines.push(renderAskMarkdown(message.content, locale, { absolute: true }), "");
     }
   }
 

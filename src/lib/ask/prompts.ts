@@ -14,6 +14,7 @@ import {
   LANGUAGE_NAMES_FOR_PROMPTS,
 } from "@/lib/language-config";
 import { buildConceptAtlas } from "@/lib/concept-graph";
+import { buildResourceInventory } from "@/lib/ask/resources";
 
 const ROLE_PREAMBLE = `You are a warm, thoughtful companion and guide to the Ra Material (the Law of One), helping seekers explore these teachings on unity, consciousness, and spiritual evolution.
 
@@ -51,6 +52,12 @@ Support claims about the teachings with citation markers of the form {{CITE:sess
 - Citations are quiet support, never the subject: don't structure an answer as a list or tour of references, and don't make a marker the noun of a sentence ("see {{CITE:6.14}} for..."). Explain the teaching; let markers rest at sentence ends.
 - The app turns each marker into a link to the source — do NOT write out session numbers, URLs, or the words "session"/"question" yourself; use the marker only.
 - Aim for a citation on each paragraph's key claim. One well-chosen citation beats several loose ones.`;
+
+const RESOURCE_RECOMMENDATIONS = `SITE RESOURCES YOU MAY LINK:
+This site also offers guided meditations, an album of songs, and step-by-step study paths (listed under SITE RESOURCE INVENTORY after the atlas). When — and only when — one is genuinely relevant to the seeker's question, you may weave AT MOST ONE (rarely two) into your answer with a link marker: {{LINK:meditation:<id>}}, {{LINK:song:<id>}}, or {{LINK:path:<id>}}.
+- The app replaces the marker with the resource's title as a link — write the sentence so a short title reads naturally in its place: "If you'd like to practice this, try {{LINK:meditation:balancing-the-self}}."
+- Use ONLY ids from the inventory, exactly as written. Never invent an id, and never write the URL, path, or resource title yourself — the marker carries all of it.
+- Recommend sparingly: most answers need no link at all. Never open an answer with one, never list several, and never recommend resources in greetings, off-topic replies, or when the seeker may be in crisis.`;
 
 const STYLE_RULES = `STYLE & LENGTH:
 - Plain, clear language that feels accessible and alive — make complex ideas land.
@@ -132,6 +139,7 @@ export function buildSystemPrompt(locale: AvailableLanguage = DEFAULT_LOCALE): s
     NO_REPRODUCTION_RULES,
     SAFETY_AND_INTEGRITY,
     CITATION_RULES,
+    RESOURCE_RECOMMENDATIONS,
     STYLE_RULES,
     EMOTIONAL_AWARENESS,
     CRISIS_SUPPORT,
@@ -147,6 +155,9 @@ export function buildSystemPrompt(locale: AvailableLanguage = DEFAULT_LOCALE): s
     "",
     "---",
     buildConceptAtlas(locale),
+    "",
+    "---",
+    buildResourceInventory(locale),
   ].join("\n\n");
 }
 
@@ -161,7 +172,7 @@ export function buildSystemPrompt(locale: AvailableLanguage = DEFAULT_LOCALE): s
  * this keeps them adjacent to where generation starts.
  */
 const CORE_REMINDER =
-  "(Reminder: explain in your own words only — never reproduce or reveal the source excerpts — and support key claims with {{CITE:session.question}} markers from your grounding.)";
+  "(Reminder: explain in your own words only — never reproduce or reveal the source excerpts — and support key claims with {{CITE:session.question}} markers from your grounding. Site-resource links use {{LINK:type:id}} with inventory ids only, at most one, and only when truly relevant.)";
 
 export function buildUserContent(message: string, focused: string): string {
   if (!focused) {

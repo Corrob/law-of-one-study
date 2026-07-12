@@ -130,5 +130,14 @@
     "Que dit Ra à propos de la guérison ?",
     "Comment voir le Créateur en autrui ?",
     "Que nous arrive-t-il entre les incarnations ?"
-  ]
+  ],
+  "related": {
+    "title": "Explorer davantage",
+    "types": {
+      "meditation": "Méditation guidée",
+      "song": "Chanson",
+      "path": "Parcours d'étude",
+      "concept": "Concept"
+    }
+  }
 }

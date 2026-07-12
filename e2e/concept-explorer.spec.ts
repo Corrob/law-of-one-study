@@ -98,4 +98,13 @@ test.describe("Concept Explorer", () => {
     await expect(page.getByRole("button", { name: "Zoom in" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Zoom out" })).toBeVisible();
   });
+
+  test("deep link ?concept=<id> opens the concept panel", async ({ page }) => {
+    // e.g. an Ask "Explore further" card links here.
+    await page.goto("/explore?concept=harvest");
+    await expect(page.getByText("Definition").first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Harvest" }).first()
+    ).toBeVisible();
+  });
 });

@@ -55,4 +55,10 @@ export const askAnalytics = {
 
   suggestionClicked: (p: { suggestion: string; index: number }) =>
     capture("suggestion_clicked", p),
+
+  relatedResourcesDisplayed: (p: { count: number; resources: string[] }) =>
+    capture("related_resources_displayed", p),
+
+  relatedResourceClicked: (p: { type: string; id: string; index: number }) =>
+    capture("related_resource_clicked", p),
 };

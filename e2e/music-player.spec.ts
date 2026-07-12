@@ -36,4 +36,10 @@ test.describe("Music album", () => {
       page.getByRole("heading", { name: "First Breath" })
     ).toBeVisible();
   });
+
+  test("deep link ?song=<id> opens the player on that track", async ({ page }) => {
+    // e.g. an Ask "Explore further" card links here.
+    await page.goto("/listen?song=gateway");
+    await expect(page.getByRole("heading", { name: "Gateway" })).toBeVisible();
+  });
 });

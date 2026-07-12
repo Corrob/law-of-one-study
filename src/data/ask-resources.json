@@ -1,0 +1,1417 @@
+{
+  "meditation": [
+    {
+      "id": "finding-love",
+      "title": {
+        "en": "Finding Love in the Moment",
+        "es": "Encontrar el Amor en el Momento",
+        "de": "Liebe im Augenblick finden",
+        "fr": "Trouver l'Amour dans l'Instant"
+      },
+      "description": {
+        "en": "Ra's first exercise: learn to consciously seek love in each moment. A practice of pausing, observing, and recognizing the love already woven into your present experience.",
+        "es": "El primer ejercicio de Ra: aprende a buscar conscientemente el amor en cada momento. Una práctica de pausar, observar y reconocer el amor ya entretejido en tu experiencia presente.",
+        "de": "Ras erste Übung: Lerne, in jedem Augenblick bewusst nach Liebe zu suchen. Eine Praxis des Innehaltens, Beobachtens und Erkennens der Liebe, die bereits in deine gegenwärtige Erfahrung eingewoben ist.",
+        "fr": "Le premier exercice de Ra : apprenez à chercher consciemment l'amour dans chaque instant. Une pratique de pause, d'observation et de reconnaissance de l'amour déjà tissé dans votre expérience présente."
+      }
+    },
+    {
+      "id": "seeing-the-creator",
+      "title": {
+        "en": "Seeing the Creator",
+        "es": "Viendo al Creador",
+        "de": "Den Schöpfer sehen",
+        "fr": "Voir le Créateur"
+      },
+      "description": {
+        "en": "Ra's exercises two through four: a progressive meditation moving from seeing the Creator in another self, to seeing the Creator in the mirror, to seeing the Creator in all of the creation around you.",
+        "es": "Ejercicios dos a cuatro de Ra: una meditación progresiva que avanza desde ver al Creador en otro yo, hasta ver al Creador en el espejo, hasta ver al Creador en toda la creación a tu alrededor.",
+        "de": "Ras Übungen zwei bis vier: Eine fortschreitende Meditation, die sich vom Sehen des Schöpfers in einem anderen Selbst, zum Sehen des Schöpfers im Spiegel, bis zum Sehen des Schöpfers in der gesamten Schöpfung bewegt.",
+        "fr": "Exercices deux à quatre de Ra : une méditation progressive allant de voir le Créateur dans un autre soi, à voir le Créateur dans le miroir, jusqu'à voir le Créateur dans toute la création autour de vous."
+      }
+    },
+    {
+      "id": "balancing-the-self",
+      "title": {
+        "en": "Balancing the Self",
+        "es": "Equilibrando el Yo",
+        "de": "Das Selbst ins Gleichgewicht bringen",
+        "fr": "Équilibrer le Soi"
+      },
+      "description": {
+        "en": "Ra's balancing technique: review your day's catalyst, find emotional charges, experience each feeling fully, then experience its opposite, and allow balance to emerge naturally.",
+        "es": "La técnica de equilibrio de Ra: revisa el catalizador de tu día, encuentra las cargas emocionales, experimenta cada sentimiento plenamente, luego experimenta su opuesto, y permite que el equilibrio surja naturalmente.",
+        "de": "Ras Ausgleichstechnik: Überprüfe den Katalysator deines Tages, finde emotionale Ladungen, erfahre jedes Gefühl vollständig, dann erfahre sein Gegenteil, und lass das Gleichgewicht natürlich entstehen.",
+        "fr": "La technique d'équilibrage de Ra : passez en revue le catalyseur de votre journée, trouvez les charges émotionnelles, vivez chaque sentiment pleinement, puis vivez son opposé, et laissez l'équilibre émerger naturellement."
+      }
+    }
+  ],
+  "song": [
+    {
+      "id": "first-breath",
+      "title": {
+        "en": "First Breath",
+        "es": "First Breath",
+        "de": "First Breath",
+        "fr": "First Breath"
+      },
+      "description": {
+        "en": "Elemental awareness — the first spark of knowing.",
+        "es": "Elemental awareness — the first spark of knowing.",
+        "de": "Elemental awareness — the first spark of knowing.",
+        "fr": "Elemental awareness — the first spark of knowing."
+      }
+    },
+    {
+      "id": "the-reaching",
+      "title": {
+        "en": "The Reaching",
+        "es": "The Reaching",
+        "de": "The Reaching",
+        "fr": "The Reaching"
+      },
+      "description": {
+        "en": "Life straining toward a light it cannot name.",
+        "es": "Life straining toward a light it cannot name.",
+        "de": "Life straining toward a light it cannot name.",
+        "fr": "Life straining toward a light it cannot name."
+      }
+    },
+    {
+      "id": "behind-the-veil",
+      "title": {
+        "en": "Behind the Veil",
+        "es": "Behind the Veil",
+        "de": "Behind the Veil",
+        "fr": "Behind the Veil"
+      },
+      "description": {
+        "en": "The veil, the choice, and a voice from the other side.",
+        "es": "The veil, the choice, and a voice from the other side.",
+        "de": "The veil, the choice, and a voice from the other side.",
+        "fr": "The veil, the choice, and a voice from the other side."
+      }
+    },
+    {
+      "id": "known",
+      "title": {
+        "en": "Known",
+        "es": "Known",
+        "de": "Known",
+        "fr": "Known"
+      },
+      "description": {
+        "en": "The veil lifts — every heart becomes transparent.",
+        "es": "The veil lifts — every heart becomes transparent.",
+        "de": "The veil lifts — every heart becomes transparent.",
+        "fr": "The veil lifts — every heart becomes transparent."
+      }
+    },
+    {
+      "id": "cold-light",
+      "title": {
+        "en": "Cold Light",
+        "es": "Cold Light",
+        "de": "Cold Light",
+        "fr": "Cold Light"
+      },
+      "description": {
+        "en": "Wisdom that can see everything, and warm nothing.",
+        "es": "Wisdom that can see everything, and warm nothing.",
+        "de": "Wisdom that can see everything, and warm nothing.",
+        "fr": "Wisdom that can see everything, and warm nothing."
+      }
+    },
+    {
+      "id": "a-million-years-ahead",
+      "title": {
+        "en": "A Million Years Ahead",
+        "es": "A Million Years Ahead",
+        "de": "A Million Years Ahead",
+        "fr": "A Million Years Ahead"
+      },
+      "description": {
+        "en": "The higher self remembers — and answers.",
+        "es": "The higher self remembers — and answers.",
+        "de": "The higher self remembers — and answers.",
+        "fr": "The higher self remembers — and answers."
+      }
+    },
+    {
+      "id": "gateway",
+      "title": {
+        "en": "Gateway",
+        "es": "Gateway",
+        "de": "Gateway",
+        "fr": "Gateway"
+      },
+      "description": {
+        "en": "The return to the One, and the choice to begin again.",
+        "es": "The return to the One, and the choice to begin again.",
+        "de": "The return to the One, and the choice to begin again.",
+        "fr": "The return to the One, and the choice to begin again."
+      }
+    }
+  ],
+  "path": [
+    {
+      "id": "densities",
+      "title": {
+        "en": "Understanding Densities",
+        "es": "Comprendiendo las Densidades",
+        "de": "Verstehen der Dichten",
+        "fr": "Comprendre les Densités"
+      },
+      "description": {
+        "en": "Explore Ra's framework of the seven densities of consciousness, from elemental awareness through unity with the Creator. This foundational path introduces the evolutionary journey all beings traverse.",
+        "es": "Explora el marco de Ra de las siete densidades de conciencia, desde la conciencia elemental hasta la unidad con el Creador. Este camino fundamental introduce el viaje evolutivo que todos los seres recorren.",
+        "de": "Erforschen Sie Ra's Rahmen der sieben Dichten des Bewusstseins, von elementarem Bewusstsein bis zur Einheit mit dem Schöpfer. Dieser grundlegende Weg führt in die evolutionäre Reise, die alle Wesen durchlaufen.",
+        "fr": "Explore le cadre de Ra des sept densités de conscience, de la prise de conscience élémentaire à l'unité avec le Créateur. Ce chemin fondamental introduit le parcours évolutif que tous les êtres traversent."
+      }
+    },
+    {
+      "id": "polarity",
+      "title": {
+        "en": "The Choice: Service to Others vs Self",
+        "es": "La Elección: Servicio a Otros vs Servicio al Yo",
+        "de": "Die Wahl: Dienst an anderen vs Dienst am Selbst",
+        "fr": "Le Choix : Service aux Autres vs Soi-même"
+      },
+      "description": {
+        "en": "Explore the fundamental choice that defines third density existence: the path of service to others or service to self. This foundational concept shapes all spiritual evolution and is the key to harvest.",
+        "es": "Explora la elección fundamental que define la existencia en tercera densidad: el camino del servicio a otros o el servicio al yo. Este concepto fundamental moldea toda evolución espiritual y es la clave para la cosecha.",
+        "de": "Erforschen Sie die grundlegende Wahl, die das Dasein in der dritten Dichte definiert: den Weg des Dienstes an anderen oder den Dienst am Selbst. Dieses grundlegende Konzept prägt die gesamte spirituelle Evolution und ist der Schlüssel zur Ernte.",
+        "fr": "Explorez le choix fondamental qui définit l'existence en troisième densité : le chemin du service aux autres ou le service à soi-même. Ce concept fondamental façonne toute évolution spirituelle et est la clé de la moisson."
+      }
+    },
+    {
+      "id": "energy-centers",
+      "title": {
+        "en": "Energy Centers Exploration",
+        "es": "Exploración de los Centros de Energía",
+        "de": "Erforschung der Energiezentren",
+        "fr": "Exploration des Centres Énergétiques"
+      },
+      "description": {
+        "en": "Journey through the seven energy centers (chakras) as described by Ra. Understanding these centers is essential for spiritual development, as they form the pathway through which consciousness evolves and intelligent energy flows.",
+        "es": "Viaje a través de los siete centros de energía (chakras) como lo describe Ra. Comprender estos centros es esencial para el desarrollo espiritual, ya que forman el camino a través del cual la conciencia evoluciona y la energía inteligente fluye.",
+        "de": "Reise durch die sieben Energiezentren (Chakras), wie von Ra beschrieben. Das Verständnis dieser Zentren ist entscheidend für die spirituelle Entwicklung, da sie den Weg bilden, durch den das Bewusstsein sich entfaltet und intelligente Energie fließt.",
+        "fr": "Parcours à travers les sept centres énergétiques (chakras) tels que décrits par Ra. Comprendre ces centres est essentiel pour le développement spirituel, car ils forment le chemin par lequel la conscience évolue et l'énergie intelligente circule."
+      }
+    },
+    {
+      "id": "catalyst",
+      "title": {
+        "en": "Processing Catalyst",
+        "es": "Procesando el Catalizador",
+        "de": "Katalysator verarbeiten",
+        "fr": "Traiter le Catalyseur"
+      },
+      "description": {
+        "en": "Learn Ra's profound teachings on working with life's experiences as catalyst for spiritual growth. This path explores how to transform emotions, challenges, and everyday experiences into accelerated evolution through acceptance, balancing, and conscious participation in your own becoming.",
+        "es": "Aprende las profundas enseñanzas de Ra sobre trabajar con las experiencias de la vida como catalizador para el crecimiento espiritual. Este camino explora cómo transformar emociones, desafíos y experiencias cotidianas en evolución acelerada a través de la aceptación, el equilibrio y la participación consciente en tu propio devenir.",
+        "de": "Lerne Ras tiefgreifende Lehren über das Arbeiten mit den Erfahrungen des Lebens als Katalysator für spirituelles Wachstum. Dieser Weg erforscht, wie man Emotionen, Herausforderungen und alltägliche Erfahrungen durch Akzeptanz, Ausgleichen und bewusste Teilnahme am eigenen Werden in beschleunigte Evolution verwandelt.",
+        "fr": "Apprenez les enseignements profonds de Ra sur le travail avec les expériences de la vie comme catalyseur pour la croissance spirituelle. Ce chemin explore comment transformer les émotions, les défis et les expériences quotidiennes en évolution accélérée grâce à l'acceptation, l'équilibrage et la participation consciente à votre propre devenir."
+      }
+    },
+    {
+      "id": "veil",
+      "title": {
+        "en": "The Veil of Forgetting",
+        "es": "El Velo del Olvido",
+        "de": "Der Schleier des Vergessens",
+        "fr": "Le Voile de l'Oubli"
+      },
+      "description": {
+        "en": "Discover why we forget our true nature upon incarnating and how this 'veil' between conscious and unconscious mind was the pivotal innovation that made meaningful spiritual evolution possible. This path explores pre-veil existence, the purpose of forgetting, and methods for piercing the veil.",
+        "es": "Descubre por qué olvidamos nuestra verdadera naturaleza al encarnar y cómo este 'velo' entre la mente consciente e inconsciente fue la innovación crucial que hizo posible una evolución espiritual significativa. Este camino explora la existencia pre-velo, el propósito del olvido, y los métodos para atravesar el velo.",
+        "de": "Entdecke, warum wir bei der Inkarnation unsere wahre Natur vergessen und wie dieser 'Schleier' zwischen bewusstem und unbewusstem Geist die entscheidende Innovation war, die bedeutungsvolle spirituelle Evolution möglich machte. Dieser Pfad erkundet die Existenz vor dem Schleier, den Zweck des Vergessens und Methoden, den Schleier zu durchdringen.",
+        "fr": "Decouvrez pourquoi nous oublions notre veritable nature en nous incarnant et comment ce 'voile' entre l'esprit conscient et inconscient fut l'innovation capitale qui a rendu possible une evolution spirituelle significative. Ce parcours explore l'existence pre-voile, le but de l'oubli et les methodes pour percer le voile."
+      }
+    },
+    {
+      "id": "time-space",
+      "title": {
+        "en": "Time/Space & Metaphysical Structure",
+        "es": "Tiempo/Espacio y Estructura Metafísica",
+        "de": "Zeit/Raum & Metaphysische Struktur",
+        "fr": "Temps/Espace et Structure Métaphysique"
+      },
+      "description": {
+        "en": "Explore Ra's profound teachings on the dual structure of reality: space/time (physical incarnation) and time/space (metaphysical existence). This advanced path covers what happens between lives, the nature of the Higher Self, and why working 'in darkness' in physical incarnation is so valuable.",
+        "es": "Explora las profundas enseñanzas de Ra sobre la estructura dual de la realidad: espacio/tiempo (encarnación física) y tiempo/espacio (existencia metafísica). Este camino avanzado cubre lo que sucede entre vidas, la naturaleza del Yo Superior, y por qué trabajar 'en la oscuridad' en la encarnación física es tan valioso.",
+        "de": "Erkunde Ras tiefgründige Lehren über die duale Struktur der Realität: Raum/Zeit (physische Inkarnation) und Zeit/Raum (metaphysische Existenz). Dieser fortgeschrittene Pfad behandelt, was zwischen den Leben geschieht, die Natur des Höheren Selbst, und warum das Arbeiten 'in der Dunkelheit' in der physischen Inkarnation so wertvoll ist.",
+        "fr": "Explorez les enseignements profonds de Ra sur la structure duale de la réalité : espace/temps (incarnation physique) et temps/espace (existence métaphysique). Ce parcours avancé couvre ce qui se passe entre les vies, la nature du soi supérieur, et pourquoi travailler « dans l'obscurité » lors de l'incarnation physique est si précieux."
+      }
+    },
+    {
+      "id": "archetypes",
+      "title": {
+        "en": "The Archetypical Mind",
+        "es": "La Mente Arquetípica",
+        "de": "Der Archetypische Geist",
+        "fr": "L'Esprit Archétypal"
+      },
+      "description": {
+        "en": "A comprehensive exploration of Ra's 22 tarot archetypes as a blueprint for consciousness evolution. Learn the three study methods (triads, pairs, embodiment), then journey through the Mind, Body, and Spirit cycles to understand how Matrix, Potentiator, Catalyst, Experience, Significator, Transformation, and Great Way operate to guide the seeker toward The Choice.",
+        "es": "Una exploración completa de los 22 arquetipos del tarot de Ra como un plano para la evolución de la conciencia. Aprende los tres métodos de estudio (triadas, pares, encarnación), luego viaja a través de los ciclos de Mente, Cuerpo y Espíritu para entender cómo Matriz, Potenciador, Catalizador, Experiencia, Significador, Transformación y Gran Camino operan para guiar al buscador hacia la Elección.",
+        "de": "Eine umfassende Erkundung von Ra's 22 Tarot-Archetypen als Blaupause für die Evolution des Bewusstseins. Erlernen Sie die drei Studienmethoden (Triaden, Paare, Verkörperung), und reisen Sie dann durch die Zyklen von Geist, Körper und Seele, um zu verstehen, wie Matrix, Potentiator, Katalysator, Erfahrung, Signifikator, Transformation und Großer Weg wirken, um den Suchenden zur Wahl zu führen.",
+        "fr": "Une exploration complète des 22 archétypes de tarot de Ra en tant que plan pour l'évolution de la conscience. Découvrez les trois méthodes d'étude (triades, paires, incarnation), puis parcourez les cycles de l'Esprit, du Corps et de l'Esprit pour comprendre comment la Matrice, le Potentiateur, le Catalyseur, l'Expérience, le Significateur, la Transformation et la Grande Voie fonctionnent pour guider le chercheur vers le Choix."
+      }
+    }
+  ],
+  "concept": [
+    {
+      "id": "adept",
+      "title": {
+        "en": "Adept",
+        "es": "Adepto",
+        "de": "Adept",
+        "fr": "Adepte"
+      }
+    },
+    {
+      "id": "archetype",
+      "title": {
+        "en": "Archetype",
+        "es": "Arquetipo",
+        "de": "Archetyp",
+        "fr": "Archétype"
+      }
+    },
+    {
+      "id": "archetypical-mind",
+      "title": {
+        "en": "Archetypical Mind",
+        "es": "Mente Arquetípica",
+        "de": "archetypischer Verstand",
+        "fr": "Mental archétypal"
+      }
+    },
+    {
+      "id": "balancing",
+      "title": {
+        "en": "Balancing",
+        "es": "Equilibrio",
+        "de": "Ausbalancieren",
+        "fr": "Équilibrage"
+      }
+    },
+    {
+      "id": "bidding",
+      "title": {
+        "en": "Bidding",
+        "es": "Ofrecimiento",
+        "de": "Anziehung",
+        "fr": "Appel négatif"
+      }
+    },
+    {
+      "id": "blue-ray",
+      "title": {
+        "en": "Blue Ray",
+        "es": "Rayo Azul",
+        "de": "Blauer Strahl",
+        "fr": "Rayon bleu"
+      }
+    },
+    {
+      "id": "calling",
+      "title": {
+        "en": "Calling",
+        "es": "Llamado",
+        "de": "Ruf",
+        "fr": "Appel"
+      }
+    },
+    {
+      "id": "catalyst",
+      "title": {
+        "en": "Catalyst",
+        "es": "Catalizador",
+        "de": "Katalysator",
+        "fr": "Catalyseur"
+      }
+    },
+    {
+      "id": "catalyst-archetype",
+      "title": {
+        "en": "Catalyst (Archetype)",
+        "es": "Catalizador (Arquetipo)",
+        "de": "Katalysator (Archetyp)",
+        "fr": "Catalyseur (Archétype)"
+      }
+    },
+    {
+      "id": "catalyst-of-body",
+      "title": {
+        "en": "Catalyst of the Body",
+        "es": "Catalizador del Cuerpo",
+        "de": "Katalysator des Körpers",
+        "fr": "Catalyseur du Corps"
+      }
+    },
+    {
+      "id": "catalyst-of-mind",
+      "title": {
+        "en": "Catalyst of the Mind",
+        "es": "Catalizador de la Mente",
+        "de": "Katalysator des Verstandes",
+        "fr": "Catalyseur du Mental"
+      }
+    },
+    {
+      "id": "catalyst-of-spirit",
+      "title": {
+        "en": "Catalyst of the Spirit",
+        "es": "Catalizador del Espíritu",
+        "de": "Katalysator des Geistes",
+        "fr": "Catalyseur de l'Esprit"
+      }
+    },
+    {
+      "id": "confederation",
+      "title": {
+        "en": "Confederation",
+        "es": "Confederación",
+        "de": "Konföderation",
+        "fr": "Confédération"
+      }
+    },
+    {
+      "id": "council-of-saturn",
+      "title": {
+        "en": "Council of Saturn",
+        "es": "Consejo de Saturno",
+        "de": "Council of Saturn",
+        "fr": "Conseil de Saturne"
+      }
+    },
+    {
+      "id": "crystallization",
+      "title": {
+        "en": "Crystallization",
+        "es": "Cristalización",
+        "de": "Kristallisierung",
+        "fr": "Cristallisation"
+      }
+    },
+    {
+      "id": "density",
+      "title": {
+        "en": "Density",
+        "es": "Densidad",
+        "de": "Dichte",
+        "fr": "Densité"
+      }
+    },
+    {
+      "id": "discipline-of-personality",
+      "title": {
+        "en": "Discipline of the Personality",
+        "es": "Disciplina de la Personalidad",
+        "de": "Disziplin der Persönlichkeit",
+        "fr": "Discipline de la personnalité"
+      }
+    },
+    {
+      "id": "disease",
+      "title": {
+        "en": "Disease",
+        "es": "Enfermedad",
+        "de": "Krankheit",
+        "fr": "Maladie"
+      }
+    },
+    {
+      "id": "distortion",
+      "title": {
+        "en": "Distortion",
+        "es": "Distorsión",
+        "de": "Verzerrung",
+        "fr": "Distorsion"
+      }
+    },
+    {
+      "id": "dual-activated",
+      "title": {
+        "en": "Dual-Activated",
+        "es": "Dual-Activado",
+        "de": "Dual-aktiviert",
+        "fr": "Double-activé"
+      }
+    },
+    {
+      "id": "energy-center",
+      "title": {
+        "en": "Energy Center",
+        "es": "Centro de Energía",
+        "de": "Energiezentrum",
+        "fr": "Centre énergétique"
+      }
+    },
+    {
+      "id": "energy-center-blockage",
+      "title": {
+        "en": "Energy Center Blockage",
+        "es": "Bloqueo del Centro de Energía",
+        "de": "Blockade der Energiezentren",
+        "fr": "Blocage du centre énergétique"
+      }
+    },
+    {
+      "id": "experience-archetype",
+      "title": {
+        "en": "Experience (Archetype)",
+        "es": "Experiencia (Arquetipo)",
+        "de": "Erfahrung (Archetyp)",
+        "fr": "Expérience (Archétype)"
+      }
+    },
+    {
+      "id": "experience-of-body",
+      "title": {
+        "en": "Experience of the Body",
+        "es": "Experiencia del Cuerpo",
+        "de": "Erfahrung des Körpers",
+        "fr": "Expérience du Corps"
+      }
+    },
+    {
+      "id": "experience-of-mind",
+      "title": {
+        "en": "Experience of the Mind",
+        "es": "Experiencia de la Mente",
+        "de": "Erfahrung des Geistes",
+        "fr": "Expérience du Mental"
+      }
+    },
+    {
+      "id": "experience-of-spirit",
+      "title": {
+        "en": "Experience of the Spirit",
+        "es": "Experiencia del Espíritu",
+        "de": "Erfahrung des Geistes",
+        "fr": "Expérience de l'Esprit"
+      }
+    },
+    {
+      "id": "faith",
+      "title": {
+        "en": "Faith",
+        "es": "Fe",
+        "de": "Glaube",
+        "fr": "Foi"
+      }
+    },
+    {
+      "id": "fifth-density",
+      "title": {
+        "en": "Fifth Density",
+        "es": "Quinta Densidad",
+        "de": "fünfte Dichte",
+        "fr": "Cinquième densité"
+      }
+    },
+    {
+      "id": "first-density",
+      "title": {
+        "en": "First Density",
+        "es": "Primera Densidad",
+        "de": "erste Dichte",
+        "fr": "Première densité"
+      }
+    },
+    {
+      "id": "forgiveness",
+      "title": {
+        "en": "Forgiveness",
+        "es": "Perdón",
+        "de": "Vergebung",
+        "fr": "Pardon"
+      }
+    },
+    {
+      "id": "fourth-density",
+      "title": {
+        "en": "Fourth Density",
+        "es": "Cuarta Densidad",
+        "de": "vierte Dichte",
+        "fr": "Quatrième densité"
+      }
+    },
+    {
+      "id": "fourth-density-negative",
+      "title": {
+        "en": "Fourth Density Negative",
+        "es": "Cuarta Densidad Negativa",
+        "de": "Vierte Dichte (negativ)",
+        "fr": "Quatrième densité négative"
+      }
+    },
+    {
+      "id": "fourth-density-positive",
+      "title": {
+        "en": "Fourth Density Positive",
+        "es": "Cuarta Densidad Positiva",
+        "de": "Vierte Dichte (positiv)",
+        "fr": "Quatrième densité positive"
+      }
+    },
+    {
+      "id": "free-will",
+      "title": {
+        "en": "Free Will",
+        "es": "Libre Albedrío",
+        "de": "Freier Wille",
+        "fr": "Libre arbitre"
+      }
+    },
+    {
+      "id": "gateway-to-intelligent-infinity",
+      "title": {
+        "en": "Gateway to Intelligent Infinity",
+        "es": "Portal a la Infinidad Inteligente",
+        "de": "Tor zur intelligenten Unendlichkeit",
+        "fr": "Passerelle vers l'Infini Intelligent"
+      }
+    },
+    {
+      "id": "graduation",
+      "title": {
+        "en": "Graduation",
+        "es": "Graduación",
+        "de": "Aufstieg",
+        "fr": "Graduation"
+      }
+    },
+    {
+      "id": "great-way",
+      "title": {
+        "en": "Great Way",
+        "es": "Gran Camino",
+        "de": "Großer Weg",
+        "fr": "Grande Voie"
+      }
+    },
+    {
+      "id": "great-way-of-body",
+      "title": {
+        "en": "Great Way of the Body",
+        "es": "Gran Camino del Cuerpo",
+        "de": "Großer Weg des Körpers",
+        "fr": "Grande Voie du Corps"
+      }
+    },
+    {
+      "id": "great-way-of-mind",
+      "title": {
+        "en": "Great Way of the Mind",
+        "es": "Gran Camino de la Mente",
+        "de": "Großer Weg des Geistes",
+        "fr": "Grande Voie du Mental"
+      }
+    },
+    {
+      "id": "great-way-of-spirit",
+      "title": {
+        "en": "Great Way of the Spirit",
+        "es": "Gran Camino del Espíritu",
+        "de": "Großer Weg des Geistes",
+        "fr": "Grande Voie de l'Esprit"
+      }
+    },
+    {
+      "id": "green-ray",
+      "title": {
+        "en": "Green Ray",
+        "es": "Rayo Verde",
+        "de": "Grüner Strahl",
+        "fr": "Rayon vert"
+      }
+    },
+    {
+      "id": "guardians",
+      "title": {
+        "en": "Guardians",
+        "es": "Guardianes",
+        "de": "Guardians",
+        "fr": "Gardiens"
+      }
+    },
+    {
+      "id": "harvest",
+      "title": {
+        "en": "Harvest",
+        "es": "Cosecha",
+        "de": "Ernte",
+        "fr": "Moisson"
+      }
+    },
+    {
+      "id": "healer",
+      "title": {
+        "en": "Healer",
+        "es": "Sanador",
+        "de": "Heiler",
+        "fr": "Guérisseur"
+      }
+    },
+    {
+      "id": "healing",
+      "title": {
+        "en": "Healing",
+        "es": "Sanación",
+        "de": "Heilung",
+        "fr": "Guérison"
+      }
+    },
+    {
+      "id": "higher-self",
+      "title": {
+        "en": "Higher Self",
+        "es": "Yo Superior",
+        "de": "Höheres Selbst",
+        "fr": "Soi supérieur"
+      }
+    },
+    {
+      "id": "honor-duty",
+      "title": {
+        "en": "Honor/Duty",
+        "es": "Honor/Debido",
+        "de": "Ehre/Pflicht",
+        "fr": "Honneur/Devoir"
+      }
+    },
+    {
+      "id": "incarnation",
+      "title": {
+        "en": "Incarnation",
+        "es": "Encarnación",
+        "de": "Inkarnation",
+        "fr": "Incarnation"
+      }
+    },
+    {
+      "id": "indigo-ray",
+      "title": {
+        "en": "Indigo Ray",
+        "es": "Rayo Índigo",
+        "de": "Indigofarbener Strahl",
+        "fr": "Rayon indigo"
+      }
+    },
+    {
+      "id": "initiation",
+      "title": {
+        "en": "Initiation",
+        "es": "Iniciación",
+        "de": "Einweihung",
+        "fr": "Initiation"
+      }
+    },
+    {
+      "id": "inner-planes",
+      "title": {
+        "en": "Inner Planes",
+        "es": "Planos Internos",
+        "de": "Innere Ebenen",
+        "fr": "Plans intérieurs"
+      }
+    },
+    {
+      "id": "intelligent-energy",
+      "title": {
+        "en": "Intelligent Energy",
+        "es": "Energía Inteligente",
+        "de": "intelligente Energie",
+        "fr": "Énergie intelligente"
+      }
+    },
+    {
+      "id": "intelligent-infinity",
+      "title": {
+        "en": "Intelligent Infinity",
+        "es": "Infinito Inteligente",
+        "de": "intelligente Unendlichkeit",
+        "fr": "Infini intelligent"
+      }
+    },
+    {
+      "id": "karma",
+      "title": {
+        "en": "Karma",
+        "es": "Karma",
+        "de": "Karma",
+        "fr": "Karma"
+      }
+    },
+    {
+      "id": "kundalini",
+      "title": {
+        "en": "Kundalini",
+        "es": "Kundalini",
+        "de": "Kundalini",
+        "fr": "Kundalini"
+      }
+    },
+    {
+      "id": "law-of-confusion",
+      "title": {
+        "en": "Law of Confusion",
+        "es": "Ley de la Confusión",
+        "de": "Gesetz der Verwirrung",
+        "fr": "Loi de la Confusion"
+      }
+    },
+    {
+      "id": "law-of-one",
+      "title": {
+        "en": "Law of One",
+        "es": "Ley del Uno",
+        "de": "Gesetz des Einen",
+        "fr": "Loi de l'Un"
+      }
+    },
+    {
+      "id": "law-of-responsibility",
+      "title": {
+        "en": "Law of Responsibility",
+        "es": "Ley de la Responsabilidad",
+        "de": "Gesetz der Verantwortung",
+        "fr": "Loi de la Responsabilité"
+      }
+    },
+    {
+      "id": "light",
+      "title": {
+        "en": "Light",
+        "es": "Luz",
+        "de": "Licht",
+        "fr": "Lumière"
+      }
+    },
+    {
+      "id": "logos",
+      "title": {
+        "en": "Logos",
+        "es": "Logos",
+        "de": "Logos",
+        "fr": "Logos"
+      }
+    },
+    {
+      "id": "love",
+      "title": {
+        "en": "Love",
+        "es": "Amor",
+        "de": "Liebe",
+        "fr": "Amour"
+      }
+    },
+    {
+      "id": "love-light",
+      "title": {
+        "en": "Love/Light",
+        "es": "Amor/Luz",
+        "de": "Liebe/Licht",
+        "fr": "Amour/Lumière"
+      }
+    },
+    {
+      "id": "magic",
+      "title": {
+        "en": "Magic",
+        "es": "Magia",
+        "de": "Magie",
+        "fr": "Magie"
+      }
+    },
+    {
+      "id": "magical-personality",
+      "title": {
+        "en": "Magical Personality",
+        "es": "Personalidad Mágica",
+        "de": "Magische Persönlichkeit",
+        "fr": "Personnalité magique"
+      }
+    },
+    {
+      "id": "maldek",
+      "title": {
+        "en": "Maldek",
+        "es": "Maldek",
+        "de": "Maldek",
+        "fr": "Maldek"
+      }
+    },
+    {
+      "id": "mars",
+      "title": {
+        "en": "Mars",
+        "es": "Marte",
+        "de": "Mars",
+        "fr": "Mars"
+      }
+    },
+    {
+      "id": "martyrdom",
+      "title": {
+        "en": "Martyrdom",
+        "es": "Martirio",
+        "de": "Märtyrertum",
+        "fr": "Martyre"
+      }
+    },
+    {
+      "id": "master-cycles",
+      "title": {
+        "en": "Master & Major Cycles",
+        "es": "Ciclos Maestros y Mayores",
+        "de": "Meister- und Hauptzyklen",
+        "fr": "Cycles maître et majeurs"
+      }
+    },
+    {
+      "id": "matrix",
+      "title": {
+        "en": "Matrix",
+        "es": "Matriz",
+        "de": "Matrix",
+        "fr": "Matrice"
+      }
+    },
+    {
+      "id": "matrix-of-body",
+      "title": {
+        "en": "Matrix of the Body",
+        "es": "Matriz del Cuerpo",
+        "de": "Matrix des Körpers",
+        "fr": "Matrice du Corps"
+      }
+    },
+    {
+      "id": "matrix-of-mind",
+      "title": {
+        "en": "Matrix of the Mind",
+        "es": "Matriz de la Mente",
+        "de": "Matrix des Verstandes",
+        "fr": "Matrice du Mental"
+      }
+    },
+    {
+      "id": "matrix-of-spirit",
+      "title": {
+        "en": "Matrix of the Spirit",
+        "es": "Matriz del Espíritu",
+        "de": "Matrix des Geistes",
+        "fr": "Matrice de l'Esprit"
+      }
+    },
+    {
+      "id": "meditation",
+      "title": {
+        "en": "Meditation",
+        "es": "Meditación",
+        "de": "Meditation",
+        "fr": "Méditation"
+      }
+    },
+    {
+      "id": "mind-body-spirit-complex",
+      "title": {
+        "en": "Mind/Body/Spirit Complex",
+        "es": "Complejo Mente/Cuerpo/Espíritu",
+        "de": "Geist/Körper/Seele-Komplex",
+        "fr": "Complexe mental/corps/esprit"
+      }
+    },
+    {
+      "id": "mind-complex",
+      "title": {
+        "en": "Mind Complex",
+        "es": "Complejo Mental",
+        "de": "Geist-Komplex",
+        "fr": "Complexe mental"
+      }
+    },
+    {
+      "id": "mixed-contact",
+      "title": {
+        "en": "Mixed Contact",
+        "es": "Contacto Mixto",
+        "de": "Gemischter Kontakt",
+        "fr": "Contact mixte"
+      }
+    },
+    {
+      "id": "octave",
+      "title": {
+        "en": "Octave",
+        "es": "Octava",
+        "de": "Oktave",
+        "fr": "Octave"
+      }
+    },
+    {
+      "id": "one-infinite-creator",
+      "title": {
+        "en": "One Infinite Creator",
+        "es": "Creador Infinito Único",
+        "de": "der Eine Unendliche Schöpfer",
+        "fr": "l'Un Créateur Infini"
+      }
+    },
+    {
+      "id": "one-original-thought",
+      "title": {
+        "en": "One Original Thought",
+        "es": "Un Pensamiento Original",
+        "de": "Der eine ursprüngliche Gedanke",
+        "fr": "La Pensée Originelle Unique"
+      }
+    },
+    {
+      "id": "orange-ray",
+      "title": {
+        "en": "Orange Ray",
+        "es": "Rayo Naranja",
+        "de": "Orangefarbener Strahl",
+        "fr": "Rayon orange"
+      }
+    },
+    {
+      "id": "orion",
+      "title": {
+        "en": "Orion",
+        "es": "Orión",
+        "de": "Orion",
+        "fr": "Orion"
+      }
+    },
+    {
+      "id": "planetary-logos",
+      "title": {
+        "en": "Planetary Logos",
+        "es": "Logos Planetario",
+        "de": "Planetarer Logos",
+        "fr": "Logos planétaire"
+      }
+    },
+    {
+      "id": "planetary-mind",
+      "title": {
+        "en": "Planetary Mind",
+        "es": "Mente Planetaria",
+        "de": "Planetarer Verstand",
+        "fr": "Mental planétaire"
+      }
+    },
+    {
+      "id": "polarity",
+      "title": {
+        "en": "Polarity",
+        "es": "Polaridad",
+        "de": "Polarität",
+        "fr": "Polarité"
+      }
+    },
+    {
+      "id": "potentiator",
+      "title": {
+        "en": "Potentiator",
+        "es": "Potenciador",
+        "de": "Potentiator",
+        "fr": "Potentiateur"
+      }
+    },
+    {
+      "id": "potentiator-of-body",
+      "title": {
+        "en": "Potentiator of the Body",
+        "es": "Potenciador del Cuerpo",
+        "de": "Potentiator des Körpers",
+        "fr": "Potentialisateur du Corps"
+      }
+    },
+    {
+      "id": "potentiator-of-mind",
+      "title": {
+        "en": "Potentiator of the Mind",
+        "es": "Potenciador de la Mente",
+        "de": "Potentiator des Verstandes",
+        "fr": "Potentiateur du Mental"
+      }
+    },
+    {
+      "id": "potentiator-of-spirit",
+      "title": {
+        "en": "Potentiator of the Spirit",
+        "es": "Potenciador del Espíritu",
+        "de": "Verstärker des Geistes",
+        "fr": "Potentiateur de l'Esprit"
+      }
+    },
+    {
+      "id": "pre-incarnative",
+      "title": {
+        "en": "Pre-incarnative",
+        "es": "Pre-encarnativo",
+        "de": "Präinkarnativ",
+        "fr": "Pré-incarnatoire"
+      }
+    },
+    {
+      "id": "primal-distortion",
+      "title": {
+        "en": "Primal Distortion",
+        "es": "Distorsión Primal",
+        "de": "Ursprüngliche Verzerrung",
+        "fr": "Distorsion Primordiale"
+      }
+    },
+    {
+      "id": "quarantine",
+      "title": {
+        "en": "Quarantine",
+        "es": "Cuarentena",
+        "de": "Quarantäne",
+        "fr": "Quarantaine"
+      }
+    },
+    {
+      "id": "Ra",
+      "title": {
+        "en": "Ra",
+        "es": "Ra",
+        "de": "Ra",
+        "fr": "Ra"
+      }
+    },
+    {
+      "id": "red-ray",
+      "title": {
+        "en": "Red Ray",
+        "es": "Rayo Rojo",
+        "de": "Roter Strahl",
+        "fr": "Rayon rouge"
+      }
+    },
+    {
+      "id": "second-density",
+      "title": {
+        "en": "Second Density",
+        "es": "Segunda Densidad",
+        "de": "zweite Dichte",
+        "fr": "Deuxième densité"
+      }
+    },
+    {
+      "id": "seeking",
+      "title": {
+        "en": "Seeking",
+        "es": "Búsqueda",
+        "de": "Suche",
+        "fr": "Quête"
+      }
+    },
+    {
+      "id": "seniority-of-vibration",
+      "title": {
+        "en": "Seniority of Vibration",
+        "es": "Antigüedad de Vibración",
+        "de": "Vorrang der Schwingung",
+        "fr": "Ancienneté de vibration"
+      }
+    },
+    {
+      "id": "service-to-others",
+      "title": {
+        "en": "Service to Others",
+        "es": "Servicio a Otros",
+        "de": "Dienst an anderen",
+        "fr": "Service d'autrui"
+      }
+    },
+    {
+      "id": "service-to-self",
+      "title": {
+        "en": "Service to Self",
+        "es": "Servicio a Sí Mismo",
+        "de": "Dienst am Selbst",
+        "fr": "Service de soi"
+      }
+    },
+    {
+      "id": "seven-bodies",
+      "title": {
+        "en": "Seven Bodies",
+        "es": "Siete Cuerpos",
+        "de": "Sieben Körper",
+        "fr": "Sept Corps"
+      }
+    },
+    {
+      "id": "seventh-density",
+      "title": {
+        "en": "Seventh Density",
+        "es": "Séptima Densidad",
+        "de": "siebte Dichte",
+        "fr": "Septième densité"
+      }
+    },
+    {
+      "id": "significator",
+      "title": {
+        "en": "Significator",
+        "es": "Significador",
+        "de": "Signifikator",
+        "fr": "Significateur"
+      }
+    },
+    {
+      "id": "significator-of-body",
+      "title": {
+        "en": "Significator of the Body",
+        "es": "Significador del Cuerpo",
+        "de": "Signifikator des Körpers",
+        "fr": "Significateur du Corps"
+      }
+    },
+    {
+      "id": "significator-of-mind",
+      "title": {
+        "en": "Significator of the Mind",
+        "es": "Significador de la Mente",
+        "de": "Signifikator des Geistes",
+        "fr": "Significateur du Mental"
+      }
+    },
+    {
+      "id": "significator-of-spirit",
+      "title": {
+        "en": "Significator of the Spirit",
+        "es": "Significador del Espíritu",
+        "de": "Signifikator des Geistes",
+        "fr": "Significateur de l'Esprit"
+      }
+    },
+    {
+      "id": "sinkhole-of-indifference",
+      "title": {
+        "en": "Sinkhole of Indifference",
+        "es": "Sumidero de Indiferencia",
+        "de": "Senke der Gleichgültigkeit",
+        "fr": "Gouffre de l'indifférence"
+      }
+    },
+    {
+      "id": "sixth-density",
+      "title": {
+        "en": "Sixth Density",
+        "es": "Sexta Densidad",
+        "de": "sechste Dichte",
+        "fr": "Sixième densité"
+      }
+    },
+    {
+      "id": "social-complex",
+      "title": {
+        "en": "Social Complex",
+        "es": "Complejo Social",
+        "de": "Sozialkomplex",
+        "fr": "Complexe social"
+      }
+    },
+    {
+      "id": "social-memory-complex",
+      "title": {
+        "en": "Social Memory Complex",
+        "es": "Complejo de Memoria Social",
+        "de": "sozialer Gedächtniskomplex",
+        "fr": "Complexe mémoriel sociétal"
+      }
+    },
+    {
+      "id": "space-time",
+      "title": {
+        "en": "Space/Time",
+        "es": "Espacio/Tiempo",
+        "de": "Raum/Zeit",
+        "fr": "Espace/Temps"
+      }
+    },
+    {
+      "id": "spirit-complex",
+      "title": {
+        "en": "Spirit Complex",
+        "es": "Complejo Espiritual",
+        "de": "Seelen-Komplex",
+        "fr": "Complexe spirituel"
+      }
+    },
+    {
+      "id": "sub-logos",
+      "title": {
+        "en": "Sub-Logos",
+        "es": "Sub-Logos",
+        "de": "Sub-Logos",
+        "fr": "sous-Logos"
+      }
+    },
+    {
+      "id": "tarot",
+      "title": {
+        "en": "Tarot",
+        "es": "Tarot",
+        "de": "Tarot",
+        "fr": "Tarot"
+      }
+    },
+    {
+      "id": "teach-learning",
+      "title": {
+        "en": "Teach/Learning",
+        "es": "Enseñar/Aprendizaje",
+        "de": "Lehren/Lernen",
+        "fr": "Enseignement/Apprentissage"
+      }
+    },
+    {
+      "id": "the-choice",
+      "title": {
+        "en": "The Choice",
+        "es": "La Elección",
+        "de": "Die Wahl",
+        "fr": "Le Choix"
+      }
+    },
+    {
+      "id": "third-density",
+      "title": {
+        "en": "Third Density",
+        "es": "Tercera Densidad",
+        "de": "dritte Dichte",
+        "fr": "Troisième densité"
+      }
+    },
+    {
+      "id": "time-lateral",
+      "title": {
+        "en": "Time Lateral",
+        "es": "Lateral del Tiempo",
+        "de": "Zeit-Lateralität",
+        "fr": "Latéralité temporelle"
+      }
+    },
+    {
+      "id": "time-space",
+      "title": {
+        "en": "Time/Space",
+        "es": "Tiempo/Espacio",
+        "de": "Zeit/Raum",
+        "fr": "Temps/Espace"
+      }
+    },
+    {
+      "id": "totality-of-self",
+      "title": {
+        "en": "Mind/Body/Spirit Totality",
+        "es": "Totalidad Mente/Cuerpo/Espíritu",
+        "de": "Totalität des Geist/Körper/Seele-Komplexes",
+        "fr": "Totalité du complexe mental/corps/esprit"
+      }
+    },
+    {
+      "id": "transformation",
+      "title": {
+        "en": "Transformation",
+        "es": "Transformación",
+        "de": "Transformation",
+        "fr": "Transformation"
+      }
+    },
+    {
+      "id": "transformation-of-body",
+      "title": {
+        "en": "Transformation of the Body",
+        "es": "Transformación del Cuerpo",
+        "de": "Transformation des Körpers",
+        "fr": "Transformation du Corps"
+      }
+    },
+    {
+      "id": "transformation-of-mind",
+      "title": {
+        "en": "Transformation of the Mind",
+        "es": "Transformación de la Mente",
+        "de": "Transformation des Geistes",
+        "fr": "Transformation du Mental"
+      }
+    },
+    {
+      "id": "transformation-of-spirit",
+      "title": {
+        "en": "Transformation of the Spirit",
+        "es": "Transformación del Espíritu",
+        "de": "Transformation des Geistes",
+        "fr": "Transformation de l'Esprit"
+      }
+    },
+    {
+      "id": "unity",
+      "title": {
+        "en": "Unity",
+        "es": "Unidad",
+        "de": "Einheit",
+        "fr": "Unité"
+      }
+    },
+    {
+      "id": "veil",
+      "title": {
+        "en": "Veil",
+        "es": "Velo",
+        "de": "Schleier",
+        "fr": "Voile"
+      }
+    },
+    {
+      "id": "violet-ray",
+      "title": {
+        "en": "Violet Ray",
+        "es": "Rayo Violeta",
+        "de": "Violetter Strahl",
+        "fr": "Rayon violet"
+      }
+    },
+    {
+      "id": "wanderer",
+      "title": {
+        "en": "Wanderer",
+        "es": "Errante",
+        "de": "Wanderer",
+        "fr": "Errant"
+      }
+    },
+    {
+      "id": "will",
+      "title": {
+        "en": "Will",
+        "es": "Voluntad",
+        "de": "Wille",
+        "fr": "Volonté"
+      }
+    },
+    {
+      "id": "yellow-ray",
+      "title": {
+        "en": "Yellow Ray",
+        "es": "Rayo Amarillo",
+        "de": "Gelber Strahl",
+        "fr": "Rayon jaune"
+      }
+    }
+  ]
+}

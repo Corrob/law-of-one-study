@@ -119,10 +119,23 @@ describe("POST /api/ask", () => {
     expect(response.headers.get("Content-Type")).toContain("text/event-stream");
 
     const events = parseSSE(await response.text());
-    expect(events.map((e) => e.event)).toEqual(["meta", "chunk", "chunk", "suggestions", "done"]);
+    expect(events.map((e) => e.event)).toEqual([
+      "meta",
+      "related",
+      "chunk",
+      "chunk",
+      "suggestions",
+      "done",
+    ]);
 
     // Grounding ran for real: the harvest concept was matched and sent first.
     expect(events[0].data.concepts).toContain("harvest");
+
+    // Deterministic recommendations follow straight from the grounding.
+    const relatedItems = events[1].data.items as Array<{ type: string; id: string; href: string }>;
+    expect(relatedItems.length).toBeGreaterThan(0);
+    expect(relatedItems.length).toBeLessThanOrEqual(3);
+    expect(relatedItems.every((r) => typeof r.href === "string")).toBe(true);
     const answer = events
       .filter((e) => e.event === "chunk")
       .map((e) => e.data.text)
@@ -146,8 +159,8 @@ describe("POST /api/ask", () => {
     expect(response.status).toBe(200); // headers were already committed
 
     const events = parseSSE(await response.text());
-    expect(events.map((e) => e.event)).toEqual(["meta", "error"]);
-    expect(events[1].data.error).toMatch(/went wrong/i);
+    expect(events.map((e) => e.event)).toEqual(["meta", "related", "error"]);
+    expect(events.at(-1)?.data.error).toMatch(/went wrong/i);
   });
 
   it("tracks a grounding miss when no concept matches the question", async () => {
@@ -184,8 +197,8 @@ describe("POST /api/ask", () => {
     const response = await POST(askRequest({ message: "What is harvest?" }));
     const events = parseSSE(await response.text());
 
-    expect(events.map((e) => e.event)).toEqual(["meta", "error"]);
-    expect(events[1].data.error).toMatch(/took too long/i);
+    expect(events.map((e) => e.event)).toEqual(["meta", "related", "error"]);
+    expect(events.at(-1)?.data.error).toMatch(/took too long/i);
     consoleSpy.mockRestore();
   });
 

@@ -5,14 +5,16 @@ import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 import { ASK_MAX_HISTORY_MESSAGES } from "@/lib/ask/config";
 import { askAnalytics, getDistinctId } from "@/lib/ask/analytics";
 import { extractCitedReferences } from "@/lib/ask/citations";
+import { type RelatedResource } from "@/lib/ask/resources";
+import {
+  type AskMessage,
+  STORAGE_KEY,
+  dispatchAskEvent,
+  parseSSE,
+  readStoredConversation,
+} from "@/lib/ask/stream-client";
 
-export interface AskMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  /** For assistant turns: a discernment note shown as the opening paragraph. */
-  disclaimer?: string;
-}
+export type { AskMessage } from "@/lib/ask/stream-client";
 
 interface UseAskStreamReturn {
   messages: AskMessage[];
@@ -20,70 +22,14 @@ interface UseAskStreamReturn {
   error: string | null;
   /** Follow-up questions for the latest answer (cleared on each new send). */
   suggestions: string[];
+  /** "Explore further" cards for the latest answer (cleared on each new send). */
+  related: RelatedResource[];
   sendMessage: (content: string) => Promise<void>;
   /** True when the last question failed with no answer and can be re-sent. */
   canRetry: boolean;
   /** Re-send the failed question (no-op when nothing failed). */
   retry: () => void;
   reset: () => void;
-}
-
-/** Conversations survive a refresh (same tab only) but not a new visit. */
-const STORAGE_KEY = "lo1-ask-conversation";
-
-interface StoredConversation {
-  messages: AskMessage[];
-  suggestions: string[];
-}
-
-/** Restore a saved conversation, dropping anything that doesn't look right. */
-function readStoredConversation(): StoredConversation | null {
-  try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<StoredConversation>;
-    const messages = Array.isArray(parsed.messages)
-      ? parsed.messages.filter(
-          (m): m is AskMessage =>
-            typeof m === "object" &&
-            m !== null &&
-            typeof m.id === "string" &&
-            (m.role === "user" || m.role === "assistant") &&
-            typeof m.content === "string" &&
-            m.content.length > 0
-        )
-      : [];
-    if (messages.length === 0) return null;
-    const suggestions = Array.isArray(parsed.suggestions)
-      ? parsed.suggestions.filter((s): s is string => typeof s === "string")
-      : [];
-    return { messages, suggestions };
-  } catch {
-    return null;
-  }
-}
-
-/** Parse complete SSE events out of a buffer; return leftover partial text. */
-function parseSSE(buffer: string): {
-  events: Array<{ event: string; data: string }>;
-  remaining: string;
-} {
-  const events: Array<{ event: string; data: string }> = [];
-  const chunks = buffer.split("\n\n");
-  const remaining = chunks.pop() ?? "";
-
-  for (const chunk of chunks) {
-    let event = "message";
-    const dataLines: string[] = [];
-    for (const line of chunk.split("\n")) {
-      if (line.startsWith("event:")) event = line.slice(6).trim();
-      else if (line.startsWith("data:")) dataLines.push(line.slice(5).trim());
-    }
-    if (dataLines.length > 0) {
-      events.push({ event, data: dataLines.join("\n") });
-    }
-  }
-  return { events, remaining };
 }
 
 /**
@@ -99,6 +45,7 @@ export function useAskStream(
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [related, setRelated] = useState<RelatedResource[]>([]);
   /** The question of a failed turn, kept so the user can retry without retyping. */
   const [failed, setFailed] = useState<{ userMessageId: string; content: string } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -109,11 +56,14 @@ export function useAskStream(
   // Restore after mount (not in the state initializer) to avoid a hydration
   // mismatch — the server render has no sessionStorage.
   useEffect(() => {
-    const stored = readStoredConversation();
+    const stored = readStoredConversation(locale);
     if (stored) {
       setMessages(stored.messages);
       setSuggestions(stored.suggestions);
+      setRelated(stored.related);
     }
+    // Restore once on mount; a locale change mid-session remounts the page.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Persist the conversation; an emptied thread (reset) clears the store.
@@ -127,14 +77,17 @@ export function useAskStream(
       const settled =
         messages.at(-1)?.role === "user" ? messages.slice(0, -1) : messages;
       if (settled.length > 0) {
-        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ messages: settled, suggestions }));
+        sessionStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ messages: settled, suggestions, related })
+        );
       } else {
         sessionStorage.removeItem(STORAGE_KEY);
       }
     } catch {
       // Storage full or unavailable — persistence is best-effort.
     }
-  }, [messages, suggestions, isStreaming]);
+  }, [messages, suggestions, related, isStreaming]);
 
   const sendMessage = useCallback(
     async (content: string, retryOfId?: string) => {
@@ -143,6 +96,7 @@ export function useAskStream(
 
       setError(null);
       setSuggestions([]); // clear the previous turn's follow-ups
+      setRelated([]);
       setFailed(null);
 
       // History = the conversation so far (capped), before this new turn. On a
@@ -240,44 +194,32 @@ export function useAskStream(
           buffer = remaining;
 
           for (const evt of events) {
-            if (evt.event === "chunk") {
-              try {
-                const parsed = JSON.parse(evt.data);
-                if (typeof parsed.text === "string") {
-                  if (firstChunkAt === null) {
-                    firstChunkAt = Date.now();
-                    askAnalytics.timeToFirstChunk(firstChunkAt - startedAt);
-                  }
-                  fullText += parsed.text;
-                  appendToAssistant(parsed.text);
+            dispatchAskEvent(evt, locale, {
+              onChunk: (text) => {
+                if (firstChunkAt === null) {
+                  firstChunkAt = Date.now();
+                  askAnalytics.timeToFirstChunk(firstChunkAt - startedAt);
                 }
-              } catch {
-                /* ignore malformed chunk */
-              }
-            } else if (evt.event === "suggestions") {
-              try {
-                const parsed = JSON.parse(evt.data);
-                if (Array.isArray(parsed.items) && parsed.items.length > 0) {
-                  const items = parsed.items.filter((s: unknown): s is string => typeof s === "string");
-                  setSuggestions(items);
-                  askAnalytics.suggestionsDisplayed({ count: items.length });
-                }
-              } catch {
-                /* ignore malformed suggestions */
-              }
-            } else if (evt.event === "error") {
-              let msg = "Something went wrong.";
-              try {
-                const parsed = JSON.parse(evt.data);
-                msg = parsed.error ?? msg;
-              } catch {
-                /* keep generic message */
-              }
-              setError(msg);
-              turnFailed = true;
-              askAnalytics.error({ errorType: "streaming_error", errorMessage: msg });
-            }
-            // "meta" and "done" require no action here.
+                fullText += text;
+                appendToAssistant(text);
+              },
+              onSuggestions: (items) => {
+                setSuggestions(items);
+                askAnalytics.suggestionsDisplayed({ count: items.length });
+              },
+              onRelated: (items) => {
+                setRelated(items);
+                askAnalytics.relatedResourcesDisplayed({
+                  count: items.length,
+                  resources: items.map((r) => `${r.type}:${r.id}`),
+                });
+              },
+              onError: (msg) => {
+                setError(msg);
+                turnFailed = true;
+                askAnalytics.error({ errorType: "streaming_error", errorMessage: msg });
+              },
+            });
           }
         }
 
@@ -326,6 +268,7 @@ export function useAskStream(
     setMessages([]);
     setError(null);
     setSuggestions([]);
+    setRelated([]);
     setFailed(null);
     setIsStreaming(false);
   }, []);
@@ -335,6 +278,7 @@ export function useAskStream(
     isStreaming,
     error,
     suggestions,
+    related,
     sendMessage,
     canRetry: failed !== null,
     retry,

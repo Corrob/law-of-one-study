@@ -9,10 +9,15 @@ import AskAnswer from "@/components/ask/AskAnswer";
 import AskComposer from "@/components/ask/AskComposer";
 import AskThinking from "@/components/ask/AskThinking";
 import AskCopyButton from "@/components/ask/AskCopyButton";
+import AskSuggestions from "@/components/ask/AskSuggestions";
+import AskRelatedResources from "@/components/ask/AskRelatedResources";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useAskStream } from "@/hooks/useAskStream";
-import { askAnalytics } from "@/lib/ask/analytics";
-import { renderCitationsToMarkdown } from "@/lib/ask/citations";
+import {
+  extractResourceLinks,
+  renderAskMarkdown,
+  stripAskMarkers,
+} from "@/lib/ask/resource-links";
 import {
   exportAskChatToMarkdown,
   downloadMarkdown,
@@ -30,7 +35,7 @@ export default function AskContent() {
     const raw = t.raw("disclaimers");
     return Array.isArray(raw) ? (raw as string[]) : [];
   }, [t]);
-  const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
+  const { messages, isStreaming, error, suggestions, related, sendMessage, canRetry, retry, reset } =
     useAskStream(locale, disclaimers);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -95,7 +100,7 @@ export default function AskContent() {
       else measureSpacer();
       updateScrollDown();
     });
-  }, [messages, suggestions, pinLastQuestion, measureSpacer, updateScrollDown]);
+  }, [messages, suggestions, related, pinLastQuestion, measureSpacer, updateScrollDown]);
 
   // Recompute the spacer on viewport resize.
   useEffect(() => {
@@ -142,7 +147,7 @@ export default function AskContent() {
   const lastMessage = messages.at(-1);
   const announcedAnswer =
     hasAsked && !isStreaming && lastMessage?.role === "assistant" && lastMessage.content
-      ? lastMessage.content.replace(/\{\{CITE:[^}]*\}\}/g, "")
+      ? stripAskMarkers(lastMessage.content, locale)
       : "";
 
   return (
@@ -187,7 +192,9 @@ export default function AskContent() {
                             <AskAnswer content={message.content} />
                             {!(isStreaming && message.id === messages.at(-1)?.id) && (
                               <AskCopyButton
-                                text={renderCitationsToMarkdown(message.content, locale)}
+                                text={renderAskMarkdown(message.content, locale, {
+                                  absolute: true,
+                                })}
                               />
                             )}
                           </>
@@ -200,27 +207,20 @@ export default function AskContent() {
                 )}
 
                 {/* Follow-up suggestions for the latest answer. */}
-                {!isStreaming && suggestions.length > 0 && (
-                  <div className="flex flex-wrap gap-2 pt-1">
-                    {suggestions.map((suggestion, index) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        data-testid="ask-suggestion"
-                        onClick={() => {
-                          askAnalytics.suggestionClicked({ suggestion, index });
-                          handleSend(suggestion);
-                        }}
-                        className="text-sm text-left px-3 py-1.5 rounded-full border border-[var(--lo1-gold)]/25
-                                   bg-[var(--lo1-indigo)]/40 text-[var(--lo1-stardust)]
-                                   hover:bg-[var(--lo1-gold)]/10 hover:text-[var(--lo1-starlight)] hover:border-[var(--lo1-gold)]/50
-                                   transition-colors cursor-pointer"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
+                {!isStreaming && (
+                  <AskSuggestions suggestions={suggestions} onPick={handleSend} />
                 )}
+
+                {/* "Explore further" cards — only under a settled latest answer,
+                    deduped against resources the answer already linked inline. */}
+                {!isStreaming &&
+                  related.length > 0 &&
+                  lastMessage?.role === "assistant" && (
+                    <AskRelatedResources
+                      items={related}
+                      excludeInline={extractResourceLinks(lastMessage.content)}
+                    />
+                  )}
 
                 {error && (
                   <div

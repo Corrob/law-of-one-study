@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
@@ -41,6 +42,16 @@ export default function ExploreContent() {
     null
   );
   const [ready, setReady] = useState(false);
+  const searchParams = useSearchParams();
+
+  // Deep link (?concept=<id>, e.g. from an Ask recommendation): open the
+  // concept panel on arrival. Read once on mount by design; invalid ids are
+  // ignored.
+  useEffect(() => {
+    const concept = findConceptById(searchParams.get("concept") ?? "");
+    if (concept) setSelectedConcept(concept);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleGraphReady = useCallback(() => setReady(true), []);
 

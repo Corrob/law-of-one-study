@@ -130,5 +130,14 @@
     "Was sagt Ra über Heilung?",
     "Wie sehen wir den Schöpfer in anderen?",
     "Was geschieht mit uns zwischen den Inkarnationen?"
-  ]
+  ],
+  "related": {
+    "title": "Weiter erkunden",
+    "types": {
+      "meditation": "Geführte Meditation",
+      "song": "Lied",
+      "path": "Lernpfad",
+      "concept": "Konzept"
+    }
+  }
 }

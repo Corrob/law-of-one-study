@@ -130,5 +130,14 @@
     "¿Qué dice Ra sobre la sanación?",
     "¿Cómo vemos al Creador en los demás?",
     "¿Qué nos sucede entre encarnaciones?"
-  ]
+  ],
+  "related": {
+    "title": "Explora más",
+    "types": {
+      "meditation": "Meditación guiada",
+      "song": "Canción",
+      "path": "Ruta de estudio",
+      "concept": "Concepto"
+    }
+  }
 }

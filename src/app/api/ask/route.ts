@@ -12,6 +12,7 @@ import { getOpenAIClient } from "@/lib/ask/openai";
 import { AskRequestSchema } from "@/lib/schemas/ask";
 import { buildSystemPrompt, buildUserContent } from "@/lib/ask/prompts";
 import { buildGrounding } from "@/lib/ask/grounding";
+import { buildRelatedResources } from "@/lib/ask/recommendations";
 import { checkRateLimit, getClientIp } from "@/lib/ask/rate-limit";
 import { trackLLMGeneration, trackEvent, flushPostHog } from "@/lib/ask/posthog-server";
 import { findReproducedExcerpt } from "@/lib/ask/reproduction";
@@ -139,6 +140,13 @@ export async function POST(request: Request): Promise<Response> {
 
       try {
         send("meta", { concepts: grounding.matchedConceptIds });
+
+        // Deterministic "Explore further" cards — derived from grounding, so
+        // they can stream before generation begins.
+        const related = buildRelatedResources(grounding.matchedConceptIds, locale);
+        if (related.length > 0) {
+          send("related", { items: related });
+        }
 
         const openaiStream = await client.chat.completions.create(
           {

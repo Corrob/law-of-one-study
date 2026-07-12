@@ -29,6 +29,8 @@
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
 import { join } from "path";
 import { getKnownReferences, extractCitedReferences } from "../src/lib/ask/citations";
+import { extractRawResourceMarkers } from "../src/lib/ask/resource-links";
+import { isKnownResource } from "../src/lib/ask/resources";
 import { buildGrounding } from "../src/lib/ask/grounding";
 import { findReproducedExcerpt } from "../src/lib/ask/reproduction";
 import type { AvailableLanguage } from "../src/lib/language-config";
@@ -47,6 +49,13 @@ interface EvalQuery {
   expectCitations?: boolean;
   expectedRefsAnyOf?: string[];
   expectConceptsAnyOf?: string[];
+  /** "type:id" strings; the `related` SSE event must include at least one. */
+  expectRelatedAnyOf?: string[];
+  /** "type:id" strings; SOFT check — inline links are discretionary, so a miss
+   * is reported but never fails the query. */
+  expectLinksAnyOf?: string[];
+  /** When true, the answer must contain no {{LINK}} markers at all. */
+  expectNoLinks?: boolean;
   testCriteria: string[];
 }
 
@@ -65,6 +74,10 @@ interface EvalResult {
   metaConcepts: string[];
   citedRefs: string[];
   unknownRefs: string[];
+  /** Every {{LINK:type:id}} marker in the answer, valid or not. */
+  resourceLinks: string[];
+  /** "type:id" of each item in the `related` SSE event. */
+  relatedResources: string[];
   checks: Check[];
   passed: boolean;
   timeToFirstChunkMs: number;
@@ -77,6 +90,8 @@ interface StreamOutcome {
   answer: string;
   suggestions: string[];
   metaConcepts: string[];
+  /** "type:id" per item of the `related` SSE event. */
+  related: string[];
   streamError?: string;
   timeToFirstChunkMs: number;
 }
@@ -105,6 +120,7 @@ async function readSSE(response: Response, startedAt: number): Promise<StreamOut
     answer: "",
     suggestions: [],
     metaConcepts: [],
+    related: [],
     timeToFirstChunkMs: 0,
   };
 
@@ -127,6 +143,11 @@ async function readSSE(response: Response, startedAt: number): Promise<StreamOut
         break;
       case "suggestions":
         outcome.suggestions = (payload.items as string[]) ?? [];
+        break;
+      case "related":
+        outcome.related = ((payload.items as Array<{ type: string; id: string }>) ?? []).map(
+          (item) => `${item.type}:${item.id}`
+        );
         break;
       case "error":
         outcome.streamError = (payload.error as string) ?? "unknown stream error";
@@ -183,13 +204,18 @@ function runChecks(
   spec: EvalQuery,
   outcome: StreamOutcome,
   locale: AvailableLanguage
-): Pick<EvalResult, "checks" | "citedRefs" | "unknownRefs"> {
+): Pick<EvalResult, "checks" | "citedRefs" | "unknownRefs" | "resourceLinks"> {
   const checks: Check[] = [];
   const known = getKnownReferences();
 
   const rawRefs = [...outcome.answer.matchAll(RAW_CITE_MARKER)].map((m) => m[1]);
   const unknownRefs = [...new Set(rawRefs.filter((ref) => !known.has(ref)))];
   const citedRefs = extractCitedReferences(outcome.answer);
+  const resourceLinks = extractRawResourceMarkers(outcome.answer);
+  const invalidLinks = resourceLinks.filter((marker) => {
+    const [type, id] = marker.split(":");
+    return !isKnownResource(type, id);
+  });
 
   checks.push({
     name: "stream-completed",
@@ -200,6 +226,18 @@ function runChecks(
     name: "citations-known",
     passed: unknownRefs.length === 0,
     detail: unknownRefs.length ? `hallucinated refs: ${unknownRefs.join(", ")}` : "all cited refs are whitelisted",
+  });
+  // Every inline {{LINK}} marker must resolve in the resource registry — a
+  // hallucinated id would be silently dropped by the client, leaving a
+  // grammatical hole in the answer.
+  checks.push({
+    name: "resource-links-known",
+    passed: invalidLinks.length === 0,
+    detail: invalidLinks.length
+      ? `hallucinated resource links: ${invalidLinks.join(", ")}`
+      : resourceLinks.length
+        ? `all resource links valid (${resourceLinks.join(", ")})`
+        : "no resource links in answer",
   });
 
   if (spec.expectCitations === true) {
@@ -237,6 +275,37 @@ function runChecks(
     });
   }
 
+  if (spec.expectRelatedAnyOf?.length) {
+    const hit = spec.expectRelatedAnyOf.filter((key) => outcome.related.includes(key));
+    checks.push({
+      name: "expected-related",
+      passed: hit.length > 0,
+      detail: hit.length
+        ? `related cards include ${hit.join(", ")}`
+        : `none of [${spec.expectRelatedAnyOf.join(", ")}] in related (got: ${outcome.related.join(", ") || "none"})`,
+    });
+  }
+  if (spec.expectLinksAnyOf?.length) {
+    const hit = spec.expectLinksAnyOf.filter((key) => resourceLinks.includes(key));
+    // Soft: inline recommendations are discretionary — report, never fail.
+    checks.push({
+      name: "expected-links (soft)",
+      passed: true,
+      detail: hit.length
+        ? `inline links include ${hit.join(", ")}`
+        : `no inline link from [${spec.expectLinksAnyOf.join(", ")}] (got: ${resourceLinks.join(", ") || "none"}) — soft miss`,
+    });
+  }
+  if (spec.expectNoLinks) {
+    checks.push({
+      name: "expect-no-links",
+      passed: resourceLinks.length === 0,
+      detail: resourceLinks.length
+        ? `unexpected resource links: ${resourceLinks.join(", ")}`
+        : "no resource links, as expected",
+    });
+  }
+
   // Same server-side reproduction check the route runs — recomputed here from
   // the same grounding pipeline, since excerpts are never sent to the client.
   const excerpts = buildGrounding(spec.query, [], locale).excerpts;
@@ -247,7 +316,7 @@ function runChecks(
     detail: reproduced ? "answer contains a verbatim grounding excerpt" : "no verbatim excerpt found",
   });
 
-  return { checks, citedRefs, unknownRefs };
+  return { checks, citedRefs, unknownRefs, resourceLinks };
 }
 
 function buildMarkdownReport(results: EvalResult[], locale: string, baseUrl: string): string {
@@ -280,6 +349,8 @@ function buildMarkdownReport(results: EvalResult[], locale: string, baseUrl: str
     lines.push(``, `**Review criteria (manual):** ${r.testCriteria.join("; ")}`, ``);
     lines.push(`**Answer:**`, ``, r.answer ? `> ${r.answer.replace(/\n/g, "\n> ")}` : `_(empty)_`, ``);
     if (r.suggestions.length) lines.push(`**Suggestions:** ${r.suggestions.join(" | ")}`, ``);
+    if (r.resourceLinks.length) lines.push(`**Inline resource links:** ${r.resourceLinks.join(", ")}`, ``);
+    if (r.relatedResources.length) lines.push(`**Related cards:** ${r.relatedResources.join(", ")}`, ``);
   }
   return lines.join("\n");
 }
@@ -316,6 +387,8 @@ async function main(): Promise<void> {
         metaConcepts: [],
         citedRefs: [],
         unknownRefs: [],
+        resourceLinks: [],
+        relatedResources: [],
         checks: [{ name: "request", passed: false, detail: error ?? "request failed" }],
         passed: false,
         timeToFirstChunkMs: 0,
@@ -327,7 +400,7 @@ async function main(): Promise<void> {
       continue;
     }
 
-    const { checks, citedRefs, unknownRefs } = runChecks(spec, outcome, locale);
+    const { checks, citedRefs, unknownRefs, resourceLinks } = runChecks(spec, outcome, locale);
     const passed = checks.every((c) => c.passed);
     results.push({
       id: spec.id,
@@ -338,6 +411,8 @@ async function main(): Promise<void> {
       metaConcepts: outcome.metaConcepts,
       citedRefs,
       unknownRefs,
+      resourceLinks,
+      relatedResources: outcome.related,
       checks,
       passed,
       timeToFirstChunkMs: outcome.timeToFirstChunkMs,

@@ -53,6 +53,29 @@ describe("prompts", () => {
     it("allows flagged general-knowledge answers for contact history", () => {
       expect(buildSystemPrompt("en")).toContain("Carla Rueckert");
     });
+
+    it("teaches the {{LINK}} convention and embeds the resource inventory", () => {
+      const sys = buildSystemPrompt("en");
+      expect(sys).toContain("SITE RESOURCES YOU MAY LINK");
+      expect(sys).toContain("{{LINK:meditation:<id>}}");
+      expect(sys).toContain("SITE RESOURCE INVENTORY");
+      expect(sys).toContain("meditation:balancing-the-self");
+      expect(sys).toContain("song:gateway");
+      expect(sys).toContain("path:densities");
+      // Concepts are card-only in v1 — never advertised for inline links.
+      expect(sys).not.toContain("{{LINK:concept:");
+    });
+
+    it("localizes the resource inventory titles", () => {
+      expect(buildSystemPrompt("es")).toContain("Encontrar el Amor en el Momento");
+    });
+
+    it("keeps rules before the atlas and the inventory after it (cacheable prefix)", () => {
+      const sys = buildSystemPrompt("en");
+      const inventoryHeading = "SITE RESOURCE INVENTORY (the only valid";
+      expect(sys.indexOf("SITE RESOURCES YOU MAY LINK")).toBeLessThan(sys.indexOf("CONCEPT ATLAS"));
+      expect(sys.indexOf("CONCEPT ATLAS")).toBeLessThan(sys.indexOf(inventoryHeading));
+    });
   });
 
   describe("buildUserContent", () => {
