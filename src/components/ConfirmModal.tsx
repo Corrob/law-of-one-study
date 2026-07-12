@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -40,6 +41,8 @@ export default function ConfirmModal({
   confirmText = "Confirm",
   cancelText = "Cancel",
 }: ConfirmModalProps) {
+  const tButtons = useTranslations("buttons");
+  const reduceMotion = useReducedMotion();
   const modalRef = useRef<HTMLDivElement>(null);
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -98,7 +101,7 @@ export default function ConfirmModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: reduceMotion ? 0 : 0.2 }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
           onClick={handleBackdropClick}
         >
@@ -108,24 +111,28 @@ export default function ConfirmModal({
             aria-modal="true"
             aria-labelledby="confirm-title"
             aria-describedby="confirm-message"
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.2, delay: 0.05 }}
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 10 }}
+            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95, y: 10 }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.2, delay: 0.05 }}
             className="relative bg-[var(--lo1-indigo)] border border-[var(--lo1-celestial)]/30 rounded-2xl p-6 max-w-sm w-full shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={onCancel}
               className="absolute top-3 right-3 p-2 text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)] transition-colors rounded-lg hover:bg-white/5 cursor-pointer"
-              aria-label="Close"
+              aria-label={tButtons("close")}
             >
               <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
             </button>
 
-            <motion.div variants={containerVariants} initial="hidden" animate="visible">
+            <motion.div
+              variants={reduceMotion ? undefined : containerVariants}
+              initial={reduceMotion ? false : "hidden"}
+              animate={reduceMotion ? undefined : "visible"}
+            >
               <motion.h2
                 variants={itemVariants}
                 id="confirm-title"
@@ -150,8 +157,8 @@ export default function ConfirmModal({
                 <motion.button
                   ref={confirmButtonRef}
                   onClick={onConfirm}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={reduceMotion ? undefined : { scale: 1.02 }}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                   className="flex-1 py-2.5 px-4 rounded-xl bg-[var(--lo1-gold)] text-[var(--lo1-deep-space)] font-medium hover:bg-[var(--lo1-gold-light)] hover:shadow-[0_0_20px_rgba(212,168,83,0.4)] transition-all duration-200 cursor-pointer"
                 >
                   {confirmText}

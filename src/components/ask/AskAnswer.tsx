@@ -1,7 +1,7 @@
 "use client";
 
-import { memo } from "react";
-import { useLocale } from "next-intl";
+import { memo, useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { renderCitationsToMarkdown } from "@/lib/ask/citations";
@@ -16,7 +16,7 @@ interface AskAnswerProps {
 // model-authored link to a look-alike host doesn't get the trusted chip styling.
 const CITATION_ORIGIN = "https://www.llresearch.org";
 
-const markdownComponents: Components = {
+const buildMarkdownComponents = (citationTitle: string): Components => ({
   p: ({ children, ...props }) => (
     <p className="mb-3 last:mb-0 leading-relaxed" {...props}>
       {children}
@@ -71,7 +71,7 @@ const markdownComponents: Components = {
           className="inline-flex items-baseline align-baseline mx-0.5 px-1.5 py-0.5 rounded text-xs font-medium
                      bg-[var(--lo1-gold)]/15 text-[var(--lo1-gold)] hover:bg-[var(--lo1-gold)]/25
                      no-underline transition-colors cursor-pointer"
-          title="Read the original at L/L Research"
+          title={citationTitle}
         >
           {children}
         </a>
@@ -89,7 +89,7 @@ const markdownComponents: Components = {
       </a>
     );
   },
-};
+});
 
 /**
  * Renders an assistant answer: citation markers become locale-aware links to
@@ -98,10 +98,13 @@ const markdownComponents: Components = {
  */
 const AskAnswer = memo(function AskAnswer({ content }: AskAnswerProps) {
   const locale = useLocale() as AvailableLanguage;
+  const t = useTranslations("ask");
+  const citationTitle = t("citationTitle");
+  const components = useMemo(() => buildMarkdownComponents(citationTitle), [citationTitle]);
   const markdown = renderCitationsToMarkdown(content, locale);
   return (
     <div className="text-[var(--lo1-text-light)]">
-      <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
         {markdown}
       </ReactMarkdown>
     </div>

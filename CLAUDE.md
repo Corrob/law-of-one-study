@@ -41,7 +41,7 @@ e2e/                        # Playwright E2E tests
 
 ## Features
 
-- **Ask** - LLM guide to the Ra Material, grounded in the concept graph (no RAG, no verbatim reproduction); paraphrases and links citations to lawofone.info
+- **Ask** - LLM guide to the Ra Material, grounded in the concept graph (no RAG, no verbatim reproduction); paraphrases and links citations to llresearch.org
 - **Explore** - Interactive concept graph visualization
 - **Study Paths** - Guided lessons through the Ra Material
 - **Meditations** - Guided meditation audio player

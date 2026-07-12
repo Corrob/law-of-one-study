@@ -8,9 +8,11 @@ import AskWelcome from "@/components/ask/AskWelcome";
 import AskAnswer from "@/components/ask/AskAnswer";
 import AskComposer from "@/components/ask/AskComposer";
 import AskThinking from "@/components/ask/AskThinking";
+import AskCopyButton from "@/components/ask/AskCopyButton";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useAskStream } from "@/hooks/useAskStream";
 import { askAnalytics } from "@/lib/ask/analytics";
+import { renderCitationsToMarkdown } from "@/lib/ask/citations";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 export default function AskContent() {
@@ -22,10 +24,8 @@ export default function AskContent() {
     const raw = t.raw("disclaimers");
     return Array.isArray(raw) ? (raw as string[]) : [];
   }, [t]);
-  const { messages, isStreaming, error, suggestions, sendMessage, reset } = useAskStream(
-    locale,
-    disclaimers
-  );
+  const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
+    useAskStream(locale, disclaimers);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -98,8 +98,12 @@ export default function AskContent() {
     return () => window.removeEventListener("resize", onResize);
   }, [measureSpacer]);
 
+  // Only answers produced in this page session are announced — a conversation
+  // restored from sessionStorage on refresh shouldn't be re-read aloud.
+  const [hasAsked, setHasAsked] = useState(false);
   const handleSend = useCallback(
     (message: string) => {
+      setHasAsked(true);
       void sendMessage(message);
     },
     [sendMessage]
@@ -113,6 +117,15 @@ export default function AskContent() {
   }, [reset]);
 
   const hasMessages = messages.length > 0;
+
+  // Announce the completed answer to screen readers (streamed text is never
+  // announced token-by-token — only the finished whole, citation markers
+  // stripped so URLs aren't read aloud).
+  const lastMessage = messages.at(-1);
+  const announcedAnswer =
+    hasAsked && !isStreaming && lastMessage?.role === "assistant" && lastMessage.content
+      ? lastMessage.content.replace(/\{\{CITE:[^}]*\}\}/g, "")
+      : "";
 
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">
@@ -146,7 +159,14 @@ export default function AskContent() {
                           </p>
                         )}
                         {message.content ? (
-                          <AskAnswer content={message.content} />
+                          <>
+                            <AskAnswer content={message.content} />
+                            {!(isStreaming && message.id === messages.at(-1)?.id) && (
+                              <AskCopyButton
+                                text={renderCitationsToMarkdown(message.content, locale)}
+                              />
+                            )}
+                          </>
                         ) : (
                           <AskThinking />
                         )}
@@ -181,14 +201,30 @@ export default function AskContent() {
                 {error && (
                   <div
                     role="alert"
-                    className="text-sm text-red-300 bg-red-900/20 border border-red-500/30 rounded-xl px-4 py-2"
+                    className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-red-300 bg-red-900/20 border border-red-500/30 rounded-xl px-4 py-2"
                   >
-                    {error}
+                    <span>{error}</span>
+                    {canRetry && (
+                      <button
+                        type="button"
+                        data-testid="ask-retry"
+                        onClick={retry}
+                        className="shrink-0 rounded-full border border-red-300/40 px-3 py-1 text-red-200
+                                   hover:bg-red-300/10 hover:border-red-300/70 transition-colors cursor-pointer"
+                      >
+                        {t("retry")}
+                      </button>
+                    )}
                   </div>
                 )}
 
                 {/* Dynamic spacer so the latest question can pin to the top. */}
                 <div ref={spacerRef} aria-hidden className="shrink-0" />
+
+                {/* Screen-reader announcement of the finished answer. */}
+                <div aria-live="polite" className="sr-only">
+                  {announcedAnswer}
+                </div>
               </div>
             </div>
 

@@ -74,6 +74,23 @@ can't reach the site).
 5. Run `npm run validate:citations -- --online` and confirm the reference
    resolves.
 
+## Evaluating answer quality
+
+After changing the system prompt, the concept graph, or the model config, run
+the eval harness (revived from the old Seek test-query system):
+
+1. Start the dev server (`npm run dev`) — the eval makes real LLM calls against
+   `http://localhost:8080` by default.
+2. Run `npm run eval:ask` (all 61 queries; paced for the rate limit), or filter
+   with `-- --category citation,conceptual` / `-- --query harvest`.
+3. Automated checks: stream completes, every citation is whitelisted, expected
+   refs/concepts appear, no verbatim excerpt reproduction, timing captured.
+4. Read the markdown report in `scripts/eval-results/` (gitignored) and review
+   the human criteria — tone, empathy, structure — for each answer.
+
+Queries live in `scripts/ask-eval-queries.json`; the grounding-concept
+expectations double as a recall check when adding aliases or concepts.
+
 ## Common topics to prioritize (from research)
 
 Frequently asked / frequently cited themes to deepen first: the harvest and

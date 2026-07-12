@@ -41,7 +41,7 @@ export const askAnalytics = {
   }) => capture("response_complete", p),
 
   error: (p: {
-    errorType: "rate_limit" | "validation" | "api_error" | "streaming_error";
+    errorType: "rate_limit" | "validation" | "api_error" | "streaming_error" | "empty_stream";
     errorMessage?: string;
   }) => capture("error_occurred", p),
 

@@ -20,6 +20,7 @@ import {
   ASK_MODEL,
   ASK_REASONING_EFFORT,
   ASK_MAX_TOKENS,
+  ASK_TIMEOUT_MS,
   ASK_RATE_LIMIT,
   calculateCost,
 } from "@/lib/ask/config";
@@ -34,10 +35,15 @@ const SSE_HEADERS = {
   Connection: "keep-alive",
 } as const;
 
-function jsonError(message: string, status: number, extra?: object): Response {
+function jsonError(
+  message: string,
+  status: number,
+  extra?: object,
+  headers?: Record<string, string>
+): Response {
   return new Response(JSON.stringify({ error: message, ...extra }), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...headers },
   });
 }
 
@@ -57,7 +63,12 @@ export async function POST(request: Request): Promise<Response> {
   const limit = await checkRateLimit(`ask:${ip}`, ASK_RATE_LIMIT);
   if (!limit.success) {
     const retryAfter = Math.max(1, Math.ceil((limit.resetAt - Date.now()) / 1000));
-    return jsonError("Too many requests. Please slow down.", 429, { retryAfter });
+    return jsonError(
+      "Too many requests. Please slow down.",
+      429,
+      { retryAfter },
+      { "Retry-After": String(retryAfter) }
+    );
   }
 
   // Parse + validate.
@@ -89,13 +100,36 @@ export async function POST(request: Request): Promise<Response> {
   const analyticsId = distinctId || anonymizeIp(ip);
   const traceId = randomUUID();
 
+  // Grounding-recall telemetry: a question that matches no concept or
+  // supplement falls back to the atlas alone. Track the miss (never the text)
+  // so we know where the graph needs aliases or new concepts.
+  if (grounding.matchedConceptIds.length === 0) {
+    trackEvent(analyticsId, "ask_no_focused_grounding", {
+      trace_id: traceId,
+      locale,
+      message_length: message.length,
+      has_history: history.length > 0,
+    });
+  }
+
   const client = getOpenAIClient();
   const encoder = new TextEncoder();
   const startedAt = Date.now();
 
+  // Stop generating (and paying) the moment the client disconnects, and put a
+  // hard ceiling on a hung upstream call. `request.signal` fires on disconnect
+  // before the stream starts; `cancelled` covers a mid-stream disconnect.
+  const cancelled = new AbortController();
+  const timeout = AbortSignal.timeout(ASK_TIMEOUT_MS);
+  const signal = AbortSignal.any([request.signal, cancelled.signal, timeout]);
+
   const stream = new ReadableStream<Uint8Array>({
     async start(controller) {
+      // Suppress writes only when the CLIENT is gone — a timeout must still
+      // reach the (still connected) client as an error event.
+      const clientGone = () => request.signal.aborted || cancelled.signal.aborted;
       const send = (event: string, data: object) => {
+        if (clientGone()) return;
         controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
       };
 
@@ -106,14 +140,17 @@ export async function POST(request: Request): Promise<Response> {
       try {
         send("meta", { concepts: grounding.matchedConceptIds });
 
-        const openaiStream = await client.chat.completions.create({
-          model: ASK_MODEL,
-          messages,
-          reasoning_effort: ASK_REASONING_EFFORT,
-          max_completion_tokens: ASK_MAX_TOKENS,
-          stream: true,
-          stream_options: { include_usage: true },
-        });
+        const openaiStream = await client.chat.completions.create(
+          {
+            model: ASK_MODEL,
+            messages,
+            reasoning_effort: ASK_REASONING_EFFORT,
+            max_completion_tokens: ASK_MAX_TOKENS,
+            stream: true,
+            stream_options: { include_usage: true },
+          },
+          { signal }
+        );
 
         for await (const chunk of openaiStream) {
           const delta = chunk.choices[0]?.delta?.content;
@@ -164,12 +201,26 @@ export async function POST(request: Request): Promise<Response> {
           metadata: { locale, conceptCount: grounding.matchedConceptIds.length },
         });
       } catch (error) {
-        console.error("[api/ask] streaming error:", error);
-        send("error", { error: "Something went wrong generating a response." });
+        if (timeout.aborted) {
+          console.error("[api/ask] generation timed out");
+          send("error", { error: "The response took too long. Please try again." });
+        } else if (signal.aborted) {
+          // Client disconnected — nothing to send, nothing went wrong.
+        } else {
+          console.error("[api/ask] streaming error:", error);
+          send("error", { error: "Something went wrong generating a response." });
+        }
       } finally {
-        controller.close();
+        try {
+          controller.close();
+        } catch {
+          // Already closed/errored (e.g. client disconnect cancelled the stream).
+        }
         await flushPostHog();
       }
+    },
+    cancel() {
+      cancelled.abort();
     },
   });
 

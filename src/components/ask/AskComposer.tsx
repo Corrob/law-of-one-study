@@ -48,8 +48,12 @@ export default function AskComposer({ onSend, disabled }: AskComposerProps) {
     if (!trimmed || disabled || trimmed.length > ASK_MAX_MESSAGE_LENGTH) return;
     onSend(trimmed);
     setValue("");
-    // Dismiss the mobile keyboard so the answer isn't hidden behind it.
-    textareaRef.current?.blur();
+    // Dismiss the mobile keyboard so the answer isn't hidden behind it —
+    // but keep focus on keyboard/mouse devices so the next question can be
+    // typed without re-tabbing to the input.
+    if (window.matchMedia("(pointer: coarse)").matches) {
+      textareaRef.current?.blur();
+    }
   }, [value, disabled, onSend, textareaRef]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {

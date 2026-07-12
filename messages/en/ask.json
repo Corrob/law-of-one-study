@@ -5,6 +5,10 @@
   "inputLabel": "Your question",
   "send": "Send",
   "scrollToLatest": "Scroll to latest",
+  "retry": "Try again",
+  "copy": "Copy",
+  "copied": "Copied",
+  "citationTitle": "Read the original at L/L Research",
   "thinking": "Thinking...",
   "thinkingPhrases": {
     "1": "Scanning the cosmic records...",

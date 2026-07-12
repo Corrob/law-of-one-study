@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /**
  * E2E tests for the Ask feature (LLM guide to the Ra Material).
  *
- * The /api/ask endpoint needs an ANTHROPIC_API_KEY that CI does not have, so the
+ * The /api/ask endpoint needs an OPENAI_API_KEY that CI does not have, so the
  * streaming response is mocked with a canned SSE stream. This keeps the test
  * deterministic while still exercising the real client: SSE parsing, message
  * rendering, and citation links to L/L Research (llresearch.org).
@@ -49,7 +49,7 @@ test.describe("Ask", () => {
     await expect(page.getByText("What is the harvest?")).toBeVisible();
 
     // The streamed answer renders (paraphrase, no verbatim Ra text).
-    await expect(page.getByText(/The harvest is a transition between densities/)).toBeVisible();
+    await expect(page.getByText(/The harvest is a transition between densities/).first()).toBeVisible();
 
     // The citation marker becomes a link to the authorized source.
     const citation = page.getByRole("link", { name: "6.14" });
@@ -63,15 +63,34 @@ test.describe("Ask", () => {
     const suggestions = page.getByTestId("ask-suggestion");
     await expect(suggestions.first()).toBeVisible();
     expect(await suggestions.count()).toBe(3);
+
+    // A completed answer offers copy-to-clipboard.
+    await expect(page.getByTestId("ask-copy")).toBeVisible();
+
+    // The conversation survives a refresh (sessionStorage persistence).
+    await page.reload();
+    await expect(page.getByText("What is the harvest?")).toBeVisible();
+    await expect(page.getByText(/The harvest is a transition between densities/).first()).toBeVisible();
   });
 
-  test("shows an error message when the endpoint is unavailable", async ({ page }) => {
+  test("shows an error with a retry button that re-sends the question", async ({ page }) => {
+    // First request fails; the retry succeeds with the canned stream.
+    let calls = 0;
     await page.route("**/api/ask", async (route) => {
-      await route.fulfill({
-        status: 503,
-        contentType: "application/json",
-        body: JSON.stringify({ error: "The Ask feature is not configured." }),
-      });
+      calls += 1;
+      if (calls === 1) {
+        await route.fulfill({
+          status: 503,
+          contentType: "application/json",
+          body: JSON.stringify({ error: "The Ask feature is not configured." }),
+        });
+      } else {
+        await route.fulfill({
+          status: 200,
+          contentType: "text/event-stream; charset=utf-8",
+          body: SSE_RESPONSE,
+        });
+      }
     });
 
     await page.goto("/ask");
@@ -81,5 +100,12 @@ test.describe("Ask", () => {
     await input.press("Enter");
 
     await expect(page.getByText("The Ask feature is not configured.")).toBeVisible();
+
+    // The question stays on screen and retry re-sends it without retyping.
+    await expect(page.getByText("What is the harvest?")).toBeVisible();
+    await page.getByTestId("ask-retry").click();
+
+    await expect(page.getByText(/The harvest is a transition between densities/).first()).toBeVisible();
+    expect(calls).toBe(2);
   });
 });

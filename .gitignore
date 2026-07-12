@@ -48,3 +48,6 @@ test-results*.json
 
 # scraped data (large, not served to users)
 /data/confederation/
+
+# ask eval reports (real LLM output, local review only)
+/scripts/eval-results/

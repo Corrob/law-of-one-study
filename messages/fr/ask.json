@@ -5,6 +5,10 @@
   "inputLabel": "Votre question",
   "send": "Envoyer",
   "scrollToLatest": "Aller au plus récent",
+  "retry": "Réessayer",
+  "copy": "Copier",
+  "copied": "Copié",
+  "citationTitle": "Lire l'original sur L/L Research",
   "thinking": "Réflexion...",
   "thinkingPhrases": {
     "1": "Analyse des archives cosmiques...",

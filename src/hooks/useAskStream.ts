@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 import { ASK_MAX_HISTORY_MESSAGES } from "@/lib/ask/config";
 import { askAnalytics, getDistinctId } from "@/lib/ask/analytics";
@@ -21,7 +21,46 @@ interface UseAskStreamReturn {
   /** Follow-up questions for the latest answer (cleared on each new send). */
   suggestions: string[];
   sendMessage: (content: string) => Promise<void>;
+  /** True when the last question failed with no answer and can be re-sent. */
+  canRetry: boolean;
+  /** Re-send the failed question (no-op when nothing failed). */
+  retry: () => void;
   reset: () => void;
+}
+
+/** Conversations survive a refresh (same tab only) but not a new visit. */
+const STORAGE_KEY = "lo1-ask-conversation";
+
+interface StoredConversation {
+  messages: AskMessage[];
+  suggestions: string[];
+}
+
+/** Restore a saved conversation, dropping anything that doesn't look right. */
+function readStoredConversation(): StoredConversation | null {
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<StoredConversation>;
+    const messages = Array.isArray(parsed.messages)
+      ? parsed.messages.filter(
+          (m): m is AskMessage =>
+            typeof m === "object" &&
+            m !== null &&
+            typeof m.id === "string" &&
+            (m.role === "user" || m.role === "assistant") &&
+            typeof m.content === "string" &&
+            m.content.length > 0
+        )
+      : [];
+    if (messages.length === 0) return null;
+    const suggestions = Array.isArray(parsed.suggestions)
+      ? parsed.suggestions.filter((s): s is string => typeof s === "string")
+      : [];
+    return { messages, suggestions };
+  } catch {
+    return null;
+  }
 }
 
 /** Parse complete SSE events out of a buffer; return leftover partial text. */
@@ -60,21 +99,56 @@ export function useAskStream(
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  /** The question of a failed turn, kept so the user can retry without retyping. */
+  const [failed, setFailed] = useState<{ userMessageId: string; content: string } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const idRef = useRef(0);
 
   const nextId = () => `${Date.now()}-${idRef.current++}`;
 
+  // Restore after mount (not in the state initializer) to avoid a hydration
+  // mismatch — the server render has no sessionStorage.
+  useEffect(() => {
+    const stored = readStoredConversation();
+    if (stored) {
+      setMessages(stored.messages);
+      setSuggestions(stored.suggestions);
+    }
+  }, []);
+
+  // Persist the conversation; an emptied thread (reset) clears the store.
+  // Skipped while streaming: writing on every token is wasteful, and a
+  // mid-stream snapshot would restore a silently truncated answer.
+  useEffect(() => {
+    if (isStreaming) return;
+    try {
+      // A trailing unanswered question (failed turn) isn't saved — its retry
+      // state lives only in memory, so restoring it would strand it.
+      const settled =
+        messages.at(-1)?.role === "user" ? messages.slice(0, -1) : messages;
+      if (settled.length > 0) {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ messages: settled, suggestions }));
+      } else {
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {
+      // Storage full or unavailable — persistence is best-effort.
+    }
+  }, [messages, suggestions, isStreaming]);
+
   const sendMessage = useCallback(
-    async (content: string) => {
+    async (content: string, retryOfId?: string) => {
       const trimmed = content.trim();
       if (!trimmed || isStreaming) return;
 
       setError(null);
       setSuggestions([]); // clear the previous turn's follow-ups
+      setFailed(null);
 
-      // History = the conversation so far (capped), before this new turn.
+      // History = the conversation so far (capped), before this new turn. On a
+      // retry the question is already the last message — keep it out of history.
       const history = messages
+        .filter((m) => m.id !== retryOfId)
         .slice(-ASK_MAX_HISTORY_MESSAGES)
         .map((m) => ({ role: m.role, content: m.content }));
 
@@ -84,12 +158,13 @@ export function useAskStream(
         conversationDepth: history.length,
       });
 
+      const userMessageId = retryOfId ?? nextId();
       const userMessage: AskMessage = {
-        id: nextId(),
+        id: userMessageId,
         role: "user",
         content: trimmed,
       };
-      const isFirstTurn = messages.length === 0;
+      const isFirstTurn = history.length === 0;
       const assistantId = nextId();
       const assistantMessage: AskMessage = {
         id: assistantId,
@@ -103,7 +178,10 @@ export function useAskStream(
             : undefined,
       };
 
-      setMessages((prev) => [...prev, userMessage, assistantMessage]);
+      // On a retry the failed question is still on screen — only add the answer.
+      setMessages((prev) =>
+        retryOfId ? [...prev, assistantMessage] : [...prev, userMessage, assistantMessage]
+      );
       setIsStreaming(true);
 
       const appendToAssistant = (text: string) => {
@@ -118,6 +196,7 @@ export function useAskStream(
       const startedAt = Date.now();
       let firstChunkAt: number | null = null;
       let fullText = "";
+      let turnFailed = false;
 
       try {
         askAnalytics.streamingStarted();
@@ -195,24 +274,42 @@ export function useAskStream(
                 /* keep generic message */
               }
               setError(msg);
+              turnFailed = true;
               askAnalytics.error({ errorType: "streaming_error", errorMessage: msg });
             }
             // "meta" and "done" require no action here.
           }
         }
 
-        askAnalytics.responseComplete({
-          responseTimeMs: Date.now() - startedAt,
-          messageLength: fullText.length,
-          citationCount: extractCitedReferences(fullText).length,
-        });
+        // Failsafe: a stream that ended cleanly but produced no text (e.g. a
+        // proxy dropped the connection before any event) is a failed turn, not
+        // a completed one — otherwise the empty bubble shimmers forever.
+        if (fullText === "" && !turnFailed) {
+          setError("Something went wrong. Please try again.");
+          turnFailed = true;
+          askAnalytics.error({ errorType: "empty_stream", errorMessage: "stream ended empty" });
+        } else if (!turnFailed) {
+          askAnalytics.responseComplete({
+            responseTimeMs: Date.now() - startedAt,
+            messageLength: fullText.length,
+            citationCount: extractCitedReferences(fullText).length,
+          });
+        }
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") {
           // User navigated away or started a new message — silent.
         } else {
           setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+          turnFailed = true;
         }
       } finally {
+        // A failed turn with no answer: drop the empty assistant bubble (it
+        // would show the thinking shimmer forever) and offer a retry of the
+        // question, which stays on screen.
+        if (turnFailed && fullText === "") {
+          setMessages((prev) => prev.filter((m) => m.id !== assistantId));
+          setFailed({ userMessageId, content: trimmed });
+        }
         setIsStreaming(false);
         abortRef.current = null;
       }
@@ -220,13 +317,27 @@ export function useAskStream(
     [messages, isStreaming, locale, disclaimers]
   );
 
+  const retry = useCallback(() => {
+    if (failed) void sendMessage(failed.content, failed.userMessageId);
+  }, [failed, sendMessage]);
+
   const reset = useCallback(() => {
     abortRef.current?.abort();
     setMessages([]);
     setError(null);
     setSuggestions([]);
+    setFailed(null);
     setIsStreaming(false);
   }, []);
 
-  return { messages, isStreaming, error, suggestions, sendMessage, reset };
+  return {
+    messages,
+    isStreaming,
+    error,
+    suggestions,
+    sendMessage,
+    canRetry: failed !== null,
+    retry,
+    reset,
+  };
 }

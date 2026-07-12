@@ -32,6 +32,13 @@ export const ASK_REASONING_EFFORT = "low" as const;
  */
 export const ASK_MAX_TOKENS = 4096;
 
+/**
+ * Ceiling on a single generation, reasoning + streaming included. Without it a
+ * hung upstream call would hold the SSE connection (and the serverless
+ * function) open indefinitely.
+ */
+export const ASK_TIMEOUT_MS = 60_000;
+
 /** Input validation limits (mirrors the removed feature's validation.ts). */
 export const ASK_MAX_MESSAGE_LENGTH = 4000;
 export const ASK_MAX_HISTORY_MESSAGES = 12;

@@ -11,7 +11,7 @@ Community-funded, open source, free for all.
 ## Features
 
 ### Discovery Tools
-- **Ask** — An LLM guide to the Ra Material, grounded entirely in our own concept graph. It explains teachings in its own words and links every claim to the authorized source at lawofone.info — it never reproduces the Ra Material verbatim.
+- **Ask** — An LLM guide to the Ra Material, grounded entirely in our own concept graph. It explains teachings in its own words and links every claim to the authorized source at llresearch.org — it never reproduces the Ra Material verbatim.
 - **Concept Explorer** — Interactive graph visualization of 100+ Law of One concepts and their relationships
 - **Guided Study Paths** — Curated learning journeys with lessons, quizzes, and reflection prompts
 - **Daily Quote** — Fresh wisdom from Ra each day on the home page
