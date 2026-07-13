@@ -7,6 +7,7 @@ import { useEmailSubscribe } from "@/hooks/useEmailSubscribe";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 export const EMAIL_SIGNUP_DISMISSED_KEY = "lo1-email-signup-dismissed";
+export const EMAIL_SIGNUP_SUBSCRIBED_KEY = "lo1-email-signup-subscribed";
 
 /**
  * Compact, dismissible weekly-quote signup card shown beneath the daily
@@ -21,16 +22,19 @@ export default function EmailSignup() {
   const honeypotRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!localStorage.getItem(EMAIL_SIGNUP_DISMISSED_KEY)) {
+    if (
+      !localStorage.getItem(EMAIL_SIGNUP_DISMISSED_KEY) &&
+      !localStorage.getItem(EMAIL_SIGNUP_SUBSCRIBED_KEY)
+    ) {
       setVisible(true);
-      if (typeof window !== "undefined" && posthog) {
-        posthog.capture("email_signup_viewed");
-      }
+      posthog.capture("email_signup_viewed");
     }
   }, []);
 
   useEffect(() => {
-    if (status === "success" && typeof window !== "undefined" && posthog) {
+    if (status === "success") {
+      // Remember the subscription so the card doesn't reappear next visit.
+      localStorage.setItem(EMAIL_SIGNUP_SUBSCRIBED_KEY, "1");
       posthog.capture("email_signup_completed", { locale });
     }
   }, [status, locale]);
@@ -109,7 +113,7 @@ export default function EmailSignup() {
         </div>
         <button
           onClick={handleDismiss}
-          className="flex-shrink-0 text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)] cursor-pointer"
+          className="flex-shrink-0 p-2 -m-2 text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)] cursor-pointer"
           aria-label={t("dismiss")}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

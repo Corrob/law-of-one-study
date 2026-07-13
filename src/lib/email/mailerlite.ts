@@ -46,7 +46,13 @@ async function mailerLiteFetch(path: string, init?: RequestInit): Promise<unknow
   });
 
   if (!response.ok) {
-    throw new MailerLiteError(`MailerLite request failed: ${path}`, response.status);
+    // Include a snippet of the response body — it only reaches server logs,
+    // and MailerLite's validation messages are the fastest way to debug.
+    const detail = await response.text().catch(() => "");
+    throw new MailerLiteError(
+      `MailerLite request failed: ${path} (${response.status}) ${detail.slice(0, 500)}`,
+      response.status
+    );
   }
   return response.json();
 }
@@ -76,17 +82,15 @@ export async function upsertSubscriber(params: {
  */
 export async function listCampaignNames(): Promise<string[]> {
   const statuses = ["sent", "ready"] as const;
-  const names: string[] = [];
+  const results = (await Promise.all(
+    statuses.map((status) =>
+      mailerLiteFetch(`/campaigns?filter[status]=${status}&limit=100`)
+    )
+  )) as Array<{ data?: Array<{ name?: string }> }>;
 
-  for (const status of statuses) {
-    const data = (await mailerLiteFetch(
-      `/campaigns?filter[status]=${status}&limit=100`
-    )) as { data?: Array<{ name?: string }> };
-    for (const campaign of data.data ?? []) {
-      if (campaign.name) names.push(campaign.name);
-    }
-  }
-  return names;
+  return results.flatMap((result) =>
+    (result.data ?? []).flatMap((campaign) => campaign.name ?? [])
+  );
 }
 
 /**

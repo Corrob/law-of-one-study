@@ -67,6 +67,9 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
   const unsubscribe = params.unsubscribeTag ?? MAILERLITE_UNSUBSCRIBE_TAG;
   const quote = escapeHtml(params.quote);
   const citation = escapeHtml(params.citation);
+  const quoteUrl = escapeHtml(params.quoteUrl);
+  const siteUrl = escapeHtml(params.siteUrl);
+  const sourceUrl = escapeHtml(params.sourceUrl);
   const serif = "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
   const sans = "Helvetica, Arial, sans-serif";
 
@@ -99,7 +102,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
                 <tr>
                   <td style="border-left:4px solid ${RA_GOLD};padding:8px 8px 8px 20px;">
                     <p style="margin:0;font-family:${serif};font-style:italic;font-size:22px;line-height:1.5;color:${BODY_TEXT};">&ldquo;${quote}&rdquo;</p>
-                    <p style="margin:16px 0 0;font-family:${sans};font-size:14px;color:${STARDUST};">&mdash; <a href="${params.quoteUrl}" style="color:${STARDUST};">${citation}</a></p>
+                    <p style="margin:16px 0 0;font-family:${sans};font-size:14px;color:${STARDUST};">&mdash; <a href="${quoteUrl}" style="color:${STARDUST};">${citation}</a></p>
                   </td>
                 </tr>
               </table>
@@ -107,8 +110,8 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
           </tr>
           <tr>
             <td style="padding:28px 32px;font-family:${sans};font-size:14px;line-height:2;">
-              <a href="${params.siteUrl}" style="color:${COSMIC_INDIGO};font-weight:bold;">${escapeHtml(m.readMoreCta)} &rarr;</a><br />
-              <a href="${params.sourceUrl}" style="color:${COSMIC_INDIGO};">${escapeHtml(m.readSourceCta)} &rarr;</a>
+              <a href="${siteUrl}" style="color:${COSMIC_INDIGO};font-weight:bold;">${escapeHtml(m.readMoreCta)} &rarr;</a><br />
+              <a href="${sourceUrl}" style="color:${COSMIC_INDIGO};">${escapeHtml(m.readSourceCta)} &rarr;</a>
             </td>
           </tr>
           <tr>
@@ -124,7 +127,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
           <tr>
             <td style="padding:20px 32px;background-color:${STARLIGHT};font-family:${sans};font-size:11px;line-height:1.7;color:${STARDUST};text-align:center;">
               ${escapeHtml(m.footerReason)}<br />
-              <a href="${unsubscribe}" style="color:${STARDUST};">${escapeHtml(m.unsubscribe)}</a><br />
+              <a href="${escapeHtml(unsubscribe)}" style="color:${STARDUST};">${escapeHtml(m.unsubscribe)}</a><br />
               {$address}
             </td>
           </tr>
@@ -160,5 +163,6 @@ export function renderQuoteEmailText(params: QuoteEmailParams): string {
     "",
     m.footerReason,
     `${m.unsubscribe}: ${unsubscribe}`,
+    "{$address}",
   ].join("\n");
 }

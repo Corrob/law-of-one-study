@@ -35,7 +35,16 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const today = new Date();
-  const existingNames = await listCampaignNames();
+  let existingNames: string[];
+  try {
+    existingNames = await listCampaignNames();
+  } catch (error) {
+    console.error("Quote email: listing campaigns failed:", error);
+    return Response.json(
+      { status: "error", message: "Failed to list existing campaigns" },
+      { status: 502 }
+    );
+  }
   const sent: AvailableLanguage[] = [];
   const skipped: AvailableLanguage[] = [];
   const failed: AvailableLanguage[] = [];
@@ -66,7 +75,9 @@ export async function GET(request: Request): Promise<Response> {
     try {
       const campaignId = await createCampaign({
         name,
-        subject: getEmailSubject(locale),
+        // Append the citation so each week's subject is unique — identical
+        // subjects make Gmail thread the emails and depress open rates.
+        subject: `${getEmailSubject(locale)} — ${quote.reference}`,
         groupId,
         html: renderQuoteEmailHtml(params),
         plainText: renderQuoteEmailText(params),

@@ -1,6 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import EmailSignup, { EMAIL_SIGNUP_DISMISSED_KEY } from "../EmailSignup";
+import EmailSignup, {
+  EMAIL_SIGNUP_DISMISSED_KEY,
+  EMAIL_SIGNUP_SUBSCRIBED_KEY,
+} from "../EmailSignup";
 import posthog from "posthog-js";
 
 // Mock next-intl
@@ -54,6 +57,13 @@ describe("EmailSignup", () => {
     expect(posthog.capture).not.toHaveBeenCalled();
   });
 
+  it("does not render when previously subscribed", () => {
+    localStorage.setItem(EMAIL_SIGNUP_SUBSCRIBED_KEY, "1");
+    const { container } = render(<EmailSignup />);
+    expect(container).toBeEmptyDOMElement();
+    expect(posthog.capture).not.toHaveBeenCalled();
+  });
+
   it("dismisses and remembers the choice in localStorage", async () => {
     const user = userEvent.setup();
     const { container } = render(<EmailSignup />);
@@ -88,6 +98,7 @@ describe("EmailSignup", () => {
     expect(posthog.capture).toHaveBeenCalledWith("email_signup_completed", {
       locale: "en",
     });
+    expect(localStorage.getItem(EMAIL_SIGNUP_SUBSCRIBED_KEY)).toBe("1");
   });
 
   it("shows an error message when the API rejects", async () => {

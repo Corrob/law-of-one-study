@@ -31,4 +31,16 @@ describe("checkRateLimit", () => {
     }
     expect(checkRateLimit("1.2.3.4", 1000 + 61_000)).toBe(true);
   });
+
+  it("sweeps expired keys so the log does not grow unbounded", () => {
+    for (let i = 0; i < 1_000; i++) {
+      checkRateLimit(`ip-${i}`, 1000);
+    }
+    // Well past the window: the sweep runs and drops all 1,000 stale keys,
+    // so a repeat visitor is treated as fresh rather than accumulating.
+    expect(checkRateLimit("ip-0", 1000 + 61_000)).toBe(true);
+    for (let i = 0; i < 4; i++) {
+      expect(checkRateLimit("ip-0", 1001 + 61_000 + i)).toBe(true);
+    }
+  });
 });

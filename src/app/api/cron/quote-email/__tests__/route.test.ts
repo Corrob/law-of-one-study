@@ -9,7 +9,7 @@ import {
   listCampaignNames,
   scheduleCampaign,
 } from "@/lib/email/mailerlite";
-import { getDayOfYear } from "@/lib/daily-quote";
+import { getDayOfYear, getQuoteForDay } from "@/lib/daily-quote";
 
 jest.mock("@/lib/email/mailerlite", () => ({
   getGroupIdForLocale: jest.fn(),
@@ -78,7 +78,19 @@ describe("GET /api/cron/quote-email", () => {
     );
     expect(call.html).toContain("L/L Research");
     expect(call.plainText).toContain("L/L Research");
+    expect(call.subject).toContain(getQuoteForDay(new Date(), "en").reference);
     expect(scheduleCampaignMock).toHaveBeenCalledWith("42");
+  });
+
+  it("returns 502 when listing existing campaigns fails", async () => {
+    listCampaignNamesMock.mockRejectedValue(new Error("api down"));
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+
+    const response = await GET(makeRequest("Bearer cron-secret"));
+
+    expect(response.status).toBe(502);
+    expect(createCampaignMock).not.toHaveBeenCalled();
+    consoleSpy.mockRestore();
   });
 
   it("skips locales whose campaign for today already exists", async () => {
