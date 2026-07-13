@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { AskIcon } from "@/components/icons";
 import { askAnalytics } from "@/lib/ask/analytics";
@@ -8,6 +8,11 @@ import { pickRandomStarters } from "@/lib/ask/starters";
 
 interface AskWelcomeProps {
   onPickStarter: (prompt: string) => void;
+  /**
+   * The composer, rendered centered under the greeting (old Seek placement).
+   * It animates down to the footer when the conversation starts.
+   */
+  composer?: ReactNode;
 }
 
 // Rotating greeting keys (map to ask.greetings.* translations).
@@ -18,7 +23,7 @@ const GREETING_KEYS = ["seeker", "loveLight", "journey", "serve", "wanderer"] as
  * random handful of starter questions. (The discernment note now appears with
  * the first response, not here.)
  */
-export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
+export default function AskWelcome({ onPickStarter, composer }: AskWelcomeProps) {
   const t = useTranslations("ask");
 
   // Chosen on mount (client-side) so the random picks don't cause a
@@ -58,6 +63,14 @@ export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
         {t("welcomeBody")}
       </p>
 
+      {/* Centered composer with ambient glow (old Seek placement) */}
+      {composer && (
+        <div className="relative w-full max-w-xl mb-6 animate-input-enter text-left">
+          <div className="welcome-input-glow" />
+          {composer}
+        </div>
+      )}
+
       <div className="grid gap-2 w-full max-w-md">
         {starters.map((starter, index) => (
           <button
@@ -65,10 +78,10 @@ export default function AskWelcome({ onPickStarter }: AskWelcomeProps) {
             type="button"
             data-testid="ask-starter"
             onClick={() => handlePick(starter, index)}
-            className="text-left text-sm px-4 py-3 rounded-xl border border-[var(--lo1-gold)]/20
+            className={`animate-starter-${Math.min(index, 2)} text-left text-sm px-4 py-3 rounded-xl border border-[var(--lo1-gold)]/20
                        bg-[var(--lo1-indigo)]/40 text-[var(--lo1-text-light)]
                        hover:bg-[var(--lo1-gold)]/10 hover:border-[var(--lo1-gold)]/40
-                       transition-colors cursor-pointer"
+                       transition-colors cursor-pointer`}
           >
             {starter}
           </button>

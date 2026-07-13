@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useMemo, useState } from "react";
+import { motion, AnimatePresence, LayoutGroup, useReducedMotion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -141,6 +142,19 @@ export default function AskContent() {
 
   const hasMessages = messages.length > 0;
 
+  // The composer starts centered on the welcome screen and animates down to
+  // the footer when the conversation begins (old Seek shared-element pattern:
+  // one element, two slots, `layoutId` animates between them).
+  const reduceMotion = useReducedMotion();
+  const composerElement = (
+    <motion.div
+      layoutId="ask-composer"
+      transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
+    >
+      <AskComposer onSend={handleSend} disabled={isStreaming} />
+    </motion.div>
+  );
+
   // Announce the completed answer to screen readers (streamed text is never
   // announced token-by-token — only the finished whole, citation markers
   // stripped so URLs aren't read aloud).
@@ -161,6 +175,7 @@ export default function AskContent() {
         disableExportChat={isStreaming}
       >
         <ErrorBoundary>
+          <LayoutGroup>
           <div className="flex-1 flex flex-col overflow-hidden relative z-10">
             {/* Message area (relative wrapper anchors the jump-to-latest button) */}
             <div className="relative flex-1 flex flex-col overflow-hidden">
@@ -169,9 +184,24 @@ export default function AskContent() {
               onScroll={updateScrollDown}
               className="chat-scroll flex-1 overflow-y-auto px-4 py-4"
             >
-              <div className="max-w-2xl mx-auto space-y-4">
-                {!hasMessages && <AskWelcome onPickStarter={handleSend} />}
-
+              <AnimatePresence mode="wait">
+              {!hasMessages ? (
+                <motion.div
+                  key="welcome"
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: reduceMotion ? 0 : 0.25 }}
+                  className="min-h-full max-w-2xl mx-auto flex flex-col justify-center"
+                >
+                  <AskWelcome onPickStarter={handleSend} composer={composerElement} />
+                </motion.div>
+              ) : (
+              <motion.div
+                key="chat"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: reduceMotion ? 0 : 0.3, delay: reduceMotion ? 0 : 0.1 }}
+                className="max-w-2xl mx-auto space-y-4"
+              >
                 {messages.map((message) =>
                   message.role === "user" ? (
                     <div key={message.id} data-role="user" className="flex justify-end scroll-mt-2">
@@ -245,11 +275,13 @@ export default function AskContent() {
 
                 {/* Dynamic spacer so the latest question can pin to the top. */}
                 <div ref={spacerRef} aria-hidden className="shrink-0" />
+              </motion.div>
+              )}
+              </AnimatePresence>
 
-                {/* Screen-reader announcement of the finished answer. */}
-                <div aria-live="polite" className="sr-only">
-                  {announcedAnswer}
-                </div>
+              {/* Screen-reader announcement of the finished answer. */}
+              <div aria-live="polite" className="sr-only">
+                {announcedAnswer}
               </div>
             </div>
 
@@ -270,13 +302,15 @@ export default function AskContent() {
               )}
             </div>
 
-            {/* Composer */}
-            <div className="px-4 pb-4 pt-2 border-t border-[var(--lo1-gold)]/10 bg-[var(--lo1-void)]/40 backdrop-blur-sm">
-              <div className="max-w-2xl mx-auto">
-                <AskComposer onSend={handleSend} disabled={isStreaming} />
+            {/* Composer footer — only once a conversation exists; the shared
+                layoutId flies the composer down from the welcome screen. */}
+            {hasMessages && (
+              <div className="px-4 pb-4 pt-2 border-t border-[var(--lo1-gold)]/10 bg-[var(--lo1-void)]/40 backdrop-blur-sm">
+                <div className="max-w-2xl mx-auto">{composerElement}</div>
               </div>
-            </div>
+            )}
           </div>
+          </LayoutGroup>
         </ErrorBoundary>
       </NavigationWrapper>
 
