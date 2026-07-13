@@ -27,11 +27,13 @@ const TYPE_ICON_PATHS: Record<ResourceType, string> = {
 };
 
 /**
- * "Explore further" — a quiet footer inside a finished answer card:
- * deterministic pointers to the site's own meditations, songs, study paths,
- * and concepts related to the question. Deliberately understated (hairline
- * divider, muted text links) so the answer and the follow-up suggestion chips
- * stay the visual focus. Deduped against inline {{LINK}} recommendations.
+ * "Explore further" — a footer inside a finished answer card: deterministic
+ * pointers to the site's own meditations, songs, study paths, and concepts
+ * related to the question, as compact boxed cards (icon, type caption, title).
+ * Muted relative to the follow-up suggestion chips, which remain the primary
+ * next step. On small screens the cards stack full-width for easy tapping; on
+ * larger screens they sit side by side. Deduped against inline {{LINK}}
+ * recommendations.
  */
 export default function AskRelatedResources({ items, excludeInline }: AskRelatedResourcesProps) {
   const t = useTranslations("ask");
@@ -42,18 +44,17 @@ export default function AskRelatedResources({ items, excludeInline }: AskRelated
   return (
     <div
       data-testid="ask-related"
-      className="mt-3 border-t border-[var(--lo1-gold)]/10 pt-2.5"
+      className="mt-3 border-t border-[var(--lo1-gold)]/10 pt-3"
     >
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1.5">
-        <span className="text-[11px] uppercase tracking-wider text-[var(--lo1-stardust)]/50">
-          {t("related.title")}
-        </span>
+      <p className="mb-2 text-[11px] uppercase tracking-wider text-[var(--lo1-stardust)]/50">
+        {t("related.title")}
+      </p>
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
         {cards.map((resource, index) => (
           <Link
             key={`${resource.type}:${resource.id}`}
             href={resource.href}
             data-testid="ask-related-card"
-            title={t(`related.types.${resource.type}`)}
             onClick={() =>
               askAnalytics.relatedResourceClicked({
                 type: resource.type,
@@ -61,12 +62,14 @@ export default function AskRelatedResources({ items, excludeInline }: AskRelated
                 index,
               })
             }
-            className="group inline-flex items-center gap-1.5 text-sm text-[var(--lo1-stardust)]/70
-                       hover:text-[var(--lo1-gold)] transition-colors cursor-pointer"
+            className="group flex min-w-0 items-center gap-2.5 rounded-lg border border-[var(--lo1-gold)]/15
+                       bg-[var(--lo1-void)]/30 px-3 py-2 sm:max-w-[16rem]
+                       hover:bg-[var(--lo1-gold)]/10 hover:border-[var(--lo1-gold)]/40
+                       transition-colors cursor-pointer"
           >
             <svg
               aria-hidden
-              className="h-3.5 w-3.5 shrink-0 opacity-60 group-hover:opacity-100"
+              className="h-4.5 w-4.5 shrink-0 text-[var(--lo1-gold)]/60 group-hover:text-[var(--lo1-gold)]"
               fill="none"
               stroke="currentColor"
               strokeWidth={1.5}
@@ -76,8 +79,13 @@ export default function AskRelatedResources({ items, excludeInline }: AskRelated
             >
               <path d={TYPE_ICON_PATHS[resource.type]} />
             </svg>
-            <span className="underline decoration-dotted decoration-[var(--lo1-stardust)]/30 underline-offset-2 group-hover:decoration-[var(--lo1-gold)]/60">
-              {resource.title}
+            <span className="flex min-w-0 flex-col text-left">
+              <span className="text-[10px] uppercase tracking-wide text-[var(--lo1-stardust)]/50">
+                {t(`related.types.${resource.type}`)}
+              </span>
+              <span className="truncate text-sm text-[var(--lo1-stardust)]/85 group-hover:text-[var(--lo1-starlight)]">
+                {resource.title}
+              </span>
             </span>
           </Link>
         ))}
