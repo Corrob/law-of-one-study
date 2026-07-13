@@ -27,6 +27,12 @@ interface ConceptGraphProps {
   onExpandCluster: (category: ConceptCategory) => void;
   onExpandSubcluster: (subcategory: ArchetypeSubcategory) => void;
   selectedConceptId?: string;
+  /**
+   * Node to center in the viewport once it exists and the simulation settles
+   * (deep links, e.g. /explore?concept=harvest from an Ask recommendation).
+   * Consumed once per id — later expansions pan to the centroid as usual.
+   */
+  focusNodeId?: string;
   expandedCategories: Set<ConceptCategory>;
   /** Translated title for the category legend */
   categoriesTitle?: string;
@@ -44,6 +50,7 @@ export default function ConceptGraph({
   onExpandSubcluster,
   onReady,
   selectedConceptId,
+  focusNodeId,
   expandedCategories,
   categoriesTitle = "Categories",
   getCategoryLabel,
@@ -139,42 +146,57 @@ export default function ConceptGraph({
     };
   }, [isMobile, dimensions.width, dimensions.height]);
 
-  // Auto-pan to center on nodes after cluster expansion
+  // A focus request is honored once per id; afterwards expansions pan normally.
+  const consumedFocusRef = useRef<string | null>(null);
+
+  // Auto-pan after cluster expansion: center the focus node when one is
+  // pending (deep link), otherwise the centroid of all visible nodes.
   useEffect(() => {
     const wasExpanded = nodes.length > prevNodeCountRef.current;
     prevNodeCountRef.current = nodes.length;
 
-    if (!wasExpanded || !svgRef.current || !zoomRef.current) return;
+    const pendingFocus =
+      focusNodeId && consumedFocusRef.current !== focusNodeId ? focusNodeId : null;
+
+    if ((!wasExpanded && !pendingFocus) || !svgRef.current || !zoomRef.current) return;
 
     // Wait for force simulation to settle before panning
     const timeoutId = setTimeout(() => {
       const positions = positionsRef.current;
       if (positions.size === 0) return;
 
-      // Calculate centroid of all visible nodes
-      let sumX = 0, sumY = 0, count = 0;
-      positions.forEach(({ x, y }) => {
-        sumX += x;
-        sumY += y;
-        count++;
-      });
+      // Center target: the pending focus node if it's visible, else the
+      // centroid of all visible nodes.
+      let centerX: number;
+      let centerY: number;
+      let scale = zoomTransform(svgRef.current!).k;
 
-      if (count === 0) return;
+      const focusPos = pendingFocus ? positions.get(pendingFocus) : undefined;
+      if (focusPos) {
+        consumedFocusRef.current = pendingFocus;
+        centerX = focusPos.x;
+        centerY = focusPos.y;
+        // Make the single node discoverable even from the zoomed-out start.
+        scale = Math.max(scale, 1);
+      } else {
+        let sumX = 0, sumY = 0, count = 0;
+        positions.forEach(({ x, y }) => {
+          sumX += x;
+          sumY += y;
+          count++;
+        });
+        if (count === 0) return;
+        centerX = sumX / count;
+        centerY = sumY / count;
+      }
 
-      const centroidX = sumX / count;
-      const centroidY = sumY / count;
-
-      // Get current transform and calculate new pan position
       const svg = select(svgRef.current);
-      const currentTransform = zoomTransform(svgRef.current!);
-      const currentScale = currentTransform.k;
-
-      const newX = dimensions.width / 2 - centroidX * currentScale;
-      const newY = dimensions.height / 2 - centroidY * currentScale;
+      const newX = dimensions.width / 2 - centerX * scale;
+      const newY = dimensions.height / 2 - centerY * scale;
 
       const newTransform = zoomIdentity
         .translate(newX, newY)
-        .scale(currentScale);
+        .scale(scale);
 
       // Animate to new transform
       if (svgRef.current && zoomRef.current) {
@@ -188,7 +210,7 @@ export default function ConceptGraph({
 
     return () => clearTimeout(timeoutId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodes.length]);
+  }, [nodes.length, focusNodeId]);
 
   // Handle node click
   const handleNodeClick = useCallback(

@@ -197,6 +197,7 @@ export interface UseConceptGraphReturn {
   expandCluster: (category: ConceptCategory) => void;
   collapseCluster: (category: ConceptCategory) => void;
   toggleCluster: (category: ConceptCategory) => void;
+  expandSubcluster: (subcategory: ArchetypeSubcategory) => void;
   toggleSubcluster: (subcategory: ArchetypeSubcategory) => void;
   isExpanded: (category: ConceptCategory) => boolean;
   isSubcategoryExpanded: (subcategory: ArchetypeSubcategory) => boolean;
@@ -336,6 +337,14 @@ export function useConceptGraph({
     [expandedCategories]
   );
 
+  const expandSubcluster = useCallback((subcategory: ArchetypeSubcategory) => {
+    setExpandedSubcategories((prev) => {
+      const next = new Set(prev);
+      next.add(subcategory);
+      return next;
+    });
+  }, []);
+
   const toggleSubcluster = useCallback((subcategory: ArchetypeSubcategory) => {
     setExpandedSubcategories((prev) => {
       const next = new Set(prev);
@@ -361,6 +370,7 @@ export function useConceptGraph({
     expandCluster,
     collapseCluster,
     toggleCluster,
+    expandSubcluster,
     toggleSubcluster,
     isExpanded,
     isSubcategoryExpanded,
