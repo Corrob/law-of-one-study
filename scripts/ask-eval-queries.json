@@ -93,6 +93,7 @@
       "category": "practical",
       "query": "How do I meditate according to Ra?",
       "expectCitations": true,
+      "expectedRefsAnyOf": ["17.40", "49.8", "18.5"],
       "expectConceptsAnyOf": ["meditation"],
       "testCriteria": ["Actionable steps", "Specific guidance", "Not just abstract philosophy"]
     },

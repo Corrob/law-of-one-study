@@ -8763,6 +8763,7 @@
           6,
           14,
           15,
+          17,
           41,
           42,
           57,
@@ -8783,6 +8784,36 @@
             "es": "El propósito de la meditación y la contemplación",
             "de": "Der Zweck von Meditation und Kontemplation",
             "fr": "Le but de la méditation et de la contemplation"
+          }
+        },
+        {
+          "reference": "17.40",
+          "excerpt": {
+            "en": "Asked whether there is a best way to meditate, Ra's whole answer is a single word: no. There is no one correct technique — no method is ranked above another, and the way that suits the individual seeker is the right way.",
+            "es": "Cuando se le pregunta si existe una mejor manera de meditar, la respuesta completa de Ra es una sola palabra: no. No hay una técnica correcta única — ningún método está por encima de otro, y la manera que le sirve al buscador individual es la correcta.",
+            "de": "Auf die Frage, ob es eine beste Art zu meditieren gibt, besteht Ras gesamte Antwort aus einem einzigen Wort: nein. Es gibt keine einzig richtige Technik — keine Methode steht über einer anderen, und der Weg, der der einzelnen suchenden Person dient, ist der richtige.",
+            "fr": "Interrogé sur l'existence d'une meilleure façon de méditer, Ra répond en un seul mot : non. Il n'existe pas de technique unique et correcte — aucune méthode ne surpasse une autre, et la manière qui convient au chercheur individuel est la bonne."
+          },
+          "context": {
+            "en": "Whether a best way to meditate exists",
+            "es": "Si existe una mejor manera de meditar",
+            "de": "Ob es eine beste Art zu meditieren gibt",
+            "fr": "S'il existe une meilleure façon de méditer"
+          }
+        },
+        {
+          "reference": "49.8",
+          "excerpt": {
+            "en": "Ra compares approaches to meditation: passive meditation — letting mental activity fall silent so the inner stillness can open toward contact with the Creator — is by far the most generally useful kind for spiritual evolution. Meditation with visualization builds the faculty of concentration and is the tool of the adept, the path of the so-called white magician, for those who seek to raise consciousness without outer action. Contemplation of an inspiring image or text, and prayer, also serve, each according to the seeker's aim.",
+            "es": "Ra compara los enfoques de la meditación: la meditación pasiva — dejar que la actividad mental se aquiete para que el silencio interior se abra al contacto con el Creador — es, con mucho, la más útil en general para la evolución espiritual. La meditación con visualización desarrolla la facultad de concentración y es la herramienta del adepto, el camino del llamado mago blanco, para quienes buscan elevar la consciencia sin acción externa. La contemplación de una imagen o un texto inspirador, y la oración, también sirven, cada una según el propósito del buscador.",
+            "de": "Ra vergleicht Herangehensweisen an Meditation: passive Meditation — die geistige Aktivität zur Ruhe kommen zu lassen, damit die innere Stille sich dem Kontakt mit dem Schöpfer öffnen kann — ist bei weitem die allgemein nützlichste Art für die spirituelle Entwicklung. Meditation mit Visualisierung schult die Konzentrationsfähigkeit und ist das Werkzeug des Eingeweihten, der Pfad des sogenannten weißen Magiers, für jene, die das Bewusstsein ohne äußeres Handeln erheben wollen. Auch die Kontemplation eines inspirierenden Bildes oder Textes sowie das Gebet dienen, je nach Ziel der suchenden Person.",
+            "fr": "Ra compare les approches de la méditation : la méditation passive — laisser l'activité mentale s'apaiser pour que le silence intérieur s'ouvre au contact avec le Créateur — est de loin la plus généralement utile pour l'évolution spirituelle. La méditation avec visualisation développe la faculté de concentration et constitue l'outil de l'adepte, la voie du mage dit blanc, pour ceux qui cherchent à élever la conscience sans action extérieure. La contemplation d'une image ou d'un texte inspirant, ainsi que la prière, servent également, chacune selon le but du chercheur."
+          },
+          "context": {
+            "en": "Passive meditation compared with visualization, contemplation, and prayer",
+            "es": "La meditación pasiva comparada con la visualización, la contemplación y la oración",
+            "de": "Passive Meditation im Vergleich zu Visualisierung, Kontemplation und Gebet",
+            "fr": "La méditation passive comparée à la visualisation, à la contemplation et à la prière"
           }
         }
       ],
