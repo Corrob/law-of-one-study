@@ -197,6 +197,16 @@ export default function AskContent() {
                                 })}
                               />
                             )}
+                            {/* "Explore further" — quiet footer inside the latest
+                                settled answer, deduped against inline links. */}
+                            {!isStreaming &&
+                              message.id === messages.at(-1)?.id &&
+                              related.length > 0 && (
+                                <AskRelatedResources
+                                  items={related}
+                                  excludeInline={extractResourceLinks(message.content)}
+                                />
+                              )}
                           </>
                         ) : (
                           <AskThinking />
@@ -210,17 +220,6 @@ export default function AskContent() {
                 {!isStreaming && (
                   <AskSuggestions suggestions={suggestions} onPick={handleSend} />
                 )}
-
-                {/* "Explore further" cards — only under a settled latest answer,
-                    deduped against resources the answer already linked inline. */}
-                {!isStreaming &&
-                  related.length > 0 &&
-                  lastMessage?.role === "assistant" && (
-                    <AskRelatedResources
-                      items={related}
-                      excludeInline={extractResourceLinks(lastMessage.content)}
-                    />
-                  )}
 
                 {error && (
                   <div
