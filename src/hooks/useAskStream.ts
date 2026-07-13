@@ -5,7 +5,6 @@ import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 import { ASK_MAX_HISTORY_MESSAGES } from "@/lib/ask/config";
 import { askAnalytics, getDistinctId } from "@/lib/ask/analytics";
 import { extractCitedReferences } from "@/lib/ask/citations";
-import { type RelatedResource } from "@/lib/ask/resources";
 import {
   type AskMessage,
   STORAGE_KEY,
@@ -22,8 +21,6 @@ interface UseAskStreamReturn {
   error: string | null;
   /** Follow-up questions for the latest answer (cleared on each new send). */
   suggestions: string[];
-  /** "Explore further" cards for the latest answer (cleared on each new send). */
-  related: RelatedResource[];
   sendMessage: (content: string) => Promise<void>;
   /** True when the last question failed with no answer and can be re-sent. */
   canRetry: boolean;
@@ -45,7 +42,6 @@ export function useAskStream(
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [related, setRelated] = useState<RelatedResource[]>([]);
   /** The question of a failed turn, kept so the user can retry without retyping. */
   const [failed, setFailed] = useState<{ userMessageId: string; content: string } | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -60,7 +56,6 @@ export function useAskStream(
     if (stored) {
       setMessages(stored.messages);
       setSuggestions(stored.suggestions);
-      setRelated(stored.related);
     }
     // Restore once on mount; a locale change mid-session remounts the page.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -79,7 +74,7 @@ export function useAskStream(
       if (settled.length > 0) {
         sessionStorage.setItem(
           STORAGE_KEY,
-          JSON.stringify({ messages: settled, suggestions, related })
+          JSON.stringify({ messages: settled, suggestions })
         );
       } else {
         sessionStorage.removeItem(STORAGE_KEY);
@@ -87,7 +82,7 @@ export function useAskStream(
     } catch {
       // Storage full or unavailable — persistence is best-effort.
     }
-  }, [messages, suggestions, related, isStreaming]);
+  }, [messages, suggestions, isStreaming]);
 
   const sendMessage = useCallback(
     async (content: string, retryOfId?: string) => {
@@ -96,7 +91,6 @@ export function useAskStream(
 
       setError(null);
       setSuggestions([]); // clear the previous turn's follow-ups
-      setRelated([]);
       setFailed(null);
 
       // History = the conversation so far (capped), before this new turn. On a
@@ -208,7 +202,11 @@ export function useAskStream(
                 askAnalytics.suggestionsDisplayed({ count: items.length });
               },
               onRelated: (items) => {
-                setRelated(items);
+                // Cards belong to their answer — they stay with the message
+                // across later questions and survive a refresh with it.
+                setMessages((prev) =>
+                  prev.map((m) => (m.id === assistantId ? { ...m, related: items } : m))
+                );
                 askAnalytics.relatedResourcesDisplayed({
                   count: items.length,
                   resources: items.map((r) => `${r.type}:${r.id}`),
@@ -268,7 +266,6 @@ export function useAskStream(
     setMessages([]);
     setError(null);
     setSuggestions([]);
-    setRelated([]);
     setFailed(null);
     setIsStreaming(false);
   }, []);
@@ -278,7 +275,6 @@ export function useAskStream(
     isStreaming,
     error,
     suggestions,
-    related,
     sendMessage,
     canRetry: failed !== null,
     retry,

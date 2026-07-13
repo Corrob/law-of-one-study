@@ -11,6 +11,7 @@ import { test, expect } from "@playwright/test";
 
 const SSE_RESPONSE = [
   'event: meta\ndata: {"concepts":["harvest"]}\n\n',
+  'event: related\ndata: {"items":[{"type":"path","id":"densities"}]}\n\n',
   'event: chunk\ndata: {"text":"The harvest is a transition between densities "}\n\n',
   'event: chunk\ndata: {"text":"based on polarity {{CITE:6.14}}."}\n\n',
   'event: suggestions\ndata: {"items":["Tell me about polarity","What are the densities?","How does one meditate?"]}\n\n',
@@ -67,10 +68,22 @@ test.describe("Ask", () => {
     // A completed answer offers copy-to-clipboard.
     await expect(page.getByTestId("ask-copy")).toBeVisible();
 
-    // The conversation survives a refresh (sessionStorage persistence).
+    // "Explore further" cards render with the answer.
+    await expect(page.getByTestId("ask-related-card").first()).toBeVisible();
+
+    // The cards stay with their answer when a follow-up is asked.
+    const input2 = page.getByRole("textbox", { name: "Your question" });
+    await input2.fill("And what about polarity?");
+    await input2.press("Enter");
+    await expect(page.getByText(/The harvest is a transition between densities/).nth(1)).toBeVisible();
+    expect(await page.getByTestId("ask-related").count()).toBe(2);
+
+    // The conversation survives a refresh (sessionStorage persistence),
+    // including each answer's cards.
     await page.reload();
     await expect(page.getByText("What is the harvest?")).toBeVisible();
     await expect(page.getByText(/The harvest is a transition between densities/).first()).toBeVisible();
+    expect(await page.getByTestId("ask-related").count()).toBe(2);
 
     // Export downloads the conversation as Markdown with citation links.
     const downloadPromise = page.waitForEvent("download");

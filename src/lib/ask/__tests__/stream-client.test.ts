@@ -107,29 +107,55 @@ describe("stream-client", () => {
     afterEach(() => sessionStorage.clear());
 
     const message = { id: "1", role: "user", content: "What is harvest?" };
+    const answer = { id: "2", role: "assistant", content: "A transition." };
 
-    it("restores messages, suggestions, and related", () => {
+    it("restores per-message related cards, re-resolved and with junk dropped", () => {
       sessionStorage.setItem(
         STORAGE_KEY,
         JSON.stringify({
-          messages: [message],
+          messages: [
+            message,
+            {
+              ...answer,
+              related: [
+                { type: "path", id: "densities", title: "tampered" },
+                { type: "path", id: "fake" },
+              ],
+            },
+          ],
           suggestions: ["Tell me more"],
+        })
+      );
+      const stored = readStoredConversation("en");
+      expect(stored?.messages).toHaveLength(2);
+      expect(stored?.suggestions).toEqual(["Tell me more"]);
+      const related = stored?.messages[1].related;
+      expect(related).toHaveLength(1);
+      expect(related?.[0]).toMatchObject({ type: "path", id: "densities" });
+      expect(related?.[0].title).not.toBe("tampered");
+    });
+
+    it("migrates legacy conversation-level related onto the last answer", () => {
+      sessionStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({
+          messages: [message, answer],
+          suggestions: [],
           related: [{ type: "path", id: "densities" }],
         })
       );
       const stored = readStoredConversation("en");
-      expect(stored?.messages).toHaveLength(1);
-      expect(stored?.suggestions).toEqual(["Tell me more"]);
-      expect(stored?.related).toHaveLength(1);
-      expect(stored?.related[0]).toMatchObject({ type: "path", id: "densities" });
+      expect(stored?.messages[0].related).toBeUndefined();
+      expect(stored?.messages[1].related?.[0]).toMatchObject({ type: "path", id: "densities" });
     });
 
-    it("defaults related to [] for conversations saved before the field existed", () => {
+    it("leaves related undefined for messages saved without cards", () => {
       sessionStorage.setItem(
         STORAGE_KEY,
-        JSON.stringify({ messages: [message], suggestions: [] })
+        JSON.stringify({ messages: [message, answer], suggestions: [] })
       );
-      expect(readStoredConversation("en")?.related).toEqual([]);
+      const stored = readStoredConversation("en");
+      expect(stored?.messages[1].related).toBeUndefined();
     });
 
     it("returns null for empty or corrupt storage", () => {

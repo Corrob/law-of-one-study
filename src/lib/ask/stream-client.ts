@@ -17,6 +17,8 @@ export interface AskMessage {
   content: string;
   /** For assistant turns: a discernment note shown as the opening paragraph. */
   disclaimer?: string;
+  /** For assistant turns: "Explore further" cards, kept with their answer. */
+  related?: RelatedResource[];
 }
 
 /** Conversations survive a refresh (same tab only) but not a new visit. */
@@ -25,8 +27,6 @@ export const STORAGE_KEY = "lo1-ask-conversation";
 export interface StoredConversation {
   messages: AskMessage[];
   suggestions: string[];
-  /** "Explore further" cards for the latest answer. Absent in old saves. */
-  related: RelatedResource[];
 }
 
 /**
@@ -44,6 +44,14 @@ export function parseRelatedItem(
   return getRelatedResource(type, id, locale) ?? null;
 }
 
+/** Re-resolve a stored `related` array against the current build and locale. */
+function parseRelatedList(items: unknown, locale: AvailableLanguage): RelatedResource[] {
+  if (!Array.isArray(items)) return [];
+  return items
+    .map((item) => parseRelatedItem(item, locale))
+    .filter((r): r is RelatedResource => r !== null);
+}
+
 /** Restore a saved conversation, dropping anything that doesn't look right. */
 export function readStoredConversation(
   locale: AvailableLanguage = DEFAULT_LOCALE
@@ -51,29 +59,36 @@ export function readStoredConversation(
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Partial<StoredConversation>;
+    // `related` at the top level only appears in legacy saves (it was
+    // conversation-level before the cards moved onto each answer).
+    const parsed = JSON.parse(raw) as Partial<StoredConversation> & { related?: unknown };
     const messages = Array.isArray(parsed.messages)
-      ? parsed.messages.filter(
-          (m): m is AskMessage =>
-            typeof m === "object" &&
-            m !== null &&
-            typeof m.id === "string" &&
-            (m.role === "user" || m.role === "assistant") &&
-            typeof m.content === "string" &&
-            m.content.length > 0
-        )
+      ? parsed.messages
+          .filter(
+            (m): m is AskMessage =>
+              typeof m === "object" &&
+              m !== null &&
+              typeof m.id === "string" &&
+              (m.role === "user" || m.role === "assistant") &&
+              typeof m.content === "string" &&
+              m.content.length > 0
+          )
+          .map((m): AskMessage => {
+            const related = parseRelatedList(m.related, locale);
+            return related.length > 0 ? { ...m, related } : { ...m, related: undefined };
+          })
       : [];
     if (messages.length === 0) return null;
     const suggestions = Array.isArray(parsed.suggestions)
       ? parsed.suggestions.filter((s): s is string => typeof s === "string")
       : [];
-    // `related` is absent in conversations saved before this field existed.
-    const related = Array.isArray(parsed.related)
-      ? parsed.related
-          .map((item) => parseRelatedItem(item, locale))
-          .filter((r): r is RelatedResource => r !== null)
-      : [];
-    return { messages, suggestions, related };
+    // Legacy migration: attach conversation-level cards to the last answer.
+    const legacyRelated = parseRelatedList(parsed.related, locale);
+    const last = messages.at(-1);
+    if (legacyRelated.length > 0 && last?.role === "assistant" && !last.related) {
+      last.related = legacyRelated;
+    }
+    return { messages, suggestions };
   } catch {
     return null;
   }

@@ -35,7 +35,7 @@ export default function AskContent() {
     const raw = t.raw("disclaimers");
     return Array.isArray(raw) ? (raw as string[]) : [];
   }, [t]);
-  const { messages, isStreaming, error, suggestions, related, sendMessage, canRetry, retry, reset } =
+  const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
     useAskStream(locale, disclaimers);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -100,7 +100,7 @@ export default function AskContent() {
       else measureSpacer();
       updateScrollDown();
     });
-  }, [messages, suggestions, related, pinLastQuestion, measureSpacer, updateScrollDown]);
+  }, [messages, suggestions, pinLastQuestion, measureSpacer, updateScrollDown]);
 
   // Recompute the spacer on viewport resize.
   useEffect(() => {
@@ -197,13 +197,15 @@ export default function AskContent() {
                                 })}
                               />
                             )}
-                            {/* "Explore further" — quiet footer inside the latest
-                                settled answer, deduped against inline links. */}
-                            {!isStreaming &&
-                              message.id === messages.at(-1)?.id &&
-                              related.length > 0 && (
+                            {/* "Explore further" — quiet footer inside each
+                                settled answer, deduped against inline links.
+                                Cards stay with their answer across later
+                                questions and page refreshes. */}
+                            {message.related &&
+                              message.related.length > 0 &&
+                              !(isStreaming && message.id === messages.at(-1)?.id) && (
                                 <AskRelatedResources
-                                  items={related}
+                                  items={message.related}
                                   excludeInline={extractResourceLinks(message.content)}
                                 />
                               )}
