@@ -58,7 +58,8 @@
     "success": "You are subscribed 🙏 Check your inbox to confirm.",
     "error": "Something went wrong. Please try again.",
     "privacyNote": "We store only your email and language, and use MailerLite to send. Unsubscribe anytime.",
-    "dismiss": "Dismiss email signup"
+    "dismiss": "Dismiss email signup",
+    "footerLink": "Weekly email"
   },
   "features": {
     "explore": {

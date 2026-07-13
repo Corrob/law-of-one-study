@@ -74,6 +74,22 @@ describe("EmailSignup", () => {
     expect(localStorage.getItem(EMAIL_SIGNUP_DISMISSED_KEY)).toBe("1");
   });
 
+  it("reopens after dismissal when the reopen signal increments", async () => {
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    const user = userEvent.setup();
+    const { rerender } = render(<EmailSignup reopenSignal={0} />);
+
+    await user.click(screen.getByRole("button", { name: "Dismiss email signup" }));
+    expect(screen.queryByLabelText("Email address")).not.toBeInTheDocument();
+
+    rerender(<EmailSignup reopenSignal={1} />);
+
+    expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+    // The dismissal is cleared so the card stays visible on future visits
+    expect(localStorage.getItem(EMAIL_SIGNUP_DISMISSED_KEY)).toBeNull();
+    expect(window.HTMLElement.prototype.scrollIntoView).toHaveBeenCalled();
+  });
+
   it("submits the email and shows the success state", async () => {
     mockFetchOnce({ status: "ok" });
     const user = userEvent.setup();

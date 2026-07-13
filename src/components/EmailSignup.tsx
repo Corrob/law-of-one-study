@@ -9,17 +9,26 @@ import { type AvailableLanguage } from "@/lib/language-config";
 export const EMAIL_SIGNUP_DISMISSED_KEY = "lo1-email-signup-dismissed";
 export const EMAIL_SIGNUP_SUBSCRIBED_KEY = "lo1-email-signup-subscribed";
 
+interface EmailSignupProps {
+  /**
+   * Re-entry signal: increment to re-open the card after dismissal (used by
+   * the footer link). Clears the stored dismissal so the choice persists.
+   */
+  reopenSignal?: number;
+}
+
 /**
  * Compact, dismissible weekly-quote signup card shown beneath the daily
  * quote. Includes a hidden honeypot field ("website") to deter bots.
  */
-export default function EmailSignup() {
+export default function EmailSignup({ reopenSignal = 0 }: EmailSignupProps) {
   const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("emailSignup");
   const { status, subscribe } = useEmailSubscribe(locale);
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
   const honeypotRef = useRef<HTMLInputElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (
@@ -30,6 +39,21 @@ export default function EmailSignup() {
       posthog.capture("email_signup_viewed");
     }
   }, []);
+
+  useEffect(() => {
+    if (reopenSignal > 0) {
+      localStorage.removeItem(EMAIL_SIGNUP_DISMISSED_KEY);
+      setVisible(true);
+    }
+  }, [reopenSignal]);
+
+  // Runs after the card is rendered, so the ref is attached by the time
+  // a reopen needs to scroll it into view.
+  useEffect(() => {
+    if (reopenSignal > 0 && visible) {
+      containerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [reopenSignal, visible]);
 
   useEffect(() => {
     if (status === "success") {
@@ -54,14 +78,14 @@ export default function EmailSignup() {
 
   if (status === "success") {
     return (
-      <div className="max-w-xl mx-auto p-3 bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 rounded-xl text-center">
+      <div ref={containerRef} className="max-w-xl mx-auto p-3 bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 rounded-xl text-center">
         <p className="text-sm text-[var(--lo1-starlight)]">{t("success")}</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-xl mx-auto p-4 bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 rounded-xl">
+    <div ref={containerRef} className="max-w-xl mx-auto p-4 bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 rounded-xl">
       <div className="flex items-start gap-2.5">
         <div className="flex-1 min-w-0 space-y-3">
           <p className="text-sm text-[var(--lo1-stardust)] leading-relaxed">

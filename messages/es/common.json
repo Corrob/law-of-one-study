@@ -58,7 +58,8 @@
     "success": "Estás suscrito 🙏 Revisa tu correo para confirmar.",
     "error": "Algo salió mal. Inténtalo de nuevo.",
     "privacyNote": "Solo guardamos tu correo e idioma, y usamos MailerLite para el envío. Cancela cuando quieras.",
-    "dismiss": "Cerrar formulario de suscripción"
+    "dismiss": "Cerrar formulario de suscripción",
+    "footerLink": "Correo semanal"
   },
   "features": {
     "explore": {

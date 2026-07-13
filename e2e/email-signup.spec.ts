@@ -31,7 +31,7 @@ test.describe("Email Signup", () => {
     ).toBeVisible();
   });
 
-  test("dismissing the signup card hides it across reloads", async ({ page }) => {
+  test("dismissing the signup card hides it, and the footer link brings it back", async ({ page }) => {
     await page.goto("/");
 
     const dismissButton = page.getByRole("button", { name: "Dismiss email signup" });
@@ -42,5 +42,13 @@ test.describe("Email Signup", () => {
 
     await page.reload();
     await expect(page.getByLabel("Email address")).toBeHidden();
+
+    // Re-entry point: the footer link reopens the signup card
+    await page.getByRole("button", { name: "Weekly email" }).click();
+    await expect(page.getByLabel("Email address")).toBeVisible();
+
+    // The reopened state persists across reloads
+    await page.reload();
+    await expect(page.getByLabel("Email address")).toBeVisible();
   });
 });

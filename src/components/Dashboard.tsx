@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
 import EmailSignup from "./EmailSignup";
-import { ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon } from "./icons";
+import { ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon, MailIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -22,6 +22,7 @@ export default function Dashboard() {
   const [skipAnimations, setSkipAnimations] = useState(false);
   const [ready, setReady] = useState(false);
   const [noticeDismissed, setNoticeDismissed] = useState(true);
+  const [signupReopenCount, setSignupReopenCount] = useState(0);
   const t = useTranslations();
 
   useEffect(() => {
@@ -137,7 +138,7 @@ export default function Dashboard() {
       )}
 
       {/* Weekly Quote Email Signup */}
-      <EmailSignup />
+      <EmailSignup reopenSignal={signupReopenCount} />
 
       {/* Feature Change Notice */}
       {!noticeDismissed && (
@@ -211,7 +212,7 @@ export default function Dashboard() {
 
       {/* Footer Links */}
       <footer className="mt-12 pt-6 border-t border-[var(--lo1-celestial)]/20">
-        <div className="flex items-center justify-center gap-6 text-sm">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm">
           <Link
             href="/about"
             className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors"
@@ -235,6 +236,14 @@ export default function Dashboard() {
             <DownloadIcon className="w-4 h-4" />
             <span>{t("nav.install")}</span>
           </Link>
+          <span className="text-[var(--lo1-celestial)]/40">·</span>
+          <button
+            onClick={() => setSignupReopenCount((count) => count + 1)}
+            className="flex items-center gap-1.5 text-[var(--lo1-stardust)] hover:text-[var(--lo1-gold)] transition-colors cursor-pointer"
+          >
+            <MailIcon className="w-4 h-4" />
+            <span>{t("emailSignup.footerLink")}</span>
+          </button>
         </div>
       </footer>
     </div>

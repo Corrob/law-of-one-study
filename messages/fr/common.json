@@ -58,7 +58,8 @@
     "success": "Vous êtes abonné 🙏 Vérifiez votre boîte mail pour confirmer.",
     "error": "Une erreur est survenue. Veuillez réessayer.",
     "privacyNote": "Nous ne conservons que votre e-mail et votre langue, et utilisons MailerLite pour l'envoi. Désabonnement à tout moment.",
-    "dismiss": "Fermer l'inscription e-mail"
+    "dismiss": "Fermer l'inscription e-mail",
+    "footerLink": "E-mail hebdo"
   },
   "features": {
     "explore": {

@@ -58,7 +58,8 @@
     "success": "Du bist angemeldet 🙏 Bitte bestätige in deinem Postfach.",
     "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
     "privacyNote": "Wir speichern nur deine E-Mail und Sprache und versenden über MailerLite. Jederzeit abbestellbar.",
-    "dismiss": "E-Mail-Anmeldung schließen"
+    "dismiss": "E-Mail-Anmeldung schließen",
+    "footerLink": "Wochen-E-Mail"
   },
   "features": {
     "explore": {
