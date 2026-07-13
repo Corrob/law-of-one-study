@@ -72,6 +72,40 @@ describe("supplements", () => {
       expect(ids).toContain("men-in-black");
     });
 
+    it("matches localized aliases in each supported locale", () => {
+      expect(identifySupplements("¿Quiénes son los hombres de negro?", "es").map((s) => s.id)).toContain("men-in-black");
+      expect(identifySupplements("Wer sind die Männer in Schwarz?", "de").map((s) => s.id)).toContain("men-in-black");
+      expect(identifySupplements("Qui sont les hommes en noir ?", "fr").map((s) => s.id)).toContain("men-in-black");
+      expect(identifySupplements("¿Qué son los ovnis?", "es").map((s) => s.id)).toContain("ufo");
+      expect(identifySupplements("Que sont les ovnis ?", "fr").map((s) => s.id)).toContain("ufo");
+      expect(identifySupplements("Was ist eine Gedankenform?", "de").map((s) => s.id)).toContain("thought-form");
+      expect(identifySupplements("Was sagt Ra über Träume?", "de").map((s) => s.id)).toContain("dreams");
+      expect(identifySupplements("Que dit Ra sur les rêves ?", "fr").map((s) => s.id)).toContain("dreams");
+    });
+
+    it("matches aliases that start or end with accented letters (unicode boundaries)", () => {
+      expect(identifySupplements("Qui a fait les têtes de l'île de Pâques ?", "fr").map((s) => s.id)).toContain("easter-island");
+      expect(identifySupplements("Qu'est-ce qu'une forme-pensée ?", "fr").map((s) => s.id)).toContain("thought-form");
+      expect(identifySupplements("¿Qué dice Ra sobre Jesús?", "es").map((s) => s.id)).toContain("jesus");
+    });
+
+    it("matches curated off-graph topics Ra discusses", () => {
+      expect(identifySupplements("What are the Nazca lines?").map((s) => s.id)).toContain("nazca-lines");
+      expect(identifySupplements("What caused the Tunguska explosion?").map((s) => s.id)).toContain("tunguska");
+      expect(identifySupplements("What causes cattle mutilations?").map((s) => s.id)).toContain("cattle-mutilations");
+      expect(identifySupplements("I found silver flecks on my face").map((s) => s.id)).toContain("silver-flecks");
+      expect(identifySupplements("What was the Philadelphia Experiment?").map((s) => s.id)).toContain("philadelphia-experiment");
+      expect(identifySupplements("Who gave the Urantia book?").map((s) => s.id)).toContain("urantia-book");
+      expect(identifySupplements("What does Ra say about crystals?").map((s) => s.id)).toContain("crystal-healing");
+      expect(identifySupplements("Who was Akhenaten?").map((s) => s.id)).toContain("akhenaten");
+      expect(identifySupplements("What contact happened in South America?").map((s) => s.id)).toContain("south-america-contact");
+      expect(identifySupplements("What does Ra say about Yahweh?").map((s) => s.id)).toContain("yahweh");
+    });
+
+    it("does not match 'crystal' inside 'crystallization'", () => {
+      expect(identifySupplements("What is crystallization of the healer?").map((s) => s.id)).not.toContain("crystal-healing");
+    });
+
     it("matches 'dreams' but not the substring in 'daydream'", () => {
       expect(identifySupplements("what do dreams mean?").map((s) => s.id)).toContain("dreams");
       expect(identifySupplements("I was daydreaming today").map((s) => s.id)).not.toContain(

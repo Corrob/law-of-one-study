@@ -49,8 +49,14 @@ const SUPPLEMENTS: Supplement[] = SupplementsFileSchema.parse(supplementsData).s
 function pickText(field: Supplement["summary"], locale: AvailableLanguage): string {
   return field[locale] ?? field.en;
 }
+/**
+ * Aliases for a locale — the union of the locale's own aliases and the English
+ * ones, since non-English users frequently use English terms (e.g. "bigfoot",
+ * "men in black") in otherwise localized questions.
+ */
 function pickAliases(field: Supplement["aliases"], locale: AvailableLanguage): string[] {
-  return field[locale] ?? field.en;
+  const localized = field[locale] ?? [];
+  return locale === "en" ? field.en : [...new Set([...localized, ...field.en])];
 }
 
 // Compiled matcher per locale: a regex plus an alias→supplement lookup.
@@ -78,10 +84,16 @@ function getMatcher(locale: AvailableLanguage): Matcher {
   const unique = [...new Set(aliases)].filter((a) => a.length > 0);
   unique.sort((a, b) => b.length - a.length);
   const escaped = unique.map((a) => a.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&"));
-  // `(?!)` never matches — a safe global fallback when there are no aliases
-  // (String.matchAll requires a global regex).
+  // Unicode-aware word boundaries: `\b` is ASCII-only, so aliases that start or
+  // end with an accented letter (e.g. "île de pâques", "forme-pensée") would
+  // never match. `(?!)` never matches — a safe global fallback when there are
+  // no aliases (String.matchAll requires a global regex).
+  const boundaryBefore = "(?<![\\p{L}\\p{N}_])";
+  const boundaryAfter = "(?![\\p{L}\\p{N}_])";
   const regex =
-    escaped.length > 0 ? new RegExp(`\\b(${escaped.join("|")})\\b`, "gi") : /(?!)/g;
+    escaped.length > 0
+      ? new RegExp(`${boundaryBefore}(${escaped.join("|")})${boundaryAfter}`, "giu")
+      : /(?!)/g;
 
   const matcher: Matcher = { regex, byAlias };
   _matcherCache.set(locale, matcher);
