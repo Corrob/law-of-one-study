@@ -98,4 +98,32 @@ test.describe("Concept Explorer", () => {
     await expect(page.getByRole("button", { name: "Zoom in" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Zoom out" })).toBeVisible();
   });
+
+  test("deep link ?concept=<id> opens the concept panel", async ({ page }) => {
+    // e.g. an Ask "Explore further" card links here.
+    await page.goto("/explore?concept=harvest");
+    await expect(page.getByText("Definition").first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Harvest" }).first()
+    ).toBeVisible();
+
+    // The parent category cluster auto-expands so the node itself is
+    // discoverable in the graph (not just the side panel).
+    await expect(page.locator('[data-testid="node-harvest"]')).toBeVisible();
+    await expect(page.locator('[data-testid="node-cluster-polarity"]')).toHaveCount(0);
+  });
+
+  test("deep link to an archetype concept expands cluster AND subcluster", async ({ page }) => {
+    await page.goto("/explore?concept=matrix-of-mind");
+    await expect(
+      page.getByRole("heading", { name: "Matrix of the Mind" }).first()
+    ).toBeVisible();
+
+    // Both the archetypes cluster and the matrix subcluster opened.
+    await expect(page.locator('[data-testid="node-matrix-of-mind"]')).toBeVisible();
+    // Other archetype positions stay collapsed.
+    await expect(
+      page.locator('[data-testid="node-subcluster-archetypes-potentiator"]')
+    ).toBeVisible();
+  });
 });

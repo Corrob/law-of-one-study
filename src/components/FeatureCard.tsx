@@ -11,6 +11,8 @@ interface FeatureCardProps {
   index?: number;
   skipAnimation?: boolean;
   featured?: boolean;
+  /** Extra classes on the grid-item wrapper (e.g. "col-span-2"). */
+  className?: string;
 }
 
 export default function FeatureCard({
@@ -21,6 +23,7 @@ export default function FeatureCard({
   index = 0,
   skipAnimation = false,
   featured = false,
+  className = "",
 }: FeatureCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +48,7 @@ export default function FeatureCard({
   return (
     <div
       ref={cardRef}
+      className={className}
       style={{ opacity: 0, transform: "translateY(16px)" }}
     >
       <Link

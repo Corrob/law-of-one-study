@@ -3,6 +3,10 @@
   "subtitle": "Un compañero de estudio para el Material de Ra",
   "features": {
     "title": "Características",
+    "ask": {
+      "title": "Preguntar",
+      "description": "Explora el Material de Ra en una conversación. Preguntar se basa en nuestro grafo de conceptos y enlaza cada punto con las sesiones originales: un compañero para tu búsqueda, no un sustituto de la fuente."
+    },
     "explore": {
       "title": "Explorar",
       "description": "Navega por un gráfico interactivo de conceptos que muestra las relaciones entre ideas clave del Material de Ra. Descubre conexiones y explora citas relacionadas."
@@ -16,12 +20,12 @@
       "description": "Practica meditaciones guiadas basadas en los ejercicios descritos en el Material de Ra, incluyendo encontrar el amor en el momento, ver al Creador y equilibrar el yo."
     }
   },
-  "featureChanges": {
-    "title": "Cambios en las Funciones",
-    "message": "Las funciones Consultar (chat con IA) y Búsqueda han sido eliminadas a petición de L/L Research. Respetamos su custodia del Material de Ra y sus protecciones de derechos de autor.",
-    "remaining": "Aún puedes explorar las enseñanzas a través del Explorador de Conceptos, los Caminos de Estudio guiados y las Meditaciones.",
-    "readMaterial": "Lee el Material de Ra completo en",
-    "llresearchLink": "llresearch.org"
+  "ask": {
+    "title": "Cómo Funciona Preguntar",
+    "intro": "Preguntar es un compañero de IA para explorar la Ley del Uno en una conversación.",
+    "grounding": "En lugar de buscar en el texto completo con derechos de autor, Preguntar se basa en nuestro propio grafo de conceptos curado. La IA explica las ideas con sus propias palabras y nunca reproduce el Material de Ra; cada punto enlaza con la sesión exacta en L/L Research para que siempre puedas leer el original.",
+    "discernment": "Como toda IA, puede ser imperfecta o simplificar en exceso. Toma lo que resuene, deja con suavidad lo demás, y verifica lo importante en la fuente.",
+    "attribution": "Resúmenes generados por IA basados en el grafo de conceptos, no reproducciones del texto con derechos de autor. Lee los originales en L/L Research."
   },
   "llResearch": {
     "title": "Acerca de L/L Research",

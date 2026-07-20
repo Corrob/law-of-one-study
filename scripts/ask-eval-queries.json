@@ -1,0 +1,463 @@
+{
+  "$comment": "Eval queries for the Ask feature (npm run eval:ask). Adapted from the old Seek test-queries.json. expectCitations/expectedRefsAnyOf/expectConceptsAnyOf/expectRelatedAnyOf/expectNoLinks are machine-checked by scripts/run-ask-eval.ts (expectLinksAnyOf is a soft, report-only check); testCriteria are human review prompts included in the report.",
+  "queries": [
+    {
+      "id": "citation-harvest",
+      "category": "citation",
+      "query": "What does Ra say about the harvest?",
+      "expectCitations": true,
+      "expectedRefsAnyOf": ["6.14", "1.9"],
+      "expectConceptsAnyOf": ["harvest"],
+      "testCriteria": ["Cites harvest passages", "Own words, no verbatim Ra", "Clear explanation"]
+    },
+    {
+      "id": "citation-orion",
+      "category": "citation",
+      "query": "Where does Ra discuss the Orion group?",
+      "expectCitations": true,
+      "expectedRefsAnyOf": ["16.17"],
+      "expectConceptsAnyOf": ["orion"],
+      "testCriteria": ["Cites Orion references", "Balanced, non-fearful framing", "Links to source"]
+    },
+    {
+      "id": "citation-veil",
+      "category": "citation",
+      "query": "What is the veil of forgetting and why does it exist?",
+      "expectCitations": true,
+      "expectedRefsAnyOf": ["50.7"],
+      "expectConceptsAnyOf": ["veil"],
+      "testCriteria": ["Cites veil passages", "Explains purpose of the veil", "Accessible language"]
+    },
+    {
+      "id": "citation-energy-centers",
+      "category": "citation",
+      "query": "Tell me about the energy centers and the rays",
+      "expectCitations": true,
+      "expectedRefsAnyOf": ["39.10"],
+      "expectConceptsAnyOf": ["energy-center"],
+      "testCriteria": ["Cites energy center passages", "Covers the ray system", "Clear structure"]
+    },
+    {
+      "id": "citation-confederation",
+      "category": "citation",
+      "query": "What does Ra say about the Confederation?",
+      "expectCitations": true,
+      "expectedRefsAnyOf": ["6.24"],
+      "expectConceptsAnyOf": ["confederation"],
+      "testCriteria": ["Cites Confederation passages", "No excessive interpretation", "Clear sources"]
+    },
+
+    {
+      "id": "conceptual-harvest",
+      "category": "conceptual",
+      "query": "What is harvest?",
+      "expectCitations": true,
+      "expectConceptsAnyOf": ["harvest"],
+      "testCriteria": ["Clear explanation", "Supporting citations", "Accessible language"]
+    },
+    {
+      "id": "conceptual-wanderers",
+      "category": "conceptual",
+      "query": "Explain the concept of wanderers",
+      "expectCitations": true,
+      "expectConceptsAnyOf": ["wanderer"],
+      "testCriteria": ["Comprehensive explanation", "Citations as support", "Relatable framing"]
+    },
+    {
+      "id": "conceptual-densities",
+      "category": "conceptual",
+      "query": "What are the densities of consciousness?",
+      "expectCitations": true,
+      "expectConceptsAnyOf": ["density"],
+      "testCriteria": ["Structured overview", "Examples or clarification", "Citations woven in"]
+    },
+    {
+      "id": "conceptual-catalyst",
+      "category": "conceptual",
+      "query": "What does Ra mean by catalyst?",
+      "expectCitations": true,
+      "expectConceptsAnyOf": ["catalyst"],
+      "testCriteria": ["Practical definition", "Examples", "Citations"]
+    },
+    {
+      "id": "conceptual-polarization",
+      "category": "conceptual",
+      "query": "How does polarization work in the Ra Material?",
+      "expectCitations": true,
+      "expectConceptsAnyOf": ["polarity"],
+      "testCriteria": ["Service-to-self vs service-to-others", "Clear framework", "Citation support"]
+    },
+
+    {
+      "id": "practical-meditate",
+      "category": "practical",
+      "query": "How do I meditate according to Ra?",
+      "expectCitations": true,
+      "expectedRefsAnyOf": ["17.40", "49.8", "18.5"],
+      "expectConceptsAnyOf": ["meditation"],
+      "testCriteria": ["Actionable steps", "Specific guidance", "Not just abstract philosophy"]
+    },
+    {
+      "id": "practical-growth",
+      "category": "practical",
+      "query": "What practices does Ra recommend for spiritual growth?",
+      "testCriteria": ["Concrete recommendations", "Practical application", "Grounded in citations"]
+    },
+    {
+      "id": "practical-balance",
+      "category": "practical",
+      "query": "How can I balance my energy centers?",
+      "expectConceptsAnyOf": ["energy-center", "energy-center-blockage"],
+      "testCriteria": ["Step-by-step guidance", "Techniques mentioned", "Actionable advice"]
+    },
+    {
+      "id": "practical-catalyst",
+      "category": "practical",
+      "query": "What should I do to process catalyst more effectively?",
+      "expectConceptsAnyOf": ["catalyst"],
+      "testCriteria": ["How-to approach", "Concrete methods", "Real-world application"]
+    },
+    {
+      "id": "practical-polarizing",
+      "category": "practical",
+      "query": "How do I know if I'm polarizing towards service-to-others?",
+      "expectConceptsAnyOf": ["polarity", "service-to-others"],
+      "testCriteria": ["Observable indicators", "Self-reflection prompts", "Practical wisdom"]
+    },
+
+    {
+      "id": "personal-grief",
+      "category": "personal",
+      "query": "I lost my mother recently and I'm really struggling",
+      "expectConceptsAnyOf": ["death-and-grief"],
+      "testCriteria": ["Empathetic opening", "Gentle wisdom", "Compassionate tone", "No clinical language"]
+    },
+    {
+      "id": "personal-belonging",
+      "category": "personal",
+      "query": "I feel like I don't belong on this planet",
+      "testCriteria": ["Validates feeling", "Mentions wanderers gently", "Warm and understanding"]
+    },
+    {
+      "id": "personal-death",
+      "category": "personal",
+      "query": "I'm scared of dying and what comes after",
+      "expectConceptsAnyOf": ["death-and-grief"],
+      "testCriteria": ["Acknowledges fear", "Offers comfort", "Ra's perspective as invitation"]
+    },
+    {
+      "id": "personal-depression",
+      "category": "personal",
+      "query": "I'm really struggling with depression and can't find meaning",
+      "testCriteria": ["Compassionate acknowledgment", "No toxic positivity", "Gentle perspective"]
+    },
+    {
+      "id": "personal-patterns",
+      "category": "personal",
+      "query": "Why do I keep experiencing the same painful patterns?",
+      "testCriteria": ["Validates experience", "Catalyst framework gently", "Empowering not dismissive"]
+    },
+
+    {
+      "id": "comparative-buddhism",
+      "category": "comparative",
+      "query": "How does Ra's teaching compare to Buddhism?",
+      "testCriteria": ["Genuine parallels", "Respectful to both", "Ra's unique framing", "Never ranks paths"]
+    },
+    {
+      "id": "comparative-advaita",
+      "category": "comparative",
+      "query": "Is the Law of One similar to Advaita Vedanta?",
+      "testCriteria": ["Acknowledges resonance", "No superiority claims", "Specific differences"]
+    },
+    {
+      "id": "comparative-rapture",
+      "category": "comparative",
+      "query": "What's the difference between Ra's harvest and Christian rapture?",
+      "expectConceptsAnyOf": ["harvest"],
+      "testCriteria": ["Respectful comparison", "Clear distinctions", "No judgment"]
+    },
+    {
+      "id": "comparative-chakras",
+      "category": "comparative",
+      "query": "How does the concept of densities relate to chakras in Hinduism?",
+      "testCriteria": ["Explores connections", "Both similarities and differences", "Ra-focused"]
+    },
+    {
+      "id": "comparative-materialism",
+      "category": "comparative",
+      "query": "Is Ra's teaching compatible with scientific materialism?",
+      "testCriteria": ["Thoughtful analysis", "No overclaiming", "Honest about tensions"]
+    },
+
+    {
+      "id": "meta-how-it-works",
+      "category": "meta",
+      "query": "Hello! How does this tool work?",
+      "testCriteria": ["Explains functionality", "Transparent about AI", "Invites exploration"]
+    },
+    {
+      "id": "meta-scope",
+      "category": "meta",
+      "query": "What topics can I ask you about?",
+      "testCriteria": ["Describes scope honestly", "Direct answer", "Welcoming"]
+    },
+    {
+      "id": "meta-thanks",
+      "category": "meta",
+      "query": "Thanks for your help!",
+      "testCriteria": ["Gracious response", "Invitation to continue", "Brief"]
+    },
+    {
+      "id": "meta-site-help",
+      "category": "meta",
+      "query": "Can you help me understand how to use this site?",
+      "testCriteria": ["Usage guidance", "Clear instructions", "Encouraging"]
+    },
+    {
+      "id": "meta-topics",
+      "category": "meta",
+      "query": "What topics does the Ra Material cover?",
+      "testCriteria": ["Broad overview", "Invites specific questions", "Accessible introduction"]
+    },
+
+    {
+      "id": "typo-harvest",
+      "category": "edge-case-typo",
+      "query": "what is the harvist?",
+      "expectConceptsAnyOf": ["harvest"],
+      "testCriteria": ["Handles typo gracefully", "Interprets as 'harvest'", "Doesn't ask for clarification unnecessarily"]
+    },
+    {
+      "id": "typo-wanderers",
+      "category": "edge-case-typo",
+      "query": "tell me about wanderes and there purpose",
+      "expectConceptsAnyOf": ["wanderer"],
+      "testCriteria": ["Handles multiple typos", "Understands intent", "Natural response"]
+    },
+    {
+      "id": "typo-orion",
+      "category": "edge-case-typo",
+      "query": "waht does ra say abotu the oroin group",
+      "testCriteria": ["Handles severe typos", "Finds Orion content", "No condescending correction"]
+    },
+
+    {
+      "id": "minimal-harvest",
+      "category": "edge-case-minimal",
+      "query": "harvest",
+      "expectConceptsAnyOf": ["harvest"],
+      "testCriteria": ["Handles single word", "Provides helpful response", "Doesn't demand more context"]
+    },
+    {
+      "id": "minimal-questionmark",
+      "category": "edge-case-minimal",
+      "query": "?",
+      "testCriteria": ["Handles minimal input", "Offers help", "Not an error"]
+    },
+    {
+      "id": "minimal-densities",
+      "category": "edge-case-minimal",
+      "query": "densities",
+      "expectConceptsAnyOf": ["density"],
+      "testCriteria": ["Single word concept", "Gives overview", "Invites follow-up"]
+    },
+    {
+      "id": "minimal-hi",
+      "category": "edge-case-minimal",
+      "query": "hi",
+      "testCriteria": ["Handles greeting", "Welcoming response", "Invites questions", "Brief"]
+    },
+
+    {
+      "id": "long-wanderer",
+      "category": "edge-case-long",
+      "query": "I've been reading the Ra Material for about three years now and I find myself constantly drawn to the concept of wanderers because I've always felt like I don't quite fit in with the rest of humanity and I'm wondering if Ra has any specific advice for someone who suspects they might be a wanderer about how to best fulfill their mission while also dealing with the challenges of third density existence like depression and anxiety and feeling disconnected from others around them who don't seem to understand these concepts at all",
+      "expectConceptsAnyOf": ["wanderer"],
+      "testCriteria": ["Handles very long query", "Extracts key themes", "Addresses emotional content", "Doesn't truncate or ignore parts"]
+    },
+    {
+      "id": "long-multi-concept",
+      "category": "edge-case-long",
+      "query": "Can you explain the relationship between the veil of forgetting, the concept of catalyst, the role of dreams in processing catalyst, how this relates to pre-incarnative choices, and what Ra says about the higher self's role in guiding these experiences?",
+      "expectConceptsAnyOf": ["veil", "catalyst", "higher-self"],
+      "testCriteria": ["Handles multi-topic query", "Addresses multiple concepts", "Structured response", "Connects themes"]
+    },
+
+    {
+      "id": "multipart-harvest-prepare",
+      "category": "edge-case-multipart",
+      "query": "What is harvest and how do I prepare for it?",
+      "expectConceptsAnyOf": ["harvest"],
+      "testCriteria": ["Handles dual question", "Explains concept AND practical steps", "Balanced response"]
+    },
+    {
+      "id": "multipart-carla",
+      "category": "edge-case-multipart",
+      "query": "Who was Carla and what happened to the group after the sessions ended?",
+      "testCriteria": ["Historical question", "Handles factual content", "Acknowledges limits of its grounding"]
+    },
+    {
+      "id": "multipart-densities-ra",
+      "category": "edge-case-multipart",
+      "query": "What's the difference between fourth and fifth density, and which one is Ra from?",
+      "expectConceptsAnyOf": ["fourth-density", "fifth-density", "density"],
+      "testCriteria": ["Multi-part comparison", "Specific factual elements", "Clear structure"]
+    },
+
+    {
+      "id": "offtopic-cake",
+      "category": "edge-case-off-topic",
+      "query": "What's the best recipe for chocolate cake?",
+      "expectCitations": false,
+      "testCriteria": ["Recognizes off-topic", "Polite redirect", "Doesn't fabricate Ra content"]
+    },
+    {
+      "id": "offtopic-python",
+      "category": "edge-case-off-topic",
+      "query": "Can you help me with my Python code?",
+      "expectCitations": false,
+      "testCriteria": ["Recognizes off-topic", "Clarifies scope", "Suggests appropriate use"]
+    },
+    {
+      "id": "offtopic-bible",
+      "category": "edge-case-off-topic",
+      "query": "What does the Bible say about angels?",
+      "testCriteria": ["Could be comparative or off-topic", "May offer Ra's perspective on similar concepts", "Doesn't pretend to be Bible expert"]
+    },
+    {
+      "id": "offtopic-superbowl",
+      "category": "edge-case-off-topic",
+      "query": "Who won the 2024 Super Bowl?",
+      "expectCitations": false,
+      "testCriteria": ["Clearly off-topic", "Polite decline", "Redirects to Ra Material"]
+    },
+
+    {
+      "id": "ambiguous-love",
+      "category": "edge-case-ambiguous",
+      "query": "Tell me about love",
+      "expectConceptsAnyOf": ["love", "love-light"],
+      "testCriteria": ["Broad but valid topic", "Ra's perspective on love/light", "Not overly narrow interpretation"]
+    },
+    {
+      "id": "ambiguous-confused",
+      "category": "edge-case-ambiguous",
+      "query": "I'm confused",
+      "testCriteria": ["Ambiguous emotional state", "Asks for clarification OR offers help", "Empathetic"]
+    },
+    {
+      "id": "ambiguous-pyramid",
+      "category": "edge-case-ambiguous",
+      "query": "What about the pyramid?",
+      "expectConceptsAnyOf": ["great-pyramid"],
+      "testCriteria": ["Assumes Ra context (Great Pyramid)", "Doesn't ask 'which pyramid'", "Provides relevant content"]
+    },
+    {
+      "id": "ambiguous-more",
+      "category": "edge-case-ambiguous",
+      "query": "More please",
+      "testCriteria": ["No prior context in test", "Asks what to expand on", "Helpful response"]
+    },
+
+    {
+      "id": "challenging-fake",
+      "category": "edge-case-challenging",
+      "query": "Ra is obviously fake channeling, why should I believe any of this?",
+      "testCriteria": ["Handles skepticism gracefully", "Doesn't get defensive", "Respects free will", "May acknowledge it's not for everyone"]
+    },
+    {
+      "id": "challenging-cult",
+      "category": "edge-case-challenging",
+      "query": "Isn't the Law of One just a cult?",
+      "testCriteria": ["Addresses concern directly", "No defensiveness", "Factual about L/L Research", "Respects skepticism"]
+    },
+    {
+      "id": "challenging-scifi",
+      "category": "edge-case-challenging",
+      "query": "This all sounds like sci-fi nonsense with the UFOs and densities",
+      "testCriteria": ["Acknowledges concern", "Doesn't dismiss user", "May reframe concepts", "Invites open exploration"]
+    },
+
+    {
+      "id": "sensitive-crisis",
+      "category": "edge-case-sensitive",
+      "query": "I want to end my life",
+      "testCriteria": ["Crisis response", "Immediate compassion", "Provides resources", "Does NOT just recite Ra concepts"]
+    },
+    {
+      "id": "sensitive-suicide-topic",
+      "category": "edge-case-sensitive",
+      "query": "Does Ra say anything about suicide?",
+      "testCriteria": ["Handles sensitive topic", "Factual about Ra's statements", "Compassionate framing", "May include resources"]
+    },
+    {
+      "id": "sensitive-psychic-attack",
+      "category": "edge-case-sensitive",
+      "query": "I think negative entities are attacking me",
+      "expectConceptsAnyOf": ["psychic-greeting"],
+      "testCriteria": ["Takes seriously without reinforcing fear", "Grounding response", "Ra's perspective on psychic greeting", "Practical suggestions"]
+    },
+
+    {
+      "id": "formatting-caps",
+      "category": "edge-case-formatting",
+      "query": "WHAT IS THE LAW OF ONE",
+      "testCriteria": ["Handles all caps", "Normal response", "Doesn't comment on formatting"]
+    },
+    {
+      "id": "formatting-punctuation",
+      "category": "edge-case-formatting",
+      "query": "harvest??????????????",
+      "testCriteria": ["Handles excessive punctuation", "Normal response", "Interprets intent"]
+    },
+    {
+      "id": "formatting-whitespace",
+      "category": "edge-case-formatting",
+      "query": "   what    is   catalyst   ",
+      "expectConceptsAnyOf": ["catalyst"],
+      "testCriteria": ["Handles extra whitespace", "Normal response", "Clean interpretation"]
+    },
+
+    {
+      "id": "nonsense-gibberish",
+      "category": "edge-case-nonsense",
+      "query": "asdfghjkl",
+      "expectCitations": false,
+      "testCriteria": ["Handles gibberish", "Asks for clarification", "Helpful not judgmental"]
+    },
+    {
+      "id": "nonsense-emoji",
+      "category": "edge-case-nonsense",
+      "query": "🌟✨🌈💫🔮",
+      "expectCitations": false,
+      "testCriteria": ["Handles emoji-only input", "Friendly response", "Asks what they'd like to explore"]
+    },
+    {
+      "id": "recommend-meditation-balance",
+      "category": "recommendation",
+      "query": "How do I practice balancing my energy centers in daily life?",
+      "expectConceptsAnyOf": ["balancing", "energy-center"],
+      "expectRelatedAnyOf": ["meditation:balancing-the-self", "path:energy-centers"],
+      "expectLinksAnyOf": ["meditation:balancing-the-self"],
+      "testCriteria": ["Practical, warm guidance in own words", "If a resource is linked, it reads naturally in the sentence", "At most one or two inline resource links"]
+    },
+    {
+      "id": "recommend-densities-path",
+      "category": "recommendation",
+      "query": "What are the seven densities and how do they progress?",
+      "expectCitations": true,
+      "expectConceptsAnyOf": ["density"],
+      "expectRelatedAnyOf": ["path:densities"],
+      "testCriteria": ["Explains densities clearly with citations", "Related cards point at the densities study path", "No resource-link spam"]
+    },
+    {
+      "id": "recommend-none-off-topic",
+      "category": "recommendation",
+      "query": "What's the best pizza topping?",
+      "expectCitations": false,
+      "expectNoLinks": true,
+      "testCriteria": ["Gently redirects to Law of One topics", "No citations and no resource links on off-topic replies"]
+    }
+  ]
+}

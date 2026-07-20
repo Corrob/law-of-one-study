@@ -133,6 +133,34 @@ describe("useConceptGraph", () => {
     });
   });
 
+  describe("expandSubcluster", () => {
+    it("reveals an archetype concept node (deep-link path: cluster + subcluster)", () => {
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
+
+      act(() => {
+        result.current.expandCluster("archetypes");
+        result.current.expandSubcluster("matrix");
+      });
+
+      expect(result.current.isSubcategoryExpanded("matrix")).toBe(true);
+      const ids = result.current.nodes.map((n) => n.id);
+      expect(ids).toContain("matrix-of-mind");
+      // Other positions stay collapsed as subcluster nodes.
+      expect(ids).toContain("subcluster-archetypes-potentiator");
+    });
+
+    it("is idempotent (expanding twice keeps it expanded)", () => {
+      const { result } = renderHook(() => useConceptGraph(defaultOptions));
+
+      act(() => {
+        result.current.expandSubcluster("matrix");
+        result.current.expandSubcluster("matrix");
+      });
+
+      expect(result.current.isSubcategoryExpanded("matrix")).toBe(true);
+    });
+  });
+
   describe("collapseCluster", () => {
     it("should collapse an expanded category", () => {
       const { result } = renderHook(() => useConceptGraph(defaultOptions));

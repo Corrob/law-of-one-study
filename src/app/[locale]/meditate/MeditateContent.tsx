@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import MotionFadeIn from "@/components/MotionFadeIn";
@@ -122,6 +123,18 @@ export default function MeditateContent() {
   const t = useTranslations("meditate");
   const [selectedMeditation, setSelectedMeditation] =
     useState<Meditation | null>(null);
+  const searchParams = useSearchParams();
+
+  // Deep link (?meditation=<id>, e.g. from an Ask recommendation): select the
+  // meditation on arrival. Playback is attempted as if it were tapped; if the
+  // browser blocks autoplay without a gesture, it waits for one. Read once on
+  // mount by design; invalid ids are ignored.
+  useEffect(() => {
+    const id = searchParams.get("meditation");
+    const meditation = id ? MEDITATIONS.find((m) => m.id === id) : undefined;
+    if (meditation) setSelectedMeditation(meditation);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <main className="h-dvh flex flex-col cosmic-bg relative">

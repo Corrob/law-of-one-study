@@ -1,17 +1,29 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import AlbumLanding from "@/components/music/AlbumLanding";
 import SongPlayer from "@/components/music/SongPlayer";
 import TrackDrawer from "@/components/music/TrackDrawer";
-import { ALBUM } from "@/data/music/album";
+import { ALBUM, getSongById } from "@/data/music/album";
 import { useFullscreen } from "@/hooks/useFullscreen";
 import { type Song } from "@/lib/schemas/music";
 
 export default function MusicContent() {
   const [selectedSong, setSelectedSong] = useState<Song | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const searchParams = useSearchParams();
+
+  // Deep link (?song=<id>, e.g. from an Ask recommendation): open the player on
+  // that track. Playback is attempted like any track change; if the browser
+  // blocks autoplay without a gesture, the player opens paused. Read once on
+  // mount by design; invalid ids are ignored.
+  useEffect(() => {
+    const song = getSongById(searchParams.get("song") ?? "");
+    if (song) setSelectedSong(song);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Fullscreen lives on this stable wrapper (not the per-song player, which
   // remounts on each track change) so it persists across the whole album.

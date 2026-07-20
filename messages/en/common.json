@@ -15,7 +15,8 @@
     "copy": "Copy",
     "copied": "Copied!",
     "new": "New",
-    "close": "Close"
+    "close": "Close",
+    "export": "Export"
   },
   "labels": {
     "menu": "Menu",
@@ -31,7 +32,8 @@
     "about": "About",
     "support": "Support",
     "install": "Install",
-    "music": "Listen"
+    "music": "Listen",
+    "ask": "Ask"
   },
   "header": {
     "appTitle": "Law of One Study Companion",
@@ -39,15 +41,14 @@
     "goToHome": "Go to home",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
-    "navigationMenu": "Navigation menu"
+    "navigationMenu": "Navigation menu",
+    "startNewConversation": "Start a new conversation",
+    "exportChat": "Export chat"
   },
   "dashboard": {
     "dailyWisdom": "Daily Wisdom",
     "readOnLawOfOneInfo": "Read {reference} on lawofone.info",
-    "newReflectionTomorrow": "A new reflection awaits tomorrow",
-    "featureNotice": "The Seek and Search features have been removed at L/L Research's request. We're grateful for their stewardship of this material.",
-    "learnMore": "Learn more",
-    "dismissNotice": "Dismiss notice"
+    "newReflectionTomorrow": "A new reflection awaits tomorrow"
   },
   "emailSignup": {
     "description": "Receive a quote from the Ra Material in your inbox each week.",
@@ -77,6 +78,10 @@
     "music": {
       "title": "Listen",
       "description": "Density Songs"
+    },
+    "ask": {
+      "title": "Ask",
+      "description": "Ask about the Ra Material"
     }
   },
   "explorePage": {
@@ -166,7 +171,7 @@
     "explore": "Explore this concept",
     "definition": "Definition",
     "extendedDefinition": "Extended Definition",
-    "keyPassages": "Key Passages",
+    "keyPassages": "Key Ideas",
     "relatedConcepts": "Related Concepts",
     "alsoKnownAs": "Also known as:",
     "sessions": "Sessions:",
@@ -214,5 +219,11 @@
       "balancingSelfDesc": "Ra's balancing technique: review your day's catalyst, find emotional charges, experience each feeling fully, then experience its opposite, and allow balance to emerge naturally.",
       "balancingSelfQuote": "Each thought that a being has, has in its turn an antithesis. The disciplines of the mind involve, first of all, identifying both those things of which you approve and those things of which you disapprove within yourself, and then balancing each and every positive and negative charge with its equal. The mind contains all things. Therefore, you must discover this completeness within yourself."
     }
+  },
+  "confirmNewChat": {
+    "title": "Start a new conversation?",
+    "message": "Your current conversation will be cleared. This cannot be undone.",
+    "confirm": "Start New",
+    "cancel": "Keep Chatting"
   }
 }

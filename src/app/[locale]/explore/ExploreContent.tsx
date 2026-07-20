@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { AnimatePresence } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
@@ -33,6 +34,8 @@ export default function ExploreContent() {
     links,
     toggleCluster,
     toggleSubcluster,
+    expandCluster,
+    expandSubcluster,
     stats,
     expandedCategories,
   } = useConceptGraph({ locale, getCategoryLabel });
@@ -40,7 +43,24 @@ export default function ExploreContent() {
   const [selectedConcept, setSelectedConcept] = useState<GraphConcept | null>(
     null
   );
+  const [focusConceptId, setFocusConceptId] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const searchParams = useSearchParams();
+
+  // Deep link (?concept=<id>, e.g. from an Ask recommendation): open the
+  // concept panel AND reveal the node — expand its parent category cluster
+  // (plus the archetype subcluster when it has one) so the graph can center
+  // on it. Read once on mount by design; invalid ids are ignored.
+  useEffect(() => {
+    const concept = findConceptById(searchParams.get("concept") ?? "");
+    if (concept) {
+      setSelectedConcept(concept);
+      expandCluster(concept.category);
+      if (concept.subcategory) expandSubcluster(concept.subcategory);
+      setFocusConceptId(concept.id);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleGraphReady = useCallback(() => setReady(true), []);
 
@@ -76,6 +96,7 @@ export default function ExploreContent() {
                 onExpandCluster={toggleCluster}
                 onExpandSubcluster={toggleSubcluster}
                 selectedConceptId={selectedConcept?.id}
+                focusNodeId={focusConceptId ?? undefined}
                 expandedCategories={expandedCategories}
                 categoriesTitle={t("explorePage.categoriesTitle")}
                 getCategoryLabel={getCategoryLabel}

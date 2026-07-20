@@ -3,6 +3,10 @@
   "subtitle": "Ein Studienbegleiter für das Ra-Material",
   "features": {
     "title": "Funktionen",
+    "ask": {
+      "title": "Fragen",
+      "description": "Erkunde das Ra-Material im Gespräch. Fragen stützt sich auf unseren Konzeptgraphen und verweist bei jedem Punkt auf die Originalsitzungen — ein Begleiter für deine Suche, kein Ersatz für die Quelle."
+    },
     "explore": {
       "title": "Erkunden",
       "description": "Navigiere durch einen interaktiven Konzeptgraphen, der Beziehungen zwischen Schlüsselideen im Ra-Material zeigt. Entdecke Verbindungen und erkunde verwandte Zitate."
@@ -16,12 +20,12 @@
       "description": "Übe geführte Meditationen, die auf den im Ra-Material beschriebenen Übungen basieren, einschließlich Liebe im Augenblick finden, den Schöpfer sehen und das Selbst ins Gleichgewicht bringen."
     }
   },
-  "featureChanges": {
-    "title": "Funktionsänderungen",
-    "message": "Die Funktionen Suche (KI-Chat) und Durchsuchen wurden auf Wunsch von L/L Research entfernt. Wir respektieren ihre Bewahrung des Ra-Materials und ihre Urheberrechtsschutzmaßnahmen.",
-    "remaining": "Du kannst die Lehren weiterhin über den Konzepterkunder, geführte Studienpfade und Meditationen erkunden.",
-    "readMaterial": "Lies das vollständige Ra-Material auf",
-    "llresearchLink": "llresearch.org"
+  "ask": {
+    "title": "Wie Fragen funktioniert",
+    "intro": "Fragen ist ein KI-Begleiter, um das Gesetz des Einen im Gespräch zu erkunden.",
+    "grounding": "Statt den vollständigen, urheberrechtlich geschützten Text zu durchsuchen, stützt sich Fragen auf unseren eigenen kuratierten Konzeptgraphen. Die KI erklärt Ideen mit eigenen Worten und gibt das Ra-Material niemals wieder; jeder Punkt verweist auf die genaue Sitzung bei L/L Research, sodass du stets das Original lesen kannst.",
+    "discernment": "Wie jede KI kann sie unvollkommen sein oder vereinfachen. Nimm, was anklingt, lass den Rest sanft los und prüfe Wichtiges an der Quelle.",
+    "attribution": "KI-generierte Zusammenfassungen auf Basis des Konzeptgraphen, keine Wiedergabe des urheberrechtlich geschützten Textes. Lies die Originale bei L/L Research."
   },
   "llResearch": {
     "title": "Über L/L Research",

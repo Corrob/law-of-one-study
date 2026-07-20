@@ -6,13 +6,12 @@ import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
 import EmailSignup from "./EmailSignup";
-import { ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon, MailIcon } from "./icons";
+import { AskIcon, ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon, MailIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 const DASHBOARD_SEEN_KEY = "lo1-dashboard-seen";
-const NOTICE_DISMISSED_KEY = "lo1-notice-dismissed";
 
 export default function Dashboard() {
   const locale = useLocale() as AvailableLanguage;
@@ -21,7 +20,6 @@ export default function Dashboard() {
   const [showOriginal, setShowOriginal] = useState(false);
   const [skipAnimations, setSkipAnimations] = useState(false);
   const [ready, setReady] = useState(false);
-  const [noticeDismissed, setNoticeDismissed] = useState(true);
   const [signupReopenCount, setSignupReopenCount] = useState(0);
   const t = useTranslations();
 
@@ -32,9 +30,6 @@ export default function Dashboard() {
     const today = new Date();
     setQuote(getDailyQuote(locale));
     setBilingualQuote(getRawQuoteForDay(today));
-
-    // Check if notice was previously dismissed
-    setNoticeDismissed(!!localStorage.getItem(NOTICE_DISMISSED_KEY));
 
     // Skip entrance animations on return visits within this session
     if (sessionStorage.getItem(DASHBOARD_SEEN_KEY)) {
@@ -140,46 +135,26 @@ export default function Dashboard() {
       {/* Weekly Quote Email Signup */}
       <EmailSignup reopenSignal={signupReopenCount} />
 
-      {/* Feature Change Notice */}
-      {!noticeDismissed && (
-        <div className="max-w-md mx-auto p-3 bg-[var(--lo1-indigo)]/60 border border-[var(--lo1-gold)]/30 rounded-xl">
-          <div className="flex items-start gap-2.5">
-            <svg className="w-4 h-4 text-[var(--lo1-gold)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-[var(--lo1-stardust)] leading-relaxed">
-                {t("dashboard.featureNotice")}{" "}
-                <Link href="/about" className="text-[var(--lo1-gold)] hover:underline">
-                  {t("dashboard.learnMore")}
-                </Link>
-              </p>
-            </div>
-            <button
-              onClick={() => {
-                localStorage.setItem(NOTICE_DISMISSED_KEY, "1");
-                setNoticeDismissed(true);
-              }}
-              className="flex-shrink-0 text-[var(--lo1-stardust)] hover:text-[var(--lo1-starlight)] cursor-pointer"
-              aria-label={t("dashboard.dismissNotice")}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Feature Cards Grid — four equal tiles: Study & Listen on top,
-          Explore & Meditate below. Listen (English-only) sits top-right. */}
+      {/* Feature Cards Grid — Ask spans a full-width row on top, then four
+          equal tiles below (Study & Listen, Explore & Meditate). Listen is
+          English-only. */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
+        <FeatureCard
+          href="/ask"
+          icon={AskIcon}
+          title={t("features.ask.title")}
+          description={t("features.ask.description")}
+          index={0}
+          featured
+          className="col-span-2"
+          skipAnimation={skipAnimations}
+        />
         <FeatureCard
           href="/paths"
           icon={BookIcon}
           title={t("features.study.title")}
           description={t("features.study.description")}
-          index={0}
+          index={1}
           skipAnimation={skipAnimations}
         />
         {locale === "en" && (
@@ -188,7 +163,7 @@ export default function Dashboard() {
             icon={MusicIcon}
             title={t("features.music.title")}
             description={t("features.music.description")}
-            index={1}
+            index={2}
             skipAnimation={skipAnimations}
           />
         )}
@@ -197,7 +172,7 @@ export default function Dashboard() {
           icon={ExploreIcon}
           title={t("features.explore.title")}
           description={t("features.explore.description")}
-          index={2}
+          index={3}
           skipAnimation={skipAnimations}
         />
         <FeatureCard
@@ -205,7 +180,7 @@ export default function Dashboard() {
           icon={MeditateIcon}
           title={t("features.meditate.title")}
           description={t("features.meditate.description")}
-          index={3}
+          index={4}
           skipAnimation={skipAnimations}
         />
       </div>

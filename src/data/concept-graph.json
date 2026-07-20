@@ -355,7 +355,9 @@
       "aliases": {
         "en": [
           "density",
-          "densities"
+          "densities",
+          "densitys",
+          "denisty"
         ],
         "es": [
           "densidad",
@@ -433,17 +435,18 @@
         {
           "reference": "16.51",
           "excerpt": {
-            "en": "The term density is a, what you would call, mathematical one. The closest analogy is that of music, whereby after seven notes on your western type of scale, if you will, the eighth note begins a new octave.",
-            "es": "El término densidad es, lo que ustedes llamarían, matemático. La analogía más cercana es la de la música, por la que después de siete notas en tu escala de tipo occidental, si lo deseas, la octava nota comienza una nueva octava.",
-            "de": "Der Begriff Dichte ist ein, wie ihr es nennen würdet, mathematischer. Der naheliegende Vergleich ist der von Musik, der zufolge nach sieben Noten auf eurer westlichen Art von Skala, wenn du so magst, die achte Note eine neue Oktave beginnt.",
-            "fr": "Le terme de ‘densité’ est ce que vous appelleriez un terme mathématique. L’analogie la plus proche est celle de la musique où, après sept notes sur votre échelle de type occidental, si vous voulez, la huitième note entame une nouvelle octave."
+            "en": "The closest analogy is that of music, whereby after seven notes on your western type of scale, if you will, the eighth note begins a new octave.",
+            "es": "La analogía más cercana es la de la música, por la que después de siete notas en tu escala de tipo occidental, si lo deseas, la octava nota comienza una nueva octava.",
+            "de": "Der naheliegende Vergleich ist der von Musik, der zufolge nach sieben Noten auf eurer westlichen Art von Skala, wenn du so magst, die achte Note eine neue Oktave beginnt.",
+            "fr": "L’analogie la plus proche est celle de la musique où, après sept notes sur votre échelle de type occidental, si vous voulez, la huitième note entame une nouvelle octave."
           },
           "context": {
             "en": "The fundamental definition of density as a musical analogy",
             "es": "La definición fundamental de densidad como una analogía musical.",
             "de": "Die grundlegende Definition von Dichte als musikalische Analogie",
             "fr": "Définition fondamentale de la densité comme analogie musicale"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -1385,7 +1388,10 @@
         "en": [
           "harvest",
           "harvesting",
-          "harvested"
+          "harvested",
+          "harvist",
+          "harvets",
+          "hravest"
         ],
         "es": [
           "cosecha",
@@ -1405,16 +1411,16 @@
       },
       "category": "polarity",
       "definition": {
-        "en": "The transition point between densities when souls are assessed for readiness to progress. Based on polarity and vibrational attainment.",
-        "es": "El punto de transición entre densidades cuando las almas son evaluadas para determinar su preparación para progresar. Basado en la polaridad y el logro vibracional.",
-        "de": "Der Übergangspunkt zwischen Dichten, bei dem Seelen auf ihre Bereitschaft zum Fortschritt geprüft werden. Basierend auf Polarität und Schwingungsniveau.",
-        "fr": "Le point de transition entre les densités où les âmes sont évaluées quant à leur préparation à progresser. Fondée sur la polarité et le niveau vibratoire atteint."
+        "en": "The graduation of consciousness from one density to the next at the end of a density's cycle of experience. Readiness is assessed by vibratory nature — in third density, by polarity.",
+        "es": "La graduación de la conciencia de una densidad a la siguiente al final del ciclo de experiencia de cada densidad. La preparación se evalúa por la naturaleza vibratoria; en la tercera densidad, por la polaridad.",
+        "de": "Die Graduierung des Bewusstseins von einer Dichte zur nächsten am Ende des Erfahrungszyklus einer Dichte. Die Bereitschaft wird anhand der Schwingungsnatur beurteilt — in der dritten Dichte anhand der Polarität.",
+        "fr": "La graduation de la conscience d'une densité à la suivante à la fin du cycle d'expérience d'une densité. La préparation est évaluée selon la nature vibratoire — en troisième densité, selon la polarité."
       },
       "extendedDefinition": {
-        "en": "Harvest is the process by which entities are evaluated for readiness to progress to the next density. For third density, harvest occurs at the end of a 75,000-year major cycle. Entities walk along a line of light until it becomes too glaring; where they stop determines their harvest. Positive harvest requires 51% service to others; negative harvest requires 95% service to self.",
-        "es": "La cosecha es el proceso por el cual las entidades son evaluadas para determinar su preparación para progresar a la siguiente densidad. Para la tercera densidad, la cosecha ocurre al final de un ciclo mayor de 75,000 años. Las entidades caminan a lo largo de una línea de luz hasta que se vuelve demasiado deslumbrante; donde se detienen determina su cosecha. La cosecha positiva requiere un 51% de servicio a los demás; la cosecha negativa requiere un 95% de servicio a uno mismo.",
-        "de": "Ernte ist der Prozess, durch den Wesen auf ihre Bereitschaft geprüft werden, in die nächste Dichte überzugehen. Für die dritte Dichte findet die Ernte am Ende eines etwa 75.000 Jahre dauernden Hauptzyklus statt. Wesen gehen entlang einer Lichtlinie, bis diese zu blendend wird; dort, wo sie stehen bleiben, bestimmt ihre Ernte. Für eine positive Ernte sind 51 % Dienst an anderen erforderlich; für eine negative Ernte sind 95 % Dienst am Selbst erforderlich.",
-        "fr": "La moisson est le processus par lequel les entités sont évaluées quant à leur préparation à passer à la densité suivante. Pour la troisième densité, la moisson a lieu à la fin d'un grand cycle de 75 000 ans. Les entités marchent le long d'une ligne de lumière jusqu'à ce qu'elle devienne trop éblouissante ; l'endroit où elles s'arrêtent détermine leur sort à la moisson. La moisson positive exige 51 % d'orientation vers le service d'autrui ; la moisson négative exige 95 % d'orientation vers le service de soi."
+        "en": "Harvest is the graduation of consciousness from one density to the next, occurring at the close of each density's cycle of experience — not only at the end of third density. Beings are drawn along a line of light and come to rest where its intensity matches their own vibratory nature, which determines whether, and to where, they are harvested. Third density — the density of the Choice — is the one most discussed here: its cycle spans roughly 75,000 years, and harvest calls for about 51% service to others on the positive path or about 95% service to self on the negative. Each density has its own harvest and its own criteria.",
+        "es": "La cosecha es la graduación de la conciencia de una densidad a la siguiente, que ocurre al final del ciclo de experiencia de cada densidad, no solo al final de la tercera densidad. Las entidades son atraídas a lo largo de una línea de luz y se detienen donde su intensidad coincide con su propia naturaleza vibratoria, lo que determina si, y hacia dónde, son cosechadas. La tercera densidad —la densidad de la Elección— es la que más se comenta aquí: su ciclo abarca unos 75.000 años, y la cosecha requiere alrededor de un 51% de servicio a los demás en el camino positivo, o alrededor de un 95% de servicio a uno mismo en el negativo. Cada densidad tiene su propia cosecha y sus propios criterios.",
+        "de": "Ernte ist die Graduierung des Bewusstseins von einer Dichte zur nächsten und findet am Ende des Erfahrungszyklus jeder Dichte statt — nicht nur am Ende der dritten Dichte. Wesen werden entlang einer Lichtlinie gezogen und kommen dort zur Ruhe, wo deren Intensität ihrer eigenen Schwingungsnatur entspricht; dies bestimmt, ob und wohin sie geerntet werden. Die dritte Dichte — die Dichte der Wahl — wird hier am häufigsten besprochen: Ihr Zyklus umfasst etwa 75.000 Jahre, und die Ernte erfordert etwa 51 % Dienst an anderen auf dem positiven Weg oder etwa 95 % Dienst am Selbst auf dem negativen. Jede Dichte hat ihre eigene Ernte und ihre eigenen Kriterien.",
+        "fr": "La moisson est la graduation de la conscience d'une densité à la suivante, qui a lieu à la fin du cycle d'expérience de chaque densité — et non seulement à la fin de la troisième densité. Les entités sont attirées le long d'une ligne de lumière et s'arrêtent là où son intensité correspond à leur propre nature vibratoire, ce qui détermine si, et vers où, elles sont moissonnées. La troisième densité — la densité du Choix — est celle dont on parle le plus ici : son cycle s'étend sur environ 75 000 ans, et la moisson exige environ 51 % de service d'autrui sur la voie positive, ou environ 95 % de service de soi sur la voie négative. Chaque densité a sa propre moisson et ses propres critères."
       },
       "relationships": {
         "prerequisite": [
@@ -1466,7 +1472,8 @@
             "es": "Cómo funciona la cosecha",
             "de": "Wie die Ernte funktioniert",
             "fr": "Comment fonctionne la moisson"
-          }
+          },
+          "verbatim": true
         },
         {
           "reference": "1.9",
@@ -1818,7 +1825,8 @@
             "es": "Ejemplo de programación de servicio a los demás",
             "de": "Beispiel für Dienst-an-anderen-Programmierung",
             "fr": "Exemple de programmation de service d'autrui"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -2273,9 +2281,11 @@
         ],
         "de": [
           "energiezentrum",
+          "energiezentren",
           "energy centers",
           "chakra",
-          "chakras"
+          "chakras",
+          "chakren"
         ],
         "fr": [
           "centre énergétique",
@@ -3223,7 +3233,9 @@
         "en": [
           "catalyst",
           "catalysts",
-          "catalytic"
+          "catalytic",
+          "cataylst",
+          "catalist"
         ],
         "es": [
           "catalizador",
@@ -3292,17 +3304,18 @@
         {
           "reference": "34.6",
           "excerpt": {
-            "en": "This creates a potential for learning. The lessons to be learned vary. Almost always these lessons include patience, tolerance, and the ability for the light touch.",
-            "es": "Las lecciones a aprender varían. Casi siempre estas lecciones incluyen la paciencia, la tolerancia y una habilidad para la gentileza. Muy a menudo, el catalizador del dolor emocional, ya sea la muerte del complejo físico de otro-yo al que se ama o alguna otra pérdida aparente, resultará simplemente en lo contrario:",
-            "de": "Dies erzeugt ein Potenzial, um etwas zu lernen. Die Lektionen, die es zu lernen gilt, variieren. Fast immer beinhalten die Lektionen Geduld, Toleranz und die Fähigkeit zur Berührung mit dem Licht.",
-            "fr": "Les leçons à apprendre varient. Presque toujours, ces leçons incluent la patience, la tolérance, et la capacité de légèreté. Très souvent, le catalyseur de douleur émotionnelle, qu’il s’agisse de la mort du complexe physique d’un autre ‘soi’ aimé ou autre perte ou perçue telle, aura simplement le résultat opposé:"
+            "en": "This creates a potential for learning. The lessons to be learned vary.",
+            "es": "Esto crea un potencial de aprendizaje. Las lecciones a aprender varían.",
+            "de": "Dies erzeugt ein Potenzial, um etwas zu lernen. Die Lektionen, die es zu lernen gilt, variieren.",
+            "fr": "Ceci crée un potentiel d’apprentissage. Les leçons à apprendre varient."
           },
           "context": {
             "en": "How catalyst creates learning opportunities",
             "es": "Cómo el catalizador crea oportunidades de aprendizaje.",
             "de": "Wie Katalysator Lernmöglichkeiten schafft",
             "fr": "Comment le catalyseur crée des opportunités d'apprentissage"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -3506,17 +3519,18 @@
         {
           "reference": "50.7",
           "excerpt": {
-            "en": "You cannot remember your hand, their hands, perhaps even the rules of this game. This game can only be won by those who lose their cards in the melting influence of love.",
-            "es": "Este juego sólo puede ser ganado por aquellos que pierden sus cartas en la influencia fundidora del amor; sólo puede ser ganado por aquellos que ponen sus placeres, sus limitaciones, su todo sobre la mesa boca arriba y dicen interiormente: «Todos, todos los jugadores, cada uno de los otros-yo, cualquiera que sea su mano, los amo».",
-            "de": "Du kannst dich nicht an deine Hand, an ihre Hände, vielleicht nicht einmal an die Regeln des Spiels erinnern. Dieses Spiel kann nur von jenen gewonnen werden, die ihre Karten im zerschmelzenden Einfluss der Liebe verlieren; kann nur von jenen gewonnen werden, die ihre Freuden, ihre Einschränkungen, ihr Alles mit der Bildseite nach oben auf den Tisch legen und innerlich sagen:",
-            "fr": "Ce jeu ne peut être gagné que par ceux qui perdent leurs cartes dans l’influence fusionnelle de l’amour; il ne peut être gagné que par ceux qui mettent leurs plaisirs, leurs limitations, leur tout, sur la table, face vers le haut, et qui disent en eux-mêmes: «vous tous, les joueurs, tous les autres ‘soi’, quelles que soient vos cartes, je vous aime»."
+            "en": "Let us give the example of the man who sees all the poker hands. He then knows the game. It is but child’s play to gamble, for it is no risk.",
+            "es": "Pongamos el ejemplo del hombre que ve todas las manos de póquer. Así entonces conoce el juego. El apostar no es más que un juego de niños, ya que no supone ningún riesgo.",
+            "de": "Lass uns das Beispiel des Mannes geben, der alle Pokerhände sieht. Er kennt dadurch das Spiel. Es ist nur ein Kinderspiel, so zu spielen, denn es gibt kein Risiko.",
+            "fr": "Nous allons donner l’exemple de l’homme qui voit toutes les cartes au poker. Il connaît alors le jeu. C’est ensuite un jeu d’enfant de miser, car il n’y a aucun risque."
           },
           "context": {
             "en": "The veil as essential for meaningful choice",
             "es": "El velo como esencial para una elección significativa",
             "de": "Der Schleier als wesentlich für sinnvolle Wahl",
             "fr": "Le voile comme essentiel pour un choix significatif"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -3838,7 +3852,11 @@
       "aliases": {
         "en": [
           "wanderer",
-          "wanderers"
+          "wanderers",
+          "wanderes",
+          "wandereres",
+          "wonderer",
+          "wonderers"
         ],
         "es": [
           "errante",
@@ -3899,17 +3917,18 @@
         {
           "reference": "16.59",
           "excerpt": {
-            "en": "Wanderers become completely the creature of third density in mind/body complex. There is just as much chance of such influence to a Wanderer entity as to a mind/body/spirit complex of this planetary sphere.",
-            "es": "Como se ha dicho antes, los errantes se convierten completamente en criaturas de tercera densidad en el complejo mente/cuerpo. Hay tantas posibilidades de tal influencia para una entidad errante como para un complejo mente/cuerpo/espíritu de esta esfera planetaria.",
-            "de": "Wie wir bereits gesagt haben, werden Wanderer vollständig zur Kreatur von dritter Dichte in Geist/Körper/Seele-Komplex. Es gibt genauso viel Möglichkeit eines solchen Einflusses für ein Wanderer-Wesen wie für einen Geist/Körper/Seele-Komplex dieser planetaren Sphäre.",
-            "fr": "Comme nous l’avons dit précédemment, les Missionnés deviennent complètement la créature de troisième densité dans le complexe mental/corps. Il y a juste autant de chances d’une telle influence sur un Missionné que sur un complexe mental/corps/esprit de cette sphère planétaire."
+            "en": "As we have said before, wanderers become completely the creature of third density in mind/body complex.",
+            "es": "Como se ha dicho antes, los errantes se convierten completamente en criaturas de tercera densidad en el complejo mente/cuerpo.",
+            "de": "Wie wir bereits gesagt haben, werden Wanderer vollständig zur Kreatur von dritter Dichte in Geist/Körper/Seele-Komplex.",
+            "fr": "Comme nous l’avons dit précédemment, les Missionnés deviennent complètement la créature de troisième densité dans le complexe mental/corps."
           },
           "context": {
             "en": "Wanderers are subject to third density conditions",
             "es": "Los errantes están sujetos a las condiciones de la tercera densidad.",
             "de": "Wanderer unterliegen den Bedingungen der dritten Dichte",
             "fr": "Les errants sont soumis aux conditions de la troisième densité"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -4849,18 +4868,33 @@
       },
       "keyPassages": [
         {
-          "reference": "6.9",
+          "reference": "71.6",
           "excerpt": {
-            "en": "Do you request space/time present information or space/time continuum information?",
-            "es": "¿Solicitas información del presente espacio/tiempo o información del espacio/tiempo continuo?",
-            "de": "Fragst du nach Raum/Zeit-Gegenwart-Informationen oder Raum/Zeit-Kontinuum-Informationen?",
-            "fr": "Demandez-vous des informations de présent espace/temps, ou bien des informations de continuum espace/temps?"
+            "en": "Time/space is the metaphysical counterpart of the physical world, where time rather than space is the dominant property. Experience there is intangible in the ordinary sense — the seen and the unseen simply trade which dimension holds them.",
+            "es": "El tiempo/espacio es la contraparte metafísica del mundo físico, donde el tiempo, y no el espacio, es la propiedad dominante. La experiencia allí es intangible en el sentido ordinario: lo visto y lo no visto simplemente intercambian qué dimensión los sostiene.",
+            "de": "Zeit/Raum ist das metaphysische Gegenstück zur physischen Welt, in dem die Zeit und nicht der Raum die vorherrschende Eigenschaft ist. Erfahrung ist dort im gewöhnlichen Sinne ungreifbar — das Sichtbare und das Unsichtbare tauschen einfach, welche Dimension sie trägt.",
+            "fr": "Le temps/espace est la contrepartie métaphysique du monde physique, où le temps, et non l'espace, est la propriété dominante. L'expérience y est intangible au sens ordinaire : le visible et l'invisible échangent simplement quelle dimension les porte."
           },
           "context": {
-            "en": "Distinction between space/time and time/space perspectives",
-            "es": "Distinción entre las perspectivas de espacio/tiempo y tiempo/espacio.",
-            "de": "Unterscheidung zwischen Raum/Zeit- und Zeit/Raum-Perspektiven",
-            "fr": "Distinction entre les perspectives espace/temps et temps/espace"
+            "en": "Time/space: the intangible, time-dominant realm",
+            "es": "Tiempo/espacio: el reino intangible dominado por el tiempo",
+            "de": "Zeit/Raum: das ungreifbare, von der Zeit dominierte Reich",
+            "fr": "Temps/espace : le royaume intangible dominé par le temps"
+          }
+        },
+        {
+          "reference": "70.17",
+          "excerpt": {
+            "en": "After the death of the physical body, the being moves into a region of time/space where the indigo (etheric) body allows deep healing and a review of the life just lived, before any step is taken toward a new incarnation.",
+            "es": "Tras la muerte del cuerpo físico, el ser se traslada a una región del tiempo/espacio donde el cuerpo índigo (etérico) permite una profunda sanación y una revisión de la vida recién vivida, antes de dar cualquier paso hacia una nueva encarnación.",
+            "de": "Nach dem Tod des physischen Körpers geht das Wesen in einen Bereich von Zeit/Raum über, in dem der Indigo-Körper (der etherische) tiefe Heilung und einen Rückblick auf das eben gelebte Leben ermöglicht, bevor ein Schritt zu einer neuen Inkarnation getan wird.",
+            "fr": "Après la mort du corps physique, l'être passe dans une région du temps/espace où le corps indigo (éthérique) permet une profonde guérison et une revue de la vie qui vient d'être vécue, avant tout mouvement vers une nouvelle incarnation."
+          },
+          "context": {
+            "en": "Time/space as the between-incarnation realm of healing and review",
+            "es": "El tiempo/espacio como el reino de sanación y revisión entre encarnaciones",
+            "de": "Zeit/Raum als Bereich der Heilung und des Rückblicks zwischen den Inkarnationen",
+            "fr": "Le temps/espace comme royaume de guérison et de revue entre les incarnations"
           }
         }
       ],
@@ -4936,18 +4970,18 @@
       },
       "keyPassages": [
         {
-          "reference": "6.9",
+          "reference": "71.6",
           "excerpt": {
-            "en": "Do you request space/time present information or space/time continuum information?",
-            "es": "¿Solicitas información del presente espacio/tiempo o información del espacio/tiempo continuo?",
-            "de": "Fragst du nach Raum/Zeit-Gegenwart-Informationen oder Raum/Zeit-Kontinuum-Informationen?",
-            "fr": "Demandez-vous des informations de présent espace/temps, ou bien des informations de continuum espace/temps?"
+            "en": "Space/time is our familiar physical realm, where space is the dominant framework. Matter has a tangible spatial orientation, which gives the everyday illusion its solidity and its sense of an unfolding present moment.",
+            "es": "El espacio/tiempo es nuestro conocido reino físico, donde el espacio es el marco dominante. La materia tiene una orientación espacial tangible, lo que da a la ilusión cotidiana su solidez y su sensación de un momento presente que se despliega.",
+            "de": "Raum/Zeit ist unser vertrautes physisches Reich, in dem der Raum der vorherrschende Rahmen ist. Materie hat eine greifbare räumliche Ausrichtung, die der alltäglichen Illusion ihre Festigkeit und ihr Gefühl eines sich entfaltenden gegenwärtigen Augenblicks verleiht.",
+            "fr": "L'espace/temps est notre royaume physique familier, où l'espace est le cadre dominant. La matière possède une orientation spatiale tangible, ce qui donne à l'illusion quotidienne sa solidité et son sentiment d'un moment présent qui se déploie."
           },
           "context": {
-            "en": "Space/time as the physical realm",
-            "es": "El espacio/tiempo como el reino físico.",
-            "de": "Raum/Zeit als physisches Reich",
-            "fr": "L'espace/temps en tant que domaine physique"
+            "en": "Space/time: the tangible, space-dominant realm",
+            "es": "Espacio/tiempo: el reino tangible dominado por el espacio",
+            "de": "Raum/Zeit: das greifbare, vom Raum dominierte Reich",
+            "fr": "Espace/temps : le royaume tangible dominé par l'espace"
           }
         }
       ],
@@ -5068,7 +5102,8 @@
             "es": "Definición de mente arquetípica.",
             "de": "Definition des archetypischen Verstandes",
             "fr": "Définition du mental archétypal"
-          }
+          },
+          "verbatim": true
         }
       ],
       "searchTerms": [
@@ -8730,6 +8765,7 @@
           6,
           14,
           15,
+          17,
           41,
           42,
           57,
@@ -8750,6 +8786,36 @@
             "es": "El propósito de la meditación y la contemplación",
             "de": "Der Zweck von Meditation und Kontemplation",
             "fr": "Le but de la méditation et de la contemplation"
+          }
+        },
+        {
+          "reference": "17.40",
+          "excerpt": {
+            "en": "Asked whether there is a best way to meditate, Ra's whole answer is a single word: no. There is no one correct technique — no method is ranked above another, and the way that suits the individual seeker is the right way.",
+            "es": "Cuando se le pregunta si existe una mejor manera de meditar, la respuesta completa de Ra es una sola palabra: no. No hay una técnica correcta única — ningún método está por encima de otro, y la manera que le sirve al buscador individual es la correcta.",
+            "de": "Auf die Frage, ob es eine beste Art zu meditieren gibt, besteht Ras gesamte Antwort aus einem einzigen Wort: nein. Es gibt keine einzig richtige Technik — keine Methode steht über einer anderen, und der Weg, der der einzelnen suchenden Person dient, ist der richtige.",
+            "fr": "Interrogé sur l'existence d'une meilleure façon de méditer, Ra répond en un seul mot : non. Il n'existe pas de technique unique et correcte — aucune méthode ne surpasse une autre, et la manière qui convient au chercheur individuel est la bonne."
+          },
+          "context": {
+            "en": "Whether a best way to meditate exists",
+            "es": "Si existe una mejor manera de meditar",
+            "de": "Ob es eine beste Art zu meditieren gibt",
+            "fr": "S'il existe une meilleure façon de méditer"
+          }
+        },
+        {
+          "reference": "49.8",
+          "excerpt": {
+            "en": "Ra compares approaches to meditation: passive meditation — letting mental activity fall silent so the inner stillness can open toward contact with the Creator — is by far the most generally useful kind for spiritual evolution. Meditation with visualization builds the faculty of concentration and is the tool of the adept, the path of the so-called white magician, for those who seek to raise consciousness without outer action. Contemplation of an inspiring image or text, and prayer, also serve, each according to the seeker's aim.",
+            "es": "Ra compara los enfoques de la meditación: la meditación pasiva — dejar que la actividad mental se aquiete para que el silencio interior se abra al contacto con el Creador — es, con mucho, la más útil en general para la evolución espiritual. La meditación con visualización desarrolla la facultad de concentración y es la herramienta del adepto, el camino del llamado mago blanco, para quienes buscan elevar la consciencia sin acción externa. La contemplación de una imagen o un texto inspirador, y la oración, también sirven, cada una según el propósito del buscador.",
+            "de": "Ra vergleicht Herangehensweisen an Meditation: passive Meditation — die geistige Aktivität zur Ruhe kommen zu lassen, damit die innere Stille sich dem Kontakt mit dem Schöpfer öffnen kann — ist bei weitem die allgemein nützlichste Art für die spirituelle Entwicklung. Meditation mit Visualisierung schult die Konzentrationsfähigkeit und ist das Werkzeug des Eingeweihten, der Pfad des sogenannten weißen Magiers, für jene, die das Bewusstsein ohne äußeres Handeln erheben wollen. Auch die Kontemplation eines inspirierenden Bildes oder Textes sowie das Gebet dienen, je nach Ziel der suchenden Person.",
+            "fr": "Ra compare les approches de la méditation : la méditation passive — laisser l'activité mentale s'apaiser pour que le silence intérieur s'ouvre au contact avec le Créateur — est de loin la plus généralement utile pour l'évolution spirituelle. La méditation avec visualisation développe la faculté de concentration et constitue l'outil de l'adepte, la voie du mage dit blanc, pour ceux qui cherchent à élever la conscience sans action extérieure. La contemplation d'une image ou d'un texte inspirant, ainsi que la prière, servent également, chacune selon le but du chercheur."
+          },
+          "context": {
+            "en": "Passive meditation compared with visualization, contemplation, and prayer",
+            "es": "La meditación pasiva comparada con la visualización, la contemplación y la oración",
+            "de": "Passive Meditation im Vergleich zu Visualisierung, Kontemplation und Gebet",
+            "fr": "La méditation passive comparée à la visualisation, à la contemplation et à la prière"
           }
         }
       ],

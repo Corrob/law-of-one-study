@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import {
   CloseIcon,
   HomeIcon,
+  AskIcon,
   ExploreIcon,
   BookIcon,
   MeditateIcon,
@@ -30,6 +31,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { href: "/", labelKey: "home", icon: HomeIcon },
+  { href: "/ask", labelKey: "ask", icon: AskIcon },
   { href: "/explore", labelKey: "explore", icon: ExploreIcon },
   { href: "/paths", labelKey: "study", icon: BookIcon },
   { href: "/meditate", labelKey: "meditate", icon: MeditateIcon },

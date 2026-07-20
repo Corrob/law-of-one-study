@@ -15,7 +15,8 @@
     "copy": "Kopieren",
     "copied": "Kopiert!",
     "new": "Neu",
-    "close": "Schließen"
+    "close": "Schließen",
+    "export": "Exportieren"
   },
   "labels": {
     "menu": "Menü",
@@ -31,7 +32,8 @@
     "about": "Über uns",
     "support": "Unterstützen",
     "install": "Installieren",
-    "music": "Hören"
+    "music": "Hören",
+    "ask": "Fragen"
   },
   "header": {
     "appTitle": "Gesetz des Einen Studienbegleiter",
@@ -39,15 +41,14 @@
     "goToHome": "Zur Startseite",
     "openMenu": "Menü öffnen",
     "closeMenu": "Menü schließen",
-    "navigationMenu": "Navigationsmenü"
+    "navigationMenu": "Navigationsmenü",
+    "startNewConversation": "Neues Gespräch beginnen",
+    "exportChat": "Chat exportieren"
   },
   "dashboard": {
     "dailyWisdom": "Tägliche Weisheit",
     "readOnLawOfOneInfo": "{reference} auf lawofone.info lesen",
-    "newReflectionTomorrow": "Eine neue Reflexion erwartet dich morgen",
-    "featureNotice": "Die Funktionen Suche und Durchsuchen wurden auf Wunsch von L/L Research entfernt. Wir sind dankbar für ihre Bewahrung dieses Materials.",
-    "learnMore": "Mehr erfahren",
-    "dismissNotice": "Hinweis schließen"
+    "newReflectionTomorrow": "Eine neue Reflexion erwartet dich morgen"
   },
   "emailSignup": {
     "description": "Erhalte jede Woche ein Zitat aus dem Ra-Material in dein Postfach.",
@@ -73,6 +74,10 @@
     "meditate": {
       "title": "Meditieren",
       "description": "Geführte Meditationen"
+    },
+    "ask": {
+      "title": "Fragen",
+      "description": "Frag etwas über das Ra-Material"
     }
   },
   "explorePage": {
@@ -162,7 +167,7 @@
     "explore": "Dieses Konzept erkunden",
     "definition": "Definition",
     "extendedDefinition": "Erweiterte Definition",
-    "keyPassages": "Wichtige Passagen",
+    "keyPassages": "Wichtige Ideen",
     "relatedConcepts": "Verwandte Konzepte",
     "alsoKnownAs": "Auch bekannt als:",
     "sessions": "Sitzungen:",
@@ -210,5 +215,11 @@
       "balancingSelfDesc": "Ras Ausgleichstechnik: Überprüfe den Katalysator deines Tages, finde emotionale Ladungen, erfahre jedes Gefühl vollständig, dann erfahre sein Gegenteil, und lass das Gleichgewicht natürlich entstehen.",
       "balancingSelfQuote": "Jeder Gedanke, den ein Wesen hat, hat seinerseits eine Antithese. Die Disziplinen des Geistes beinhalten zunächst das Identifizieren sowohl jener Dinge, die du in dir selbst billigst, als auch jener, die du missbilligst, und dann das Ausgleichen jeder positiven und negativen Ladung mit ihrem Gleichen. Der Geist enthält alle Dinge. Daher musst du diese Vollständigkeit in dir selbst entdecken."
     }
+  },
+  "confirmNewChat": {
+    "title": "Neues Gespräch beginnen?",
+    "message": "Dein aktuelles Gespräch wird gelöscht. Dies kann nicht rückgängig gemacht werden.",
+    "confirm": "Neu beginnen",
+    "cancel": "Weiter chatten"
   }
 }

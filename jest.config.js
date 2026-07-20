@@ -26,13 +26,12 @@ const customJestConfig = {
     // Exclude files that are difficult to test or low-value
     "!src/providers/**",         // PostHog requires browser environment
     "!src/contexts/**",          // React contexts tested via component tests
-    "!src/data/placeholders.ts", // Static data
-    "!src/data/starters.ts",     // Static data
     "!src/app/**/layout.tsx",    // Next.js layouts
     "!src/app/**/error.tsx",     // Next.js error boundaries
     "!src/app/**/loading.tsx",   // Next.js loading states
     "!src/**/index.ts",          // Re-export files
-    "!src/lib/posthog-server.ts", // PostHog server requires env
+    "!src/app/api/**",           // API routes covered by E2E, not unit tests
+    "!src/hooks/useAskStream.ts", // SSE streaming client covered by E2E
   ],
   coverageThreshold: {
     // Global thresholds - achievable with current test coverage

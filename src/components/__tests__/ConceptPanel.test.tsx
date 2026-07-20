@@ -220,6 +220,36 @@ describe("ConceptPanel", () => {
     ).toBeGreaterThan(0);
   });
 
+  it("shows a summary passage without quotation marks", () => {
+    render(
+      <ConceptPanel
+        concept={mockConcept}
+        onClose={mockOnClose}
+        onSelectConcept={mockOnSelectConcept}
+      />
+    );
+
+    const els = screen.getAllByText(/This is a key passage from Ra/);
+    expect(els[0].textContent).not.toMatch(/^“/); // no leading curly quote
+  });
+
+  it("wraps a verbatim passage in quotation marks", () => {
+    const conceptWithQuote = {
+      ...mockConcept,
+      keyPassages: [{ ...mockConcept.keyPassages[0], verbatim: true }],
+    };
+    render(
+      <ConceptPanel
+        concept={conceptWithQuote}
+        onClose={mockOnClose}
+        onSelectConcept={mockOnSelectConcept}
+      />
+    );
+
+    const els = screen.getAllByText(/This is a key passage from Ra/);
+    expect(els[0].textContent).toMatch(/^“.*”$/); // wrapped in “ ”
+  });
+
   it("renders related concepts as buttons", () => {
     render(
       <ConceptPanel

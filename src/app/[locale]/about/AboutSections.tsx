@@ -10,6 +10,21 @@ export default function AboutSections({
 }) {
   return (
     <>
+      {/* How Ask Works - static */}
+      <section className="mb-16">
+        <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">
+          {t("ask.title")}
+        </h2>
+        <div className="bg-[var(--lo1-indigo)]/20 border border-[var(--lo1-celestial)]/30 rounded-2xl p-8 space-y-4 text-[var(--lo1-stardust)]">
+          <p className="leading-relaxed">{t("ask.intro")}</p>
+          <p className="leading-relaxed">{t("ask.grounding")}</p>
+          <p className="leading-relaxed">{t("ask.discernment")}</p>
+          <p className="text-sm text-[var(--lo1-stardust)]/70 border-t border-[var(--lo1-gold)]/20 pt-4 leading-relaxed">
+            {t("ask.attribution")}
+          </p>
+        </div>
+      </section>
+
       {/* About LL Research Section - static */}
       <section className="mb-16">
         <h2 className="text-3xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-gold)] mb-6">

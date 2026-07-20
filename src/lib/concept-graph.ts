@@ -294,6 +294,126 @@ export function buildConceptContextForPrompt(
 }
 
 /**
+ * Build a compact "atlas" of the entire concept graph for LLM grounding.
+ *
+ * Lists every concept with its term, category, brief definition, and the
+ * `session.question` references of its key passages. This is a stable,
+ * language-specific block (it never changes between requests) so it can live in
+ * a cached system prefix — giving the model the full map of Ra topics plus the
+ * accurate citation anchors it may reference with {{CITE:...}} markers.
+ */
+export function buildConceptAtlas(
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): string {
+  const lines: string[] = [
+    "RA MATERIAL CONCEPT ATLAS",
+    "Every concept in the Law of One Study concept graph, with brief definitions and",
+    "the source references you may cite. Use these references (session.question) in",
+    "{{CITE:...}} markers. Do not cite any reference not listed here.",
+    "",
+  ];
+
+  const byCategory = new Map<ConceptCategory, GraphConcept[]>();
+  for (const concept of Object.values(conceptGraph.concepts)) {
+    const list = byCategory.get(concept.category) ?? [];
+    list.push(concept);
+    byCategory.set(concept.category, list);
+  }
+
+  for (const [category, concepts] of byCategory) {
+    const categoryName = getLocalizedText(
+      conceptGraph.categories[category].name,
+      locale
+    );
+    lines.push(`## ${categoryName}`);
+
+    for (const concept of concepts) {
+      const term = getLocalizedText(concept.term, locale);
+      const definition = getLocalizedText(concept.definition, locale);
+      const refs = concept.keyPassages
+        .map((p) => p.reference)
+        .filter(Boolean);
+      const refPart = refs.length > 0 ? ` [refs: ${refs.join(", ")}]` : "";
+      lines.push(`- ${term}: ${definition}${refPart}`);
+    }
+    lines.push("");
+  }
+
+  return lines.join("\n").trim();
+}
+
+/**
+ * Build focused, full-detail grounding for the concepts most relevant to a
+ * query. Includes each concept's extended definition, relationships, and key
+ * passages. Passage excerpts are provided as PRIVATE grounding for the model
+ * (they must never be reproduced to the user) alongside the reference to cite.
+ */
+export function buildGroundingContext(
+  concepts: GraphConcept[],
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): string {
+  if (concepts.length === 0) return "";
+
+  const lines: string[] = [
+    "RELEVANT CONCEPTS (detailed grounding for this question):",
+  ];
+
+  for (const concept of concepts) {
+    const term = getLocalizedText(concept.term, locale);
+    const extended = getLocalizedText(concept.extendedDefinition, locale);
+
+    lines.push(`\n### ${term} (${concept.category})`);
+    lines.push(extended);
+
+    const rel = concept.relationships;
+    if (rel.related?.length) {
+      lines.push(`Related concepts: ${rel.related.join(", ")}`);
+    }
+    if (rel.prerequisite?.length) {
+      lines.push(`Prerequisites: ${rel.prerequisite.join(", ")}`);
+    }
+    if (rel.leads_to?.length) {
+      lines.push(`Leads to: ${rel.leads_to.join(", ")}`);
+    }
+
+    if (concept.keyPassages.length > 0) {
+      lines.push("Key passages (paraphrase these; cite with {{CITE:ref}}):");
+      for (const passage of concept.keyPassages) {
+        const context = getLocalizedText(passage.context, locale);
+        const excerpt = getLocalizedText(passage.excerpt, locale);
+        // The excerpt is grounding for the model only — never shown to the user.
+        lines.push(
+          `- ${passage.reference} — ${context}. (source text, do not reproduce: "${excerpt}")`
+        );
+      }
+    }
+  }
+
+  return lines.join("\n");
+}
+
+/**
+ * Collect the localized source excerpts for a set of concepts.
+ *
+ * These are the private grounding passages the model must never reproduce; the
+ * Ask route uses them post-response to detect verbatim reproduction. Empty
+ * strings are filtered out.
+ */
+export function getConceptExcerpts(
+  concepts: GraphConcept[],
+  locale: AvailableLanguage = DEFAULT_LOCALE
+): string[] {
+  const excerpts: string[] = [];
+  for (const concept of concepts) {
+    for (const passage of concept.keyPassages) {
+      const excerpt = getLocalizedText(passage.excerpt, locale).trim();
+      if (excerpt) excerpts.push(excerpt);
+    }
+  }
+  return excerpts;
+}
+
+/**
  * Get all concepts as a flat array
  */
 export function getAllConcepts(): GraphConcept[] {

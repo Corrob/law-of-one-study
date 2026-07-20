@@ -196,24 +196,38 @@ function PanelContent({
               {t("concept.keyPassages")}
             </h3>
             <div className="space-y-2">
-              {concept.keyPassages.slice(0, 2).map((passage, idx) => (
-                <div
-                  key={idx}
-                  className="p-3 rounded-lg bg-[var(--lo1-indigo)]/30 border border-[var(--lo1-celestial)]/10"
-                >
-                  <p className="text-sm text-[var(--lo1-starlight)] italic leading-relaxed">
-                    &ldquo;{getLocalizedText(passage.excerpt, locale)}&rdquo;
-                  </p>
-                  <a
-                    href={getRaMaterialUrlFromReference(passage.reference, locale)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-[var(--lo1-gold)] hover:underline mt-1 inline-block cursor-pointer"
+              {concept.keyPassages.slice(0, 2).map((passage, idx) => {
+                const context = getLocalizedText(passage.context, locale);
+                return (
+                  <div
+                    key={idx}
+                    className="p-3 rounded-lg bg-[var(--lo1-indigo)]/30 border border-[var(--lo1-celestial)]/10"
                   >
-                    Ra {passage.reference}
-                  </a>
-                </div>
-              ))}
+                    {context && (
+                      <p className="text-xs text-[var(--lo1-stardust)] mb-1">{context}</p>
+                    )}
+                    {passage.verbatim ? (
+                      // A validated verbatim quote — presented as such.
+                      <p className="text-sm text-[var(--lo1-starlight)] italic leading-relaxed">
+                        &ldquo;{getLocalizedText(passage.excerpt, locale)}&rdquo;
+                      </p>
+                    ) : (
+                      // Our own-words summary of the passage — not a verbatim quote.
+                      <p className="text-sm text-[var(--lo1-starlight)] leading-relaxed">
+                        {getLocalizedText(passage.excerpt, locale)}
+                      </p>
+                    )}
+                    <a
+                      href={getRaMaterialUrlFromReference(passage.reference, locale)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-[var(--lo1-gold)] hover:underline mt-1 inline-block cursor-pointer"
+                    >
+                      Ra {passage.reference} &rarr;
+                    </a>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

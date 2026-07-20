@@ -77,8 +77,12 @@ export type ArchetypeSubcategory =
 // Key passage from the Ra Material
 export interface KeyPassage {
   reference: string; // e.g., "16.51" - language-neutral identifier
-  excerpt: BilingualText; // Short quote (1-3 sentences) in both languages
+  excerpt: BilingualText; // Our own-words summary of the passage in all locales
   context: BilingualText; // Why this passage is important, in both languages
+  // When true, `excerpt` is a genuine verbatim quote (validated against
+  // llresearch.org in every locale) and is displayed in quotation marks.
+  // Otherwise `excerpt` is our summary and is shown without quotes.
+  verbatim?: boolean;
 }
 
 // Session references for a concept
