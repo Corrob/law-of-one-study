@@ -4,7 +4,7 @@ import {
   getEmailSubject,
   escapeHtml,
   MAILERLITE_UNSUBSCRIBE_TAG,
-  POSTAL_ADDRESS,
+  POSTAL_ADDRESS_LINES,
   type QuoteEmailParams,
 } from "../quote-email-template";
 import { AVAILABLE_LANGUAGES } from "@/lib/language-config";
@@ -42,9 +42,11 @@ describe("renderQuoteEmailHtml", () => {
     expect(preheaderIndex).toBeLessThan(headerIndex);
   });
 
-  it("includes the sender postal address", () => {
+  it("includes every line of the sender postal address", () => {
     const html = renderQuoteEmailHtml(params);
-    expect(html).toContain(escapeHtml(POSTAL_ADDRESS));
+    for (const line of POSTAL_ADDRESS_LINES) {
+      expect(html).toContain(escapeHtml(line));
+    }
   });
 
   it("includes the L/L Research credit block", () => {

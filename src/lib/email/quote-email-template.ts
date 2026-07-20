@@ -27,8 +27,15 @@ const EMAIL_MESSAGES: Record<AvailableLanguage, typeof en> = { en, es, de, fr };
 /** MailerLite merge tag that expands to the unsubscribe URL at send time. */
 export const MAILERLITE_UNSUBSCRIBE_TAG = "{$unsubscribe}";
 
-/** Sender postal address, required by anti-spam law in every email. */
-export const POSTAL_ADDRESS = "9169 W State St #2573 Garden City, ID 83741";
+/**
+ * Sender postal address, required by anti-spam law in every email.
+ * Two lines, matching the MailerLite account profile format so their
+ * scanner detects it and doesn't append its own footer.
+ */
+export const POSTAL_ADDRESS_LINES = [
+  "9169 W State St #2573, Garden City, ID 83741",
+  "United States of America",
+];
 
 export interface QuoteEmailParams {
   /** The quote text, already localized. */
@@ -89,14 +96,6 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
 <meta name="color-scheme" content="light" />
 <meta name="supported-color-schemes" content="light" />
 <title>${escapeHtml(m.subject)}</title>
-<style>
-  /* Stack the CTA pair on narrow screens; clients without media-query
-     support (old Outlook) keep the side-by-side desktop layout. */
-  @media only screen and (max-width: 480px) {
-    .btn-col { display: block !important; width: 100% !important; }
-    .btn-gap { display: block !important; width: 100% !important; height: 12px !important; }
-  }
-</style>
 </head>
 <body style="margin:0;padding:0;background-color:${STARLIGHT};">
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}${"&nbsp;&zwnj;".repeat(30)}</div>
@@ -130,33 +129,15 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
             </td>
           </tr>
           <tr>
-            <td align="center" style="padding:28px 32px 8px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;max-width:440px;">
+            <td align="center" style="padding:30px 32px 8px;">
+              <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td class="btn-col" width="50%" style="vertical-align:top;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" style="border-radius:8px;background-color:${RA_GOLD};padding:14px 10px;">
-                          <a href="${askUrl}" style="display:block;font-family:${sans};text-decoration:none;">
-                            <span style="display:block;font-size:15px;font-weight:bold;color:${COSMIC_INDIGO};">${escapeHtml(m.askCta)}</span>
-                            <span style="display:block;margin-top:3px;font-size:11px;letter-spacing:0.5px;color:${COSMIC_INDIGO};">lawofone.study</span>
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
+                  <td align="center" style="border-radius:999px;background-color:${RA_GOLD};background-image:linear-gradient(135deg,#e2ba66,#c1923c);">
+                    <a href="${askUrl}" style="display:inline-block;padding:13px 42px;border-radius:999px;font-family:${sans};font-size:15px;font-weight:bold;letter-spacing:0.5px;color:${COSMIC_INDIGO};text-decoration:none;">${escapeHtml(m.askCta)}</a>
                   </td>
-                  <td class="btn-gap" width="16" style="width:16px;font-size:0;line-height:0;">&nbsp;</td>
-                  <td class="btn-col" width="50%" style="vertical-align:top;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" style="border-radius:8px;background-color:${COSMIC_INDIGO};padding:14px 10px;">
-                          <a href="${sourceUrl}" style="display:block;font-family:${sans};text-decoration:none;">
-                            <span style="display:block;font-size:15px;font-weight:bold;color:${STARLIGHT};">${escapeHtml(m.readCta)}</span>
-                            <span style="display:block;margin-top:3px;font-size:11px;letter-spacing:0.5px;color:${STARDUST};">llresearch.org</span>
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
+                  <td style="width:18px;font-size:0;line-height:0;">&nbsp;</td>
+                  <td align="center" style="border-radius:999px;background-color:${COSMIC_INDIGO};background-image:linear-gradient(135deg,#2c3374,#141839);">
+                    <a href="${sourceUrl}" style="display:inline-block;padding:13px 42px;border-radius:999px;font-family:${sans};font-size:15px;font-weight:bold;letter-spacing:0.5px;color:${STARLIGHT};text-decoration:none;">${escapeHtml(m.readCta)}</a>
                   </td>
                 </tr>
               </table>
@@ -182,7 +163,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
             <td style="padding:20px 32px;background-color:${STARLIGHT};font-family:${sans};font-size:11px;line-height:1.7;color:${STARDUST};text-align:center;">
               ${escapeHtml(m.footerReason)}<br />
               <a href="${escapeHtml(unsubscribe)}" style="color:${STARDUST};">${escapeHtml(m.unsubscribe)}</a><br />
-              ${escapeHtml(POSTAL_ADDRESS)}
+              ${POSTAL_ADDRESS_LINES.map(escapeHtml).join("<br />\n              ")}
             </td>
           </tr>
         </table>
