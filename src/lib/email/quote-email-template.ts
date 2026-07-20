@@ -25,6 +25,9 @@ const EMAIL_MESSAGES: Record<AvailableLanguage, typeof en> = { en, es, de, fr };
 /** MailerLite merge tag that expands to the unsubscribe URL at send time. */
 export const MAILERLITE_UNSUBSCRIBE_TAG = "{$unsubscribe}";
 
+/** Sender postal address, required by anti-spam law in every email. */
+export const POSTAL_ADDRESS = "9169 W State St #2573 Garden City, ID 83741";
+
 export interface QuoteEmailParams {
   /** The quote text, already localized. */
   quote: string;
@@ -109,9 +112,22 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
             </td>
           </tr>
           <tr>
-            <td style="padding:28px 32px;font-family:${sans};font-size:14px;line-height:2;">
-              <a href="${siteUrl}" style="color:${COSMIC_INDIGO};font-weight:bold;">${escapeHtml(m.readMoreCta)} &rarr;</a><br />
-              <a href="${sourceUrl}" style="color:${COSMIC_INDIGO};">${escapeHtml(m.readSourceCta)} &rarr;</a>
+            <td align="center" style="padding:28px 32px;">
+              <table role="presentation" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="border-radius:6px;background-color:${RA_GOLD};">
+                    <a href="${siteUrl}" style="display:inline-block;padding:12px 28px;font-family:${sans};font-size:14px;font-weight:bold;color:${COSMIC_INDIGO};text-decoration:none;">${escapeHtml(m.askCta)}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="height:12px;line-height:12px;font-size:0;">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td align="center" style="border-radius:6px;background-color:${COSMIC_INDIGO};">
+                    <a href="${sourceUrl}" style="display:inline-block;padding:12px 28px;font-family:${sans};font-size:14px;font-weight:bold;color:${STARLIGHT};text-decoration:none;">${escapeHtml(m.readCta)}</a>
+                  </td>
+                </tr>
+              </table>
             </td>
           </tr>
           <tr>
@@ -128,7 +144,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
             <td style="padding:20px 32px;background-color:${STARLIGHT};font-family:${sans};font-size:11px;line-height:1.7;color:${STARDUST};text-align:center;">
               ${escapeHtml(m.footerReason)}<br />
               <a href="${escapeHtml(unsubscribe)}" style="color:${STARDUST};">${escapeHtml(m.unsubscribe)}</a><br />
-              {$address}
+              ${escapeHtml(POSTAL_ADDRESS)}
             </td>
           </tr>
         </table>

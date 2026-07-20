@@ -4,6 +4,7 @@ import {
   getEmailSubject,
   escapeHtml,
   MAILERLITE_UNSUBSCRIBE_TAG,
+  POSTAL_ADDRESS,
   type QuoteEmailParams,
 } from "../quote-email-template";
 import { AVAILABLE_LANGUAGES } from "@/lib/language-config";
@@ -24,10 +25,18 @@ describe("renderQuoteEmailHtml", () => {
     expect(html).toContain("Ra 1.7");
   });
 
-  it("includes both the site link and the source link", () => {
+  it("includes an Ask button and a Read button with their links", () => {
     const html = renderQuoteEmailHtml(params);
     expect(html).toContain(params.siteUrl);
     expect(html).toContain(params.sourceUrl);
+    const messages = getEmailMessages("en");
+    expect(html).toContain(messages.askCta);
+    expect(html).toContain(messages.readCta);
+  });
+
+  it("includes the sender postal address", () => {
+    const html = renderQuoteEmailHtml(params);
+    expect(html).toContain(escapeHtml(POSTAL_ADDRESS));
   });
 
   it("includes the L/L Research credit block", () => {
