@@ -51,7 +51,7 @@
     "newReflectionTomorrow": "A new reflection awaits tomorrow"
   },
   "emailSignup": {
-    "description": "Receive a quote from the Ra Material in your inbox each week.",
+    "description": "Receive a quote from the Ra Material in your inbox each Sunday.",
     "emailLabel": "Email address",
     "emailPlaceholder": "you@example.com",
     "subscribe": "Subscribe",

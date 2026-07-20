@@ -51,7 +51,7 @@
     "newReflectionTomorrow": "Une nouvelle réflexion vous attend demain"
   },
   "emailSignup": {
-    "description": "Recevez chaque semaine une citation du Matériel de Ra dans votre boîte mail.",
+    "description": "Recevez chaque dimanche une citation du Matériel de Ra dans votre boîte mail.",
     "emailLabel": "Adresse e-mail",
     "emailPlaceholder": "vous@exemple.com",
     "subscribe": "S'abonner",
