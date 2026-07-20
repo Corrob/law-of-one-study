@@ -1,6 +1,5 @@
 export {
   renderQuoteEmailHtml,
-  renderQuoteEmailText,
   getEmailMessages,
   getEmailSubject,
   escapeHtml,

@@ -1,6 +1,5 @@
 import {
   renderQuoteEmailHtml,
-  renderQuoteEmailText,
   getEmailMessages,
   getEmailSubject,
   escapeHtml,
@@ -70,18 +69,6 @@ describe("renderQuoteEmailHtml", () => {
       expect(html).toContain(escapeHtml(messages.creditTitle));
       expect(html).toContain(`lang="${locale}"`);
     }
-  });
-});
-
-describe("renderQuoteEmailText", () => {
-  it("includes quote, citation, links, credit, and unsubscribe", () => {
-    const text = renderQuoteEmailText(params);
-    expect(text).toContain(params.quote);
-    expect(text).toContain("— Ra 1.7");
-    expect(text).toContain(params.siteUrl);
-    expect(text).toContain(params.sourceUrl);
-    expect(text).toContain("L/L Research");
-    expect(text).toContain(MAILERLITE_UNSUBSCRIBE_TAG);
   });
 });
 

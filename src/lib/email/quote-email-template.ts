@@ -4,7 +4,7 @@
  * Email-client-safe by design: table-based layout, all styles inline,
  * literal hex colors from the Style Guide (email clients ignore CSS vars),
  * serif fallbacks for the display face, and a max width of 600px.
- * A plain-text alternative is provided for deliverability and accessibility.
+ * MailerLite derives the plain-text MIME part from this HTML at send time.
  */
 
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
@@ -137,32 +137,4 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
   </table>
 </body>
 </html>`;
-}
-
-/**
- * Render the plain-text alternative of the quote email.
- */
-export function renderQuoteEmailText(params: QuoteEmailParams): string {
-  const m = getEmailMessages(params.locale);
-  const unsubscribe = params.unsubscribeTag ?? MAILERLITE_UNSUBSCRIBE_TAG;
-
-  return [
-    m.greeting,
-    "",
-    `"${params.quote}"`,
-    `— ${params.citation}`,
-    params.quoteUrl,
-    "",
-    `${m.readMoreCta}: ${params.siteUrl}`,
-    `${m.readSourceCta}: ${params.sourceUrl}`,
-    "",
-    m.creditTitle,
-    m.creditPublished,
-    m.creditIndependent,
-    `${m.creditLearnMore} https://www.llresearch.org · https://www.lawofone.info`,
-    "",
-    m.footerReason,
-    `${m.unsubscribe}: ${unsubscribe}`,
-    "{$address}",
-  ].join("\n");
 }

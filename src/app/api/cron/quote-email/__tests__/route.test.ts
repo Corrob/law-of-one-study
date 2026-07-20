@@ -77,7 +77,6 @@ describe("GET /api/cron/quote-email", () => {
       `weekly-quote-${new Date().getFullYear()}-${getDayOfYear(new Date())}-en`
     );
     expect(call.html).toContain("L/L Research");
-    expect(call.plainText).toContain("L/L Research");
     expect(call.subject).toContain(getQuoteForDay(new Date(), "en").reference);
     expect(scheduleCampaignMock).toHaveBeenCalledWith("42");
   });

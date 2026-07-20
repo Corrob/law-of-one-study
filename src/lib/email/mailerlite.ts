@@ -96,13 +96,15 @@ export async function listCampaignNames(): Promise<string[]> {
 /**
  * Create a regular campaign targeted at a single group.
  * Returns the new campaign's ID.
+ *
+ * MailerLite generates the plain-text MIME part from the HTML at send
+ * time; the API rejects payloads that try to supply one explicitly.
  */
 export async function createCampaign(params: {
   name: string;
   subject: string;
   groupId: string;
   html: string;
-  plainText: string;
 }): Promise<string> {
   const fromEmail = process.env.MAILERLITE_FROM_EMAIL;
   const fromName = process.env.MAILERLITE_FROM_NAME ?? "Law of One Study";
@@ -122,7 +124,6 @@ export async function createCampaign(params: {
           from_name: fromName,
           from: fromEmail,
           content: params.html,
-          plain_text: params.plainText,
         },
       ],
     }),

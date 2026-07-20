@@ -13,7 +13,6 @@ import { getDayOfYear, getQuoteForDay } from "@/lib/daily-quote";
 import {
   getEmailSubject,
   renderQuoteEmailHtml,
-  renderQuoteEmailText,
 } from "@/lib/email/quote-email-template";
 import {
   createCampaign,
@@ -80,7 +79,6 @@ export async function GET(request: Request): Promise<Response> {
         subject: `${getEmailSubject(locale)} — ${quote.reference}`,
         groupId,
         html: renderQuoteEmailHtml(params),
-        plainText: renderQuoteEmailText(params),
       });
       await scheduleCampaign(campaignId);
       sent.push(locale);

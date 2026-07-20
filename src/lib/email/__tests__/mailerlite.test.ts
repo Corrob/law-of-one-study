@@ -120,7 +120,6 @@ describe("mailerlite client", () => {
         subject: "Your weekly quote",
         groupId: "group-en",
         html: "<html></html>",
-        plainText: "text",
       });
 
       expect(id).toBe("42");
@@ -140,7 +139,6 @@ describe("mailerlite client", () => {
           subject: "s",
           groupId: "g",
           html: "<html></html>",
-          plainText: "t",
         })
       ).rejects.toThrow("MAILERLITE_FROM_EMAIL");
     });
