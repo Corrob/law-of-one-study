@@ -56,7 +56,7 @@
     "emailPlaceholder": "du@beispiel.de",
     "subscribe": "Abonnieren",
     "submitting": "Wird abonniert…",
-    "success": "Du bist angemeldet 🙏 Bitte bestätige in deinem Postfach.",
+    "success": "Du bist angemeldet. Eine Willkommens-E-Mail ist unterwegs zu dir.",
     "error": "Etwas ist schiefgelaufen. Bitte versuche es erneut.",
     "privacyNote": "Wir speichern nur deine E-Mail und Sprache und versenden über MailerLite. Jederzeit abbestellbar.",
     "dismiss": "E-Mail-Anmeldung schließen",

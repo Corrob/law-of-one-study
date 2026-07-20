@@ -27,7 +27,7 @@ test.describe("Email Signup", () => {
     await page.getByRole("button", { name: "Subscribe" }).click();
 
     await expect(
-      page.getByText("You are subscribed 🙏 Check your inbox to confirm.")
+      page.getByText("You're subscribed. A welcome email is on its way to your inbox.")
     ).toBeVisible();
   });
 

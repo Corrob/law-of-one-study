@@ -16,7 +16,7 @@ jest.mock("next-intl", () => ({
       emailPlaceholder: "you@example.com",
       subscribe: "Subscribe",
       submitting: "Subscribing…",
-      success: "You are subscribed 🙏 Check your inbox to confirm.",
+      success: "You're subscribed. A welcome email is on its way to your inbox.",
       error: "Something went wrong. Please try again.",
       privacyNote: "We store only your email and language.",
       dismiss: "Dismiss email signup",
@@ -100,7 +100,7 @@ describe("EmailSignup", () => {
 
     await waitFor(() =>
       expect(
-        screen.getByText("You are subscribed 🙏 Check your inbox to confirm.")
+        screen.getByText("You're subscribed. A welcome email is on its way to your inbox.")
       ).toBeInTheDocument()
     );
 

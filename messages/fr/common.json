@@ -56,7 +56,7 @@
     "emailPlaceholder": "vous@exemple.com",
     "subscribe": "S'abonner",
     "submitting": "Abonnement…",
-    "success": "Vous êtes abonné 🙏 Vérifiez votre boîte mail pour confirmer.",
+    "success": "Vous êtes abonné. Un e-mail de bienvenue est en route vers votre boîte mail.",
     "error": "Une erreur est survenue. Veuillez réessayer.",
     "privacyNote": "Nous ne conservons que votre e-mail et votre langue, et utilisons MailerLite pour l'envoi. Désabonnement à tout moment.",
     "dismiss": "Fermer l'inscription e-mail",

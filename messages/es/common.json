@@ -56,7 +56,7 @@
     "emailPlaceholder": "tu@ejemplo.com",
     "subscribe": "Suscribirse",
     "submitting": "Suscribiendo…",
-    "success": "Estás suscrito 🙏 Revisa tu correo para confirmar.",
+    "success": "Estás suscrito. Un correo de bienvenida va en camino a tu bandeja.",
     "error": "Algo salió mal. Inténtalo de nuevo.",
     "privacyNote": "Solo guardamos tu correo e idioma, y usamos MailerLite para el envío. Cancela cuando quieras.",
     "dismiss": "Cerrar formulario de suscripción",
