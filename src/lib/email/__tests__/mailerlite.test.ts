@@ -31,6 +31,11 @@ describe("mailerlite client", () => {
       MAILERLITE_FROM_NAME: "Law of One Study",
       MAILERLITE_GROUP_EN: "group-en",
     };
+    // Tests assume only EN is configured — drop any group ids inherited from
+    // the ambient shell (e.g. a dev machine with real MailerLite env vars).
+    delete process.env.MAILERLITE_GROUP_ES;
+    delete process.env.MAILERLITE_GROUP_DE;
+    delete process.env.MAILERLITE_GROUP_FR;
   });
 
   afterEach(() => {
