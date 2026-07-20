@@ -86,7 +86,17 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<meta name="supported-color-schemes" content="light" />
 <title>${escapeHtml(m.subject)}</title>
+<style>
+  /* Stack the CTA pair on narrow screens; clients without media-query
+     support (old Outlook) keep the side-by-side desktop layout. */
+  @media only screen and (max-width: 480px) {
+    .btn-col { display: block !important; width: 100% !important; }
+    .btn-gap { display: block !important; width: 100% !important; height: 12px !important; }
+  }
+</style>
 </head>
 <body style="margin:0;padding:0;background-color:${STARLIGHT};">
   <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}${"&nbsp;&zwnj;".repeat(30)}</div>
@@ -121,18 +131,32 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
           </tr>
           <tr>
             <td align="center" style="padding:28px 32px 8px;">
-              <table role="presentation" cellpadding="0" cellspacing="0">
+              <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;max-width:440px;">
                 <tr>
-                  <td align="center" style="border-radius:6px;background-color:${RA_GOLD};">
-                    <a href="${askUrl}" style="display:inline-block;padding:13px 32px;font-family:${sans};font-size:14px;font-weight:bold;color:${COSMIC_INDIGO};text-decoration:none;">${escapeHtml(m.askCta)}</a>
+                  <td class="btn-col" width="50%" style="vertical-align:top;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="border-radius:8px;background-color:${RA_GOLD};padding:14px 10px;">
+                          <a href="${askUrl}" style="display:block;font-family:${sans};text-decoration:none;">
+                            <span style="display:block;font-size:15px;font-weight:bold;color:${COSMIC_INDIGO};">${escapeHtml(m.askCta)}</span>
+                            <span style="display:block;margin-top:3px;font-size:11px;letter-spacing:0.5px;color:${COSMIC_INDIGO};">lawofone.study</span>
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
-                </tr>
-                <tr>
-                  <td style="height:12px;line-height:12px;font-size:0;">&nbsp;</td>
-                </tr>
-                <tr>
-                  <td align="center" style="border-radius:6px;background-color:${COSMIC_INDIGO};">
-                    <a href="${sourceUrl}" style="display:inline-block;padding:13px 32px;font-family:${sans};font-size:14px;font-weight:bold;color:${STARLIGHT};text-decoration:none;">${escapeHtml(m.readCta)}</a>
+                  <td class="btn-gap" width="16" style="width:16px;font-size:0;line-height:0;">&nbsp;</td>
+                  <td class="btn-col" width="50%" style="vertical-align:top;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="border-radius:8px;background-color:${COSMIC_INDIGO};padding:14px 10px;">
+                          <a href="${sourceUrl}" style="display:block;font-family:${sans};text-decoration:none;">
+                            <span style="display:block;font-size:15px;font-weight:bold;color:${STARLIGHT};">${escapeHtml(m.readCta)}</span>
+                            <span style="display:block;margin-top:3px;font-size:11px;letter-spacing:0.5px;color:${STARDUST};">llresearch.org</span>
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>

@@ -1,9 +1,9 @@
 {
-  "subject": "Tu cita semanal del Material de Ra",
+  "subject": "Tu cita semanal",
   "eyebrow": "Reflexión semanal",
   "greeting": "Respira hondo. Aquí tienes un pasaje para acompañar tu semana:",
-  "askCta": "Pregunta en lawofone.study",
-  "readCta": "Lee en llresearch.org",
+  "askCta": "Pregunta sobre este pasaje",
+  "readCta": "Lee la sesión completa",
   "askPrefill": "Por favor, ayúdame a entender {citation}: “{quote}”",
   "signoff": "En amor y en luz,",
   "signoffName": "lawofone.study",

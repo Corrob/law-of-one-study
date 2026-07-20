@@ -80,9 +80,11 @@ export async function GET(request: Request): Promise<Response> {
     try {
       const campaignId = await createCampaign({
         name,
-        // Append the citation so each week's subject is unique — identical
-        // subjects make Gmail thread the emails and depress open rates.
-        subject: `${getEmailSubject(locale)} — ${quote.reference}`,
+        // Citation first: mobile inboxes truncate at ~33 chars, so the part
+        // that changes each week must survive. It also keeps subjects unique —
+        // identical subjects make Gmail thread the emails. The brand lives in
+        // the From name, not the subject.
+        subject: `${quote.reference} — ${getEmailSubject(locale)}`,
         groupId,
         html: renderQuoteEmailHtml(params),
       });

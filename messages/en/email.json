@@ -1,9 +1,9 @@
 {
-  "subject": "Your weekly quote from the Ra Material",
+  "subject": "Your weekly quote",
   "eyebrow": "Weekly Reflection",
   "greeting": "Take a slow breath. Here is a passage to accompany your week:",
-  "askCta": "Ask on lawofone.study",
-  "readCta": "Read on llresearch.org",
+  "askCta": "Ask about this passage",
+  "readCta": "Read the full session",
   "askPrefill": "Please help me understand {citation}: “{quote}”",
   "signoff": "In love and in light,",
   "signoffName": "lawofone.study",
