@@ -9,6 +9,8 @@ import { ASK_MAX_MESSAGE_LENGTH } from "@/lib/ask/config";
 interface AskComposerProps {
   onSend: (message: string) => void;
   disabled: boolean;
+  /** Pre-fill the input (e.g. from the weekly email's ?q= deep link). */
+  initialValue?: string;
 }
 
 /**
@@ -17,10 +19,22 @@ interface AskComposerProps {
  * handling (keeps the box visible above the on-screen keyboard), a character
  * counter near the limit, and gently rotating placeholder hints.
  */
-export default function AskComposer({ onSend, disabled }: AskComposerProps) {
+export default function AskComposer({ onSend, disabled, initialValue }: AskComposerProps) {
   const t = useTranslations("ask");
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(initialValue ?? "");
   const { textareaRef, maxHeight } = useAutoGrowTextarea({ value });
+
+  // A pre-filled question should be one keystroke from sending: focus the
+  // field with the cursor at the end so Enter (or the send button) fires.
+  useEffect(() => {
+    if (!initialValue) return;
+    const el = textareaRef.current;
+    if (!el) return;
+    el.focus();
+    el.setSelectionRange(el.value.length, el.value.length);
+    // Run once on mount — the prefill is an initial value, not a controlled prop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const characterCount = value.length;
   const isNearLimit = characterCount > ASK_MAX_MESSAGE_LENGTH * 0.8;

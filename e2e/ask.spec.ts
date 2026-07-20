@@ -96,6 +96,36 @@ test.describe("Ask", () => {
     expect(content).not.toContain("{{CITE");
   });
 
+  test("pre-fills the composer from a ?q= deep link (weekly email)", async ({ page }) => {
+    await page.route("**/api/ask", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "text/event-stream; charset=utf-8",
+        body: SSE_RESPONSE,
+      });
+    });
+
+    const prefill = 'Please help me understand Ra 6.14: "The harvest is now."';
+    await page.goto(`/ask?q=${encodeURIComponent(prefill)}`);
+
+    // The composer arrives pre-filled and focused — one Enter away from asking.
+    const input = page.getByRole("textbox", { name: "Your question" });
+    await expect(input).toHaveValue(prefill);
+    await expect(input).toBeFocused();
+
+    await input.press("Enter");
+    await expect(page.getByText(prefill)).toBeVisible();
+
+    // The consumed ?q= is dropped so a refresh doesn't resurrect the question.
+    expect(new URL(page.url()).searchParams.get("q")).toBeNull();
+    await page.reload();
+    // The conversation is restored, and the composer is empty again.
+    await expect(page.getByText(prefill)).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Your question" }).last()
+    ).toHaveValue("");
+  });
+
   test("shows an error with a retry button that re-sends the question", async ({ page }) => {
     // First request fails; the retry succeeds with the canned stream.
     let calls = 0;

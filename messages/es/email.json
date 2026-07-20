@@ -1,8 +1,12 @@
 {
   "subject": "Tu cita semanal del Material de Ra",
-  "greeting": "Una cita para contemplar esta semana:",
+  "eyebrow": "Reflexión semanal",
+  "greeting": "Respira hondo. Aquí tienes un pasaje para acompañar tu semana:",
   "askCta": "Pregunta en lawofone.study",
   "readCta": "Lee en llresearch.org",
+  "askPrefill": "Por favor, ayúdame a entender {citation}: “{quote}”",
+  "signoff": "En amor y en luz,",
+  "signoffName": "lawofone.study",
   "creditTitle": "Acerca del Material de Ra",
   "creditPublished": "El Material de Ra (La Ley del Uno) fue canalizado y es publicado por L/L Research. Todas las citas se comparten con gratitud y pleno crédito a L/L Research, titulares de los derechos de autor y custodios de este material.",
   "creditIndependent": "lawofone.study es una herramienta de estudio independiente, financiada por la comunidad, y no está afiliada a L/L Research ni cuenta con su respaldo.",

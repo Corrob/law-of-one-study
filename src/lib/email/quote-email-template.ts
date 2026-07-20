@@ -19,6 +19,8 @@ const RA_GOLD = "#d4a853";
 const STARLIGHT = "#e8e6f2";
 const STARDUST = "#9a98a9";
 const BODY_TEXT = "#2a2a3a";
+// Faint indigo tint for the quote card, warmer than plain white.
+const QUOTE_CARD_BG = "#f6f4fb";
 
 const EMAIL_MESSAGES: Record<AvailableLanguage, typeof en> = { en, es, de, fr };
 
@@ -35,8 +37,8 @@ export interface QuoteEmailParams {
   citation: string;
   /** Link to the quoted passage in the source material. */
   quoteUrl: string;
-  /** Link back to lawofone.study (with UTM params). */
-  siteUrl: string;
+  /** Deep link into Ask on lawofone.study, pre-filled with the quote. */
+  askUrl: string;
   /** Link to the full session in the source material. */
   sourceUrl: string;
   locale: AvailableLanguage;
@@ -71,10 +73,13 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
   const quote = escapeHtml(params.quote);
   const citation = escapeHtml(params.citation);
   const quoteUrl = escapeHtml(params.quoteUrl);
-  const siteUrl = escapeHtml(params.siteUrl);
+  const askUrl = escapeHtml(params.askUrl);
   const sourceUrl = escapeHtml(params.sourceUrl);
   const serif = "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
   const sans = "Helvetica, Arial, sans-serif";
+  // Inbox preview line: the quote itself, not boilerplate. Trailing
+  // no-break spaces keep clients from pulling footer text into the preview.
+  const preheader = escapeHtml(params.quote.slice(0, 140));
 
   return `<!DOCTYPE html>
 <html lang="${params.locale}">
@@ -84,6 +89,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
 <title>${escapeHtml(m.subject)}</title>
 </head>
 <body style="margin:0;padding:0;background-color:${STARLIGHT};">
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${preheader}${"&nbsp;&zwnj;".repeat(30)}</div>
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${STARLIGHT};">
     <tr>
       <td align="center" style="padding:24px 12px;">
@@ -91,32 +97,34 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
           <tr>
             <td style="background-color:${COSMIC_INDIGO};padding:28px 32px;text-align:center;">
               <div style="font-family:${serif};font-size:26px;color:${STARLIGHT};letter-spacing:1px;">Law of One Study</div>
-              <div style="height:2px;width:64px;background-color:${RA_GOLD};margin:12px auto 0;"></div>
+              <div style="font-family:${sans};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${RA_GOLD};margin-top:10px;">&#10022; ${escapeHtml(m.eyebrow)} &#10022;</div>
             </td>
           </tr>
           <tr>
-            <td style="padding:32px 32px 8px;font-family:${sans};font-size:15px;color:${BODY_TEXT};">
+            <td align="center" style="padding:32px 32px 4px;font-family:${sans};font-size:15px;line-height:1.6;color:${BODY_TEXT};text-align:center;">
               ${escapeHtml(m.greeting)}
             </td>
           </tr>
           <tr>
-            <td style="padding:16px 32px 8px;">
+            <td style="padding:20px 32px 8px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="border-left:4px solid ${RA_GOLD};padding:8px 8px 8px 20px;">
-                    <p style="margin:0;font-family:${serif};font-style:italic;font-size:22px;line-height:1.5;color:${BODY_TEXT};">&ldquo;${quote}&rdquo;</p>
-                    <p style="margin:16px 0 0;font-family:${sans};font-size:14px;color:${STARDUST};">&mdash; <a href="${quoteUrl}" style="color:${STARDUST};">${citation}</a></p>
+                  <td align="center" style="background-color:${QUOTE_CARD_BG};border-radius:12px;padding:8px 28px 28px;text-align:center;">
+                    <div style="font-family:${serif};font-size:56px;line-height:1;color:${RA_GOLD};">&ldquo;</div>
+                    <p style="margin:0;font-family:${serif};font-style:italic;font-size:23px;line-height:1.55;color:${BODY_TEXT};">${quote}</p>
+                    <div style="height:2px;width:48px;background-color:${RA_GOLD};margin:20px auto;"></div>
+                    <p style="margin:0;font-family:${sans};font-size:14px;letter-spacing:1px;"><a href="${quoteUrl}" style="color:${COSMIC_INDIGO};text-decoration:none;font-weight:bold;">${citation}</a></p>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
           <tr>
-            <td align="center" style="padding:28px 32px;">
+            <td align="center" style="padding:28px 32px 8px;">
               <table role="presentation" cellpadding="0" cellspacing="0">
                 <tr>
                   <td align="center" style="border-radius:6px;background-color:${RA_GOLD};">
-                    <a href="${siteUrl}" style="display:inline-block;padding:12px 28px;font-family:${sans};font-size:14px;font-weight:bold;color:${COSMIC_INDIGO};text-decoration:none;">${escapeHtml(m.askCta)}</a>
+                    <a href="${askUrl}" style="display:inline-block;padding:13px 32px;font-family:${sans};font-size:14px;font-weight:bold;color:${COSMIC_INDIGO};text-decoration:none;">${escapeHtml(m.askCta)}</a>
                   </td>
                 </tr>
                 <tr>
@@ -124,10 +132,16 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
                 </tr>
                 <tr>
                   <td align="center" style="border-radius:6px;background-color:${COSMIC_INDIGO};">
-                    <a href="${sourceUrl}" style="display:inline-block;padding:12px 28px;font-family:${sans};font-size:14px;font-weight:bold;color:${STARLIGHT};text-decoration:none;">${escapeHtml(m.readCta)}</a>
+                    <a href="${sourceUrl}" style="display:inline-block;padding:13px 32px;font-family:${sans};font-size:14px;font-weight:bold;color:${STARLIGHT};text-decoration:none;">${escapeHtml(m.readCta)}</a>
                   </td>
                 </tr>
               </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:20px 32px 28px;font-family:${serif};font-style:italic;font-size:17px;line-height:1.6;color:${BODY_TEXT};text-align:center;">
+              ${escapeHtml(m.signoff)}<br />
+              <span style="color:${RA_GOLD};">${escapeHtml(m.signoffName)}</span>
             </td>
           </tr>
           <tr>

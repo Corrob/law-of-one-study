@@ -13,7 +13,7 @@ const params: QuoteEmailParams = {
   quote: "I am Ra. The Law of One states that all things are one.",
   citation: "Ra 1.7",
   quoteUrl: "https://www.llresearch.org/channeling/ra-contact/1#7",
-  siteUrl: "https://lawofone.study/en?utm_source=email",
+  askUrl: "https://lawofone.study/en/ask?q=Please%20help&utm_source=email",
   sourceUrl: "https://www.llresearch.org/channeling/ra-contact/1#7",
   locale: "en",
 };
@@ -27,11 +27,19 @@ describe("renderQuoteEmailHtml", () => {
 
   it("includes an Ask button and a Read button with their links", () => {
     const html = renderQuoteEmailHtml(params);
-    expect(html).toContain(params.siteUrl);
+    expect(html).toContain(escapeHtml(params.askUrl));
     expect(html).toContain(params.sourceUrl);
     const messages = getEmailMessages("en");
     expect(html).toContain(messages.askCta);
     expect(html).toContain(messages.readCta);
+  });
+
+  it("uses the quote as the hidden preheader text", () => {
+    const html = renderQuoteEmailHtml(params);
+    const preheaderIndex = html.indexOf(params.quote.slice(0, 60));
+    const headerIndex = html.indexOf("Law of One Study");
+    expect(preheaderIndex).toBeGreaterThan(-1);
+    expect(preheaderIndex).toBeLessThan(headerIndex);
   });
 
   it("includes the sender postal address", () => {

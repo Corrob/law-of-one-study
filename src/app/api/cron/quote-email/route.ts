@@ -11,6 +11,7 @@
 import { AVAILABLE_LANGUAGES, type AvailableLanguage } from "@/lib/language-config";
 import { getDayOfYear, getQuoteForDay } from "@/lib/daily-quote";
 import {
+  getEmailMessages,
   getEmailSubject,
   renderQuoteEmailHtml,
 } from "@/lib/email/quote-email-template";
@@ -62,11 +63,16 @@ export async function GET(request: Request): Promise<Response> {
     }
 
     const quote = getQuoteForDay(today, locale);
+    // Deep link into Ask with the composer pre-filled, so one tap turns the
+    // quote into a conversation.
+    const prefill = getEmailMessages(locale)
+      .askPrefill.replace("{citation}", quote.reference)
+      .replace("{quote}", quote.text);
     const params = {
       quote: quote.text,
       citation: quote.reference,
       quoteUrl: quote.url,
-      siteUrl: `${SITE_URL}/${locale}?utm_source=email&utm_medium=email&utm_campaign=weekly-quote`,
+      askUrl: `${SITE_URL}/${locale}/ask?q=${encodeURIComponent(prefill)}&utm_source=email&utm_medium=email&utm_campaign=weekly-quote`,
       sourceUrl: quote.url,
       locale,
     };

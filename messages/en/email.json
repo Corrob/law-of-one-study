@@ -1,8 +1,12 @@
 {
   "subject": "Your weekly quote from the Ra Material",
-  "greeting": "A quote to sit with this week:",
+  "eyebrow": "Weekly Reflection",
+  "greeting": "Take a slow breath. Here is a passage to accompany your week:",
   "askCta": "Ask on lawofone.study",
   "readCta": "Read on llresearch.org",
+  "askPrefill": "Please help me understand {citation}: “{quote}”",
+  "signoff": "In love and in light,",
+  "signoffName": "lawofone.study",
   "creditTitle": "About the Ra Material",
   "creditPublished": "The Ra Material (The Law of One) was channeled and is published by L/L Research. All quotes are shared with gratitude and full credit to L/L Research, the copyright holders and stewards of this material.",
   "creditIndependent": "lawofone.study is an independent, community-funded study tool and is not affiliated with or endorsed by L/L Research.",

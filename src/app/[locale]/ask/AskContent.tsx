@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence, LayoutGroup, useReducedMotion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import NavigationWrapper from "@/components/NavigationWrapper";
@@ -38,6 +39,11 @@ export default function AskContent() {
   }, [t]);
   const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
     useAskStream(locale, disclaimers);
+
+  // ?q= deep link (e.g. the weekly email's Ask button): pre-fill the composer
+  // once, captured at mount so later URL changes don't retrigger it.
+  const searchParams = useSearchParams();
+  const [prefill] = useState(() => searchParams.get("q") ?? "");
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -116,6 +122,11 @@ export default function AskContent() {
   const handleSend = useCallback(
     (message: string) => {
       setHasAsked(true);
+      // Drop a consumed ?q= prefill from the URL so a refresh mid-conversation
+      // doesn't resurrect the question in the composer.
+      if (window.location.search.includes("q=")) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
       void sendMessage(message);
     },
     [sendMessage]
@@ -151,7 +162,7 @@ export default function AskContent() {
       layoutId="ask-composer"
       transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
     >
-      <AskComposer onSend={handleSend} disabled={isStreaming} />
+      <AskComposer onSend={handleSend} disabled={isStreaming} initialValue={prefill} />
     </motion.div>
   );
 
