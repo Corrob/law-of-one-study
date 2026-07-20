@@ -4,7 +4,7 @@ import {
   getEmailSubject,
   escapeHtml,
   MAILERLITE_UNSUBSCRIBE_TAG,
-  MAILERLITE_ADDRESS_TAG,
+  SENDER_IDENTITY_LINES,
   type QuoteEmailParams,
 } from "../quote-email-template";
 import { AVAILABLE_LANGUAGES } from "@/lib/language-config";
@@ -42,9 +42,13 @@ describe("renderQuoteEmailHtml", () => {
     expect(preheaderIndex).toBeLessThan(headerIndex);
   });
 
-  it("includes the MailerLite address merge tag for compliance detection", () => {
+  it("includes the full sender identity block (name, address, country)", () => {
+    // MailerLite appends its default footer unless all three lines are
+    // present verbatim alongside the unsubscribe link.
     const html = renderQuoteEmailHtml(params);
-    expect(html).toContain(MAILERLITE_ADDRESS_TAG);
+    for (const line of SENDER_IDENTITY_LINES) {
+      expect(html).toContain(escapeHtml(line));
+    }
   });
 
   it("includes the L/L Research credit block", () => {

@@ -28,12 +28,16 @@ const EMAIL_MESSAGES: Record<AvailableLanguage, typeof en> = { en, es, de, fr };
 export const MAILERLITE_UNSUBSCRIBE_TAG = "{$unsubscribe}";
 
 /**
- * MailerLite merge tag that expands to the account's postal address at send
- * time. Using the tag (rather than hardcoding the address) is what tells
- * MailerLite's compliance scanner the address is present — otherwise it
- * appends its own footer block to the campaign.
+ * Sender identity block. MailerLite appends its own default footer unless
+ * the campaign HTML already contains ALL of: an unsubscribe link, the
+ * account name, address, and country (per their campaigns API docs) — so
+ * these lines must match the MailerLite account profile verbatim.
  */
-export const MAILERLITE_ADDRESS_TAG = "{$address}";
+export const SENDER_IDENTITY_LINES = [
+  "Law of One Study Companion",
+  "9169 W State St #2573",
+  "United States of America",
+];
 
 export interface QuoteEmailParams {
   /** The quote text, already localized. */
@@ -161,7 +165,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
             <td style="padding:20px 32px;background-color:${STARLIGHT};font-family:${sans};font-size:11px;line-height:1.7;color:${STARDUST};text-align:center;">
               ${escapeHtml(m.footerReason)}<br />
               <a href="${escapeHtml(unsubscribe)}" style="color:${STARDUST};">${escapeHtml(m.unsubscribe)}</a><br />
-              ${MAILERLITE_ADDRESS_TAG}
+              ${SENDER_IDENTITY_LINES.map((line) => escapeHtml(line)).join("<br />\n              ")}
             </td>
           </tr>
         </table>
