@@ -40,10 +40,11 @@ export default function AskContent() {
   const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
     useAskStream(locale, disclaimers);
 
-  // ?q= deep link (e.g. the weekly email's Ask button): pre-fill the composer
-  // once, captured at mount so later URL changes don't retrigger it.
+  // ?q= deep link (e.g. the weekly email's Ask button): submit the question
+  // automatically, captured at mount so later URL changes don't retrigger it.
   const searchParams = useSearchParams();
-  const [prefill] = useState(() => searchParams.get("q") ?? "");
+  const [deepLinkQuestion] = useState(() => searchParams.get("q")?.trim() ?? "");
+  const autoAsked = useRef(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -122,8 +123,8 @@ export default function AskContent() {
   const handleSend = useCallback(
     (message: string) => {
       setHasAsked(true);
-      // Drop a consumed ?q= prefill from the URL so a refresh mid-conversation
-      // doesn't resurrect the question in the composer.
+      // Drop a consumed ?q= from the URL so a refresh mid-conversation
+      // doesn't re-ask the question.
       if (window.location.search.includes("q=")) {
         window.history.replaceState(null, "", window.location.pathname);
       }
@@ -131,6 +132,18 @@ export default function AskContent() {
     },
     [sendMessage]
   );
+
+  // Fire the deep-linked question once on arrival — the reader lands straight
+  // in the conversation instead of in front of a pre-filled composer. The ref
+  // guards Strict Mode's double effect run.
+  useEffect(() => {
+    if (deepLinkQuestion && !autoAsked.current) {
+      autoAsked.current = true;
+      handleSend(deepLinkQuestion);
+    }
+    // Run once on mount; the captured question never changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Export the conversation as Markdown (old Seek feature, revived for Ask).
   const handleExportChat = useCallback(() => {
@@ -162,7 +175,7 @@ export default function AskContent() {
       layoutId="ask-composer"
       transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
     >
-      <AskComposer onSend={handleSend} disabled={isStreaming} initialValue={prefill} />
+      <AskComposer onSend={handleSend} disabled={isStreaming} />
     </motion.div>
   );
 

@@ -96,7 +96,7 @@ test.describe("Ask", () => {
     expect(content).not.toContain("{{CITE");
   });
 
-  test("pre-fills the composer from a ?q= deep link (weekly email)", async ({ page }) => {
+  test("auto-submits a ?q= deep link question (weekly email)", async ({ page }) => {
     await page.route("**/api/ask", async (route) => {
       await route.fulfill({
         status: 200,
@@ -105,22 +105,25 @@ test.describe("Ask", () => {
       });
     });
 
-    const prefill = 'Please help me understand Ra 6.14: "The harvest is now."';
-    await page.goto(`/ask?q=${encodeURIComponent(prefill)}`);
+    const question = 'Please help me understand Ra 6.14: "The harvest is now."';
+    await page.goto(`/ask?q=${encodeURIComponent(question)}`);
 
-    // The composer arrives pre-filled and focused — one Enter away from asking.
-    const input = page.getByRole("textbox", { name: "Your question" });
-    await expect(input).toHaveValue(prefill);
-    await expect(input).toBeFocused();
+    // The question is asked immediately — the reader lands in the answer,
+    // not in front of a pre-filled composer.
+    await expect(page.getByText(question)).toBeVisible();
+    await expect(
+      page.getByText(/The harvest is a transition between densities/).first()
+    ).toBeVisible();
+    await expect(
+      page.getByRole("textbox", { name: "Your question" }).last()
+    ).toHaveValue("");
 
-    await input.press("Enter");
-    await expect(page.getByText(prefill)).toBeVisible();
-
-    // The consumed ?q= is dropped so a refresh doesn't resurrect the question.
+    // The consumed ?q= is dropped so a refresh doesn't re-ask the question.
     expect(new URL(page.url()).searchParams.get("q")).toBeNull();
     await page.reload();
-    // The conversation is restored, and the composer is empty again.
-    await expect(page.getByText(prefill)).toBeVisible();
+    // The conversation is restored once, with the composer still empty.
+    await expect(page.getByText(question)).toBeVisible();
+    expect(await page.getByTestId("ask-related").count()).toBe(1);
     await expect(
       page.getByRole("textbox", { name: "Your question" }).last()
     ).toHaveValue("");
