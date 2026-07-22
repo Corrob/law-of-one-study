@@ -59,6 +59,10 @@ describe("stripAskMarkers with QCITE markers", () => {
 });
 
 describe("prompts channeling rules", () => {
+  it("tells the model never to write the literal marker token in its reply", () => {
+    expect(buildSystemPrompt("en")).toMatch(/never write the literal token/i);
+  });
+
   it("includes the channeling context only in the English system prompt", () => {
     expect(buildSystemPrompt("en")).toContain("CONFEDERATION CHANNELING");
     expect(buildSystemPrompt("es")).not.toContain("CONFEDERATION CHANNELING");

@@ -7,18 +7,25 @@ links to llresearch.org. This document designs the actual feature: the user
 option, request/prompt flow, citation format, data schema, validation, UI, and
 rollout. It resolves the feasibility doc's open questions.
 
-This is a design document; nothing here is built yet.
+**Status: implemented and merged.** This document has been updated to match
+what shipped. The most important divergences from the original design are
+flagged inline with **As implemented** notes; the biggest is that the option
+became an either/or **source selector** (Ra Material *or* conscious channeling,
+never blended), not an additive toggle. Final scope is 44 curated themes / 86
+transcript references, all fact-checked against the sources (see §11).
 
 ---
 
 ## 1. Summary of the solution
 
-A user-controlled toggle on the Ask page — **"Include Confederation channeling
-(Q'uo and friends)"** — that, when on, lets Ask weave in the later conscious
-channeling *as clearly attributed, paraphrased perspective* alongside Ra,
-citing dated transcripts with a new `{{QCITE:YYYY-MMDD}}` marker that renders
-as a labeled link ("Q'uo · February 20, 2000") to the transcript on
-llresearch.org.
+A source selector on the Ask page — **"Ra Material"** (default) or
+**"Conscious channeling (Q'uo)"** — that answers each question from *one*
+library, never blending the two. In channeling mode Ask draws on the later
+conscious channeling *as clearly attributed, paraphrased perspective*, citing
+dated transcripts with a `{{QCITE:YYYY-MMDD}}` marker that renders as a labeled
+link ("Q'uo · February 20, 2000") to the transcript on llresearch.org. (The
+original design proposed an additive toggle that wove channeling in *alongside*
+Ra; the either/or selector replaced it — see §2.)
 
 Copyright posture is identical to the Ra pipeline, which is the whole point of
 reusing it:
@@ -76,14 +83,16 @@ Ra only, and a toggle gives us a clean A/B surface and a safe rollback.
 
 ## 3. Request flow
 
-`AskRequestSchema` gains one field:
+`AskRequestSchema` gains one field (the exported `AskSource` type is the single
+source of truth reused across the client and server):
 
 ```ts
-includeChanneling: z.boolean().optional().default(false),
+source: z.enum(["ra", "channeling"]).optional().default("ra"),
 ```
 
-`useAskStream` / `stream-client.ts` pass it through. That is the entire API
-surface change.
+`useAskStream` passes it through; the route derives an `effectiveSource`
+(forced to `"ra"` for any non-English locale). That is the entire API surface
+change.
 
 ## 4. Grounding pipeline
 
@@ -101,10 +110,14 @@ CONFEDERATION CHANNELING TOPICS (later conscious channeling — our summaries; a
 - [Q'uo] Meditation is presented less as technique than as consenting to silence … [refs: QCITE:2000-0220, QCITE:2009-0124]
 ```
 
-`buildGrounding()` calls it **only when `includeChanneling` is true**, appends
-the block to `focused`, and adds match ids/terms to `matchedConceptIds` /
-`matchedTerms` (prefixed `chan:` so analytics and suggestions can tell them
-apart). `excerpts` is untouched — there is no channeling source text to guard.
+**As implemented (either/or):** `buildGrounding()` branches on the source. In
+channeling mode (`source === "channeling"` **and** `locale === "en"`) the
+focused grounding is the channeling block *alone* — no Ra concepts or
+supplements are offered, so the model has no Ra references to cite in that
+mode. Match ids/terms are prefixed `chan:` (so recommendations ignore them and
+analytics can tell the layers apart), and `excerpts` is always empty — there is
+no channeling source text to guard. Ra mode is byte-identical to the
+pre-feature behavior.
 
 ## 5. Prompt strategy — keep the cached prefix stable
 
@@ -170,7 +183,7 @@ like it, small and client-safe.
 
 **Rendering** (`citations.ts`):
 
-- New pattern `\{\{QCITE:\s*(\d{4}-\d{4}[a-z]?)\s*\}\}`; the partial-trailing-
+- Pattern `\{\{QCITE:\s*(\d{4}-\d{4}(?:_\d{2})?)\s*\}\}`; the partial-trailing-
   marker regex generalizes to cover `{{Q…` prefixes so half-streamed markers
   stay hidden.
 - Known refs render as `[Q'uo · Feb 20, 2000](https://www.llresearch.org/channeling/2000/0220)`
@@ -190,9 +203,8 @@ like it, small and client-safe.
   "note": "Curated Confederation-channeling themes for Ask. Our-words summaries only — never transcript text. References must exist in known-channeling-references.json and resolve on llresearch.org.",
   "themes": [
     {
-      "id": "meditation-silence",
-      "source": "Q'uo",
-      "aliases": ["silence", "sitting in meditation", "..."],
+      "id": "meditation-and-silence",
+      "aliases": ["silence", "meditation", "sitting in meditation", "..."],
       "summary": "Q'uo frames meditation less as a technique than as consenting to silence — the daily act of allowing the infinite to speak in its own language...",
       "references": ["2000-0220", "2009-0124"]
     }
@@ -229,9 +241,13 @@ since). The working sources instead, in order of authority:
 Read the top transcripts; write the our-words summary (English only — see §2). LLM-assisted
 drafting offline is fine — reading transcripts to write a summary is exactly
 what a human curator does — but no transcript text is ever committed, and a
-human reviews every entry before merge. Launch scope: the community-validated
-consensus list in §11 (~15 themes, each with 1–3 verified references), which
-supersedes the feasibility doc's provisional Tier 1.
+human reviews every entry before merge. **As shipped:** launch scope grew well
+past the original ~15 to **44 themes / 86 references** — the §11 consensus list
+plus core teachings and the most common pastoral and practical questions
+seekers actually ask, so the large majority of channeling-mode questions land
+on a real citation. The per-theme `source` field in the early sketch above was
+dropped; the source entity lives on each reference in
+`known-channeling-references.json`, not on the theme.
 
 ## 8. What deliberately does not change
 
@@ -246,9 +262,9 @@ supersedes the feasibility doc's provisional Tier 1.
 
 ## 9. Analytics, eval, rollout
 
-- **Telemetry:** send `includeChanneling` and matched `chan:` ids in the
-  existing `meta`/LLM-analytics metadata; add `ask_channeling_no_match` (toggle
-  on, zero themes matched) to steer alias/theme curation, mirroring
+- **Telemetry:** send `source` and matched `chan:` ids in the existing
+  `meta`/LLM-analytics metadata; `ask_channeling_no_match` (channeling mode,
+  zero themes matched) steers alias/theme curation, mirroring
   `ask_no_focused_grounding`.
 - **Eval:** add channeling-flavored queries (grief, meditation practice,
   faith/doubt, wanderer loneliness) to the eval set, run both toggle states;
@@ -348,3 +364,14 @@ post-contact conscious session quoting Ra through the circle, NOT the trance
 material — the summary's attribution must say so). Reddit scores are archival
 snapshots skewed toward 2020–2025; Bring4th like-counts are small-N. Neither
 changes the design — only the curation order.
+
+**Post-launch verification (done before merge).** Every one of the 44 shipped
+summaries was fact-checked by reading its cited transcripts. This corrected
+real drift the three-paragraph expansion had introduced: one attribution was
+wrong (the April 20, 1986 session is **Hatonn**, not Ra — the online
+validator's loose substring entity check had passed it falsely), six
+references picked by keyword-count turned out off-topic and were replaced with
+read-verified sessions, and a number of summaries asserted specifics the cited
+sessions did not contain. All were rewritten and re-verified against the new
+transcripts. Lesson recorded: verify references by *reading*, not substring
+keyword counts (e.g. "cat" matches "catalyst").

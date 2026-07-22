@@ -1,5 +1,5 @@
 {
-  "note": "Curated Confederation conscious-channeling themes for the Ask feature (English-only, shown only when the user enables the channeling option). Our-words summaries only — never transcript text. Every reference must exist in known-channeling-references.json (a unit test enforces this) and resolve on llresearch.org (scripts/validate-channeling-citations.ts --online). DRAFT: summaries were drafted from community research (docs/ask-channeling-option-design.md §11); each must be verified against the actual transcript before release.",
+  "note": "Curated Confederation conscious-channeling themes for the Ask feature (English-only, shown only when the seeker selects the conscious-channeling source). Our-words summaries only — never transcript text. Every reference must exist in known-channeling-references.json (a unit test enforces this) and resolve on llresearch.org (scripts/validate-channeling-citations.ts --online). Summaries have been fact-checked against the cited transcripts for attribution and support; keep them faithful and re-verify a summary whenever its references change.",
   "themes": [
     {
       "id": "illness-and-the-body",

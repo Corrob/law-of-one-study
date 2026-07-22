@@ -1,5 +1,5 @@
 {
-  "note": "Whitelist of Confederation conscious-channeling references the Ask feature may cite with {{QCITE:id}} markers. Ids are YYYY-MMDD (optionally _NN for same-day sessions, mirroring llresearch.org's own URL suffixes). The path is authoritative — never derive URLs from the id. Validate with scripts/validate-channeling-citations.ts (--online fetches each page). DRAFT: dates/entities sourced from community research (docs/ask-channeling-option-design.md §11); verify each against the live transcript before release.",
+  "note": "Whitelist of Confederation conscious-channeling references the Ask feature may cite with {{QCITE:id}} markers. Ids are YYYY-MMDD (optionally _NN for same-day sessions, mirroring llresearch.org's own URL suffixes). The path is authoritative — never derive URLs from the id. Every entry's date, path, and source entity have been verified against the live transcript (scripts/validate-channeling-citations.ts --online).",
   "references": {
     "1974-0415": {
       "source": "Hatonn",

@@ -52,6 +52,8 @@ Support claims about the teachings with citation markers of the form {{CITE:sess
 - Place a marker at the end of the sentence whose claim it supports: "Harvest is based on polarity {{CITE:6.14}}."
 - Citations are quiet support, never the subject: don't structure an answer as a list or tour of references, and don't make a marker the noun of a sentence ("see {{CITE:6.14}} for..."). Explain the teaching; let markers rest at sentence ends.
 - The app turns each marker into a link to the source — do NOT write out session numbers, URLs, or the words "session"/"question" yourself; use the marker only.
+- The {{...}} markers are silent markup: NEVER write the literal token "CITE" or "QCITE" in your reply, and never name or explain the markers themselves.
+- When you don't have a source for a claim, it's fine — and better than forcing a citation — to say so warmly and plainly: that this is your best current understanding and the seeker can check llresearch.org to verify. Just phrase it naturally (e.g. "I don't have a specific passage for this, but…"), never by naming a marker.
 - Aim for a citation on each paragraph's key claim. One well-chosen citation beats several loose ones.`;
 
 const RESOURCE_RECOMMENDATIONS = `SITE RESOURCES YOU MAY LINK:
@@ -194,7 +196,7 @@ const CORE_REMINDER =
 const CHANNELING_MODE_BANNER = `CONSCIOUS CHANNELING MODE: the seeker chose L/L Research's conscious channeling library (Q'uo, Latwii, Hatonn) for this question.
 - Answer from the Confederation's conscious-channeling perspective, attributing teachings by source name ("Q'uo suggests…").
 - Cite ONLY with {{QCITE:id}} markers using ids listed in the grounding — never {{CITE:...}} Ra citations in this mode, and never invent a QCITE id.
-- If the channeling topics provided don't cover the question (or none were provided), say so honestly, answer gently from the Confederation's broad themes WITHOUT citations, and invite the seeker to explore the full library at llresearch.org — or to switch to the Ra material.`;
+- If the provided topics don't cover the question (or none were provided), answer gently from the Confederation's broad conscious-channeling themes as your best current understanding, and say so plainly and warmly — e.g. that you don't have a specific passage for this, and the seeker can explore and verify at llresearch.org (or switch to the Ra material). Never invent a citation, and never write the literal word "QCITE" — just speak naturally.`;
 
 const CHANNELING_CORE_REMINDER =
   "(Reminder: explain in your own words only — never reproduce source text — attribute by source name, and cite ONLY {{QCITE:id}} markers from the listed refs (no {{CITE:...}} in this mode). Site-resource links use {{LINK:type:id}} with inventory ids only, at most one, and only when truly relevant.)";
