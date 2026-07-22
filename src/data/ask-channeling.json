@@ -3,267 +3,883 @@
   "themes": [
     {
       "id": "illness-and-the-body",
-      "aliases": ["illness", "ill", "sick", "sickness", "disease", "chronic pain", "physical pain", "my body", "health", "cancer", "diagnosis", "unwell", "chronically ill"],
-      "summary": "Q'uo speaks of physical pain and illness not as punishment but as potent catalyst: the body is a creature of the mind and a faithful teacher, and even suffering can widen awareness toward love, beauty, and compassion. The counsel is to balance pain by fully honoring it rather than suppressing it, to meet the body with gratitude and gentleness, and to remember the sufferer is more than the suffering body.",
-      "references": ["1990-0107", "2005-1016"]
+      "aliases": [
+        "illness",
+        "ill",
+        "sick",
+        "sickness",
+        "disease",
+        "chronic pain",
+        "physical pain",
+        "my body",
+        "health",
+        "cancer",
+        "diagnosis",
+        "unwell",
+        "chronically ill"
+      ],
+      "summary": "Q'uo speaks of physical pain and illness not as punishment or spiritual failure but as potent catalyst — some of the most concentrated learning material a soul can encounter. The body is described as a creature of the mind and a faithful, hardworking servant, and its ailments often carry meaning, pointing toward energies and emotions asking to be felt, balanced, and healed. Illness is met as a teacher to be listened to rather than merely an enemy to be defeated.\n\nA central and practical piece of the counsel concerns pain itself: Q'uo teaches that suppressing or gritting past pain does far more harm than honoring it, and that true balance comes from fully allowing an experience — even a hospitalization or chronic condition — while gently counting one's blessings alongside it. This takes real will, but it keeps the heart open where pain would otherwise close it, and lets even suffering widen awareness toward love, beauty, and compassion.\n\nThroughout, Q'uo is careful to hold the sufferer as more than the suffering body. The seeker is invited to meet their own body with gratitude and tenderness rather than resentment, to seek healing on every level without shame, and to remember that a body's limitations do not diminish the soul's wholeness. Illness, met this way, becomes not a detour from the path but a demanding stretch of it.",
+      "references": [
+        "1990-0107",
+        "2005-1016"
+      ]
     },
     {
       "id": "money-and-work",
-      "aliases": ["money", "work", "job", "career", "abundance", "finances", "financial", "poverty", "scarcity", "making a living", "materialism", "wealth", "can't afford"],
-      "summary": "Q'uo distinguishes money itself from the idolatrous love of it: money is a neutral tool, and it is misplaced worship of security that pulls the seeker from spiritual truth. Work, likewise, need not be only what earns pay — one's true work is the loving service offered in each moment. Q'uo also speaks of an abundance flowing through life far greater than the self usually draws upon.",
-      "references": ["1987-0510", "2004-0104"]
+      "aliases": [
+        "money",
+        "work",
+        "job",
+        "career",
+        "abundance",
+        "finances",
+        "financial",
+        "poverty",
+        "scarcity",
+        "making a living",
+        "materialism",
+        "wealth",
+        "can't afford"
+      ],
+      "summary": "Q'uo draws a careful line between money itself and the love of it. Money is a neutral tool, neither spiritual nor unspiritual; what pulls a seeker off center is the idolatrous worship of security and accumulation — trusting in what human hands have built in imitation of the Creator's true abundance. It is not having or lacking money that matters spiritually, but the grip it holds on the heart.\n\nWork, likewise, is reframed. Q'uo gently challenges the assumption that one's real work is only what earns a paycheck, and that spiritual or unpaid activity is merely rehearsal until \"real\" work begins. One's true work is the loving service offered in each moment, whatever its economic form; the difficulty many feel in recognizing their calling often stems from this distorted equation of worth with wages.\n\nQ'uo also speaks of an abundance flowing through life far greater than the anxious self usually perceives or draws upon — a generosity built into creation that scarcity-thinking blinds us to. For the seeker stressed about money or career, the counsel is to loosen the idolatry, to seek the loving heart in whatever work is at hand, and to trust that a life oriented toward service is provided for in ways the fearful mind cannot calculate.",
+      "references": [
+        "1987-0510",
+        "2004-0104"
+      ]
     },
     {
       "id": "anger-and-irritation",
-      "aliases": ["anger", "angry", "rage", "irritation", "irritated", "resentment", "frustrated", "frustration", "mad", "fuming", "lose my temper"],
-      "summary": "Q'uo counsels meeting anger with acceptance rather than suppression: the angry, aggressive part of the self is trying to protect and deserves to be cradled and reassured — \"this, too, is me.\" Irritation, impatience, and resentment become rich material for inner work when examined with compassion, and the one who provoked the anger carries a hidden gift of self-knowledge.",
-      "references": ["1996-1006", "2006-0328"]
+      "aliases": [
+        "anger",
+        "angry",
+        "rage",
+        "irritation",
+        "irritated",
+        "resentment",
+        "frustrated",
+        "frustration",
+        "mad",
+        "fuming",
+        "lose my temper"
+      ],
+      "summary": "Q'uo counsels meeting anger not with suppression but with acceptance, in one of its most distinctive teachings on the emotions. The angry, aggressive, even raging part of the self is understood as something trying, however clumsily, to protect one's health and welfare; it does not need to be conquered or shamed but reassured, cradled, and gently reintegrated. The seeker is invited to take that hot, \"vampiric\" energy into the heart and say, in compassion, this too is me.\n\nIrritation, impatience, resentment, and disappointment are treated as rich material for inner work rather than as lapses to be hidden. Q'uo suggests examining these reactions with curiosity — what within me is being touched? — and touching that place with love and self-forgiveness. Nothing is gained by pretending to a serenity one does not feel; the transformation comes through honest acknowledgment, not repression.\n\nQ'uo even reframes the person who provoked the anger as bearing a hidden gift: the gift of self-knowledge that comes from being hurt or misunderstood, which reveals exactly where the self still has healing to do. Anger, then, is not the opposite of spiritual growth but one of its most reliable engines — provided it is felt, owned, and offered compassion rather than either indulged or denied.",
+      "references": [
+        "1996-1006",
+        "2006-0328"
+      ]
     },
     {
       "id": "parenting-and-children",
-      "aliases": ["child", "children", "kid", "kids", "parenting", "parent", "my son", "my daughter", "raising children", "being a parent", "motherhood", "fatherhood", "my kids"],
-      "summary": "Q'uo frames parent and child as teacher and pupil to one another, and counsels living the principles oneself rather than merely preaching them: invite children into meditation to find their own inner voice, seek the delicate balance between freedom and boundaries, and above all accept the child as it is, for an open, accepting heart is what most frees a young soul to grow.",
-      "references": ["2006-1116"]
+      "aliases": [
+        "child",
+        "children",
+        "kid",
+        "kids",
+        "parenting",
+        "parent",
+        "my son",
+        "my daughter",
+        "raising children",
+        "being a parent",
+        "motherhood",
+        "fatherhood",
+        "my kids"
+      ],
+      "summary": "Q'uo frames the relationship between parent and child as a mutual teaching and learning, closer to master and pupil in both directions than to owner and possession. The parent is a teach/learner and the child a learn/teacher; each is present in the other's life to help both souls grow. This dignifies parenting as genuine spiritual work rather than mere caretaking.\n\nThe practical counsel centers on living the teaching rather than merely preaching it: Q'uo suggests that parents who wish to pass on the deeper values do so most powerfully by embodying them, and by inviting children into practices like meditation so that a child may find its own inner voice rather than borrowing the parent's. Alongside this runs the perennial art of balance — seeking the ever-shifting point between granting freedom and holding loving boundaries.\n\nAbove all, Q'uo returns to acceptance: the open, accepting heart of a parent, teacher, or friend is what most frees a young soul to unfold, and accepting the child as it actually is allows it to move along its own path sooner and more fully. For parents wrestling with a difficult child or family conflict, the invitation is to lead with that acceptance, trusting that love offered freely does more than control ever can.",
+      "references": [
+        "2006-1116"
+      ]
     },
     {
       "id": "forgiving-others",
-      "aliases": ["forgive others", "forgiving others", "forgive someone", "hard to forgive", "someone hurt me", "they hurt me", "holding a grudge", "grudge", "betrayed", "can't forgive", "person who wronged me"],
-      "summary": "Q'uo describes forgiveness of others as spiritual medicine that keeps the heart open — the scrubbing agent that releases the wish to judge or punish and refuses to hold another in resentment. Forgiving another is at once forgiving the self, and seeing an error and loving it anyway is the royal road back to the unity of all things. Feel the hurt fully, then choose release.",
-      "references": ["2020-0129", "1989-1112"]
+      "aliases": [
+        "forgive others",
+        "forgiving others",
+        "forgive someone",
+        "hard to forgive",
+        "someone hurt me",
+        "they hurt me",
+        "holding a grudge",
+        "grudge",
+        "betrayed",
+        "can't forgive",
+        "person who wronged me"
+      ],
+      "summary": "Q'uo describes forgiveness of others as a kind of spiritual medicine — the scrubbing agent that keeps the heart open in a relationship where it would otherwise close. To forgive is to release the wish to judge or punish and to refuse to hold another within the heart in a state of resentment; it is less about excusing what was done than about freeing oneself and the other from the binding charge of the wound.\n\nCrucially, Q'uo teaches that forgiving another self is at the same time forgiving the self: the two cannot finally be separated, and the release of stored anger, humiliation, and resentment is described as an immense healing made possible only through the infinite love of the Creator working within. To see an error and to love it anyway is what Q'uo calls the royal road back to the unity of all things.\n\nThe path there is not denial of pain. Q'uo counsels feeling the hurt fully — the mourning, the anger, every honest reaction — and only then choosing the response that turns from self-pity toward peace, from anger toward an embrace of even the arrows that wounded. Forgiveness is thus a decision and often a repeated one, a daily turning of the heart rather than a single dramatic act, and it is the end of the karmic wheel it once kept turning.",
+      "references": [
+        "2020-0129",
+        "1989-1112"
+      ]
     },
     {
       "id": "loneliness-and-connection",
-      "aliases": ["lonely", "loneliness", "alone", "isolated", "isolation", "no friends", "disconnected", "feel disconnected", "belonging", "no one understands", "feel unseen"],
-      "summary": "Q'uo distinguishes chosen solitude from the ache of loneliness carried even among others, and treats that ache tenderly: much of it heals in the company of other open hearts, joy longs to be shared, and no seeker truly travels alone — unseen teachers and companions move with each soul and answer whenever they are sincerely called upon.",
-      "references": ["2017-0121", "1997-0518"]
+      "aliases": [
+        "lonely",
+        "loneliness",
+        "alone",
+        "isolated",
+        "isolation",
+        "no friends",
+        "disconnected",
+        "feel disconnected",
+        "belonging",
+        "no one understands",
+        "feel unseen"
+      ],
+      "summary": "Q'uo distinguishes the chosen solitude of one who goes within from the ache of loneliness — the sense of being unseen and disconnected that can be carried even in a crowd, even among friends and family. This forced aloneness is named as one of the deep dysfunctions of the age, and it is met with compassion rather than with a brisk instruction to socialize more; the loneliness is real and it is understood.\n\nThe healing Q'uo points toward is the company of other open hearts. Much of what the lonely seeker needs is found not in mere proximity to others but in genuine heart-to-heart meeting, and joy itself, Q'uo observes, yearns to be shared and comes alive in contact with other selves. On the positive path one comes to recognize the Creator not only within but as other selves and as the whole creation, and that recognition is the antidote to isolation.\n\nAnd beneath even the loneliest hour runs a deeper reassurance: no seeker truly travels alone. Unseen teachers, friends, and companions from before time move with each soul and offer their presence whenever they are sincerely called upon. For the one who feels no one understands, Q'uo offers both a practical direction — toward real connection with open hearts — and a metaphysical comfort, that one is accompanied always.",
+      "references": [
+        "2017-0121",
+        "1997-0518"
+      ]
     },
     {
       "id": "energy-centers",
-      "aliases": ["energy center", "energy centers", "chakra", "chakras", "red ray", "orange ray", "yellow ray", "indigo ray", "kundalini", "balance my chakras", "ray centers"],
-      "summary": "Q'uo describes the energy centers (chakras) as a ladder the Creator's energy climbs: it enters at the red ray and must flow in balance up through orange, yellow, green, blue, and indigo, where it meets the gateway to intelligent infinity. Blockages anywhere below constrict what rises, so the work is to clear and balance each center in turn rather than force the higher ones open.",
-      "references": ["1991-0421", "2006-0903"]
+      "aliases": [
+        "energy center",
+        "energy centers",
+        "chakra",
+        "chakras",
+        "red ray",
+        "orange ray",
+        "yellow ray",
+        "indigo ray",
+        "kundalini",
+        "balance my chakras",
+        "ray centers"
+      ],
+      "summary": "Q'uo describes the energy centers, or chakras, as a ladder of light through which the Creator's energy rises within each person. Energy enters at the red-ray base — the center of survival, vitality, and sexuality — and is meant to flow upward in a balanced way through orange (personal and one-to-one relationship), yellow (groups, family, and society), green (unconditional love), blue (honest communication), and indigo, where it meets the gateway to intelligent infinity and union with the Creator.\n\nThe key concept is balance and flow rather than forcing the higher centers open. A blockage or distortion anywhere below constricts what can rise above it; unresolved fear in the lower rays, for instance, will starve the heart and higher centers no matter how much one aspires spiritually. Q'uo therefore counsels attending honestly to the whole system — including the earthy lower centers many seekers wish to skip — so that energy can move cleanly all the way up.\n\nWhen the centers are activated and balanced, Q'uo describes the intelligent energy of the Creator moving freely through the whole being and meeting at the brow, opening genuine contact with intelligent infinity. This can be accompanied by the phenomenon some call kundalini, and by real physical and emotional intensity, which is why the counsel is patient, balanced work rather than dramatic forcing. The chakra system, in this teaching, is the practical anatomy of the spiritual path.",
+      "references": [
+        "1991-0421",
+        "2006-0903"
+      ]
     },
     {
       "id": "free-will-and-respecting-others",
-      "aliases": ["free will", "law of confusion", "respecting others", "their own choices", "let people choose", "not my business", "control others", "trying to fix people", "mind my own business", "impose"],
-      "summary": "Q'uo treats free will — the Law of Confusion — as the first great law of creation: other selves' choices are simply not within the purview of your own, and honoring that frees you to listen and learn rather than to correct. The deepest respect for another's path is to trust their journey, offering your truth when asked but never pressing it upon a will that has not invited it.",
-      "references": ["1995-0319", "2002-0307"]
+      "aliases": [
+        "free will",
+        "law of confusion",
+        "respecting others",
+        "their own choices",
+        "let people choose",
+        "not my business",
+        "control others",
+        "trying to fix people",
+        "mind my own business",
+        "impose"
+      ],
+      "summary": "Q'uo treats free will — what the material calls the Law of Confusion — as the first great law of creation, the sacred ground on which everything else rests. Because the Creator wills that each soul discover love freely, the choices of other selves are simply not within the purview of one's own; to try to make another's choices for them, however lovingly intended, is to infringe on the very freedom that makes their growth possible.\n\nThis reframes a great deal of ordinary striving. The urge to fix, correct, convert, or manage other people is gently named as a subtle overreach, and Q'uo suggests that honoring another's free will actually frees the would-be helper to listen and to learn — for the other may have much to offer that the impulse to improve them would drown out. Respect becomes a form of love, and restraint a form of service.\n\nThe practical counsel is to keep one's focus on the choices genuinely one's own — one's own responses, vibration, and offering of love — while releasing responsibility for others' paths. This is not indifference; one may share truth freely when it is invited, and make one's light available to all. But the sharing is offered to a sovereign being who remains entirely free to accept or decline, and that freedom is treated as inviolable.",
+      "references": [
+        "1995-0319",
+        "2002-0307"
+      ]
     },
     {
       "id": "patience-and-surrender",
-      "aliases": ["patience", "patient", "surrender", "let go", "letting go", "trust the process", "divine timing", "in its own time", "need to control", "impatient", "trying to force", "trust that all is well"],
-      "summary": "Q'uo speaks of surrender not as giving up desire but as trust — the letting-go that brings peace by ceasing to fight one's own being and the unfolding of life. Balanced with intention and affirmation like yin with yang, surrender releases the charge that keeps catalyst circling, so it can finally be accepted and used. Beneath it all lies trust that this, too, is well.",
-      "references": ["2023-0928", "1990-0225"]
+      "aliases": [
+        "patience",
+        "patient",
+        "surrender",
+        "let go",
+        "letting go",
+        "trust the process",
+        "divine timing",
+        "in its own time",
+        "need to control",
+        "impatient",
+        "trying to force",
+        "trust that all is well"
+      ],
+      "summary": "Q'uo speaks of surrender not as giving up or going limp but as a deep letting-go that brings peace — the release of the exhausting fight against one's own being and against the unfolding of life. What the seeker who longs to surrender is really seeking, Q'uo suggests, is to be less at war with themselves; and the key that opens that door is trust: trust that beneath the visible world lies the Creator, and that this, too, is well.\n\nImportantly, surrender is held in balance with intention rather than opposed to it. Q'uo describes a yin-and-yang relationship between accepting what is and co-creating through intention, visualization, and affirmation; the mature seeker learns when to shape and when to yield. Total passivity is called inadequate to the third-density journey, but so is the grasping effort to control every outcome. Wisdom is knowing which the moment asks for.\n\nPatience flows naturally from this trust. When the seeker releases the charge of trying to force catalyst or hurry the timing of their growth, the very energy that kept a difficulty circling is freed, and the experience can finally be accepted and used. For the one worn out by trying to control everything, Q'uo's counsel is to loosen the grip, to trust the deeper unfolding, and to discover the peace that was waiting on the other side of surrender.",
+      "references": [
+        "2023-0928",
+        "1990-0225"
+      ]
     },
     {
       "id": "the-confederation-sources",
-      "aliases": ["who are you", "where do you come from", "brothers and sisters of sorrow", "who is q'uo", "who is quo", "are you an alien", "extraterrestrial", "what are you", "confederation", "confederation of planets"],
-      "summary": "Asked who speaks, the Confederation describes itself as a union of social memory complexes serving the one Creator — also calling themselves the Brothers and Sisters of Sorrow, drawn to answer the planet's call of suffering. Q'uo is one such contact, offered humbly as opinion to be weighed by the seeker's own discernment, never as authority; they come only where invited, in respect for free will.",
-      "references": ["2022-0302", "2021-0414"]
+      "aliases": [
+        "who are you",
+        "where do you come from",
+        "brothers and sisters of sorrow",
+        "who is q'uo",
+        "who is quo",
+        "are you an alien",
+        "extraterrestrial",
+        "what are you",
+        "confederation",
+        "confederation of planets"
+      ],
+      "summary": "Asked who is actually speaking, the Confederation describes itself as a union of social memory complexes and beings from many places and densities, bound together by a shared dedication to serve the one Creator. They also call themselves the Brothers and Sisters of Sorrow — a name that captures their motive, for they say they are drawn to answer the call of a planet in suffering, coming only where they are invited and only to those who seek.\n\nQ'uo, specifically, is described as a principle blending more than one Confederation source, offered to a particular group's questions. Throughout, these sources are insistent about their own humility: they present themselves not as authorities or masters but as fellow seekers a little further along, offering opinion to be weighed rather than doctrine to be swallowed. They ask again and again to be challenged and discerned, and they refuse the role of guru.\n\nThe defining constraint on all of this is free will. The Confederation says it has learned, sometimes through past error, not to overwhelm humanity with proof or spectacle; contact comes through the quiet, deniable channels of meditation, intuition, dream, and channeling precisely so that no one's freedom to believe or disbelieve is compromised. For the curious or skeptical seeker, Q'uo's own framing invites exactly that skepticism — take what rings true, and leave the rest.",
+      "references": [
+        "2022-0302",
+        "2021-0414"
+      ]
     },
     {
       "id": "aging-and-later-life",
-      "aliases": ["aging", "getting older", "growing old", "old age", "elderly", "getting on in years", "my age", "later in life", "retirement", "my body is failing", "growing older"],
-      "summary": "Q'uo speaks of aging as a gift built into the design: the body's gradual decline lets consciousness sense that an exit point draws near and turns the soul toward reflection on what the life has taught. Were the body to stay young for centuries, the deeper lessons of a full incarnation could not ripen; growing older is a doorway toward review, rest, and the planning of the next step.",
-      "references": ["2023-1014"]
+      "aliases": [
+        "aging",
+        "getting older",
+        "growing old",
+        "old age",
+        "elderly",
+        "getting on in years",
+        "my age",
+        "later in life",
+        "retirement",
+        "my body is failing",
+        "growing older"
+      ],
+      "summary": "Q'uo speaks of aging as a gift built into the very design of incarnation rather than as a cruelty or mere decay. The gradual decline of the body's functionality, in this teaching, is a means by which consciousness is helped to sense that an exit point is approaching, turning the soul's attention toward reflection, completion, and the harvest of the life's learning. Were the body to remain youthful for centuries, Q'uo suggests, the deeper lessons of a full incarnation could not ripen.\n\nLater life is thus framed less as loss than as a particular and precious season of the soul's work. The narrowing of physical capacity can open an inner spaciousness — time and inclination to review, to forgive, to distill what the years have taught, and to prepare for the transition ahead. The elder is doing real spiritual work simply by living toward the doorway with awareness.\n\nFor the seeker distressed by aging, illness of age, or the sense that their body is failing them, Q'uo offers a reorientation from resentment toward meaning. The changes are not a betrayal but part of a wise arc; the soul is not diminished as the body ages, and the approach of death is held, as always in this material, as safe and purposeful. Growing older becomes a form of ripening rather than a slow defeat.",
+      "references": [
+        "2023-1014"
+      ]
     },
     {
       "id": "change-and-uncertainty",
-      "aliases": ["change", "uncertain", "the unknown", "unknown future", "the future", "what's coming", "everything is changing", "fear of change", "instability", "my life is changing", "afraid of the future"],
-      "summary": "Q'uo meets the pain of change and fear of the unknown gently: change is the very texture of an evolving illusion, and even its ache is a venturing into new life. As planetary intensity rises, long-buried catalyst surfaces as outer upheaval — relationships, homes, whole ways of living shifting — and the steadying counsel is to return to faith, to the present moment, and to the trust that all is well beneath the turning.",
-      "references": ["2023-1209"]
+      "aliases": [
+        "change",
+        "uncertain",
+        "the unknown",
+        "unknown future",
+        "the future",
+        "what's coming",
+        "everything is changing",
+        "fear of change",
+        "instability",
+        "my life is changing",
+        "afraid of the future"
+      ],
+      "summary": "Q'uo meets the pain of change and the fear of the unknown with gentleness, naming change as the very texture of an evolving illusion rather than as something that ought not to happen. Even the ache of transition is reframed as a venturing forth into new life — a kind of small death and rebirth that, however disorienting, is how a soul moves. The seeker is assured that finding change painful is human, not a spiritual shortcoming.\n\nQ'uo connects the intensified change so many feel now to the rising planetary energy of the fourth-density transition: as the vibration quickens, long-buried catalyst surfaces, and lives reshape themselves — relationships ending and beginning, homes and circumstances shifting, old structures giving way. What can feel like chaos or instability is, in this larger view, the pressure of growth surfacing what is ready to be met.\n\nThe steadying counsel is to return, again and again, to faith and to the present moment. The unknown future cannot be controlled or fully foreseen, but it can be entered in trust; Q'uo's refrain that all is well beneath the turning is offered not as denial of real difficulty but as an anchor within it. For the seeker afraid of what is coming, the invitation is to loosen the need for certainty and to trust the deeper current carrying them.",
+      "references": [
+        "2023-1209"
+      ]
     },
     {
       "id": "wanderers-lived-experience",
-      "aliases": ["wanderer", "wanderers", "starseed", "starseeds", "homesick", "homesickness", "don't belong here", "feel alien", "not from this planet"],
-      "summary": "Q'uo speaks tenderly and often to wanderers — souls who came from elsewhere to serve during Earth's transition. Beloved passages counsel that wanderers accepted real risk in incarnating and are natives of Earth now, fully incarnate, so their deepest service begins with embracing this world and their own humanity rather than longing for home; Q'uo has also reassured seekers that hundreds of millions of wanderers are here at this time.",
-      "references": ["2007-0731", "2006-0206", "2018-0303"]
+      "aliases": [
+        "wanderer",
+        "wanderers",
+        "starseed",
+        "starseeds",
+        "homesick",
+        "homesickness",
+        "don't belong here",
+        "feel alien",
+        "not from this planet"
+      ],
+      "summary": "Q'uo speaks with unusual tenderness to wanderers — souls who felt the call of a suffering planet and chose to incarnate here from higher densities to lighten its vibration. Much of the lived experience Q'uo addresses is the ache that comes with that choice: a persistent homesickness, a sense of not quite belonging, and a loneliness that can shadow even a full and loved life. Q'uo frames these feelings not as failure or maladjustment but as the natural cost of a wanderer's sensitivity to a world still learning love.\n\nThe heart of Q'uo's counsel is that the wanderer is a native of Earth now — fully incarnate, subject to the same veil and the same lessons as anyone born here — and that the deepest service begins with accepting that humanity rather than straining toward a remembered home. The mission is rarely a dramatic task to be discovered; more often it is simply to be a lamp of love where one already stands, radiating the vibration one came to offer. Q'uo has also reassured seekers that they are far from alone, describing very large numbers of wanderers present on Earth at this time of transition.\n\nWhere the practical question is \"why do I feel this way, and what am I supposed to do?\", Q'uo gently redirects from doing to being: embrace the world and your own life within it, tend your own heart, and trust that your presence is itself the gift. The loneliness, rightly held, becomes a kind of tuning that keeps the wanderer oriented toward the love and light it carries.",
+      "references": [
+        "2007-0731",
+        "2006-0206",
+        "2018-0303"
+      ]
     },
     {
       "id": "fourth-density-transition-now",
-      "aliases": ["fourth density", "fourth-density", "4th density", "harvest", "graduation", "new earth", "ascension", "2012", "these times", "end times", "planetary shift", "earth transition", "the shift"],
-      "summary": "The conscious channeling treats Earth's move into fourth density as a present, gradual birth rather than a dated event: Q'uo describes Gaia birthing fourth-density Earth with some difficulty, counsels that opening the heart to love and understanding is the movement into fourth density, and that the seeker's work is not to worry about qualifying for graduation but simply to be authentic and seek the heart. Hatonn framed the intensity of the age with a parable about the search for true freedom.",
-      "references": ["2016-1015", "1980-0525"]
+      "aliases": [
+        "fourth density",
+        "fourth-density",
+        "4th density",
+        "harvest",
+        "graduation",
+        "new earth",
+        "ascension",
+        "2012",
+        "these times",
+        "end times",
+        "planetary shift",
+        "earth transition",
+        "the shift"
+      ],
+      "summary": "The conscious channeling treats Earth's movement into fourth density as a birth already underway rather than a single dated event on a calendar. Where the Ra contact spoke of harvest in the language of 1981, Q'uo and the Confederation speak to seekers living inside the long, sometimes turbulent labor of that transition — describing Gaia as a mother birthing a new, more heart-centered density, with third-density patterns and institutions still operating alongside the rising vibration.\n\nQ'uo's counsel to those anxious about \"making it\" is strikingly gentle: the work is not to earn a passing grade or to master metaphysics, but simply to be authentic and to seek the open heart. Opening to love and understanding — the primary qualities of fourth density — is itself the movement into fourth density; the seeker participates in the birth by becoming more loving, not by worrying about graduation. Hatonn, in the earlier material, framed the intensity of these times through a parable about the true search for freedom, meeting the age's difficulty with encouragement rather than alarm.\n\nThis theme also steadies the perennial \"didn't the harvest already happen?\" confusion by reframing the whole question. The transition is experiential and gradual, measured in the ripening of hearts rather than a countdown; the rising planetary intensity that surfaces so much catalyst is part of that ripening. The invitation is to meet the times with faith and presence, trusting that all is well beneath the visible turning.",
+      "references": [
+        "2016-1015",
+        "1980-0525"
+      ]
     },
     {
       "id": "ethics-and-limits-of-service",
-      "aliases": ["service", "service to others", "being of service", "how can I serve", "save the world", "wake people up", "awaken others", "helping others", "help people", "spread the message", "convince others", "proselytize"],
-      "summary": "A frequently quoted Confederation teaching on free will: you can only truly help those who ask for help — unrequested rescue subtly infringes on another's path — and Q'uo has said plainly that we did not come here to save the world but to love it and to bear witness to the light.",
-      "references": ["1980-0518", "2005-0918"]
+      "aliases": [
+        "service",
+        "service to others",
+        "being of service",
+        "how can I serve",
+        "save the world",
+        "wake people up",
+        "awaken others",
+        "helping others",
+        "help people",
+        "spread the message",
+        "convince others",
+        "proselytize"
+      ],
+      "summary": "One of the most frequently quoted teachings in the conscious channeling concerns the ethics of helping others under the Law of Confusion (free will). Latwii's counsel that you can only truly help those who ask for help is bedrock here: unrequested rescue, however well-meant, subtly overrides another's chosen path and can rob them of the catalyst they came to work with. Service begins with respect for the sovereignty of the other self.\n\nQ'uo extends this into a gentle correction of the spiritual savior impulse, saying plainly that we did not come here to save the world but to love it and to bear witness to the light. The most powerful service is often radiance rather than intervention — being available, holding a space of love and light, and allowing others to draw upon it as they will. To advertise, argue, or press the teaching upon the unwilling is to mistake the nature of the work.\n\nThe practical shape of this is discernment about when and how to act: offer freely when asked, make your light available without imposing it, and release attachment to whether another accepts. This protects both the helper — from burnout and from the subtle pride of fixing — and the helped, whose free will remains inviolate. Love that honors freedom is the mark of positive service.",
+      "references": [
+        "1980-0518",
+        "2005-0918"
+      ]
     },
     {
       "id": "acceptance-of-catalyst",
-      "aliases": ["acceptance", "accept what happens", "catalyst", "bitter cup", "why do bad things happen", "hard times", "difficult experiences", "suffering", "everything going wrong"],
-      "summary": "The channeling counsels receiving joy and sorrow as one gift: Latwii offered the image of playing whatever cards are dealt with grace, a session through the conscious circle (attributed to Ra — note it is conscious channeling, not the trance contact) taught accepting joy and sorrow as the same, and Q'uo teaches that acceptance opens the pathways of spirit where resistance closes them.",
-      "references": ["1986-0420", "1983-0821", "2010-1113"]
+      "aliases": [
+        "acceptance",
+        "accept what happens",
+        "catalyst",
+        "bitter cup",
+        "why do bad things happen",
+        "hard times",
+        "difficult experiences",
+        "suffering",
+        "everything going wrong"
+      ],
+      "summary": "The Confederation returns again and again to acceptance as the master key for working with life's raw material. Rather than sorting experience into good and bad, Q'uo counsels receiving joy and sorrow as a single gift — Latwii offered the homely image of playing whatever cards are dealt with grace, and a session spoken through the conscious circle taught the receiving of joy and sorrow as though they were the same. Acceptance is not resignation; it is the willingness to let an experience be fully what it is before asking what it has to teach.\n\nQ'uo describes resistance as the thing that jams the machinery of growth: what we refuse to feel or forgive stays lodged, blocking the flow of energy, while acceptance opens the pathways of spirit and lets catalyst do its transforming work. The \"bitter cup\" — a difficulty received in faith rather than pushed away — becomes nourishment. This is why the same hardship can either embitter or ripen a person; the difference is the inner yes.\n\nPractically, the counsel is to meet anger, disappointment, grief, and irritation first with acknowledgment and gentleness toward oneself, and only then with inquiry. Nothing is wasted when it is accepted; every catalyst, welcomed, becomes a step toward greater love. Q'uo frames this not as grim endurance but as a trusting relationship with one's own life.",
+      "references": [
+        "1986-0420",
+        "1983-0821",
+        "2010-1113"
+      ]
     },
     {
       "id": "meditation-and-silence",
-      "aliases": ["silence", "meditation", "meditate", "meditating", "meditation practice", "how to meditate", "sit in silence", "stillness", "quiet the mind"],
-      "summary": "Meditation is the heart of the Confederation's counsel — presented less as technique than as consenting to silence. Q'uo says it is with seekers in the silence, and that regular sitting lets the deeper self speak in a language beneath words; Hatonn contrasted the busy intellect with the knowing that opens in meditation.",
-      "references": ["2000-0220", "1974-0415"]
+      "aliases": [
+        "silence",
+        "meditation",
+        "meditate",
+        "meditating",
+        "meditation practice",
+        "how to meditate",
+        "sit in silence",
+        "stillness",
+        "quiet the mind"
+      ],
+      "summary": "Meditation is the beating heart of the Confederation's practical counsel, and Q'uo frames it less as a technique to be mastered than as a consent — a daily willingness to sit in silence and let the deeper self speak in a language beneath words. The famous reassurance that Q'uo is with the seeker in the silence captures the spirit of it: the point is not to achieve a blank mind or a special state, but to show up, soften, and allow.\n\nQ'uo teaches that the noise of the surface mind settles in its own time when it is not fought, and that in that settling an inner attunement becomes possible — a contact with guidance, with the open heart, and ultimately with intelligent infinity. Hatonn, in the early material, contrasted the restless intellect with the knowing that opens in the meditative state, suggesting that silence is where the truths the intellect circles are actually met.\n\nThe practical encouragement is gentle and forgiving: a little each day, without straining for results, trusting that regularity matters more than intensity and that even a distracted sitting is not wasted. Silence is described as a doorway always available, the single practice that supports every other — the ground from which faith, discernment, and love all grow.",
+      "references": [
+        "2000-0220",
+        "1974-0415"
+      ]
     },
     {
       "id": "the-open-heart",
-      "aliases": ["open heart", "open my heart", "keep my heart open", "heart closed", "heart chakra", "green ray", "self-love", "love myself", "loving myself", "self-worth"],
-      "summary": "Q'uo teaches that what matters is not the outer deed but the quality of heart brought to it — fear closes the heart and love reopens it — and that the first beloved is oneself: fall in love with yourself first, for a heart that has not welcomed itself cannot fully welcome another.",
-      "references": ["1997-0119", "2010-1002"]
+      "aliases": [
+        "open heart",
+        "open my heart",
+        "keep my heart open",
+        "heart closed",
+        "heart chakra",
+        "green ray",
+        "self-love",
+        "love myself",
+        "loving myself",
+        "self-worth"
+      ],
+      "summary": "Q'uo teaches that the quality of the heart brought to life matters far more than the outward correctness of one's deeds. Two people can perform the same act, and it is the love within it that gives it spiritual weight; conversely, a heart closed by fear turns even good works cold. The central drama of the seeker's day-to-day life, in this view, is whether the heart stays open or contracts.\n\nFear is named as the great closer of the heart, and love as what reopens it — not by force but by a gentle willingness to feel, to stay present, and to let oneself be moved. Q'uo speaks of clearing the heart of the lesser concerns of self-defense and self-interest so that one may discover, within that opened center, a shared identity with all other selves. The open heart is thus both a personal healing and the gateway to genuine connection.\n\nCrucially, Q'uo insists the first being to be loved is oneself: one cannot fully welcome another from a heart that has not welcomed itself. Falling in love with your own being — meeting your flaws and fears with the same tenderness you would offer a friend — is not self-indulgence but the necessary ground of an open heart. From that self-acceptance, love for others flows without strain.",
+      "references": [
+        "1997-0119",
+        "2010-1002"
+      ]
     },
     {
       "id": "love-before-wisdom",
-      "aliases": ["love and wisdom", "wisdom without love", "love or wisdom", "compassion versus wisdom", "too much in my head", "balancing love and wisdom", "head versus heart", "green ray blue ray", "too logical", "too emotional"],
-      "summary": "In a session held days after September 11, 2001, Q'uo taught that wisdom without love is utterly empty of content — love is the substance of the path and wisdom its refinement, so when the two seem to conflict, lead with love. Q'uo also describes the green-ray heart of love and the blue-ray clarity of wisdom as complementary and each incomplete without the other; the balance between them is unique to every seeker and discovered gradually, not decreed.",
-      "references": ["2001-0916", "2016-0326", "2006-1008"]
+      "aliases": [
+        "love and wisdom",
+        "wisdom without love",
+        "love or wisdom",
+        "compassion versus wisdom",
+        "too much in my head",
+        "balancing love and wisdom",
+        "head versus heart",
+        "green ray blue ray",
+        "too logical",
+        "too emotional"
+      ],
+      "summary": "In a session gathered in the days after September 11, 2001, Q'uo gave one of its most-quoted teachings: wisdom without love is utterly empty of content. Love is the substance of the spiritual path — the original creative force and the density this planet is entering — while wisdom is its refinement and clarity. When the two seem to conflict, the counsel is unambiguous: lead with love, and let wisdom serve it rather than the reverse.\n\nQ'uo also describes love and wisdom as complementary energies of the heart and the throat — the green ray of unconditional compassion and the blue ray of clear, honest seeing — each incomplete without the other. Pure love without wisdom can pour itself out unsustainably or without discernment; pure wisdom without love can see clearly but coldly. The mature seeker learns to hold both, letting compassion be informed by clarity and clarity warmed by compassion.\n\nThe balance between them, Q'uo stresses, is unique to every seeker and discovered gradually through living rather than decreed by a formula. There is no fixed ratio to achieve, only an ongoing calibration as awareness deepens. For most on the positive path in this density, though, the emphasis rests on love: it is the doorway, and wisdom is best approached through it.",
+      "references": [
+        "2001-0916",
+        "2016-0326",
+        "2006-1008"
+      ]
     },
     {
       "id": "angels-and-unseen-help",
-      "aliases": ["angel", "angels", "guardian angel", "spirit guides", "my guides", "unseen help", "invisible friends"],
-      "summary": "Q'uo describes angels as beings who never left the vibration of the Creator, part of a company of unseen help surrounding every seeker; such guidance is constantly available and responds to sincere, freely offered calling.",
-      "references": ["2011-0212"]
+      "aliases": [
+        "angel",
+        "angels",
+        "guardian angel",
+        "spirit guides",
+        "my guides",
+        "unseen help",
+        "invisible friends"
+      ],
+      "summary": "Asked about angels and unseen helpers, Q'uo describes beings who have never left the vibration of the Creator — presences of pure love that surround and support each seeker as part of a great company of unseen help. Guides, teachers, and what some traditions call angels are, in this view, constantly available, moving with each soul and offering counsel and comfort whenever they are sincerely invited.\n\nThe key that unlocks this help is calling: freely offered, heartfelt openness creates a kind of invitation that unseen friends may answer without infringing on free will. Q'uo emphasizes that no particular religious language is required — a simple inward request for loving help, in whatever words are authentic to the seeker, is enough. The help rarely arrives as thunderbolts; more often it comes as intuition, a timely person or book, a dream, or a sudden deepening of courage and peace.\n\nDiscernment remains part of the picture. Q'uo counsels weighing the fruits of any felt guidance: help that supports compassion, freedom, humility, and clarity is consonant with positive service, while anything demanding fear, dependence, or obedience is not. Received this way, the sense of unseen accompaniment becomes a quiet, trustworthy companion rather than a source of magical thinking.",
+      "references": [
+        "2011-0212"
+      ]
     },
     {
       "id": "the-veil-and-not-knowing",
-      "aliases": ["the veil", "veil of forgetting", "why can't we remember", "not knowing", "uncertainty", "need proof", "want certainty"],
-      "summary": "Q'uo frames the veil of forgetting as a gift rather than a problem: the purpose of third density is not to penetrate the veil, for not-knowing grants a focus and a power of faithful choice that the unveiled densities lack — and lifting the veil prematurely is described as a genuinely risky thing.",
-      "references": ["2006-0825", "2010-0213"]
+      "aliases": [
+        "the veil",
+        "veil of forgetting",
+        "why can't we remember",
+        "not knowing",
+        "uncertainty",
+        "need proof",
+        "want certainty"
+      ],
+      "summary": "Q'uo frames the veil of forgetting — the loss of conscious memory of our larger self and purpose upon incarnating — as a gift rather than a cruelty. The purpose of third density, Q'uo says, is not to penetrate the veil but to make the great choice of polarity in the dark, by faith rather than by proof. If the answers were obvious, the choice would carry no weight and evolution would stall; it is precisely the not-knowing that gives our love and our seeking their power.\n\nBecause of the veil, faith becomes possible in a way it cannot be for the unveiled higher densities: to love, to trust, to choose service without certainty is a spiritual achievement unique to this density. Q'uo even describes the premature lifting of the veil as a genuinely risky thing, since the disorientation and loss of hard-won faith can outweigh the gains of sudden knowing.\n\nThe practical comfort here is for the seeker tormented by doubt and the wish for certainty: not-knowing is not a defect in your practice but the very condition of the work. The invitation is to make peace with mystery, to act lovingly without guarantees, and to trust that the darkness you seek within is fertile ground rather than absence.",
+      "references": [
+        "2006-0825",
+        "2010-0213"
+      ]
     },
     {
       "id": "illusion-as-beautiful-dream",
-      "aliases": ["is this a dream", "the illusion", "nothing is real", "nothing feels real", "maya", "world an illusion", "simulation"],
-      "summary": "The Confederation speaks of the world as a beautiful dream of love — truly an illusion, but one lovingly built for learning; every model and map of it eventually fails, and what remains when they fall away is love itself.",
-      "references": ["1992-0913", "1997-0209", "1993-0530"]
+      "aliases": [
+        "is this a dream",
+        "the illusion",
+        "nothing is real",
+        "nothing feels real",
+        "maya",
+        "world an illusion",
+        "simulation"
+      ],
+      "summary": "Q'uo often describes the world as a beautiful dream of love — an illusion, yes, but one lovingly crafted as a schoolroom for the growth of souls. To call it illusion is not to dismiss it as worthless or to counsel detachment from its joys and sorrows; it is to remember that the solid-seeming world is a temporary arrangement of light through which the Creator comes to know itself. The dream is precious precisely because it is where love is learned.\n\nWithin this framing, Q'uo gently loosens the seeker's grip on models and certainties, observing that every map of reality eventually fails and falls away. Concepts, cosmologies, and even cherished spiritual frameworks are scaffolding; what remains when they dissolve is love itself. This is offered not as nihilism but as relief — the seeker need not get the metaphysics perfectly right to live rightly.\n\nThe practical fruit is a lighter, more wondering relationship with experience: holding the illusion with affection and humor, taking its lessons seriously without taking its permanence literally, and returning always to love as the one thing that is not illusory. To see the world as a beautiful dream is to be both fully present in it and quietly free within it.",
+      "references": [
+        "1992-0913",
+        "1997-0209",
+        "1993-0530"
+      ]
     },
     {
       "id": "will-and-desire",
-      "aliases": ["willpower", "strengthen my will", "the will", "pure desire", "no motivation", "lost motivation", "discipline myself"],
-      "summary": "Q'uo teaches that the will is the engine of the spiritual path, strengthened and purified by clarifying desire: what you most truly desire you will inevitably seek, so the first work is tending and purifying what you desire.",
-      "references": ["2015-1107"]
+      "aliases": [
+        "willpower",
+        "strengthen my will",
+        "the will",
+        "pure desire",
+        "no motivation",
+        "lost motivation",
+        "discipline myself"
+      ],
+      "summary": "Q'uo describes the will as a central engine of the spiritual path — the faculty that turns wish into pilgrimage. But will, in this teaching, is not gritted-teeth force; it is the natural momentum of clarified desire. What you most truly and deeply desire, you will inevitably move toward, so the first and most important work is to tend and purify what you desire in the first place.\n\nMuch of the counsel therefore turns inward, toward honesty about one's actual longings. Scattered, conflicting, or half-acknowledged desires produce a scattered life; a desire brought into the light, examined, and consciously chosen gathers the will behind it. Q'uo frames the strengthening of will less as adding effort and more as removing the confusion and self-division that leak it away.\n\nThe encouragement for the seeker who feels weak-willed or unmotivated is to stop flogging themselves toward discipline and instead ask what they genuinely want at the deepest level. When desire aligns with the heart's true seeking, will follows almost of its own accord, and the seeker finds themselves carried toward the Creator by the very force that once felt so hard to summon.",
+      "references": [
+        "2015-1107"
+      ]
     },
     {
       "id": "self-forgiveness-and-shadow",
-      "aliases": ["forgiveness", "forgive", "forgive myself", "self-forgiveness", "shadow work", "hate myself", "shame", "guilt", "self-judgment", "dark side of myself", "karma", "karmic", "balancing karma"],
-      "summary": "Q'uo presents self-forgiveness as a reset button that restores the seeker's power in the present moment, and shadow work as greeting the dark self with compassion rather than exile; the pilgrim on this road is offered only the dust of the path and a divine discomfort that keeps the heart moving.",
-      "references": ["2009-1121", "2010-1016", "1990-0401"]
+      "aliases": [
+        "forgiveness",
+        "forgive",
+        "forgive myself",
+        "self-forgiveness",
+        "shadow work",
+        "hate myself",
+        "shame",
+        "guilt",
+        "self-judgment",
+        "dark side of myself",
+        "karma",
+        "karmic",
+        "balancing karma"
+      ],
+      "summary": "Q'uo presents self-forgiveness as one of the most powerful acts available to a seeker — a kind of reset button that restores one's spiritual power in the present moment. Guilt and self-judgment bind energy to the past and keep the wheel of self-punishment turning; forgiveness of the self releases that charge and returns the seeker, freshly, to now. Q'uo notes that the end of karma itself is forgiveness: to see an error, in oneself or another, and to love it anyway is to step off the wheel.\n\nShadow work, in this teaching, is not exorcism but reconciliation. The rejected, frightened, or angry parts of the self are met with compassion rather than exile — welcomed, reassured, and brought back into the household of the whole person. Q'uo speaks of greeting the dark self as one would a wounded child, saying in effect, this too is me, and loving it into balance rather than warring against it.\n\nThe pilgrim on this road is offered, in Q'uo's poignant image, only the dust of the path and a kind of divine discomfort that keeps the heart moving and humble. Self-forgiveness is thus ongoing rather than a single event — a daily willingness to begin again, to be gentle with one's imperfection, and to trust that the very capacity to forgive oneself is the love of the Creator working from within.",
+      "references": [
+        "2009-1121",
+        "2010-1016",
+        "1990-0401"
+      ]
     },
     {
       "id": "time-and-the-present",
-      "aliases": ["not enough time", "running out of time", "time is an illusion", "all is now", "present moment", "too late for me"],
-      "summary": "Q'uo counsels that the felt shortage of time belongs to the illusion: all is truly now, and the anxiety of not having enough time to complete one's work dissolves in the eternal present, which is where the work actually happens.",
-      "references": ["1996-0915"]
+      "aliases": [
+        "not enough time",
+        "running out of time",
+        "time is an illusion",
+        "all is now",
+        "present moment",
+        "too late for me"
+      ],
+      "summary": "Q'uo teaches that the felt shortage of time belongs to the illusion rather than to reality. In truth all is now; past and future are perspectives within space/time, while the living moment — the eternal present — is where the spiritual work actually happens. The anxiety of not having enough time to complete one's work, or of having arrived too late, dissolves when the seeker relocates attention from the anxious timeline to the present.\n\nThis is not a denial of ordinary scheduling but a reordering of priority. The seeker is invited to notice how much suffering is manufactured by living in anticipated futures and remembered pasts, and to practice returning, gently and repeatedly, to what is actually here. Latwii's image of the vast cell of creation seen under a microscope points to the same truth: our sense of scale and urgency is a trick of perspective.\n\nPractically, the present moment is offered as a refuge and a workshop. Love can only be given now; forgiveness can only happen now; the open heart is only ever open now. Q'uo's counsel to the time-pressured seeker is therefore to soften the grip of the clock and to trust that everything essential can be met in the moment one is in.",
+      "references": [
+        "1996-0915"
+      ]
     },
     {
       "id": "sacredness-of-daily-life",
-      "aliases": ["ordinary life", "daily life", "everyday life", "chores", "routine", "boring life", "mundane", "day job"],
-      "summary": "Q'uo teaches that daily duties become sacred when done transparently for the Creator — life itself is a spiritual adventure, and the ordinary moment holds as much love as any mountaintop experience.",
-      "references": ["2007-0922", "2008-1108"]
+      "aliases": [
+        "ordinary life",
+        "daily life",
+        "everyday life",
+        "chores",
+        "routine",
+        "boring life",
+        "mundane",
+        "day job"
+      ],
+      "summary": "Q'uo repeatedly dissolves the false boundary between the spiritual and the ordinary, teaching that daily duties become sacred the instant they are done transparently for the Creator. There is no need to escape to a mountaintop or a monastery; the dishes, the commute, the difficult meeting, and the tired evening are the very material of the path when met with presence and love. Life itself is described as a spiritual adventure, not a waiting room before one begins.\n\nThe practice, then, is a quality of attention rather than a change of circumstance. To bring one's whole heart to a small task, to treat an interruption as the day's real curriculum, to let the moment be transparent to the love that underlies it — this is the work. Q'uo suggests that the ordinary moment holds as much of the Creator as any peak experience, and often more, precisely because it asks for love without applause.\n\nFor the seeker who feels their life is too mundane for spiritual significance, this is a liberating reframe: nothing needs to be added, only awakened to. The sacredness was always there in the texture of the ordinary; the invitation is simply to notice, to consecrate the small, and to live as though every moment mattered — because, in this teaching, it does.",
+      "references": [
+        "2007-0922",
+        "2008-1108"
+      ]
     },
     {
       "id": "relationships-as-mirrors",
-      "aliases": ["relationship", "relationships", "marriage", "my partner", "spouse", "difficult people", "family conflict", "roommate"],
-      "summary": "Q'uo describes mates and close relationships as the most concentrated mirrors of catalyst available in this density, wryly counseling seekers to choose the mate with whom they wish to suffer — which is to say, with whom they wish to grow.",
-      "references": ["1986-1116"]
+      "aliases": [
+        "relationship",
+        "relationships",
+        "marriage",
+        "my partner",
+        "spouse",
+        "difficult people",
+        "family conflict",
+        "roommate"
+      ],
+      "summary": "Q'uo describes close relationships — and mates above all — as the most concentrated mirrors of catalyst available in third density. The people who can most delight us can also most reliably expose our unhealed places, and this is not a flaw in the relationship but its deepest gift. Q'uo wryly counsels choosing the mate with whom one wishes to suffer, which is to say the one beside whom one most wishes to grow.\n\nIn this framing, the friction in a partnership, a family, or a difficult friendship is not merely an obstacle to harmony but a precise reflection of the self. What irritates or wounds us in another often points to something within our own being asking for acceptance; the other self becomes, unknowingly, a teacher. The work is to receive that reflection with humility rather than blame, and to let the relationship refine both people.\n\nQ'uo does not romanticize this into passivity: honesty, communication, and healthy boundaries all belong to loving relationship. But the orienting insight is that relationships are laboratories of the heart, where love is practiced under real conditions. To see a difficult person as a mirror rather than an enemy transforms the whole enterprise from grievance into growth.",
+      "references": [
+        "1986-1116"
+      ]
     },
     {
       "id": "unity-and-the-creator",
-      "aliases": ["unity", "all is one", "oneness", "the one creator", "the creator", "god", "are we all one", "we are all connected", "law of one meaning", "what is the law of one"],
-      "summary": "At the center of the Confederation's message is a single note sounded a thousand ways: all is one, and that one is love. Q'uo describes every apparent separation as a beautiful illusion laid over an unbroken unity — the seeker, the neighbor, the difficult person, and the Creator are one being — and counsels practicing love as subject, verb, and object until unity becomes not a belief but a lived knowing.",
-      "references": ["2011-0409", "2009-0124"]
+      "aliases": [
+        "unity",
+        "all is one",
+        "oneness",
+        "the one creator",
+        "the creator",
+        "god",
+        "are we all one",
+        "we are all connected",
+        "law of one meaning",
+        "what is the law of one"
+      ],
+      "summary": "At the very center of the Confederation's message is a single note sounded a thousand ways: all is one, and that one is love. Q'uo describes every apparent separation — between self and other, seeker and stranger, creature and Creator — as a beautiful and purposeful illusion laid over an unbroken unity. Beneath the surface of difference, there is only the one infinite Creator knowing itself through countless points of view.\n\nThis is not offered as an abstract metaphysics to be believed but as a reality to be gradually lived. Q'uo speaks of practicing love as subject, verb, and object — loving, being love, and recognizing love in all one meets — until unity ceases to be a doctrine and becomes a felt knowing. The difficult person, the neighbor, the self one struggles to accept: each is, in truth, the Creator wearing another face.\n\nThe practical power of the teaching is that it reframes the entire spiritual life as remembering rather than acquiring. The seeker is not building a connection to the divine but waking up to a unity that was never broken. Every act of love, forgiveness, and acceptance is a small remembering of the one, and the whole path is the slow, joyful recovery of what was always the case.",
+      "references": [
+        "2011-0409",
+        "2009-0124"
+      ]
     },
     {
       "id": "the-choice-and-polarity",
-      "aliases": ["the choice", "polarity", "polarize", "polarization", "two paths", "positive polarity", "negative polarity", "sto", "sts", "why do we choose"],
-      "summary": "Q'uo describes third density as the realm of the Choice: whether to polarize toward service to others by radiating love, or toward service to self by seeking control. The choice must be made in faith rather than certainty — that is what gives it weight — and it is satisfied less by grand acts than by ordinary moments of fearlessly loving another as the Creator.",
-      "references": ["2005-0824", "2009-1003"]
+      "aliases": [
+        "the choice",
+        "polarity",
+        "polarize",
+        "polarization",
+        "two paths",
+        "positive polarity",
+        "negative polarity",
+        "sto",
+        "sts",
+        "why do we choose"
+      ],
+      "summary": "Q'uo describes third density as the realm of the Choice — the decisive spiritual work of this lifetime and this density. The seeker is choosing how to polarize consciousness for the long journey ahead: toward service to others, radiating and sharing love, or toward service to self, seeking to control and to gather power. This choice, made and remade in countless small moments, is what gives third-density life its urgency and meaning.\n\nCrucially, Q'uo teaches that the choice must be made in faith rather than certainty, and that is precisely what gives it weight. Because the veil hides the outcome, choosing love without proof of reward is a genuine act of will and devotion; if the metaphysics were obvious, the choice would be trivial. The positive path is satisfied not by grand gestures but by ordinary moments — fearlessly loving another as the Creator, again and again.\n\nQ'uo speaks of both paths as valid ways of intensifying the seeking of the One, while making clear that the service-to-others path is the one the Confederation and this planet's positive harvest follow. For the seeker, the practical teaching is encouraging: you do not need to be perfect, only to keep choosing love in the situations actually in front of you, letting each small choice deepen your polarity.",
+      "references": [
+        "2005-0824",
+        "2009-1003"
+      ]
     },
     {
       "id": "death-and-afterlife",
-      "aliases": ["death", "dying", "afterlife", "what happens when we die", "life after death", "reincarnation", "past lives", "between lives", "near death", "the other side"],
-      "summary": "Q'uo speaks of physical death not as an ending but as a graduation and a homecoming: the soul walks steps of ever-gentler light, reviews and assimilates the life just lived, rests, and in time chooses its next step — which for most souls now is a return to Earth's dawning fourth density. Death is described as a moment as worthy of celebration as of sorrow.",
-      "references": ["2007-0807"]
+      "aliases": [
+        "death",
+        "dying",
+        "afterlife",
+        "what happens when we die",
+        "life after death",
+        "reincarnation",
+        "past lives",
+        "between lives",
+        "near death",
+        "the other side"
+      ],
+      "summary": "Q'uo speaks of physical death not as an ending but as a graduation and a homecoming. The soul is described as walking steps of ever-gentler light, gradually released from the density of the body and welcomed into a realm of rest and review. What waits is not judgment from without but an honest, loving self-appraisal of the life just lived, undertaken with the help of one's guides.\n\nBetween incarnations, Q'uo describes a period of assimilation and planning: the soul looks at what was learned and left unlearned, and, with the momentum of its choices, prepares the next incarnation to carry the work forward. For most souls now, that next step is another life on Earth as its fourth-density character deepens. Reincarnation, in this teaching, is neither punishment nor endless treadmill but a patient, purposeful curriculum of the soul.\n\nThe emotional heart of the teaching is reassurance. Death is described as a moment as worthy of celebration as of sorrow — a laying down of a heavy garment, a reunion, a return to a wider life. For the seeker afraid of dying, or grieving another's death, Q'uo gently dissolves the terror of oblivion, presenting the transition as safe, natural, and held in love from beginning to end.",
+      "references": [
+        "2007-0807"
+      ]
     },
     {
       "id": "despair-and-the-dark-night",
-      "aliases": ["despair", "hopeless", "hopelessness", "depression", "depressed", "dark night", "dark night of the soul", "spiritual dryness", "burnout", "given up", "no point", "empty inside", "spiritually dry"],
-      "summary": "Q'uo meets despair and the spiritual \"dark night\" with unusual gentleness: the deepening awareness of suffering — one's own and the world's — can cast a seeker into a great pit, yet this darkness belongs to the rhythm of the path rather than marking a failure of it. The counsel is to guard the smallest ember of faith, tend balance instead of forcing effort, and trust that the low places are as sacred as the high.",
-      "references": ["1998-0315", "2005-0617"]
+      "aliases": [
+        "despair",
+        "hopeless",
+        "hopelessness",
+        "depression",
+        "depressed",
+        "dark night",
+        "dark night of the soul",
+        "spiritual dryness",
+        "burnout",
+        "given up",
+        "no point",
+        "empty inside",
+        "spiritually dry"
+      ],
+      "summary": "Q'uo meets despair and the spiritual dark night with unusual gentleness and without pretending the darkness away. The deepening awareness of suffering — one's own, and the world's — can crash upon a seeker with numbing power and cast them into what Q'uo frankly calls a great pit of despair. This descent is not treated as a failure of faith or practice but as a real and even expected passage on a sincere path.\n\nThe reframe Q'uo offers is that the low places belong to the rhythm of the journey as much as the high ones, and are no less sacred. Spiritual dryness, burnout, and the loss of felt meaning are seasons rather than verdicts; the essence of spiritual change often involves suffering, and the willingness to endure the dark without fleeing it is itself part of the ripening. The seeker is counseled to guard even the smallest ember of faith through the night.\n\nPractically, Q'uo warns against the very effort that often causes the crash: a great desire to serve or to advance can pull one away from the balance that body, mind, and spirit actually need. The counsel is to tend balance rather than force progress, to be exceedingly gentle with oneself, and to trust that the dark night, fully lived, gives way to a dawn — that one is being carried even when one cannot feel it.",
+      "references": [
+        "1998-0315",
+        "2005-0617"
+      ]
     },
     {
       "id": "life-purpose-and-direction",
-      "aliases": ["purpose", "life purpose", "my purpose", "feeling lost", "lost my way", "what am I here for", "why am I here", "my path", "my direction", "meaning of life", "missing something", "what should I do with my life"],
-      "summary": "To the seeker who feels lost or fears they have missed their true purpose, Q'uo's first word is reassurance: you have not lost your way. Purpose is less a hidden assignment to decode than a direction of the heart — following the quiet inner calling like a guiding star, trusting that simply being loving where you are is itself the work, and returning again to the remembrance that all is well.",
-      "references": ["2006-0123"]
+      "aliases": [
+        "purpose",
+        "life purpose",
+        "my purpose",
+        "feeling lost",
+        "lost my way",
+        "what am I here for",
+        "why am I here",
+        "my path",
+        "my direction",
+        "meaning of life",
+        "missing something",
+        "what should I do with my life"
+      ],
+      "summary": "To the seeker who feels lost or fears they have missed their true purpose, Q'uo's very first word is reassurance: you have not lost your way. Purpose, in this teaching, is far less a hidden assignment to be decoded — a single right career or mission that one might tragically miss — and far more a direction of the heart that can be lived out under almost any circumstance.\n\nQ'uo describes purpose as following a quiet inner calling, like a guiding star glimpsed in a desert sky, even when one cannot name its source or see where it leads. The seeker is invited to trust that simply being loving where they already are is itself the mission; the deepest work is rarely dramatic and is almost always available right now, in the ordinary situation at hand. The felt lack of a grand purpose is often just the mind wanting a map that the heart doesn't need.\n\nThe steadying refrain Q'uo returns to is that all is well and that the seeker is exactly where they need to be for the learning that is theirs. This is not passivity but relief from a false pressure: one does not have to figure out the whole shape of a life to take the next loving step. Purpose reveals itself in the walking, not in the worrying.",
+      "references": [
+        "2006-0123"
+      ]
     },
     {
       "id": "understanding-negativity",
-      "aliases": ["negativity", "negative entities", "service to self", "evil", "dark forces", "negative people", "toxic people", "demons", "spiritual warfare", "the devil"],
-      "summary": "Q'uo frames negativity — whether an inner pattern or an outer entity walking the path of service to self — as still, at its root, made of the one Creator's light. The counsel is neither fear nor combat but recognition and radiated love: meeting the negative with compassion, blessing it, and giving thanks for the chance it offers to choose love once more.",
-      "references": ["2020-0104", "1990-0722"]
+      "aliases": [
+        "negativity",
+        "negative entities",
+        "service to self",
+        "evil",
+        "dark forces",
+        "negative people",
+        "toxic people",
+        "demons",
+        "spiritual warfare",
+        "the devil"
+      ],
+      "summary": "Q'uo addresses negativity — whether an inner pattern, a difficult person, or an unseen entity working the path of service to self — with a striking refusal of the language of warfare. Even the most negatively oriented being, Q'uo insists, is still made of the one Creator's light and is, at root, the Creator in another guise. Negativity is real and can be genuinely disruptive, but it is not a separate dark power opposed to the good; it is love distorted, seeking the One by a harder road.\n\nThe counsel for meeting it is therefore neither fear nor combat but recognition and radiated love. When greeted by hostility or by what some traditions call a psychic attack, Q'uo suggests recognizing what is happening, sending love and light to the source, and even giving thanks for the opportunity it offers to choose love once more. Fear and resistance feed negativity, while calm, loving acceptance starves it of the charge it seeks.\n\nDiscernment still matters: Q'uo does not counsel naivety or the abandonment of healthy boundaries, and much of the practical protection lies in tending one's own vibration through meditation and self-knowledge. But the orienting truth is that light does not fight darkness so much as fill it. To understand negativity rightly is to be freed from terror of it and to meet even the difficult and the hostile as, ultimately, oneself.",
+      "references": [
+        "2020-0104",
+        "1990-0722"
+      ]
     },
     {
       "id": "grief-and-loss",
-      "aliases": ["grief", "grieving", "mourning", "bereavement", "passed away", "lost someone", "losing someone", "death of a loved one", "loved one died", "miss them"],
-      "summary": "Q'uo speaks to grief with great tenderness: within the veil of this illusion grief is inescapable, yet there is no true loss — the energies of a loving relationship live on in mind and heart, and nothing authentic about it ever ends. The counsel is to let grief have its season while gently expanding one's vision of the beloved beyond the limits of this illusion, where every connection extends into infinity.",
-      "references": ["2019-0209", "2006-0305"]
+      "aliases": [
+        "grief",
+        "grieving",
+        "mourning",
+        "bereavement",
+        "passed away",
+        "lost someone",
+        "losing someone",
+        "death of a loved one",
+        "loved one died",
+        "miss them"
+      ],
+      "summary": "Q'uo meets grief with great gentleness and without any rush to console it away. Within the veil of this illusion, grief is described as inescapable — the natural ache of love meeting the appearance of separation — and the seeker is assured that struggling with it is no sign of spiritual failure. There is no timetable to obey and no correct way to mourn; the first counsel is simply to let grief have its season and to be tender with oneself inside it.\n\nBeneath the pain, Q'uo offers a quiet reframe: there is no true loss, because there is no real ending to a loving relationship. The bond continues in mind, heart, and spirit, and what was authentic about it endures beyond the body's absence. Q'uo gently invites the grieving one, when ready, to expand their vision of the departed beyond the limits of this illusion — to sense the beloved not as gone but as continuing, each soul extending into infinity.\n\nThe Confederation is careful here to lead with presence rather than metaphysics, especially in acute grief; comfort comes before teaching. But the enduring message is that love is not undone by death, that connection can still be felt in stillness, dream, and nature, and that grief, fully honored, slowly becomes a different kind of love — one that carries the beloved forward rather than only mourning their leaving.",
+      "references": [
+        "2019-0209",
+        "2006-0305"
+      ]
     },
     {
       "id": "anxiety-fear-and-peace",
-      "aliases": ["anxiety", "anxious", "fear", "afraid", "scared", "worry", "worried", "worrying", "stress", "stressed", "panic", "overwhelmed", "inner peace", "find peace"],
-      "summary": "Q'uo treats fear and worry as workable catalyst rather than enemies: fear is the other side of the coin of love, and naming what frightens the self begins to unlock what fear has closed down. Practical counsel includes asking of each worry whether any action is actually called for now — and if not, gently releasing it into faith — and building inner peace thought by thought, watching the mind and returning it to love.",
-      "references": ["2006-0416", "1992-0524"]
+      "aliases": [
+        "anxiety",
+        "anxious",
+        "fear",
+        "afraid",
+        "scared",
+        "worry",
+        "worried",
+        "worrying",
+        "stress",
+        "stressed",
+        "panic",
+        "overwhelmed",
+        "inner peace",
+        "find peace"
+      ],
+      "summary": "Q'uo treats fear and anxiety not as enemies to be defeated but as workable catalyst — and, strikingly, as the other side of the coin of love. Fear marks the places where love has been walled off, so naming what frightens us begins to unlock what fear has shut down. Rather than shaming oneself for anxiety, the seeker is invited to turn toward it with curiosity and compassion, treating it as information about where healing wants to happen.\n\nFor worry specifically, Q'uo offers a practical discernment: when a concern arises, first ask whether any action is actually called for in this moment. If yes, act; if no, the persistent and gentle effort can be made to release the worry into faith, downgrading anxious rumination into the trust of one who prays and lets go. Much suffering, Q'uo notes, is manufactured by rehearsing futures that never arrive.\n\nInner peace, in this teaching, is built thought by thought. Q'uo counsels watching the mind like a hawk and, when it turns toxic, gently declining that line of thinking and asking how one's highest self would meet the situation. Thoughts of love accumulate into peace as surely as thoughts of fear accumulate into dread; the seeker is, in a real sense, tending a garden of the mind.",
+      "references": [
+        "2006-0416",
+        "1992-0524"
+      ]
     },
     {
       "id": "faith-and-doubt",
-      "aliases": ["faith", "doubt", "doubts", "doubting", "leap of faith", "losing my faith", "crisis of faith", "hard to believe", "want proof"],
-      "summary": "Q'uo describes faith as a paradox that cannot be acquired in advance: one simply leaps into living as if one had faith, and finds one's footing in midair. Doubt and nervousness are part of the leap, not disqualifications from it — faith is a chosen orientation of the will rather than a certainty, and each leap strengthens the faculty of faith like a muscle.",
-      "references": ["1989-0311", "2000-1105"]
+      "aliases": [
+        "faith",
+        "doubt",
+        "doubts",
+        "doubting",
+        "leap of faith",
+        "losing my faith",
+        "crisis of faith",
+        "hard to believe",
+        "want proof"
+      ],
+      "summary": "Q'uo describes faith as a paradox that cannot be acquired in advance or reasoned into existence. One does not gather enough evidence and then believe; rather, one simply leaps — choosing to live as if one had faith — and discovers one's footing in midair. The first act of faith is thus a step into apparent nothingness, and it is the willingness to take that step, not any prior certainty, that begins a life of faith.\n\nDoubt, in this framing, is not the opposite of faith but its frequent companion. The nervousness, the questioning, the fear before the leap are part of the act, not disqualifications from it; the seeker who feels shaky is not failing but simply standing at the edge where faith actually lives. Q'uo is careful to distinguish faith from mere belief in propositions — it is an orientation of the will and heart, a chosen trust in the goodness underlying reality.\n\nEach leap, Q'uo suggests, strengthens the faculty of faith like a muscle, so that trust becomes more available over time. For the seeker in a crisis of faith or feeling that certainty has drained away, the counsel is oddly freeing: you were never meant to have certainty, and the loss of it can be the doorway to a deeper, more living trust that no longer depends on proof.",
+      "references": [
+        "1989-0311",
+        "2000-1105"
+      ]
     },
     {
       "id": "sacred-sexuality",
-      "aliases": ["sexuality", "sexual energy", "sexual energy transfer", "sex", "intimacy", "tantra", "celibacy", "orgasm", "lovemaking"],
-      "summary": "Q'uo treats sexuality as a sacred current of the one great original Thought: between partners meeting in the open, green-ray heart, sexual energy exchange becomes mutually healing and uplifting, and at its most refined reaches into the indigo ray's sacramental mystery. The channeling counsels honoring this energy with reverence, consent, and open-hearted love rather than fear or shame.",
-      "references": ["2007-0325", "2008-0510"]
+      "aliases": [
+        "sexuality",
+        "sexual energy",
+        "sexual energy transfer",
+        "sex",
+        "intimacy",
+        "tantra",
+        "celibacy",
+        "orgasm",
+        "lovemaking"
+      ],
+      "summary": "Q'uo treats sexuality as a sacred current of the one great original Thought rather than as something merely physical or spiritually suspect. When two people meet in the open, green-ray heart — in genuine caring and acceptance — sexual energy exchange becomes mutually healing and uplifting, each partner nourished by the other. Far from being an obstacle to the path, such union can be a doorway to the Creator when entered with reverence.\n\nQ'uo describes a refinement available as the energy centers open: what begins in red-ray vitality can rise, through an open heart, into the blue-ray of honest communication and even into the indigo-ray's sacramental mystery, where the exchange becomes an act of worship and a taste of the violet-ray gateway. The determining factor is never the mechanics but the vibration of the meeting — whether it is offered in love and freedom or in fear, manipulation, and self-seeking.\n\nThe counsel throughout is one of honoring: consent, tenderness, honesty, and the open heart make sexuality sacred, while shame and fear distort it. Q'uo neither prohibits nor prescribes particular forms, addressing the energetics rather than laying down rules, and leaves the seeker to bring the same reverence to this part of life that they would bring to prayer.",
+      "references": [
+        "2007-0325",
+        "2008-0510"
+      ]
     },
     {
       "id": "prayer-and-healing",
-      "aliases": ["prayer", "praying", "pray", "healing", "heal", "healing energy", "send love", "send light", "intercession", "pray for"],
-      "summary": "Q'uo affirms the reality of prayer and distant healing work: asking to send love and healing to another joins a great chorus of souls doing the same, and such intercession is genuinely felt. The counsel is to pray in whatever language of the heart is authentic to the self, in the name of the Creator as one knows the Creator, while releasing attachment to outcomes — healing belongs to the free will of the one prayed for.",
-      "references": ["2010-0130", "1992-0503"]
+      "aliases": [
+        "prayer",
+        "praying",
+        "pray",
+        "healing",
+        "heal",
+        "healing energy",
+        "send love",
+        "send light",
+        "intercession",
+        "pray for"
+      ],
+      "summary": "Q'uo affirms the reality and power of prayer, including prayer offered for others at a distance. When a seeker asks to send love and healing to another, they join what Q'uo describes as a vast chorus of souls doing the same across the world — a lovely blending of intention that is genuinely felt and genuinely effective. Prayer is not a naive petition to a distant deity but a real movement of love through the interconnected creation.\n\nThe counsel on how to pray is refreshingly unconstrained: pray in whatever language of the heart is authentic to you, in the name of the Creator as you understand the Creator, choosing the images and words that carry the most love for you personally. What matters is sincerity and the heart's orientation, not the correctness of the form. Q'uo encourages daily intercessory prayer as a real service one can offer the world from anywhere.\n\nHealing, in this teaching, works within free will rather than overriding it. The healer or the one who prays makes love and energy available; whether and how it is received belongs to the other's deeper self and path. This frees the seeker from attachment to outcomes and from the burden of results — one offers the healing current faithfully and releases it, trusting that love given is never wasted.",
+      "references": [
+        "2010-0130",
+        "1992-0503"
+      ]
     },
     {
       "id": "dreams-and-dreamwork",
-      "aliases": ["dream", "dreams", "dreaming", "dreamwork", "nightmare", "nightmares", "dream journal", "lucid dreaming", "remember my dreams"],
-      "summary": "Q'uo describes dreaming as a nightly conversation with the deeper self: most dreams process energies left unfinished by the waking day, while some carry genuine guidance. Keeping a dream journal and setting the intention to remember opens the channel — dreams grow sharper, more detailed, and more useful — and dedicating sleep to the Creator's service shapes the dreaming toward the light.",
-      "references": ["1990-0211", "1992-0712"]
+      "aliases": [
+        "dream",
+        "dreams",
+        "dreaming",
+        "dreamwork",
+        "nightmare",
+        "nightmares",
+        "dream journal",
+        "lucid dreaming",
+        "remember my dreams"
+      ],
+      "summary": "Q'uo describes dreaming as a nightly conversation between the waking self and the deeper self. The most common function of dreams is simply to process the energies and catalyst left unfinished by the day — emotional housekeeping that is useful even when it is not profound. But some dreams carry genuine guidance, symbol, and contact, and learning to tell one kind from another is part of the seeker's education.\n\nThe practical heart of the teaching is intention and attention. Keeping a dream journal opens a real dialogue with oneself: as one records dreams, they tend to grow sharper, more detailed, and more colorful, and the channel between conscious and unconscious widens. Reminding oneself before sleep of the wish to remember, and contemplating a question one carries, prepares the ground for meaningful dreaming.\n\nQ'uo also suggests dedicating one's sleep to the service of the Creator and the radiation of light, which shapes the dreaming toward the positive and can even make the night a time of service. For the seeker troubled by nightmares or puzzling dreams, the counsel is to approach them with curiosity rather than fear, treating even the disturbing ones as messengers from a self that is trying to become whole.",
+      "references": [
+        "1990-0211",
+        "1992-0712"
+      ]
     },
     {
       "id": "guidance-and-higher-self",
-      "aliases": ["higher self", "inner guidance", "inner voice", "intuition", "still small voice", "automatic writing", "contact my guides", "inner guide"],
-      "summary": "Q'uo teaches that every seeker carries a guidance system — the higher self and unseen friends — reachable through daily meditation, prayer, contemplation, or personal ritual. Its communications arrive quietly: intuitions, things that catch the attention, dreams, synchronicities. The work is mostly clearing away noise so the still, small voice can be heard, and guidance is described as part of the self, never truly separate.",
-      "references": ["2010-1106", "1989-1231"]
+      "aliases": [
+        "higher self",
+        "inner guidance",
+        "inner voice",
+        "intuition",
+        "still small voice",
+        "automatic writing",
+        "contact my guides",
+        "inner guide"
+      ],
+      "summary": "Q'uo teaches that every seeker carries an inner guidance system — the higher self and a family of unseen friends — and that contact with it is not reserved for special people but available to anyone willing to quiet down and listen. Much of what people seek from outer sources, Q'uo notes, is in fact their own higher self, their own deeper magical nature, waiting to be heard beneath the noise of the surface mind.\n\nThe methods of contact are the familiar disciplines of the path: daily meditation above all, but also prayer, contemplation, and personal or shared ritual. These are not techniques for compelling guidance but ways of clearing the attention so that the still, small voice can register. Guidance, when it comes, tends to be quiet — an intuition, a nudge, something that catches the attention in daily life, a dream, a synchronicity — rather than a booming command.\n\nBecause the higher self is ultimately part of the seeker rather than a separate authority, Q'uo counsels trusting the process while keeping discernment: weigh what is received against the heart, and value guidance that increases love, freedom, and clarity. The work is less about acquiring a hotline to the beyond and more about becoming quiet and honest enough to hear the wisdom already resident within.",
+      "references": [
+        "2010-1106",
+        "1989-1231"
+      ]
     },
     {
       "id": "discernment-of-channeling",
-      "aliases": ["channeling", "channeled messages", "channeled material", "channeler", "discernment", "test the spirits", "psychic greeting", "psychic attack", "negative greeting", "is channeling real"],
-      "summary": "The Confederation itself insists on discernment toward channeled words — including its own: Q'uo asks seekers to weigh every message against the heart and keep only what rings true, for the ultimate authority is within. The channeling process depends on careful tuning and on challenging any contact in the name of that ideal for which the instrument would live or die; discernment of spirits begins with honest discernment of the self.",
-      "references": ["2023-1121", "2010-1106"]
+      "aliases": [
+        "channeling",
+        "channeled messages",
+        "channeled material",
+        "channeler",
+        "discernment",
+        "test the spirits",
+        "psychic greeting",
+        "psychic attack",
+        "negative greeting",
+        "is channeling real"
+      ],
+      "summary": "The Confederation insists, remarkably, on discernment toward its own words. Q'uo repeatedly asks seekers to weigh every channeled message against their own heart and to keep only what rings true, because the final authority is never the source but the sovereign discernment of the listener. Nothing is to be believed merely because it arrives with a spiritual-sounding name attached.\n\nThe channeling process itself, in this teaching, depends on careful tuning and on challenging any contact — asking it to affirm the highest ideal for which the instrument would live and die, so that only a resonant, positive source may speak. Q'uo describes discernment of spirits as beginning with honest discernment of the self: one can only recognize the nature of a contact as clearly as one has recognized the nature of one's own heart and motives.\n\nThis makes the theme a healthy meta-grounding for an AI guide and for any seeker exploring channeled or intuitive material. The counsel is neither credulous acceptance nor fearful rejection but sovereign weighing: test the spirits, notice the fruits, hold what deepens love and freedom, and release the rest. In a landscape crowded with voices, Q'uo returns authority firmly to the seeker's own inner knowing.",
+      "references": [
+        "2023-1121",
+        "2010-1106"
+      ]
     },
     {
       "id": "animals-and-second-density",
-      "aliases": ["animal", "animals", "pet", "pets", "cat", "cats", "dog", "dogs", "dolphin", "dolphins", "second density", "my cat died", "pet loss"],
-      "summary": "Q'uo speaks warmly of second-density companions: the love and attention given to a pet \"invests\" it, awakening childlike, human-like qualities and quickening its spiritual evolution toward third density. Cats in particular carry an ancient history of companionship with seekers, and the affection flowing between a person and an animal is described as a genuine exchange of love that ennobles both.",
-      "references": ["2016-0917", "2006-0226_01"]
+      "aliases": [
+        "animal",
+        "animals",
+        "pet",
+        "pets",
+        "cat",
+        "cats",
+        "dog",
+        "dogs",
+        "dolphin",
+        "dolphins",
+        "second density",
+        "my cat died",
+        "pet loss"
+      ],
+      "summary": "Q'uo speaks warmly of animals as second-density beings on their own long journey of evolution, and of the special role that loving relationship with humans plays in it. When a pet is genuinely loved, noticed, named, and cared for, that attention \"invests\" the creature — awakening more individualized, almost person-like qualities and quickening its movement toward the threshold of third density and self-awareness.\n\nThe exchange, importantly, runs both ways. The love that flows between a person and an animal is described as a real and ennobling exchange that enhances the capacity of both to give and receive love; the human is not merely a benefactor but a fellow participant in a mutual opening of the heart. Cats in particular are given an ancient lineage of companionship with seekers, and animals generally are treated as sensitive, feeling beings rather than mere instinct.\n\nFor the grieving pet owner or the person who loves an animal deeply, this offers real consolation: that love was spiritually significant, that it mattered to the creature's journey as well as one's own, and that the bond partakes of the same reality as any other love. Q'uo dignifies the tenderness people feel for animals as part of the great work of learning to love.",
+      "references": [
+        "2016-0917",
+        "2006-0226_01"
+      ]
     },
     {
       "id": "gratitude-as-tuning",
-      "aliases": ["gratitude", "grateful", "gratefulness", "thankful", "thankfulness", "thanksgiving", "appreciation", "count my blessings"],
-      "summary": "Q'uo describes gratitude and thanksgiving as a tuning of the seeker's deepest nature: giving thanks not only for blessings but for the rainy and stormy days as well, since the attitude of thanksgiving sounds the melodies of the spirit and lifts the seeker toward truth.",
-      "references": ["2009-0922"]
+      "aliases": [
+        "gratitude",
+        "grateful",
+        "gratefulness",
+        "thankful",
+        "thankfulness",
+        "thanksgiving",
+        "appreciation",
+        "count my blessings"
+      ],
+      "summary": "Q'uo describes gratitude and thanksgiving as a tuning of the seeker's deepest nature — not merely a pleasant mood but an act that aligns the whole self with the harmony of creation. To give thanks is to sound a particular note, and that note lifts the seeker toward truth, toward the open heart, and toward the awareness of the Creator in all things. Gratitude, in this sense, is a spiritual practice as much as meditation or prayer.\n\nWhat gives the teaching its depth is that Q'uo extends thanksgiving beyond the pleasant. The seeker is invited to give thanks not only for blessings but for the rainy and stormy days as well — for the catalyst, the difficulty, and even the suffering that ripens the soul. This is not forced positivity but a mature recognition that everything received, welcomed in gratitude, becomes nourishment for growth.\n\nPractically, gratitude is offered as one of the most accessible and reliable ways to shift one's state. When the heart contracts or the mind spins, a deliberate turning toward thankfulness re-tunes the instrument of the self, opening what fear had closed. Q'uo presents it as both a daily discipline and a doorway, quietly powerful and always within reach.",
+      "references": [
+        "2009-0922"
+      ]
     },
     {
       "id": "synchronicity-and-group-intention",
-      "aliases": ["synchronicity", "coincidences", "signs from the universe", "manifestation", "group meditation", "praying together", "shared intention"],
-      "summary": "Q'uo describes creation as responsive — a hall of mirrors reflecting the seeker back to themselves through synchronicity — and intention as genuinely magical work: seekers joining in shared seeking double one another's light.",
-      "references": ["2010-0911", "2004-1128", "2006-0212"]
+      "aliases": [
+        "synchronicity",
+        "coincidences",
+        "signs from the universe",
+        "manifestation",
+        "group meditation",
+        "praying together",
+        "shared intention"
+      ],
+      "summary": "Q'uo describes creation as responsive rather than inert — a kind of hall of mirrors that reflects the seeker back to themselves through what we call synchronicity. Meaningful coincidences, timely encounters, and the uncanny arrival of just the right catalyst are, in this view, the outer world answering the inner state, offered as gentle guidance and invitation rather than as fate imposed from outside.\n\nIntention is treated as genuinely powerful, even magical, work. To set a clear, loving intention is to shape the vibration one carries and therefore what one draws near; Q'uo frames this as a sacred responsibility rather than a technique for acquisition. When seekers gather and intend together — in meditation, prayer, or shared seeking — their light does not merely add but multiplies, each amplifying the others in the well-known dynamic of group work.\n\nThe practical counsel is to attend to synchronicity with a light and discerning touch: to notice the patterns life offers without forcing meaning onto everything, and to let group gatherings become a real force for planetary and personal healing. Creation, Q'uo suggests, is always in conversation with us; intention is how we speak, and synchronicity is part of how it replies.",
+      "references": [
+        "2010-0911",
+        "2004-1128",
+        "2006-0212"
+      ]
     }
   ]
 }
