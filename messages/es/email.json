@@ -2,6 +2,7 @@
   "subject": "Tu cita semanal",
   "subjectDaily": "Tu cita diaria",
   "eyebrow": "Reflexión semanal",
+  "eyebrowDaily": "Reflexión diaria",
   "greeting": "Respira hondo. Aquí tienes un pasaje para acompañar tu semana:",
   "greetingDaily": "Respira hondo. Aquí tienes un pasaje para acompañar tu día:",
   "askCta": "Preguntar",
@@ -14,5 +15,6 @@
   "creditIndependent": "lawofone.study es una herramienta de estudio independiente, financiada por la comunidad, y no está afiliada a L/L Research ni cuenta con su respaldo.",
   "creditLearnMore": "Conoce y apoya la fuente original:",
   "footerReason": "Recibes este correo porque te suscribiste a las citas semanales del Material de Ra en lawofone.study.",
+  "footerReasonDaily": "Recibes este correo porque te suscribiste a las citas diarias del Material de Ra en lawofone.study.",
   "unsubscribe": "Cancelar suscripción"
 }

@@ -2,6 +2,7 @@
   "subject": "Your weekly quote",
   "subjectDaily": "Your daily quote",
   "eyebrow": "Weekly Reflection",
+  "eyebrowDaily": "Daily Reflection",
   "greeting": "Take a slow breath. Here is a passage to accompany your week:",
   "greetingDaily": "Take a slow breath. Here is a passage to accompany your day:",
   "askCta": "Ask",
@@ -14,5 +15,6 @@
   "creditIndependent": "lawofone.study is an independent, community-funded study tool and is not affiliated with or endorsed by L/L Research.",
   "creditLearnMore": "Learn more and support the original source:",
   "footerReason": "You are receiving this email because you subscribed to weekly Ra Material quotes at lawofone.study.",
+  "footerReasonDaily": "You are receiving this email because you subscribed to daily Ra Material quotes at lawofone.study.",
   "unsubscribe": "Unsubscribe"
 }

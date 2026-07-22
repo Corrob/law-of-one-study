@@ -2,6 +2,7 @@
   "subject": "Votre citation hebdomadaire",
   "subjectDaily": "Votre citation quotidienne",
   "eyebrow": "Réflexion hebdomadaire",
+  "eyebrowDaily": "Réflexion quotidienne",
   "greeting": "Respirez profondément. Voici un passage pour accompagner votre semaine :",
   "greetingDaily": "Respirez profondément. Voici un passage pour accompagner votre journée :",
   "askCta": "Demander",
@@ -14,5 +15,6 @@
   "creditIndependent": "lawofone.study est un outil d'étude indépendant, financé par la communauté, et n'est ni affilié à L/L Research ni approuvé par L/L Research.",
   "creditLearnMore": "En savoir plus et soutenir la source originale :",
   "footerReason": "Vous recevez cet e-mail car vous vous êtes abonné aux citations hebdomadaires du Matériel de Ra sur lawofone.study.",
+  "footerReasonDaily": "Vous recevez cet e-mail car vous vous êtes abonné aux citations quotidiennes du Matériel de Ra sur lawofone.study.",
   "unsubscribe": "Se désabonner"
 }
