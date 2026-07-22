@@ -3,6 +3,7 @@
   "subjectDaily": "Your daily quote",
   "eyebrow": "Weekly Reflection",
   "greeting": "Take a slow breath. Here is a passage to accompany your week:",
+  "greetingDaily": "Take a slow breath. Here is a passage to accompany your day:",
   "askCta": "Ask",
   "readCta": "Read",
   "askPrefill": "Please help me understand {citation}: “{quote}”",

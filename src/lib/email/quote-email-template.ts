@@ -51,6 +51,8 @@ export interface QuoteEmailParams {
   /** Link to the full session in the source material. */
   sourceUrl: string;
   locale: AvailableLanguage;
+  /** Picks the greeting wording ("your week" vs "your day"). Default weekly. */
+  cadence?: "weekly" | "daily";
   /** Unsubscribe merge tag or URL; defaults to the MailerLite tag. */
   unsubscribeTag?: string;
 }
@@ -78,6 +80,7 @@ export function escapeHtml(value: string): string {
  */
 export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
   const m = getEmailMessages(params.locale);
+  const greeting = params.cadence === "daily" ? m.greetingDaily : m.greeting;
   const unsubscribe = params.unsubscribeTag ?? MAILERLITE_UNSUBSCRIBE_TAG;
   const quote = escapeHtml(params.quote);
   const citation = escapeHtml(params.citation);
@@ -113,7 +116,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
           </tr>
           <tr>
             <td align="center" style="padding:32px 32px 4px;font-family:${sans};font-size:15px;line-height:1.6;color:${BODY_TEXT};text-align:center;">
-              ${escapeHtml(m.greeting)}
+              ${escapeHtml(greeting)}
             </td>
           </tr>
           <tr>

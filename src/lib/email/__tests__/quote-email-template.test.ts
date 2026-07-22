@@ -82,6 +82,15 @@ describe("renderQuoteEmailHtml", () => {
     expect(html).toContain("&lt;script&gt;");
   });
 
+  it("uses the daily greeting for the daily cadence", () => {
+    const weekly = renderQuoteEmailHtml(params);
+    const daily = renderQuoteEmailHtml({ ...params, cadence: "daily" });
+    const messages = getEmailMessages("en");
+    expect(weekly).toContain(escapeHtml(messages.greeting));
+    expect(daily).toContain(escapeHtml(messages.greetingDaily));
+    expect(daily).not.toContain(escapeHtml(messages.greeting));
+  });
+
   it("renders localized chrome for every supported locale", () => {
     for (const locale of AVAILABLE_LANGUAGES) {
       const html = renderQuoteEmailHtml({ ...params, locale });

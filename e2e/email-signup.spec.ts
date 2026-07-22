@@ -44,7 +44,7 @@ test.describe("Email Signup", () => {
     await expect(page.getByLabel("Email address")).toBeHidden();
 
     // Re-entry point: the footer link reopens the signup card
-    await page.getByRole("button", { name: "Weekly email" }).click();
+    await page.getByRole("button", { name: "Email quotes" }).click();
     await expect(page.getByLabel("Email address")).toBeVisible();
 
     // The reopened state persists across reloads

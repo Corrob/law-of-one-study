@@ -88,6 +88,7 @@ describe("GET /api/cron/quote-email", () => {
     expect(call.html).toContain(encodeURIComponent(getQuoteForDay(new Date(), "en").reference));
     expect(call.subject).toContain(getQuoteForDay(new Date(), "en").reference);
     expect(call.subject).toContain("Your daily quote");
+    expect(call.html).toContain("accompany your day");
     expect(scheduleCampaignMock).toHaveBeenCalledWith("42");
   });
 

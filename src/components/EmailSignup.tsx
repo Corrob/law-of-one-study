@@ -34,7 +34,20 @@ export default function EmailSignup({ reopenSignal = 0 }: EmailSignupProps) {
   // Only locales with a daily list get the choice; others are weekly-only.
   const showCadence = DAILY_QUOTE_LOCALES.includes(locale);
 
+  const [openedFromLink, setOpenedFromLink] = useState(false);
+
   useEffect(() => {
+    // Shareable deep link: /?subscribe opens the card even when it was
+    // dismissed or the visitor already subscribed (e.g. a weekly reader
+    // adding a daily subscription); ?subscribe=daily preselects daily.
+    const subscribeParam = new URLSearchParams(window.location.search).get("subscribe");
+    if (subscribeParam !== null) {
+      if (subscribeParam === "daily") setCadence("daily");
+      setOpenedFromLink(true);
+      setVisible(true);
+      posthog.capture("email_signup_viewed", { via: "link" });
+      return;
+    }
     if (
       !localStorage.getItem(EMAIL_SIGNUP_DISMISSED_KEY) &&
       !localStorage.getItem(EMAIL_SIGNUP_SUBSCRIBED_KEY)
@@ -52,12 +65,12 @@ export default function EmailSignup({ reopenSignal = 0 }: EmailSignupProps) {
   }, [reopenSignal]);
 
   // Runs after the card is rendered, so the ref is attached by the time
-  // a reopen needs to scroll it into view.
+  // a reopen (footer link or ?subscribe deep link) needs to scroll to it.
   useEffect(() => {
-    if (reopenSignal > 0 && visible) {
+    if ((reopenSignal > 0 || openedFromLink) && visible) {
       containerRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }
-  }, [reopenSignal, visible]);
+  }, [reopenSignal, openedFromLink, visible]);
 
   useEffect(() => {
     if (status === "success") {

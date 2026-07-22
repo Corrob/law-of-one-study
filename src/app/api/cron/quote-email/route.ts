@@ -82,6 +82,9 @@ export async function GET(request: Request): Promise<Response> {
       askUrl: `${SITE_URL}/${locale}/ask?q=${encodeURIComponent(prefill)}&utm_source=email&utm_medium=email&utm_campaign=weekly-quote`,
       sourceUrl: quote.url,
       locale,
+      // Sunday's shared campaign reaches weekly readers too — use the
+      // weekly wording; every other day speaks to the daily list.
+      cadence: isSunday ? ("weekly" as const) : ("daily" as const),
     };
 
     try {

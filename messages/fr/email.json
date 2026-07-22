@@ -3,6 +3,7 @@
   "subjectDaily": "Votre citation quotidienne",
   "eyebrow": "Réflexion hebdomadaire",
   "greeting": "Respirez profondément. Voici un passage pour accompagner votre semaine :",
+  "greetingDaily": "Respirez profondément. Voici un passage pour accompagner votre journée :",
   "askCta": "Demander",
   "readCta": "Lire",
   "askPrefill": "Aide-moi à comprendre {citation} : « {quote} »",

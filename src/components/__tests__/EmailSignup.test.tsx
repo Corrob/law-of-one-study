@@ -122,6 +122,31 @@ describe("EmailSignup", () => {
     expect(localStorage.getItem(EMAIL_SIGNUP_SUBSCRIBED_KEY)).toBe("1");
   });
 
+  it("opens via ?subscribe=daily even when dismissed, with daily preselected", async () => {
+    window.HTMLElement.prototype.scrollIntoView = jest.fn();
+    window.history.replaceState(null, "", "/?subscribe=daily");
+    localStorage.setItem(EMAIL_SIGNUP_DISMISSED_KEY, "1");
+    localStorage.setItem(EMAIL_SIGNUP_SUBSCRIBED_KEY, "1");
+    mockFetchOnce({ status: "ok" });
+    const user = userEvent.setup();
+
+    try {
+      render(<EmailSignup />);
+
+      expect(screen.getByLabelText("Email address")).toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: "Every day" })).toBeChecked();
+
+      await user.type(screen.getByLabelText("Email address"), "seeker@example.com");
+      await user.click(screen.getByRole("button", { name: "Subscribe" }));
+
+      await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+      const [, init] = (global.fetch as jest.Mock).mock.calls[0];
+      expect(JSON.parse(init.body).cadence).toBe("daily");
+    } finally {
+      window.history.replaceState(null, "", "/");
+    }
+  });
+
   it("subscribes with the daily cadence when Every day is selected", async () => {
     mockFetchOnce({ status: "ok" });
     const user = userEvent.setup();
