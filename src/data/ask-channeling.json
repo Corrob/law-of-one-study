@@ -2,6 +2,78 @@
   "note": "Curated Confederation conscious-channeling themes for the Ask feature (English-only, shown only when the user enables the channeling option). Our-words summaries only — never transcript text. Every reference must exist in known-channeling-references.json (a unit test enforces this) and resolve on llresearch.org (scripts/validate-channeling-citations.ts --online). DRAFT: summaries were drafted from community research (docs/ask-channeling-option-design.md §11); each must be verified against the actual transcript before release.",
   "themes": [
     {
+      "id": "illness-and-the-body",
+      "aliases": ["illness", "ill", "sick", "sickness", "disease", "chronic pain", "physical pain", "my body", "health", "cancer", "diagnosis", "unwell", "chronically ill"],
+      "summary": "Q'uo speaks of physical pain and illness not as punishment but as potent catalyst: the body is a creature of the mind and a faithful teacher, and even suffering can widen awareness toward love, beauty, and compassion. The counsel is to balance pain by fully honoring it rather than suppressing it, to meet the body with gratitude and gentleness, and to remember the sufferer is more than the suffering body.",
+      "references": ["1990-0107", "2005-1016"]
+    },
+    {
+      "id": "money-and-work",
+      "aliases": ["money", "work", "job", "career", "abundance", "finances", "financial", "poverty", "scarcity", "making a living", "materialism", "wealth", "can't afford"],
+      "summary": "Q'uo distinguishes money itself from the idolatrous love of it: money is a neutral tool, and it is misplaced worship of security that pulls the seeker from spiritual truth. Work, likewise, need not be only what earns pay — one's true work is the loving service offered in each moment. Q'uo also speaks of an abundance flowing through life far greater than the self usually draws upon.",
+      "references": ["1987-0510", "2004-0104"]
+    },
+    {
+      "id": "anger-and-irritation",
+      "aliases": ["anger", "angry", "rage", "irritation", "irritated", "resentment", "frustrated", "frustration", "mad", "fuming", "lose my temper"],
+      "summary": "Q'uo counsels meeting anger with acceptance rather than suppression: the angry, aggressive part of the self is trying to protect and deserves to be cradled and reassured — \"this, too, is me.\" Irritation, impatience, and resentment become rich material for inner work when examined with compassion, and the one who provoked the anger carries a hidden gift of self-knowledge.",
+      "references": ["1996-1006", "2006-0328"]
+    },
+    {
+      "id": "parenting-and-children",
+      "aliases": ["child", "children", "kid", "kids", "parenting", "parent", "my son", "my daughter", "raising children", "being a parent", "motherhood", "fatherhood", "my kids"],
+      "summary": "Q'uo frames parent and child as teacher and pupil to one another, and counsels living the principles oneself rather than merely preaching them: invite children into meditation to find their own inner voice, seek the delicate balance between freedom and boundaries, and above all accept the child as it is, for an open, accepting heart is what most frees a young soul to grow.",
+      "references": ["2006-1116"]
+    },
+    {
+      "id": "forgiving-others",
+      "aliases": ["forgive others", "forgiving others", "forgive someone", "hard to forgive", "someone hurt me", "they hurt me", "holding a grudge", "grudge", "betrayed", "can't forgive", "person who wronged me"],
+      "summary": "Q'uo describes forgiveness of others as spiritual medicine that keeps the heart open — the scrubbing agent that releases the wish to judge or punish and refuses to hold another in resentment. Forgiving another is at once forgiving the self, and seeing an error and loving it anyway is the royal road back to the unity of all things. Feel the hurt fully, then choose release.",
+      "references": ["2020-0129", "1989-1112"]
+    },
+    {
+      "id": "loneliness-and-connection",
+      "aliases": ["lonely", "loneliness", "alone", "isolated", "isolation", "no friends", "disconnected", "feel disconnected", "belonging", "no one understands", "feel unseen"],
+      "summary": "Q'uo distinguishes chosen solitude from the ache of loneliness carried even among others, and treats that ache tenderly: much of it heals in the company of other open hearts, joy longs to be shared, and no seeker truly travels alone — unseen teachers and companions move with each soul and answer whenever they are sincerely called upon.",
+      "references": ["2017-0121", "1997-0518"]
+    },
+    {
+      "id": "energy-centers",
+      "aliases": ["energy center", "energy centers", "chakra", "chakras", "red ray", "orange ray", "yellow ray", "indigo ray", "kundalini", "balance my chakras", "ray centers"],
+      "summary": "Q'uo describes the energy centers (chakras) as a ladder the Creator's energy climbs: it enters at the red ray and must flow in balance up through orange, yellow, green, blue, and indigo, where it meets the gateway to intelligent infinity. Blockages anywhere below constrict what rises, so the work is to clear and balance each center in turn rather than force the higher ones open.",
+      "references": ["1991-0421", "2006-0903"]
+    },
+    {
+      "id": "free-will-and-respecting-others",
+      "aliases": ["free will", "law of confusion", "respecting others", "their own choices", "let people choose", "not my business", "control others", "trying to fix people", "mind my own business", "impose"],
+      "summary": "Q'uo treats free will — the Law of Confusion — as the first great law of creation: other selves' choices are simply not within the purview of your own, and honoring that frees you to listen and learn rather than to correct. The deepest respect for another's path is to trust their journey, offering your truth when asked but never pressing it upon a will that has not invited it.",
+      "references": ["1995-0319", "2002-0307"]
+    },
+    {
+      "id": "patience-and-surrender",
+      "aliases": ["patience", "patient", "surrender", "let go", "letting go", "trust the process", "divine timing", "in its own time", "need to control", "impatient", "trying to force", "trust that all is well"],
+      "summary": "Q'uo speaks of surrender not as giving up desire but as trust — the letting-go that brings peace by ceasing to fight one's own being and the unfolding of life. Balanced with intention and affirmation like yin with yang, surrender releases the charge that keeps catalyst circling, so it can finally be accepted and used. Beneath it all lies trust that this, too, is well.",
+      "references": ["2023-0928", "1990-0225"]
+    },
+    {
+      "id": "the-confederation-sources",
+      "aliases": ["who are you", "where do you come from", "brothers and sisters of sorrow", "who is q'uo", "who is quo", "are you an alien", "extraterrestrial", "what are you", "confederation", "confederation of planets"],
+      "summary": "Asked who speaks, the Confederation describes itself as a union of social memory complexes serving the one Creator — also calling themselves the Brothers and Sisters of Sorrow, drawn to answer the planet's call of suffering. Q'uo is one such contact, offered humbly as opinion to be weighed by the seeker's own discernment, never as authority; they come only where invited, in respect for free will.",
+      "references": ["2022-0302", "2021-0414"]
+    },
+    {
+      "id": "aging-and-later-life",
+      "aliases": ["aging", "getting older", "growing old", "old age", "elderly", "getting on in years", "my age", "later in life", "retirement", "my body is failing", "growing older"],
+      "summary": "Q'uo speaks of aging as a gift built into the design: the body's gradual decline lets consciousness sense that an exit point draws near and turns the soul toward reflection on what the life has taught. Were the body to stay young for centuries, the deeper lessons of a full incarnation could not ripen; growing older is a doorway toward review, rest, and the planning of the next step.",
+      "references": ["2023-1014"]
+    },
+    {
+      "id": "change-and-uncertainty",
+      "aliases": ["change", "uncertain", "the unknown", "unknown future", "the future", "what's coming", "everything is changing", "fear of change", "instability", "my life is changing", "afraid of the future"],
+      "summary": "Q'uo meets the pain of change and fear of the unknown gently: change is the very texture of an evolving illusion, and even its ache is a venturing into new life. As planetary intensity rises, long-buried catalyst surfaces as outer upheaval — relationships, homes, whole ways of living shifting — and the steadying counsel is to return to faith, to the present moment, and to the trust that all is well beneath the turning.",
+      "references": ["2023-1209"]
+    },
+    {
       "id": "wanderers-lived-experience",
       "aliases": ["wanderer", "wanderers", "starseed", "starseeds", "homesick", "homesickness", "don't belong here", "feel alien", "not from this planet"],
       "summary": "Q'uo speaks tenderly and often to wanderers — souls who came from elsewhere to serve during Earth's transition. Beloved passages counsel that wanderers accepted real risk in incarnating and are natives of Earth now, fully incarnate, so their deepest service begins with embracing this world and their own humanity rather than longing for home; Q'uo has also reassured seekers that hundreds of millions of wanderers are here at this time.",
@@ -39,9 +111,9 @@
     },
     {
       "id": "love-before-wisdom",
-      "aliases": ["love and wisdom", "wisdom without love", "love or wisdom", "compassion versus wisdom", "too much in my head"],
-      "summary": "In a session held days after September 11, 2001, Q'uo taught that wisdom without love is utterly empty of content — love is the substance of the path and wisdom its refinement, so when the two seem to conflict, lead with love.",
-      "references": ["2001-0916"]
+      "aliases": ["love and wisdom", "wisdom without love", "love or wisdom", "compassion versus wisdom", "too much in my head", "balancing love and wisdom", "head versus heart", "green ray blue ray", "too logical", "too emotional"],
+      "summary": "In a session held days after September 11, 2001, Q'uo taught that wisdom without love is utterly empty of content — love is the substance of the path and wisdom its refinement, so when the two seem to conflict, lead with love. Q'uo also describes the green-ray heart of love and the blue-ray clarity of wisdom as complementary and each incomplete without the other; the balance between them is unique to every seeker and discovered gradually, not decreed.",
+      "references": ["2001-0916", "2016-0326", "2006-1008"]
     },
     {
       "id": "angels-and-unseen-help",
@@ -69,7 +141,7 @@
     },
     {
       "id": "self-forgiveness-and-shadow",
-      "aliases": ["forgiveness", "forgive", "forgive myself", "self-forgiveness", "shadow work", "hate myself", "shame", "guilt", "self-judgment", "dark side of myself"],
+      "aliases": ["forgiveness", "forgive", "forgive myself", "self-forgiveness", "shadow work", "hate myself", "shame", "guilt", "self-judgment", "dark side of myself", "karma", "karmic", "balancing karma"],
       "summary": "Q'uo presents self-forgiveness as a reset button that restores the seeker's power in the present moment, and shadow work as greeting the dark self with compassion rather than exile; the pilgrim on this road is offered only the dust of the path and a divine discomfort that keeps the heart moving.",
       "references": ["2009-1121", "2010-1016", "1990-0401"]
     },
