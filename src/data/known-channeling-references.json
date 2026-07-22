@@ -1,0 +1,435 @@
+{
+  "note": "Whitelist of Confederation conscious-channeling references the Ask feature may cite with {{QCITE:id}} markers. Ids are YYYY-MMDD (optionally _NN for same-day sessions, mirroring llresearch.org's own URL suffixes). The path is authoritative — never derive URLs from the id. Validate with scripts/validate-channeling-citations.ts (--online fetches each page). DRAFT: dates/entities sourced from community research (docs/ask-channeling-option-design.md §11); verify each against the live transcript before release.",
+  "references": {
+    "1974-0415": {
+      "source": "Hatonn",
+      "date": "1974-04-15",
+      "path": "/channeling/1974/0415"
+    },
+    "1979-0719": {
+      "source": "Latwii",
+      "date": "1979-07-19",
+      "path": "/channeling/1979/0719"
+    },
+    "1980-0518": {
+      "source": "Latwii",
+      "date": "1980-05-18",
+      "path": "/channeling/1980/0518"
+    },
+    "1980-0525": {
+      "source": "Hatonn",
+      "date": "1980-05-25",
+      "path": "/channeling/1980/0525"
+    },
+    "1983-0821": {
+      "source": "Latwii",
+      "date": "1983-08-21",
+      "path": "/channeling/1983/0821"
+    },
+    "1986-0420": {
+      "source": "Hatonn",
+      "date": "1986-04-20",
+      "path": "/channeling/1986/0420"
+    },
+    "1986-1116": {
+      "source": "Q'uo",
+      "date": "1986-11-16",
+      "path": "/channeling/1986/1116"
+    },
+    "1987-0510": {
+      "source": "Q'uo",
+      "date": "1987-05-10",
+      "path": "/channeling/1987/0510"
+    },
+    "1989-0311": {
+      "source": "Q'uo",
+      "date": "1989-03-11",
+      "path": "/channeling/1989/0311"
+    },
+    "1989-1112": {
+      "source": "Q'uo",
+      "date": "1989-11-12",
+      "path": "/channeling/1989/1112"
+    },
+    "1989-1231": {
+      "source": "Q'uo",
+      "date": "1989-12-31",
+      "path": "/channeling/1989/1231"
+    },
+    "1990-0107": {
+      "source": "Q'uo",
+      "date": "1990-01-07",
+      "path": "/channeling/1990/0107"
+    },
+    "1990-0211": {
+      "source": "Q'uo",
+      "date": "1990-02-11",
+      "path": "/channeling/1990/0211"
+    },
+    "1990-0401": {
+      "source": "Q'uo",
+      "date": "1990-04-01",
+      "path": "/channeling/1990/0401"
+    },
+    "1990-0722": {
+      "source": "Q'uo",
+      "date": "1990-07-22",
+      "path": "/channeling/1990/0722"
+    },
+    "1990-1007": {
+      "source": "Q'uo",
+      "date": "1990-10-07",
+      "path": "/channeling/1990/1007"
+    },
+    "1991-0421": {
+      "source": "Q'uo",
+      "date": "1991-04-21",
+      "path": "/channeling/1991/0421"
+    },
+    "1992-0503": {
+      "source": "Q'uo",
+      "date": "1992-05-03",
+      "path": "/channeling/1992/0503"
+    },
+    "1992-0524": {
+      "source": "Q'uo",
+      "date": "1992-05-24",
+      "path": "/channeling/1992/0524"
+    },
+    "1992-0712": {
+      "source": "Q'uo",
+      "date": "1992-07-12",
+      "path": "/channeling/1992/0712"
+    },
+    "1992-0913": {
+      "source": "Q'uo",
+      "date": "1992-09-13",
+      "path": "/channeling/1992/0913"
+    },
+    "1993-0530": {
+      "source": "Hatonn",
+      "date": "1993-05-30",
+      "path": "/channeling/1993/0530"
+    },
+    "1995-0319": {
+      "source": "Q'uo",
+      "date": "1995-03-19",
+      "path": "/channeling/1995/0319"
+    },
+    "1996-0915": {
+      "source": "Q'uo",
+      "date": "1996-09-15",
+      "path": "/channeling/1996/0915"
+    },
+    "1996-1006": {
+      "source": "Q'uo",
+      "date": "1996-10-06",
+      "path": "/channeling/1996/1006"
+    },
+    "1997-0119": {
+      "source": "Q'uo",
+      "date": "1997-01-19",
+      "path": "/channeling/1997/0119"
+    },
+    "1997-0209": {
+      "source": "Q'uo",
+      "date": "1997-02-09",
+      "path": "/channeling/1997/0209"
+    },
+    "1997-0518": {
+      "source": "Q'uo",
+      "date": "1997-05-18",
+      "path": "/channeling/1997/0518"
+    },
+    "1998-0315": {
+      "source": "Q'uo",
+      "date": "1998-03-15",
+      "path": "/channeling/1998/0315"
+    },
+    "2000-0220": {
+      "source": "Q'uo",
+      "date": "2000-02-20",
+      "path": "/channeling/2000/0220"
+    },
+    "2000-0923": {
+      "source": "Q'uo",
+      "date": "2000-09-23",
+      "path": "/channeling/2000/0923"
+    },
+    "2000-1105": {
+      "source": "Q'uo",
+      "date": "2000-11-05",
+      "path": "/channeling/2000/1105"
+    },
+    "2000-1119": {
+      "source": "Q'uo",
+      "date": "2000-11-19",
+      "path": "/channeling/2000/1119"
+    },
+    "2001-0916": {
+      "source": "Q'uo",
+      "date": "2001-09-16",
+      "path": "/channeling/2001/0916"
+    },
+    "2002-0307": {
+      "source": "Q'uo",
+      "date": "2002-03-07",
+      "path": "/channeling/2002/0307"
+    },
+    "2004-1128": {
+      "source": "Q'uo",
+      "date": "2004-11-28",
+      "path": "/channeling/2004/1128"
+    },
+    "2004-1212": {
+      "source": "Q'uo",
+      "date": "2004-12-12",
+      "path": "/channeling/2004/1212"
+    },
+    "2005-0617": {
+      "source": "Q'uo",
+      "date": "2005-06-17",
+      "path": "/channeling/2005/0617"
+    },
+    "2005-0824": {
+      "source": "Q'uo",
+      "date": "2005-08-24",
+      "path": "/channeling/2005/0824"
+    },
+    "2005-0918": {
+      "source": "Q'uo",
+      "date": "2005-09-18",
+      "path": "/channeling/2005/0918"
+    },
+    "2005-1016": {
+      "source": "Q'uo",
+      "date": "2005-10-16",
+      "path": "/channeling/2005/1016"
+    },
+    "2006-0123": {
+      "source": "Q'uo",
+      "date": "2006-01-23",
+      "path": "/channeling/2006/0123"
+    },
+    "2006-0206": {
+      "source": "Q'uo",
+      "date": "2006-02-06",
+      "path": "/channeling/2006/0206"
+    },
+    "2006-0212": {
+      "source": "Q'uo",
+      "date": "2006-02-12",
+      "path": "/channeling/2006/0212"
+    },
+    "2006-0305": {
+      "source": "Q'uo",
+      "date": "2006-03-05",
+      "path": "/channeling/2006/0305"
+    },
+    "2006-0328": {
+      "source": "Q'uo",
+      "date": "2006-03-28",
+      "path": "/channeling/2006/0328"
+    },
+    "2006-0416": {
+      "source": "Q'uo",
+      "date": "2006-04-16",
+      "path": "/channeling/2006/0416"
+    },
+    "2006-0825": {
+      "source": "Q'uo",
+      "date": "2006-08-25",
+      "path": "/channeling/2006/0825"
+    },
+    "2006-0903": {
+      "source": "Q'uo",
+      "date": "2006-09-03",
+      "path": "/channeling/2006/0903"
+    },
+    "2006-1008": {
+      "source": "Q'uo",
+      "date": "2006-10-08",
+      "path": "/channeling/2006/1008"
+    },
+    "2006-1116": {
+      "source": "Q'uo",
+      "date": "2006-11-16",
+      "path": "/channeling/2006/1116"
+    },
+    "2007-0325": {
+      "source": "Q'uo",
+      "date": "2007-03-25",
+      "path": "/channeling/2007/0325"
+    },
+    "2007-0731": {
+      "source": "Q'uo",
+      "date": "2007-07-31",
+      "path": "/channeling/2007/0731"
+    },
+    "2007-0922": {
+      "source": "Q'uo",
+      "date": "2007-09-22",
+      "path": "/channeling/2007/0922"
+    },
+    "2008-0510": {
+      "source": "Q'uo",
+      "date": "2008-05-10",
+      "path": "/channeling/2008/0510"
+    },
+    "2008-1108": {
+      "source": "Q'uo",
+      "date": "2008-11-08",
+      "path": "/channeling/2008/1108"
+    },
+    "2009-0124": {
+      "source": "Q'uo",
+      "date": "2009-01-24",
+      "path": "/channeling/2009/0124"
+    },
+    "2009-0314": {
+      "source": "Q'uo",
+      "date": "2009-03-14",
+      "path": "/channeling/2009/0314"
+    },
+    "2009-0922": {
+      "source": "Q'uo",
+      "date": "2009-09-22",
+      "path": "/channeling/2009/0922"
+    },
+    "2009-1003": {
+      "source": "Q'uo",
+      "date": "2009-10-03",
+      "path": "/channeling/2009/1003"
+    },
+    "2009-1121": {
+      "source": "Q'uo",
+      "date": "2009-11-21",
+      "path": "/channeling/2009/1121"
+    },
+    "2010-0123": {
+      "source": "Q'uo",
+      "date": "2010-01-23",
+      "path": "/channeling/2010/0123"
+    },
+    "2010-0130": {
+      "source": "Q'uo",
+      "date": "2010-01-30",
+      "path": "/channeling/2010/0130"
+    },
+    "2010-0213": {
+      "source": "Q'uo",
+      "date": "2010-02-13",
+      "path": "/channeling/2010/0213"
+    },
+    "2010-0306": {
+      "source": "Q'uo",
+      "date": "2010-03-06",
+      "path": "/channeling/2010/0306"
+    },
+    "2010-0911": {
+      "source": "Q'uo",
+      "date": "2010-09-11",
+      "path": "/channeling/2010/0911"
+    },
+    "2010-1002": {
+      "source": "Q'uo",
+      "date": "2010-10-02",
+      "path": "/channeling/2010/1002"
+    },
+    "2010-1016": {
+      "source": "Q'uo",
+      "date": "2010-10-16",
+      "path": "/channeling/2010/1016"
+    },
+    "2010-1106": {
+      "source": "Q'uo",
+      "date": "2010-11-06",
+      "path": "/channeling/2010/1106"
+    },
+    "2010-1113": {
+      "source": "Q'uo",
+      "date": "2010-11-13",
+      "path": "/channeling/2010/1113"
+    },
+    "2011-0212": {
+      "source": "Q'uo",
+      "date": "2011-02-12",
+      "path": "/channeling/2011/0212"
+    },
+    "2011-0409": {
+      "source": "Q'uo",
+      "date": "2011-04-09",
+      "path": "/channeling/2011/0409"
+    },
+    "2015-1107": {
+      "source": "Q'uo",
+      "date": "2015-11-07",
+      "path": "/channeling/2015/1107"
+    },
+    "2016-0326": {
+      "source": "Q'uo",
+      "date": "2016-03-26",
+      "path": "/channeling/2016/0326"
+    },
+    "2016-0917": {
+      "source": "Q'uo",
+      "date": "2016-09-17",
+      "path": "/channeling/2016/0917"
+    },
+    "2016-1015": {
+      "source": "Q'uo",
+      "date": "2016-10-15",
+      "path": "/channeling/2016/1015"
+    },
+    "2017-0121": {
+      "source": "Q'uo",
+      "date": "2017-01-21",
+      "path": "/channeling/2017/0121"
+    },
+    "2018-0303": {
+      "source": "Q'uo",
+      "date": "2018-03-03",
+      "path": "/channeling/2018/0303"
+    },
+    "2019-0209": {
+      "source": "Q'uo",
+      "date": "2019-02-09",
+      "path": "/channeling/2019/0209"
+    },
+    "2020-0104": {
+      "source": "Q'uo",
+      "date": "2020-01-04",
+      "path": "/channeling/2020/0104"
+    },
+    "2020-0129": {
+      "source": "Q'uo",
+      "date": "2020-01-29",
+      "path": "/channeling/2020/0129"
+    },
+    "2021-0219": {
+      "source": "Q'uo",
+      "date": "2021-02-19",
+      "path": "/channeling/2021/0219"
+    },
+    "2023-0928": {
+      "source": "Q'uo",
+      "date": "2023-09-28",
+      "path": "/channeling/2023/0928"
+    },
+    "2023-1014": {
+      "source": "Q'uo",
+      "date": "2023-10-14",
+      "path": "/channeling/2023/1014"
+    },
+    "2023-1121": {
+      "source": "Q'uo",
+      "date": "2023-11-21",
+      "path": "/channeling/2023/1121"
+    },
+    "2023-1209": {
+      "source": "Q'uo",
+      "date": "2023-12-09",
+      "path": "/channeling/2023/1209"
+    }
+  }
+}

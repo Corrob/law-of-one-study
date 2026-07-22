@@ -17,8 +17,18 @@ import {
 } from "@/lib/concept-graph";
 import { getLocalizedText, type GraphConcept } from "@/lib/types-graph";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
+import type { AskSource } from "@/lib/schemas/ask";
 import { ASK_MAX_FOCUSED_CONCEPTS } from "./config";
 import { identifySupplements, buildSupplementGrounding } from "./supplements";
+import {
+  identifyChannelingThemes,
+  buildChannelingGrounding,
+  type ChannelingTheme,
+} from "./channeling";
+
+/** Prefix marking channeling-theme ids inside `matchedConceptIds` — resource
+ * lookups ignore unknown ids, and analytics can tell the layers apart. */
+export const CHANNELING_ID_PREFIX = "chan:";
 
 export interface AskHistoryTurn {
   role: "user" | "assistant";
@@ -35,8 +45,11 @@ export interface Grounding {
   /**
    * The private source excerpts for the grounded concepts. Server-only — never
    * sent to the client. Used to detect verbatim reproduction after a response.
+   * (Channeling themes contribute nothing here — no source text is stored.)
    */
   excerpts: string[];
+  /** Ids of matched conscious-channeling themes (empty when the option is off). */
+  channelingIds: string[];
 }
 
 /**
@@ -103,14 +116,53 @@ function selectSupplements(
 }
 
 /**
- * Build the full grounding (atlas + focused context) for a query. The focused
- * block combines relevant concepts with any matched hidden supplements.
+ * Match conscious-channeling themes for a query, using the same
+ * message-then-recent-history fallback as the other layers.
+ */
+function selectChannelingThemes(
+  message: string,
+  history: AskHistoryTurn[]
+): ChannelingTheme[] {
+  let found = identifyChannelingThemes(message);
+  if (found.length === 0 && history.length > 0) {
+    const recent = history
+      .slice(-2)
+      .map((turn) => turn.content)
+      .join("\n");
+    found = identifyChannelingThemes(recent);
+  }
+  return found;
+}
+
+/**
+ * Build the full grounding (atlas + focused context) for a query.
+ *
+ * The two source libraries are never blended:
+ * - `"ra"` (default): concepts + hidden supplements, exactly as always.
+ * - `"channeling"` (English-only — other locales fall back to "ra"): ONLY the
+ *   matched conscious-channeling themes, so the model has no Ra references to
+ *   cite in that mode. The concept atlas in the system prompt still provides
+ *   background vocabulary, but the citable grounding is channeling alone.
  */
 export function buildGrounding(
   message: string,
   history: AskHistoryTurn[] = [],
-  locale: AvailableLanguage = DEFAULT_LOCALE
+  locale: AvailableLanguage = DEFAULT_LOCALE,
+  source: AskSource = "ra"
 ): Grounding {
+  const channelingMode = source === "channeling" && locale === "en";
+
+  if (channelingMode) {
+    const channeling = selectChannelingThemes(message, history);
+    return {
+      focused: buildChannelingGrounding(channeling),
+      matchedConceptIds: channeling.map((t) => `${CHANNELING_ID_PREFIX}${t.id}`),
+      matchedTerms: channeling.map((t) => t.id.replace(/-/g, " ")),
+      excerpts: [],
+      channelingIds: channeling.map((t) => t.id),
+    };
+  }
+
   const concepts = selectConcepts(message, history, locale);
   const supplements = selectSupplements(message, history, locale);
 
@@ -129,5 +181,6 @@ export function buildGrounding(
       ...supplements.map((s) => s.id.replace(/-/g, " ")),
     ],
     excerpts: getConceptExcerpts(concepts, locale),
+    channelingIds: [],
   };
 }

@@ -16,17 +16,28 @@
 
 import knownReferences from "@/data/known-references.json";
 import { getRaMaterialUrlFromReference } from "@/lib/quote-utils";
+import {
+  channelingCitationLabel,
+  channelingCitationUrl,
+} from "@/lib/ask/channeling-references";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 
 /** Matches a complete citation marker: {{CITE:6.14}} */
 const CITE_MARKER = /\{\{CITE:\s*(\d+\.\d+)\s*\}\}/g;
 
 /**
- * Matches a trailing, not-yet-complete citation marker during streaming
- * (e.g. "{{CITE:6.1" before the closing braces arrive). Used to hide the
- * fragment until the full marker is available.
+ * Matches a complete conscious-channeling citation marker: {{QCITE:2000-0220}}
+ * (dated Confederation channeling references — see channeling-references.ts).
  */
-const PARTIAL_TRAILING_MARKER = /\{\{(?:C(?:I(?:T(?:E(?::[\d.]*)?)?)?)?)?$/;
+const QCITE_MARKER = /\{\{QCITE:\s*(\d{4}-\d{4}(?:_\d{2})?)\s*\}\}/g;
+
+/**
+ * Matches a trailing, not-yet-complete citation marker during streaming
+ * (e.g. "{{CITE:6.1" or "{{QCITE:2000-02" before the closing braces arrive).
+ * Used to hide the fragment until the full marker is available.
+ */
+const PARTIAL_TRAILING_MARKER =
+  /\{\{(?:Q(?:C(?:I(?:T(?:E(?::[\d_-]*)?)?)?)?)?|C(?:I(?:T(?:E(?::[\d.]*)?)?)?)?)?$/;
 
 const KNOWN_REFERENCES: ReadonlySet<string> = new Set(knownReferences as string[]);
 
@@ -62,13 +73,42 @@ export function renderCitationsToMarkdown(
   text: string,
   locale: AvailableLanguage = DEFAULT_LOCALE
 ): string {
-  const withLinks = text.replace(CITE_MARKER, (_match, reference: string) => {
-    if (!KNOWN_REFERENCES.has(reference)) return "";
-    return `[${reference}](${citationUrl(reference, locale)})`;
-  });
+  const withLinks = text
+    .replace(CITE_MARKER, (_match, reference: string) => {
+      if (!KNOWN_REFERENCES.has(reference)) return "";
+      return `[${reference}](${citationUrl(reference, locale)})`;
+    })
+    // Channeling citations render as a labeled link ("Q'uo · February 20,
+    // 2000") to the transcript — English-only pages, so no locale prefix.
+    .replace(QCITE_MARKER, (_match, reference: string) => {
+      const label = channelingCitationLabel(reference);
+      const url = channelingCitationUrl(reference);
+      if (!label || !url) return "";
+      return `[${label}](${url})`;
+    });
 
   // Hide a partial marker still being streamed.
   return withLinks.replace(PARTIAL_TRAILING_MARKER, "");
+}
+
+/**
+ * Extract the distinct, known channeling references cited in a response (in
+ * order of first appearance) — the QCITE counterpart of
+ * `extractCitedReferences`, kept separate so Ra-citation analytics stay
+ * comparable over time.
+ */
+export function extractChannelingCitations(text: string): string[] {
+  const seen = new Set<string>();
+  const result: string[] = [];
+
+  for (const match of text.matchAll(QCITE_MARKER)) {
+    const reference = match[1];
+    if (channelingCitationUrl(reference) && !seen.has(reference)) {
+      seen.add(reference);
+      result.push(reference);
+    }
+  }
+  return result;
 }
 
 /**

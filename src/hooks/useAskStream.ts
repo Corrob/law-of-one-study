@@ -4,7 +4,8 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
 import { ASK_MAX_HISTORY_MESSAGES } from "@/lib/ask/config";
 import { askAnalytics, getDistinctId } from "@/lib/ask/analytics";
-import { extractCitedReferences } from "@/lib/ask/citations";
+import { extractCitedReferences, extractChannelingCitations } from "@/lib/ask/citations";
+import type { AskSource } from "@/lib/schemas/ask";
 import {
   type AskMessage,
   STORAGE_KEY,
@@ -36,7 +37,8 @@ interface UseAskStreamReturn {
  */
 export function useAskStream(
   locale: AvailableLanguage = DEFAULT_LOCALE,
-  disclaimers: string[] = []
+  disclaimers: string[] = [],
+  source: AskSource = "ra"
 ): UseAskStreamReturn {
   const [messages, setMessages] = useState<AskMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -153,7 +155,14 @@ export function useAskStream(
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
-          body: JSON.stringify({ message: trimmed, history, locale, distinctId: getDistinctId() }),
+          body: JSON.stringify({
+            message: trimmed,
+            history,
+            locale,
+            distinctId: getDistinctId(),
+            // English-only channeling mode — omitted for the default Ra source.
+            ...(source === "channeling" && locale === "en" ? { source } : {}),
+          }),
         });
 
         if (!response.ok) {
@@ -232,7 +241,11 @@ export function useAskStream(
           askAnalytics.responseComplete({
             responseTimeMs: Date.now() - startedAt,
             messageLength: fullText.length,
-            citationCount: extractCitedReferences(fullText).length,
+            // Count whichever citation kind this answer used (Ra sessions or
+            // conscious-channeling transcripts) — a turn is one source or the other.
+            citationCount:
+              extractCitedReferences(fullText).length +
+              extractChannelingCitations(fullText).length,
           });
         }
       } catch (err) {
@@ -254,7 +267,7 @@ export function useAskStream(
         abortRef.current = null;
       }
     },
-    [messages, isStreaming, locale, disclaimers]
+    [messages, isStreaming, locale, disclaimers, source]
   );
 
   const retry = useCallback(() => {

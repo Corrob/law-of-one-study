@@ -27,9 +27,17 @@ export const AskRequestSchema = z.object({
     .optional()
     .default([]),
   locale: AvailableLanguageSchema.optional().default("en"),
+  /**
+   * Which library grounds the answer: the trance-channeled Ra contact
+   * (default) or L/L Research's conscious channeling (Q'uo, Latwii, Hatonn).
+   * The two are never blended. Channeling is English-only — other locales are
+   * always answered from the Ra material.
+   */
+  source: z.enum(["ra", "channeling"]).optional().default("ra"),
   /** PostHog distinct id from the client, for server-side LLM analytics. */
   distinctId: z.string().max(200).optional(),
 });
 
 export type AskRequest = z.infer<typeof AskRequestSchema>;
 export type AskHistoryTurn = z.infer<typeof AskHistoryTurnSchema>;
+export type AskSource = AskRequest["source"];

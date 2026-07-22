@@ -119,6 +119,7 @@ export function stripAskMarkers(
 ): string {
   return text
     .replace(/\{\{CITE:\s*\d+\.\d+\s*\}\}/g, "")
+    .replace(/\{\{QCITE:\s*\d{4}-\d{4}(?:_\d{2})?\s*\}\}/g, "")
     .replace(LINK_MARKER, (_match, type: string, id: string) =>
       isKnownResource(type, id) ? (resourceTitle(type as ResourceType, id, locale) ?? "") : ""
     )

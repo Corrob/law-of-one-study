@@ -6,7 +6,11 @@ import AskComposer from "../AskComposer";
 jest.mock("next-intl", () => ({
   useTranslations: () => {
     const t = (key: string) => key;
-    t.raw = (key: string) => (key === "placeholders" ? ["placeholder"] : key);
+    t.raw = (key: string) => {
+      if (key === "placeholders") return ["Ask about the Ra Material…"];
+      if (key === "channelingPlaceholders") return ["Ask Q'uo a question…"];
+      return key;
+    };
     return t;
   },
 }));
@@ -39,5 +43,21 @@ describe("AskComposer", () => {
     await user.type(input, "A question{Enter}");
 
     expect(onSend).not.toHaveBeenCalled();
+  });
+
+  it("shows a Ra-flavored placeholder by default", () => {
+    render(<AskComposer onSend={jest.fn()} disabled={false} />);
+    expect(screen.getByLabelText("inputLabel")).toHaveAttribute(
+      "placeholder",
+      "Ask about the Ra Material…"
+    );
+  });
+
+  it("shows a channeling placeholder when source is channeling", () => {
+    render(<AskComposer onSend={jest.fn()} disabled={false} source="channeling" />);
+    expect(screen.getByLabelText("inputLabel")).toHaveAttribute(
+      "placeholder",
+      "Ask Q'uo a question…"
+    );
   });
 });

@@ -27,18 +27,53 @@ import {
   formatExportDate,
 } from "@/lib/ask/export-markdown";
 import { type AvailableLanguage } from "@/lib/language-config";
+import type { AskSource } from "@/lib/schemas/ask";
+
+/** localStorage key for the chosen source library (persists across visits). */
+const SOURCE_PREF_KEY = "lo1-ask-source";
 
 export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("ask");
   const tc = useTranslations("confirmNewChat");
+  // Source library: the Ra contact (default) or the conscious channeling —
+  // one or the other, never blended. English-only (the transcripts have no
+  // translations, so the selector only renders for en). Restored after mount
+  // to avoid a hydration mismatch; a switch applies from the next question.
+  const [source, setSource] = useState<AskSource>("ra");
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(SOURCE_PREF_KEY) === "channeling") setSource("channeling");
+    } catch {
+      // Storage unavailable — the preference just doesn't persist.
+    }
+  }, []);
+  const selectSource = useCallback((next: AskSource) => {
+    setSource(next);
+    try {
+      localStorage.setItem(SOURCE_PREF_KEY, next);
+    } catch {
+      // Best-effort persistence.
+    }
+  }, []);
+
+  // Channeling is English-only; for any other locale the effective source is
+  // always Ra (matching the API), so the UI never references channeling-only
+  // message keys that non-English files don't define.
+  const effectiveSource: AskSource = locale === "en" ? source : "ra";
+
   // Saved discernment notes — one is chosen per question (instant, local).
+  // Each source library has its own set, so a channeling thread never opens
+  // with a note about "Ra's teachings" (and vice versa).
   const disclaimers = useMemo(() => {
-    const raw = t.raw("disclaimers");
+    const raw = t.raw(
+      effectiveSource === "channeling" ? "channelingDisclaimers" : "disclaimers"
+    );
     return Array.isArray(raw) ? (raw as string[]) : [];
-  }, [t]);
+  }, [t, effectiveSource]);
+
   const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
-    useAskStream(locale, disclaimers);
+    useAskStream(locale, disclaimers, effectiveSource);
 
   // ?q= deep link (e.g. the weekly email's Ask button): submit the question
   // automatically, captured at mount so later URL changes don't retrigger it.
@@ -175,7 +210,62 @@ export default function AskContent() {
       layoutId="ask-composer"
       transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
     >
-      <AskComposer onSend={handleSend} disabled={isStreaming} />
+      <AskComposer onSend={handleSend} disabled={isStreaming} source={effectiveSource} />
+      {/* Source library selector — English-only (see SOURCE_PREF_KEY). A quiet
+          segmented pill in the site's language: the chosen library glows gold,
+          marked by a small lit star. */}
+      {locale === "en" && (
+        <div className="mt-2 flex justify-center">
+          <div
+            role="radiogroup"
+            aria-label={t("sourceLabel")}
+            className="flex items-center gap-0.5 rounded-full border border-[var(--lo1-gold)]/15
+                       bg-[var(--lo1-indigo)]/40 p-0.5 backdrop-blur-sm"
+          >
+            {(
+              [
+                { id: "ra" as const, label: t("sourceRa"), hint: t("sourceRaHint") },
+                {
+                  id: "channeling" as const,
+                  label: t("sourceChanneling"),
+                  hint: t("sourceChannelingHint"),
+                },
+              ]
+            ).map(({ id, label, hint }) => {
+              const selected = effectiveSource === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => selectSource(id)}
+                  title={hint}
+                  className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs
+                              transition-all duration-300 cursor-pointer select-none
+                              ${
+                                selected
+                                  ? `bg-[var(--lo1-gold)]/15 text-[var(--lo1-gold)]
+                                     shadow-[0_0_10px_-3px_var(--lo1-gold)]`
+                                  : "text-[var(--lo1-stardust)]/55 hover:text-[var(--lo1-stardust)]"
+                              }`}
+                >
+                  <span
+                    aria-hidden
+                    className={`h-1 w-1 rounded-full transition-all duration-300
+                                ${
+                                  selected
+                                    ? "bg-[var(--lo1-gold)] shadow-[0_0_5px_1px_var(--lo1-gold)]"
+                                    : "bg-[var(--lo1-stardust)]/25"
+                                }`}
+                  />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 
@@ -216,7 +306,16 @@ export default function AskContent() {
                   transition={{ duration: reduceMotion ? 0 : 0.25 }}
                   className="min-h-full max-w-2xl mx-auto flex flex-col justify-center"
                 >
-                  <AskWelcome onPickStarter={handleSend} composer={composerElement} />
+                  <AskWelcome
+                    onPickStarter={handleSend}
+                    composer={composerElement}
+                    source={effectiveSource}
+                    body={
+                      effectiveSource === "channeling"
+                        ? t("channelingWelcomeBody")
+                        : undefined
+                    }
+                  />
                 </motion.div>
               ) : (
               <motion.div

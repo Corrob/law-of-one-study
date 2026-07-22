@@ -40,4 +40,14 @@ describe("getFallbackSuggestions", () => {
       expect(getFallbackSuggestions(locale)).toHaveLength(3);
     }
   });
+
+  it("returns channeling fallbacks that never mention Ra", () => {
+    const channeling = getFallbackSuggestions("en", "channeling");
+    expect(channeling).toHaveLength(3);
+    expect(channeling.join(" ")).not.toMatch(/\bRa\b/);
+  });
+
+  it("uses the Ra fallbacks by default", () => {
+    expect(getFallbackSuggestions("en")).toEqual(getFallbackSuggestions("en", "ra"));
+  });
 });

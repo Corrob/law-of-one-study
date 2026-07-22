@@ -83,12 +83,14 @@ export async function POST(request: Request): Promise<Response> {
   if (!parsed.success) {
     return jsonError("Invalid request.", 400);
   }
-  const { message, history, locale, distinctId } = parsed.data;
+  const { message, history, locale, distinctId, source } = parsed.data;
+  // Channeling is English-only; other locales always answer from the Ra material.
+  const effectiveSource = locale === "en" ? source : "ra";
 
   // Build grounding (no RAG) and prompts.
-  const grounding = buildGrounding(message, history, locale);
+  const grounding = buildGrounding(message, history, locale, effectiveSource);
   const systemPrompt = buildSystemPrompt(locale);
-  const userContent = buildUserContent(message, grounding.focused);
+  const userContent = buildUserContent(message, grounding.focused, effectiveSource);
 
   // OpenAI automatically caches the long, stable system prefix (the atlas).
   const messages = [
@@ -108,6 +110,16 @@ export async function POST(request: Request): Promise<Response> {
     trackEvent(analyticsId, "ask_no_focused_grounding", {
       trace_id: traceId,
       locale,
+      message_length: message.length,
+      has_history: history.length > 0,
+    });
+  }
+
+  // Channeling-recall telemetry: channeling mode but no curated theme matched
+  // — steers where the channeling library needs aliases or new themes.
+  if (effectiveSource === "channeling" && grounding.channelingIds.length === 0) {
+    trackEvent(analyticsId, "ask_channeling_no_match", {
+      trace_id: traceId,
       message_length: message.length,
       has_history: history.length > 0,
     });
@@ -178,7 +190,8 @@ export async function POST(request: Request): Promise<Response> {
           message,
           output,
           locale,
-          grounding.matchedTerms
+          grounding.matchedTerms,
+          effectiveSource
         );
         send("suggestions", { items: suggestions });
 
@@ -211,7 +224,12 @@ export async function POST(request: Request): Promise<Response> {
           completionTokens,
           cost: calculateCost(promptTokens ?? 0, completionTokens ?? 0),
           latencyMs: Date.now() - startedAt,
-          metadata: { locale, conceptCount: grounding.matchedConceptIds.length },
+          metadata: {
+            locale,
+            conceptCount: grounding.matchedConceptIds.length,
+            source: effectiveSource,
+            channelingCount: grounding.channelingIds.length,
+          },
         });
       } catch (error) {
         if (timeout.aborted) {

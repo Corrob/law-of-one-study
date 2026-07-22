@@ -10,6 +10,7 @@
 import { getOpenAIClient } from "./openai";
 import { ASK_MODEL, ASK_REASONING_EFFORT } from "./config";
 import { type AvailableLanguage, LANGUAGE_NAMES_FOR_PROMPTS, DEFAULT_LOCALE } from "@/lib/language-config";
+import type { AskSource } from "@/lib/schemas/ask";
 
 const MAX_SUGGESTION_LENGTH = 100;
 const SUGGESTION_COUNT = 3;
@@ -38,7 +39,21 @@ const FALLBACKS: Record<AvailableLanguage, string[]> = {
   ],
 };
 
-export function getFallbackSuggestions(locale: AvailableLanguage = DEFAULT_LOCALE): string[] {
+/**
+ * Static fallbacks for conscious-channeling mode — never mention Ra. Channeling
+ * is English-only, so a single set suffices.
+ */
+const CHANNELING_FALLBACKS: string[] = [
+  "Can you explain this further?",
+  "How can I bring this into daily life?",
+  "What does Q'uo say about meditation?",
+];
+
+export function getFallbackSuggestions(
+  locale: AvailableLanguage = DEFAULT_LOCALE,
+  source: AskSource = "ra"
+): string[] {
+  if (source === "channeling") return CHANNELING_FALLBACKS;
   return FALLBACKS[locale] ?? FALLBACKS.en;
 }
 
@@ -63,8 +78,28 @@ export function parseSuggestions(raw: string): string[] | null {
   return cleaned.length > 0 ? cleaned : null;
 }
 
-function buildPrompt(locale: AvailableLanguage, conceptTerms: string[]): string {
+function buildPrompt(
+  locale: AvailableLanguage,
+  conceptTerms: string[],
+  source: AskSource
+): string {
   const language = LANGUAGE_NAMES_FOR_PROMPTS[locale];
+
+  if (source === "channeling") {
+    // Channeling mode: steer toward the curated conscious-channeling themes and
+    // never reference the Ra material.
+    const topicHint = conceptTerms.length
+      ? `\n- Prefer follow-ups about themes this tool's conscious-channeling library covers well, especially: ${conceptTerms.join(", ")} — or other pastoral themes (grief, faith, meditation, service, wanderers, the open heart).`
+      : `\n- Prefer follow-ups about pastoral themes this tool's conscious-channeling library covers well (grief, faith, meditation, catalyst, service, wanderers, the open heart).`;
+    return `You generate follow-up questions for a chat grounded in L/L Research's conscious channeling (Q'uo, Latwii, Hatonn).
+Given the seeker's question and the assistant's answer, propose exactly ${SUGGESTION_COUNT} short, natural follow-up questions the seeker might tap next.
+- Make them varied: one that goes deeper, one that broadens to a related theme, and one that clarifies or applies the idea.${topicHint}
+- Each must be a concise question of at most 12 words, phrased in the seeker's voice ("What…", "How…", "Can you…"). No numbering, no quotes.
+- Do NOT mention Ra or the Ra Material — this conversation draws on the conscious channeling. You may reference Q'uo by name.
+- Write them in ${language}.
+Return ONLY JSON in this exact shape: {"suggestions": ["...", "...", "..."]}`;
+  }
+
   // Steer follow-ups toward topics the study tool has real grounding for, so a
   // tapped chip doesn't lead to a question the tool answers poorly.
   const topicHint = conceptTerms.length
@@ -86,7 +121,8 @@ export async function generateSuggestions(
   message: string,
   answer: string,
   locale: AvailableLanguage = DEFAULT_LOCALE,
-  conceptTerms: string[] = []
+  conceptTerms: string[] = [],
+  source: AskSource = "ra"
 ): Promise<string[]> {
   try {
     // Keep the answer context bounded.
@@ -99,7 +135,7 @@ export async function generateSuggestions(
       max_completion_tokens: 400,
       response_format: { type: "json_object" },
       messages: [
-        { role: "system", content: buildPrompt(locale, conceptTerms) },
+        { role: "system", content: buildPrompt(locale, conceptTerms, source) },
         {
           role: "user",
           content: `SEEKER'S QUESTION:\n${message}\n\nASSISTANT'S ANSWER:\n${answerContext}`,
@@ -110,15 +146,15 @@ export async function generateSuggestions(
     if (parsed && parsed.length >= 1) {
       // Pad to three from the fallback if the model returned fewer.
       const padded = [...parsed];
-      for (const f of getFallbackSuggestions(locale)) {
+      for (const f of getFallbackSuggestions(locale, source)) {
         if (padded.length >= SUGGESTION_COUNT) break;
         if (!padded.includes(f)) padded.push(f);
       }
       return padded.slice(0, SUGGESTION_COUNT);
     }
-    return getFallbackSuggestions(locale);
+    return getFallbackSuggestions(locale, source);
   } catch (error) {
     console.error("[api/ask] suggestion generation failed:", error);
-    return getFallbackSuggestions(locale);
+    return getFallbackSuggestions(locale, source);
   }
 }
