@@ -27,6 +27,12 @@ export const AskRequestSchema = z.object({
     .optional()
     .default([]),
   locale: AvailableLanguageSchema.optional().default("en"),
+  /**
+   * Opt-in to conscious-channeling grounding (Q'uo, Latwii, Hatonn).
+   * English-only — ignored for other locales (the transcripts have no
+   * translations).
+   */
+  includeChanneling: z.boolean().optional().default(false),
   /** PostHog distinct id from the client, for server-side LLM analytics. */
   distinctId: z.string().max(200).optional(),
 });

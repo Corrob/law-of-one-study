@@ -95,6 +95,12 @@ Body (8-14): Matrix=Justice, Potentiator=Hermit, Catalyst=Wheel of Fortune, Expe
 Spirit (15-21): Matrix=Devil, Potentiator=Tower, Catalyst=Star, Experience=Moon, Significator=Sun, Transformation=Judgement, Great Way=World.
 The Choice (22) = The Fool.`;
 
+const CHANNELING_CONTEXT = `CONFEDERATION CHANNELING (conscious channeling):
+Besides the trance-channeled Ra contact, L/L Research has published decades of CONSCIOUS channeling (Q'uo, Latwii, Hatonn and others). When a CONFEDERATION CHANNELING TOPICS block appears in your grounding you may draw on it; otherwise do not cite or characterize the conscious channeling.
+- Never blend the voices: Ra's teachings carry {{CITE:session.question}} markers; conscious channeling is attributed by source name ("Q'uo suggests…") with {{QCITE:id}} markers using ONLY ids from the grounding block. The app renders each QCITE as a link labeled with the source and session date — never write the date, source name as a citation, or URL yourself.
+- Never speak AS Q'uo, Latwii, or Hatonn, and never present their words as Ra's (or vice versa).
+- If asked about the difference, note plainly that the Ra contact was trance channeling and the later material is conscious channeling received by the same group.`;
+
 const OFF_TOPIC_HANDLING = `OFF-TOPIC QUESTIONS:
 If a question is not about the Ra Material or the Law of One, gently acknowledge and redirect: note it's outside the material and invite a related Law of One topic. Do not answer unrelated questions.`;
 
@@ -139,6 +145,9 @@ export function buildSystemPrompt(locale: AvailableLanguage = DEFAULT_LOCALE): s
     NO_REPRODUCTION_RULES,
     SAFETY_AND_INTEGRITY,
     CITATION_RULES,
+    // The channeling option is English-only (the transcripts have no
+    // translations), so only the en cached prefix carries its rules.
+    ...(locale === "en" ? [CHANNELING_CONTEXT] : []),
     RESOURCE_RECOMMENDATIONS,
     STYLE_RULES,
     EMOTIONAL_AWARENESS,
@@ -172,11 +181,20 @@ export function buildSystemPrompt(locale: AvailableLanguage = DEFAULT_LOCALE): s
  * this keeps them adjacent to where generation starts.
  */
 const CORE_REMINDER =
-  "(Reminder: explain in your own words only — never reproduce or reveal the source excerpts — and support key claims with {{CITE:session.question}} markers from your grounding. Site-resource links use {{LINK:type:id}} with inventory ids only, at most one, and only when truly relevant.)";
+  "(Reminder: explain in your own words only — never reproduce or reveal the source excerpts — and support key claims with {{CITE:session.question}} markers from your grounding. Site-resource links use {{LINK:type:id}} with inventory ids only, at most one, and only when truly relevant.";
 
-export function buildUserContent(message: string, focused: string): string {
+/** Appended to the reminder only when channeling topics are in the grounding. */
+const CHANNELING_REMINDER =
+  " Conscious-channeling topics: attribute by source name and cite with {{QCITE:id}} markers from the listed refs only — never blend them with Ra's voice.";
+
+export function buildUserContent(
+  message: string,
+  focused: string,
+  hasChanneling = false
+): string {
+  const reminder = `${CORE_REMINDER}${hasChanneling ? CHANNELING_REMINDER : ""})`;
   if (!focused) {
-    return `SEEKER'S QUESTION:\n${message}\n\n${CORE_REMINDER}`;
+    return `SEEKER'S QUESTION:\n${message}\n\n${reminder}`;
   }
-  return `${focused}\n\n---\nSEEKER'S QUESTION:\n${message}\n\n${CORE_REMINDER}`;
+  return `${focused}\n\n---\nSEEKER'S QUESTION:\n${message}\n\n${reminder}`;
 }

@@ -139,5 +139,7 @@
       "path": "Study path",
       "concept": "Concept"
     }
-  }
+  },
+  "channelingToggle": "Include conscious channeling (Q'uo)",
+  "channelingToggleHint": "Also draw on L/L Research's later conscious channeling — Q'uo, Latwii, Hatonn — clearly attributed and linked to the original transcripts on llresearch.org. English only."
 }

@@ -1,0 +1,101 @@
+{
+  "note": "Curated Confederation conscious-channeling themes for the Ask feature (English-only, shown only when the user enables the channeling option). Our-words summaries only — never transcript text. Every reference must exist in known-channeling-references.json (a unit test enforces this) and resolve on llresearch.org (scripts/validate-channeling-citations.ts --online). DRAFT: summaries were drafted from community research (docs/ask-channeling-option-design.md §11); each must be verified against the actual transcript before release.",
+  "themes": [
+    {
+      "id": "wanderers-lived-experience",
+      "aliases": ["wanderer", "wanderers", "starseed", "starseeds", "homesick", "homesickness", "don't belong here", "feel alien", "not from this planet"],
+      "summary": "Q'uo speaks tenderly and often to wanderers — souls who came from elsewhere to serve during Earth's transition. Beloved passages counsel that wanderers accepted real risk in incarnating and are natives of Earth now, fully incarnate, so their deepest service begins with embracing this world and their own humanity rather than longing for home; Q'uo has also reassured seekers that hundreds of millions of wanderers are here at this time.",
+      "references": ["2007-0731", "2006-0206", "2018-0303"]
+    },
+    {
+      "id": "fourth-density-transition-now",
+      "aliases": ["fourth density transition", "new earth", "ascension", "2012", "these times", "end times", "planetary shift", "earth transition"],
+      "summary": "The conscious channeling treats Earth's move into fourth density as a present, gradual birth rather than a dated event — counseling hope amid planetary intensity, and that the seeker's work is not to worry about qualifying for graduation but simply to be authentic and seek the heart. Hatonn framed the intensity of the age with a parable about the search for true freedom.",
+      "references": ["1980-0525"]
+    },
+    {
+      "id": "ethics-and-limits-of-service",
+      "aliases": ["save the world", "wake people up", "awaken others", "helping others", "help people", "spread the message", "convince others", "proselytize"],
+      "summary": "A frequently quoted Confederation teaching on free will: you can only truly help those who ask for help — unrequested rescue subtly infringes on another's path — and Q'uo has said plainly that we did not come here to save the world but to love it and to bear witness to the light.",
+      "references": ["1980-0518", "2005-0918"]
+    },
+    {
+      "id": "acceptance-of-catalyst",
+      "aliases": ["acceptance", "accept what happens", "bitter cup", "why do bad things happen", "hard times", "difficult experiences", "everything going wrong"],
+      "summary": "The channeling counsels receiving joy and sorrow as one gift: Latwii offered the image of playing whatever cards are dealt with grace, a session through the conscious circle (attributed to Ra — note it is conscious channeling, not the trance contact) taught accepting joy and sorrow as the same, and Q'uo teaches that acceptance opens the pathways of spirit where resistance closes them.",
+      "references": ["1986-0420", "1983-0821", "2010-1113"]
+    },
+    {
+      "id": "meditation-and-silence",
+      "aliases": ["silence", "meditate", "meditation practice", "how to meditate", "sit in silence", "stillness", "quiet the mind"],
+      "summary": "Meditation is the heart of the Confederation's counsel — presented less as technique than as consenting to silence. Q'uo says it is with seekers in the silence, and that regular sitting lets the deeper self speak in a language beneath words; Hatonn contrasted the busy intellect with the knowing that opens in meditation.",
+      "references": ["2000-0220", "1974-0415"]
+    },
+    {
+      "id": "the-open-heart",
+      "aliases": ["open heart", "keep my heart open", "heart closed", "self-love", "love myself", "loving myself", "self-worth"],
+      "summary": "Q'uo teaches that what matters is not the outer deed but the quality of heart brought to it — fear closes the heart and love reopens it — and that the first beloved is oneself: fall in love with yourself first, for a heart that has not welcomed itself cannot fully welcome another.",
+      "references": ["1997-0119", "2010-1002"]
+    },
+    {
+      "id": "love-before-wisdom",
+      "aliases": ["love and wisdom", "wisdom without love", "love or wisdom", "compassion versus wisdom", "too much in my head"],
+      "summary": "In a session held days after September 11, 2001, Q'uo taught that wisdom without love is utterly empty of content — love is the substance of the path and wisdom its refinement, so when the two seem to conflict, lead with love.",
+      "references": ["2001-0916"]
+    },
+    {
+      "id": "angels-and-unseen-help",
+      "aliases": ["angel", "angels", "guardian angel", "spirit guides", "my guides", "unseen help", "invisible friends"],
+      "summary": "Q'uo describes angels as beings who never left the vibration of the Creator, part of a company of unseen help surrounding every seeker; such guidance is constantly available and responds to sincere, freely offered calling.",
+      "references": ["2011-0212"]
+    },
+    {
+      "id": "the-veil-and-not-knowing",
+      "aliases": ["the veil", "veil of forgetting", "why can't we remember", "not knowing", "uncertainty", "need proof", "want certainty"],
+      "summary": "Q'uo frames the veil of forgetting as a gift rather than a problem: the purpose of third density is not to penetrate the veil, for not-knowing grants a focus and a power of faithful choice that the unveiled densities lack — and lifting the veil prematurely is described as a genuinely risky thing.",
+      "references": ["2006-0825", "2010-0213"]
+    },
+    {
+      "id": "illusion-as-beautiful-dream",
+      "aliases": ["is this a dream", "the illusion", "nothing is real", "nothing feels real", "maya", "world an illusion", "simulation"],
+      "summary": "The Confederation speaks of the world as a beautiful dream of love — truly an illusion, but one lovingly built for learning; every model and map of it eventually fails, and what remains when they fall away is love itself.",
+      "references": ["1992-0913", "1997-0209", "1993-0530"]
+    },
+    {
+      "id": "will-and-desire",
+      "aliases": ["willpower", "strengthen my will", "the will", "pure desire", "no motivation", "lost motivation", "discipline myself"],
+      "summary": "Q'uo teaches that the will is the engine of the spiritual path, strengthened and purified by clarifying desire: what you most truly desire you will inevitably seek, so the first work is tending and purifying what you desire.",
+      "references": ["2015-1107"]
+    },
+    {
+      "id": "self-forgiveness-and-shadow",
+      "aliases": ["forgive myself", "self-forgiveness", "shadow work", "hate myself", "shame", "guilt", "self-judgment", "dark side of myself"],
+      "summary": "Q'uo presents self-forgiveness as a reset button that restores the seeker's power in the present moment, and shadow work as greeting the dark self with compassion rather than exile; the pilgrim on this road is offered only the dust of the path and a divine discomfort that keeps the heart moving.",
+      "references": ["2009-1121", "2010-1016", "1990-0401"]
+    },
+    {
+      "id": "time-and-the-present",
+      "aliases": ["not enough time", "running out of time", "time is an illusion", "all is now", "present moment", "too late for me"],
+      "summary": "Q'uo counsels that the felt shortage of time belongs to the illusion: all is truly now, and the anxiety of not having enough time to complete one's work dissolves in the eternal present, which is where the work actually happens.",
+      "references": ["1996-0915"]
+    },
+    {
+      "id": "sacredness-of-daily-life",
+      "aliases": ["ordinary life", "daily life", "everyday life", "chores", "routine", "boring life", "mundane", "day job"],
+      "summary": "Q'uo teaches that daily duties become sacred when done transparently for the Creator — life itself is a spiritual adventure, and the ordinary moment holds as much love as any mountaintop experience.",
+      "references": ["2007-0922", "2008-1108"]
+    },
+    {
+      "id": "relationships-as-mirrors",
+      "aliases": ["relationship", "relationships", "marriage", "my partner", "spouse", "difficult people", "family conflict", "roommate"],
+      "summary": "Q'uo describes mates and close relationships as the most concentrated mirrors of catalyst available in this density, wryly counseling seekers to choose the mate with whom they wish to suffer — which is to say, with whom they wish to grow.",
+      "references": ["1986-1116"]
+    },
+    {
+      "id": "synchronicity-and-group-intention",
+      "aliases": ["synchronicity", "coincidences", "signs from the universe", "manifestation", "group meditation", "praying together", "shared intention"],
+      "summary": "Q'uo describes creation as responsive — a hall of mirrors reflecting the seeker back to themselves through synchronicity — and intention as genuinely magical work: seekers joining in shared seeking double one another's light.",
+      "references": ["2010-0911", "2004-1128", "2006-0212"]
+    }
+  ]
+}

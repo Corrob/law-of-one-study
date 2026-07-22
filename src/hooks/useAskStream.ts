@@ -36,7 +36,8 @@ interface UseAskStreamReturn {
  */
 export function useAskStream(
   locale: AvailableLanguage = DEFAULT_LOCALE,
-  disclaimers: string[] = []
+  disclaimers: string[] = [],
+  includeChanneling = false
 ): UseAskStreamReturn {
   const [messages, setMessages] = useState<AskMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -153,7 +154,14 @@ export function useAskStream(
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
-          body: JSON.stringify({ message: trimmed, history, locale, distinctId: getDistinctId() }),
+          body: JSON.stringify({
+            message: trimmed,
+            history,
+            locale,
+            distinctId: getDistinctId(),
+            // English-only option — omitted entirely when off or non-en.
+            ...(includeChanneling && locale === "en" ? { includeChanneling: true } : {}),
+          }),
         });
 
         if (!response.ok) {
@@ -254,7 +262,7 @@ export function useAskStream(
         abortRef.current = null;
       }
     },
-    [messages, isStreaming, locale, disclaimers]
+    [messages, isStreaming, locale, disclaimers, includeChanneling]
   );
 
   const retry = useCallback(() => {

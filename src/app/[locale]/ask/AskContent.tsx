@@ -28,6 +28,9 @@ import {
 } from "@/lib/ask/export-markdown";
 import { type AvailableLanguage } from "@/lib/language-config";
 
+/** localStorage key for the conscious-channeling opt-in (persists across visits). */
+const CHANNELING_PREF_KEY = "lo1-ask-include-channeling";
+
 export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("ask");
@@ -37,8 +40,32 @@ export default function AskContent() {
     const raw = t.raw("disclaimers");
     return Array.isArray(raw) ? (raw as string[]) : [];
   }, [t]);
+
+  // Conscious-channeling opt-in (English-only — the transcripts have no
+  // translations, so the toggle only renders for en). Restored after mount to
+  // avoid a hydration mismatch; flips apply from the next question.
+  const [includeChanneling, setIncludeChanneling] = useState(false);
+  useEffect(() => {
+    try {
+      setIncludeChanneling(localStorage.getItem(CHANNELING_PREF_KEY) === "1");
+    } catch {
+      // Storage unavailable — the preference just doesn't persist.
+    }
+  }, []);
+  const toggleChanneling = useCallback(() => {
+    setIncludeChanneling((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(CHANNELING_PREF_KEY, next ? "1" : "0");
+      } catch {
+        // Best-effort persistence.
+      }
+      return next;
+    });
+  }, []);
+
   const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
-    useAskStream(locale, disclaimers);
+    useAskStream(locale, disclaimers, includeChanneling);
 
   // ?q= deep link (e.g. the weekly email's Ask button): submit the question
   // automatically, captured at mount so later URL changes don't retrigger it.
@@ -176,6 +203,22 @@ export default function AskContent() {
       transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
     >
       <AskComposer onSend={handleSend} disabled={isStreaming} />
+      {/* Conscious-channeling opt-in — English-only (see CHANNELING_PREF_KEY). */}
+      {locale === "en" && (
+        <label
+          className="mt-1.5 flex w-fit cursor-pointer select-none items-center gap-2 px-1 text-xs
+                     text-[var(--lo1-stardust)]/70 hover:text-[var(--lo1-stardust)] transition-colors"
+          title={t("channelingToggleHint")}
+        >
+          <input
+            type="checkbox"
+            checked={includeChanneling}
+            onChange={toggleChanneling}
+            className="h-3.5 w-3.5 cursor-pointer accent-[var(--lo1-gold)]"
+          />
+          {t("channelingToggle")}
+        </label>
+      )}
     </motion.div>
   );
 
