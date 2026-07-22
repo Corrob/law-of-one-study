@@ -6,6 +6,11 @@
       "date": "1974-04-15",
       "path": "/channeling/1974/0415"
     },
+    "1979-0719": {
+      "source": "Latwii",
+      "date": "1979-07-19",
+      "path": "/channeling/1979/0719"
+    },
     "1980-0518": {
       "source": "Latwii",
       "date": "1980-05-18",
@@ -22,7 +27,7 @@
       "path": "/channeling/1983/0821"
     },
     "1986-0420": {
-      "source": "Ra (conscious circle)",
+      "source": "Hatonn",
       "date": "1986-04-20",
       "path": "/channeling/1986/0420"
     },
@@ -61,11 +66,6 @@
       "date": "1990-02-11",
       "path": "/channeling/1990/0211"
     },
-    "1990-0225": {
-      "source": "Q'uo",
-      "date": "1990-02-25",
-      "path": "/channeling/1990/0225"
-    },
     "1990-0401": {
       "source": "Q'uo",
       "date": "1990-04-01",
@@ -75,6 +75,11 @@
       "source": "Q'uo",
       "date": "1990-07-22",
       "path": "/channeling/1990/0722"
+    },
+    "1990-1007": {
+      "source": "Q'uo",
+      "date": "1990-10-07",
+      "path": "/channeling/1990/1007"
     },
     "1991-0421": {
       "source": "Q'uo",
@@ -146,10 +151,20 @@
       "date": "2000-02-20",
       "path": "/channeling/2000/0220"
     },
+    "2000-0923": {
+      "source": "Q'uo",
+      "date": "2000-09-23",
+      "path": "/channeling/2000/0923"
+    },
     "2000-1105": {
       "source": "Q'uo",
       "date": "2000-11-05",
       "path": "/channeling/2000/1105"
+    },
+    "2000-1119": {
+      "source": "Q'uo",
+      "date": "2000-11-19",
+      "path": "/channeling/2000/1119"
     },
     "2001-0916": {
       "source": "Q'uo",
@@ -161,15 +176,15 @@
       "date": "2002-03-07",
       "path": "/channeling/2002/0307"
     },
-    "2004-0104": {
-      "source": "Q'uo",
-      "date": "2004-01-04",
-      "path": "/channeling/2004/0104"
-    },
     "2004-1128": {
       "source": "Q'uo",
       "date": "2004-11-28",
       "path": "/channeling/2004/1128"
+    },
+    "2004-1212": {
+      "source": "Q'uo",
+      "date": "2004-12-12",
+      "path": "/channeling/2004/1212"
     },
     "2005-0617": {
       "source": "Q'uo",
@@ -205,11 +220,6 @@
       "source": "Q'uo",
       "date": "2006-02-12",
       "path": "/channeling/2006/0212"
-    },
-    "2006-0226_01": {
-      "source": "Q'uo",
-      "date": "2006-02-26",
-      "path": "/channeling/2006/0226_01"
     },
     "2006-0305": {
       "source": "Q'uo",
@@ -256,11 +266,6 @@
       "date": "2007-07-31",
       "path": "/channeling/2007/0731"
     },
-    "2007-0807": {
-      "source": "Q'uo",
-      "date": "2007-08-07",
-      "path": "/channeling/2007/0807"
-    },
     "2007-0922": {
       "source": "Q'uo",
       "date": "2007-09-22",
@@ -281,6 +286,11 @@
       "date": "2009-01-24",
       "path": "/channeling/2009/0124"
     },
+    "2009-0314": {
+      "source": "Q'uo",
+      "date": "2009-03-14",
+      "path": "/channeling/2009/0314"
+    },
     "2009-0922": {
       "source": "Q'uo",
       "date": "2009-09-22",
@@ -296,6 +306,11 @@
       "date": "2009-11-21",
       "path": "/channeling/2009/1121"
     },
+    "2010-0123": {
+      "source": "Q'uo",
+      "date": "2010-01-23",
+      "path": "/channeling/2010/0123"
+    },
     "2010-0130": {
       "source": "Q'uo",
       "date": "2010-01-30",
@@ -305,6 +320,11 @@
       "source": "Q'uo",
       "date": "2010-02-13",
       "path": "/channeling/2010/0213"
+    },
+    "2010-0306": {
+      "source": "Q'uo",
+      "date": "2010-03-06",
+      "path": "/channeling/2010/0306"
     },
     "2010-0911": {
       "source": "Q'uo",
@@ -386,15 +406,10 @@
       "date": "2020-01-29",
       "path": "/channeling/2020/0129"
     },
-    "2021-0414": {
+    "2021-0219": {
       "source": "Q'uo",
-      "date": "2021-04-14",
-      "path": "/channeling/2021/0414"
-    },
-    "2022-0302": {
-      "source": "Q'uo",
-      "date": "2022-03-02",
-      "path": "/channeling/2022/0302"
+      "date": "2021-02-19",
+      "path": "/channeling/2021/0219"
     },
     "2023-0928": {
       "source": "Q'uo",
