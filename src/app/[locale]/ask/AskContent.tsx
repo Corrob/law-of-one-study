@@ -37,12 +37,6 @@ export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
   const t = useTranslations("ask");
   const tc = useTranslations("confirmNewChat");
-  // Saved discernment notes — one is chosen per question (instant, local).
-  const disclaimers = useMemo(() => {
-    const raw = t.raw("disclaimers");
-    return Array.isArray(raw) ? (raw as string[]) : [];
-  }, [t]);
-
   // Source library: the Ra contact (default) or the conscious channeling —
   // one or the other, never blended. English-only (the transcripts have no
   // translations, so the selector only renders for en). Restored after mount
@@ -63,6 +57,14 @@ export default function AskContent() {
       // Best-effort persistence.
     }
   }, []);
+
+  // Saved discernment notes — one is chosen per question (instant, local).
+  // Each source library has its own set, so a channeling thread never opens
+  // with a note about "Ra's teachings" (and vice versa).
+  const disclaimers = useMemo(() => {
+    const raw = t.raw(source === "channeling" ? "channelingDisclaimers" : "disclaimers");
+    return Array.isArray(raw) ? (raw as string[]) : [];
+  }, [t, source]);
 
   const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
     useAskStream(locale, disclaimers, source);
@@ -298,7 +300,13 @@ export default function AskContent() {
                   transition={{ duration: reduceMotion ? 0 : 0.25 }}
                   className="min-h-full max-w-2xl mx-auto flex flex-col justify-center"
                 >
-                  <AskWelcome onPickStarter={handleSend} composer={composerElement} />
+                  <AskWelcome
+                    onPickStarter={handleSend}
+                    composer={composerElement}
+                    body={
+                      source === "channeling" ? t("channelingWelcomeBody") : undefined
+                    }
+                  />
                 </motion.div>
               ) : (
               <motion.div

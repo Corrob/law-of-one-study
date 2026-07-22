@@ -144,5 +144,11 @@
   "sourceRa": "Ra Material",
   "sourceRaHint": "Answers grounded in the trance-channeled Ra contact (1981–1984), cited by session and question.",
   "sourceChanneling": "Conscious channeling (Q'uo)",
-  "sourceChannelingHint": "Answers drawn from L/L Research's later conscious channeling — Q'uo, Latwii, Hatonn — attributed by source and linked to the original transcripts on llresearch.org. English only."
+  "sourceChannelingHint": "Answers drawn from L/L Research's later conscious channeling — Q'uo, Latwii, Hatonn — attributed by source and linked to the original transcripts on llresearch.org. English only.",
+  "channelingDisclaimers": [
+    "Take what resonates, and gently leave the rest. These answers are an AI companion's synthesis of L/L Research's conscious channeling — an aid to your own contemplation, not an authority.",
+    "This guide can make mistakes and flatten subtle ideas. Use your own discernment: keep what rings true, release what doesn't, and return to the original transcripts when something matters.",
+    "Consider these words a doorway, not a destination. They are AI-generated reflections on the Confederation's conscious channeling — hold them lightly, trust your inner knowing, and verify at the source."
+  ],
+  "channelingWelcomeBody": "Explore L/L Research's conscious channeling in conversation — Q'uo, Latwii, Hatonn. Answers link back to the original transcripts on llresearch.org; they never reproduce the channeled material itself."
 }

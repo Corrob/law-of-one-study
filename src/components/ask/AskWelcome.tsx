@@ -13,6 +13,11 @@ interface AskWelcomeProps {
    * It animates down to the footer when the conversation starts.
    */
   composer?: ReactNode;
+  /**
+   * Overrides the intro paragraph — used when the selected source library is
+   * the conscious channeling, so the welcome doesn't describe Ra grounding.
+   */
+  body?: string;
 }
 
 // Rotating greeting keys (map to ask.greetings.* translations).
@@ -23,7 +28,7 @@ const GREETING_KEYS = ["seeker", "loveLight", "journey", "serve", "wanderer"] as
  * random handful of starter questions. (The discernment note now appears with
  * the first response, not here.)
  */
-export default function AskWelcome({ onPickStarter, composer }: AskWelcomeProps) {
+export default function AskWelcome({ onPickStarter, composer, body }: AskWelcomeProps) {
   const t = useTranslations("ask");
 
   // Chosen on mount (client-side) so the random picks don't cause a
@@ -60,7 +65,7 @@ export default function AskWelcome({ onPickStarter, composer }: AskWelcomeProps)
         </p>
       )}
       <p className="text-sm text-[var(--lo1-stardust)] max-w-md mb-6 leading-relaxed">
-        {t("welcomeBody")}
+        {body ?? t("welcomeBody")}
       </p>
 
       {/* Centered composer with ambient glow (old Seek placement) */}
