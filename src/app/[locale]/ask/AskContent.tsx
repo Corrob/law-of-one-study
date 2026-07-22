@@ -203,21 +203,39 @@ export default function AskContent() {
       transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
     >
       <AskComposer onSend={handleSend} disabled={isStreaming} />
-      {/* Conscious-channeling opt-in — English-only (see CHANNELING_PREF_KEY). */}
+      {/* Conscious-channeling opt-in — English-only (see CHANNELING_PREF_KEY).
+          A quiet pill switch in the site's language: a small star that lights
+          gold when the deeper library is open. */}
       {locale === "en" && (
-        <label
-          className="mt-1.5 flex w-fit cursor-pointer select-none items-center gap-2 px-1 text-xs
-                     text-[var(--lo1-stardust)]/70 hover:text-[var(--lo1-stardust)] transition-colors"
-          title={t("channelingToggleHint")}
-        >
-          <input
-            type="checkbox"
-            checked={includeChanneling}
-            onChange={toggleChanneling}
-            className="h-3.5 w-3.5 cursor-pointer accent-[var(--lo1-gold)]"
-          />
-          {t("channelingToggle")}
-        </label>
+        <div className="mt-2 flex justify-center">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={includeChanneling}
+            onClick={toggleChanneling}
+            title={t("channelingToggleHint")}
+            className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs
+                        transition-all duration-300 cursor-pointer select-none backdrop-blur-sm
+                        ${
+                          includeChanneling
+                            ? `border-[var(--lo1-gold)]/50 bg-[var(--lo1-gold)]/10 text-[var(--lo1-gold)]
+                               shadow-[0_0_14px_-4px_var(--lo1-gold)]`
+                            : `border-[var(--lo1-gold)]/15 bg-[var(--lo1-indigo)]/40 text-[var(--lo1-stardust)]/60
+                               hover:border-[var(--lo1-gold)]/35 hover:text-[var(--lo1-stardust)]`
+                        }`}
+          >
+            <span
+              aria-hidden
+              className={`h-1.5 w-1.5 rounded-full transition-all duration-300
+                          ${
+                            includeChanneling
+                              ? "bg-[var(--lo1-gold)] shadow-[0_0_6px_1px_var(--lo1-gold)]"
+                              : "bg-[var(--lo1-stardust)]/30"
+                          }`}
+            />
+            {t("channelingToggle")}
+          </button>
+        </div>
       )}
     </motion.div>
   );
