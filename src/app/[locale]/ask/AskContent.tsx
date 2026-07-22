@@ -211,7 +211,7 @@ export default function AskContent() {
       layoutId="ask-composer"
       transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
     >
-      <AskComposer onSend={handleSend} disabled={isStreaming} />
+      <AskComposer onSend={handleSend} disabled={isStreaming} source={effectiveSource} />
       {/* Source library selector — English-only (see SOURCE_PREF_KEY). A quiet
           segmented pill in the site's language: the chosen library glows gold,
           marked by a small lit star. */}

@@ -9,6 +9,8 @@ import { ASK_MAX_MESSAGE_LENGTH } from "@/lib/ask/config";
 interface AskComposerProps {
   onSend: (message: string) => void;
   disabled: boolean;
+  /** Selected source library — picks Ra vs conscious-channeling placeholders. */
+  source?: "ra" | "channeling";
 }
 
 /**
@@ -17,7 +19,7 @@ interface AskComposerProps {
  * handling (keeps the box visible above the on-screen keyboard), a character
  * counter near the limit, and gently rotating placeholder hints.
  */
-export default function AskComposer({ onSend, disabled }: AskComposerProps) {
+export default function AskComposer({ onSend, disabled, source = "ra" }: AskComposerProps) {
   const t = useTranslations("ask");
   const [value, setValue] = useState("");
   const { textareaRef, maxHeight } = useAutoGrowTextarea({ value });
@@ -30,9 +32,11 @@ export default function AskComposer({ onSend, disabled }: AskComposerProps) {
   // Rotating placeholder hints. Start deterministic (avoids hydration mismatch),
   // randomize on mount, then advance slowly only while the field is empty.
   const placeholders = useMemo(() => {
-    const raw = t.raw("placeholders");
-    return Array.isArray(raw) && raw.length > 0 ? (raw as string[]) : [t("placeholder")];
-  }, [t]);
+    const key = source === "channeling" ? "channelingPlaceholders" : "placeholders";
+    const fallbackKey = source === "channeling" ? "channelingPlaceholder" : "placeholder";
+    const raw = t.raw(key);
+    return Array.isArray(raw) && raw.length > 0 ? (raw as string[]) : [t(fallbackKey)];
+  }, [t, source]);
   const [phIndex, setPhIndex] = useState(0);
   useEffect(() => {
     setPhIndex(Math.floor(Math.random() * placeholders.length));
