@@ -164,4 +164,48 @@ test.describe("Ask", () => {
     await expect(page.getByText(/The harvest is a transition between densities/).first()).toBeVisible();
     expect(calls).toBe(2);
   });
+
+  test("channeling source: switches copy, sends source, renders a Q'uo transcript link", async ({
+    page,
+  }) => {
+    const channelingSSE = [
+      'event: meta\ndata: {"concepts":["chan:meditation-and-silence"]}\n\n',
+      'event: chunk\ndata: {"text":"Q’uo counsels consenting to silence "}\n\n',
+      'event: chunk\ndata: {"text":"{{QCITE:2000-0220}}."}\n\n',
+      'event: done\ndata: {}\n\n',
+    ].join("");
+
+    let sentSource: string | undefined;
+    await page.route("**/api/ask", async (route) => {
+      sentSource = (route.request().postDataJSON() as { source?: string })?.source;
+      await route.fulfill({
+        status: 200,
+        contentType: "text/event-stream; charset=utf-8",
+        body: channelingSSE,
+      });
+    });
+
+    await page.goto("/ask");
+
+    // Choosing the channeling library swaps the welcome copy.
+    await page.getByRole("radio", { name: /Conscious channeling/ }).click();
+    await expect(
+      page.getByText(/Explore L\/L Research's conscious channeling in conversation/)
+    ).toBeVisible();
+
+    const input = page.getByRole("textbox", { name: "Your question" });
+    await input.fill("How do I work with meditation and silence?");
+    await input.press("Enter");
+
+    // The request carried the channeling source.
+    await expect.poll(() => sentSource).toBe("channeling");
+
+    // The QCITE marker renders as a labeled transcript link (no locale prefix).
+    const citation = page.getByRole("link", { name: "Q'uo · February 20, 2000" });
+    await expect(citation).toBeVisible();
+    await expect(citation).toHaveAttribute(
+      "href",
+      "https://www.llresearch.org/channeling/2000/0220"
+    );
+  });
 });

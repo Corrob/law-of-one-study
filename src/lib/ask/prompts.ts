@@ -15,6 +15,7 @@ import {
 } from "@/lib/language-config";
 import { buildConceptAtlas } from "@/lib/concept-graph";
 import { buildResourceInventory } from "@/lib/ask/resources";
+import type { AskSource } from "@/lib/schemas/ask";
 
 const ROLE_PREAMBLE = `You are a warm, thoughtful companion and guide to the Ra Material (the Law of One), helping seekers explore these teachings on unity, consciousness, and spiritual evolution.
 
@@ -201,7 +202,7 @@ const CHANNELING_CORE_REMINDER =
 export function buildUserContent(
   message: string,
   focused: string,
-  source: "ra" | "channeling" = "ra"
+  source: AskSource = "ra"
 ): string {
   const channelingMode = source === "channeling";
   const reminder = channelingMode ? CHANNELING_CORE_REMINDER : CORE_REMINDER;

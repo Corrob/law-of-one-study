@@ -11,6 +11,7 @@ import {
   channelingCitationLabel,
 } from "../channeling-references";
 import { buildGrounding } from "../grounding";
+import knownChannelingReferences from "@/data/known-channeling-references.json";
 
 describe("channeling references", () => {
   it("resolves a known reference to its llresearch.org URL", () => {
@@ -42,6 +43,55 @@ describe("channeling theme data integrity", () => {
   it("theme ids are unique", () => {
     const ids = getChannelingThemes().map((t) => t.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("no alias is shared across themes (last-wins would mis-route it)", () => {
+    const owner = new Map<string, string>();
+    const collisions: string[] = [];
+    for (const theme of getChannelingThemes()) {
+      for (const alias of theme.aliases) {
+        const key = alias.toLowerCase();
+        const prev = owner.get(key);
+        if (prev && prev !== theme.id) {
+          collisions.push(`"${alias}" in both ${prev} and ${theme.id}`);
+        }
+        owner.set(key, theme.id);
+      }
+    }
+    expect(collisions).toEqual([]);
+  });
+});
+
+describe("known-channeling-references internal consistency", () => {
+  // Mirrors the offline checks in scripts/validate-channeling-citations.ts so a
+  // malformed date/path in the whitelist fails CI, not just the manual script.
+  const references = knownChannelingReferences.references as Record<
+    string,
+    { source: string; date: string; path: string }
+  >;
+
+  it("every id's date and path agree with the id", () => {
+    const mismatches: string[] = [];
+    for (const [id, ref] of Object.entries(references)) {
+      const m = id.match(/^(\d{4})-(\d{2})(\d{2})(_\d{2})?$/);
+      if (!m) {
+        mismatches.push(`${id}: malformed id`);
+        continue;
+      }
+      const [, y, mo, d, suffix] = m;
+      const expectedDate = `${y}-${mo}-${d}`;
+      const expectedPath = `/channeling/${y}/${mo}${d}${suffix ?? ""}`;
+      if (ref.date !== expectedDate) mismatches.push(`${id}: date ${ref.date} != ${expectedDate}`);
+      if (ref.path !== expectedPath) mismatches.push(`${id}: path ${ref.path} != ${expectedPath}`);
+      if (!ref.source.trim()) mismatches.push(`${id}: empty source`);
+    }
+    expect(mismatches).toEqual([]);
+  });
+
+  it("every whitelisted reference is used by at least one theme", () => {
+    const used = new Set(getChannelingThemeReferences());
+    const orphans = Object.keys(references).filter((id) => !used.has(id));
+    expect(orphans).toEqual([]);
   });
 });
 

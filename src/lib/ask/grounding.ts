@@ -17,6 +17,7 @@ import {
 } from "@/lib/concept-graph";
 import { getLocalizedText, type GraphConcept } from "@/lib/types-graph";
 import { type AvailableLanguage, DEFAULT_LOCALE } from "@/lib/language-config";
+import type { AskSource } from "@/lib/schemas/ask";
 import { ASK_MAX_FOCUSED_CONCEPTS } from "./config";
 import { identifySupplements, buildSupplementGrounding } from "./supplements";
 import {
@@ -147,7 +148,7 @@ export function buildGrounding(
   message: string,
   history: AskHistoryTurn[] = [],
   locale: AvailableLanguage = DEFAULT_LOCALE,
-  source: "ra" | "channeling" = "ra"
+  source: AskSource = "ra"
 ): Grounding {
   const channelingMode = source === "channeling" && locale === "en";
 

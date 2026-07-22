@@ -10,6 +10,7 @@
 import { getOpenAIClient } from "./openai";
 import { ASK_MODEL, ASK_REASONING_EFFORT } from "./config";
 import { type AvailableLanguage, LANGUAGE_NAMES_FOR_PROMPTS, DEFAULT_LOCALE } from "@/lib/language-config";
+import type { AskSource } from "@/lib/schemas/ask";
 
 const MAX_SUGGESTION_LENGTH = 100;
 const SUGGESTION_COUNT = 3;
@@ -50,7 +51,7 @@ const CHANNELING_FALLBACKS: string[] = [
 
 export function getFallbackSuggestions(
   locale: AvailableLanguage = DEFAULT_LOCALE,
-  source: "ra" | "channeling" = "ra"
+  source: AskSource = "ra"
 ): string[] {
   if (source === "channeling") return CHANNELING_FALLBACKS;
   return FALLBACKS[locale] ?? FALLBACKS.en;
@@ -80,7 +81,7 @@ export function parseSuggestions(raw: string): string[] | null {
 function buildPrompt(
   locale: AvailableLanguage,
   conceptTerms: string[],
-  source: "ra" | "channeling"
+  source: AskSource
 ): string {
   const language = LANGUAGE_NAMES_FOR_PROMPTS[locale];
 
@@ -121,7 +122,7 @@ export async function generateSuggestions(
   answer: string,
   locale: AvailableLanguage = DEFAULT_LOCALE,
   conceptTerms: string[] = [],
-  source: "ra" | "channeling" = "ra"
+  source: AskSource = "ra"
 ): Promise<string[]> {
   try {
     // Keep the answer context bounded.

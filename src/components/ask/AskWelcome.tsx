@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { AskIcon } from "@/components/icons";
 import { askAnalytics } from "@/lib/ask/analytics";
 import { pickRandomStarters, STARTER_DISPLAY_COUNT } from "@/lib/ask/starters";
+import type { AskSource } from "@/lib/schemas/ask";
 
 interface AskWelcomeProps {
   onPickStarter: (prompt: string) => void;
@@ -23,7 +24,7 @@ interface AskWelcomeProps {
    * mode surfaces questions the channeling library can actually cite, and
    * re-picks when the seeker flips the selector on the welcome screen.
    */
-  source?: "ra" | "channeling";
+  source?: AskSource;
 }
 
 // Rotating greeting keys (map to ask.greetings.* translations).

@@ -6,8 +6,12 @@ import AskWelcome from "../AskWelcome";
 jest.mock("next-intl", () => ({
   useTranslations: () => {
     const t = (key: string) => key;
-    t.raw = (key: string) =>
-      key === "starters" ? ["What is the harvest?", "What are densities?", "Who is Ra?"] : key;
+    t.raw = (key: string) => {
+      if (key === "starters") return ["What is the harvest?", "What are densities?", "Who is Ra?"];
+      if (key === "channelingStarters")
+        return ["How do I work with grief?", "What does Q'uo say about faith?"];
+      return key;
+    };
     return t;
   },
 }));
@@ -50,5 +54,22 @@ describe("AskWelcome", () => {
     const first = screen.getAllByTestId("ask-starter")[0];
     await userEvent.click(first);
     expect(onPickStarter).toHaveBeenCalledWith(first.textContent);
+  });
+
+  it("uses the Ra starter pool by default", () => {
+    render(<AskWelcome onPickStarter={jest.fn()} />);
+    const texts = screen.getAllByTestId("ask-starter").map((el) => el.textContent);
+    expect(texts.every((t) => ["What is the harvest?", "What are densities?", "Who is Ra?"].includes(t ?? ""))).toBe(true);
+  });
+
+  it("uses the channeling starter pool when source is channeling", () => {
+    render(<AskWelcome onPickStarter={jest.fn()} source="channeling" />);
+    const texts = screen.getAllByTestId("ask-starter").map((el) => el.textContent);
+    expect(texts.length).toBeGreaterThan(0);
+    expect(
+      texts.every((t) =>
+        ["How do I work with grief?", "What does Q'uo say about faith?"].includes(t ?? "")
+      )
+    ).toBe(true);
   });
 });

@@ -5,12 +5,13 @@ import { useTranslations } from "next-intl";
 import { SparkleIcon } from "@/components/icons";
 import { useAutoGrowTextarea } from "@/hooks/useAutoGrowTextarea";
 import { ASK_MAX_MESSAGE_LENGTH } from "@/lib/ask/config";
+import type { AskSource } from "@/lib/schemas/ask";
 
 interface AskComposerProps {
   onSend: (message: string) => void;
   disabled: boolean;
   /** Selected source library — picks Ra vs conscious-channeling placeholders. */
-  source?: "ra" | "channeling";
+  source?: AskSource;
 }
 
 /**
@@ -99,7 +100,7 @@ export default function AskComposer({ onSend, disabled, source = "ra" }: AskComp
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           rows={1}
-          placeholder={placeholders[phIndex] ?? t("placeholder")}
+          placeholder={placeholders[phIndex] ?? placeholders[0]}
           aria-label={t("inputLabel")}
           aria-describedby={isNearLimit ? counterId : undefined}
           aria-invalid={isOverLimit}

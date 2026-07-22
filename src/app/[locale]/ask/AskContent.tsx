@@ -27,11 +27,10 @@ import {
   formatExportDate,
 } from "@/lib/ask/export-markdown";
 import { type AvailableLanguage } from "@/lib/language-config";
+import type { AskSource } from "@/lib/schemas/ask";
 
 /** localStorage key for the chosen source library (persists across visits). */
 const SOURCE_PREF_KEY = "lo1-ask-source";
-
-type AskSource = "ra" | "channeling";
 
 export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
@@ -233,7 +232,7 @@ export default function AskContent() {
                 },
               ]
             ).map(({ id, label, hint }) => {
-              const selected = source === id;
+              const selected = effectiveSource === id;
               return (
                 <button
                   key={id}
