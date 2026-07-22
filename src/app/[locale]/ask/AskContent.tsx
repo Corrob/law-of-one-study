@@ -58,16 +58,23 @@ export default function AskContent() {
     }
   }, []);
 
+  // Channeling is English-only; for any other locale the effective source is
+  // always Ra (matching the API), so the UI never references channeling-only
+  // message keys that non-English files don't define.
+  const effectiveSource: AskSource = locale === "en" ? source : "ra";
+
   // Saved discernment notes — one is chosen per question (instant, local).
   // Each source library has its own set, so a channeling thread never opens
   // with a note about "Ra's teachings" (and vice versa).
   const disclaimers = useMemo(() => {
-    const raw = t.raw(source === "channeling" ? "channelingDisclaimers" : "disclaimers");
+    const raw = t.raw(
+      effectiveSource === "channeling" ? "channelingDisclaimers" : "disclaimers"
+    );
     return Array.isArray(raw) ? (raw as string[]) : [];
-  }, [t, source]);
+  }, [t, effectiveSource]);
 
   const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
-    useAskStream(locale, disclaimers, source);
+    useAskStream(locale, disclaimers, effectiveSource);
 
   // ?q= deep link (e.g. the weekly email's Ask button): submit the question
   // automatically, captured at mount so later URL changes don't retrigger it.
@@ -303,8 +310,11 @@ export default function AskContent() {
                   <AskWelcome
                     onPickStarter={handleSend}
                     composer={composerElement}
+                    source={effectiveSource}
                     body={
-                      source === "channeling" ? t("channelingWelcomeBody") : undefined
+                      effectiveSource === "channeling"
+                        ? t("channelingWelcomeBody")
+                        : undefined
                     }
                   />
                 </motion.div>

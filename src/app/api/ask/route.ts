@@ -190,7 +190,8 @@ export async function POST(request: Request): Promise<Response> {
           message,
           output,
           locale,
-          grounding.matchedTerms
+          grounding.matchedTerms,
+          effectiveSource
         );
         send("suggestions", { items: suggestions });
 

@@ -4,7 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { AskIcon } from "@/components/icons";
 import { askAnalytics } from "@/lib/ask/analytics";
-import { pickRandomStarters } from "@/lib/ask/starters";
+import { pickRandomStarters, STARTER_DISPLAY_COUNT } from "@/lib/ask/starters";
 
 interface AskWelcomeProps {
   onPickStarter: (prompt: string) => void;
@@ -18,6 +18,12 @@ interface AskWelcomeProps {
    * the conscious channeling, so the welcome doesn't describe Ra grounding.
    */
   body?: string;
+  /**
+   * Selected source library. Picks the matching starter pool so channeling
+   * mode surfaces questions the channeling library can actually cite, and
+   * re-picks when the seeker flips the selector on the welcome screen.
+   */
+  source?: "ra" | "channeling";
 }
 
 // Rotating greeting keys (map to ask.greetings.* translations).
@@ -28,7 +34,12 @@ const GREETING_KEYS = ["seeker", "loveLight", "journey", "serve", "wanderer"] as
  * random handful of starter questions. (The discernment note now appears with
  * the first response, not here.)
  */
-export default function AskWelcome({ onPickStarter, composer, body }: AskWelcomeProps) {
+export default function AskWelcome({
+  onPickStarter,
+  composer,
+  body,
+  source = "ra",
+}: AskWelcomeProps) {
   const t = useTranslations("ask");
 
   // Chosen on mount (client-side) so the random picks don't cause a
@@ -36,14 +47,21 @@ export default function AskWelcome({ onPickStarter, composer, body }: AskWelcome
   const [starters, setStarters] = useState<string[]>([]);
   const [greetingKey, setGreetingKey] = useState<(typeof GREETING_KEYS)[number] | null>(null);
 
+  // Re-pick when the source changes so channeling mode shows channeling-
+  // groundable starters (and Ra mode shows the Ra pool). Keyed on `source`
+  // only — `t` from useTranslations is not referentially stable, so including
+  // it would re-run every render and loop with setStarters.
   useEffect(() => {
-    const pool = t.raw("starters") as string[];
-    const picked = pickRandomStarters(Array.isArray(pool) ? pool : []);
-    setStarters(picked);
-    setGreetingKey(GREETING_KEYS[Math.floor(Math.random() * GREETING_KEYS.length)]);
-    askAnalytics.welcomeScreenViewed({ starterCount: picked.length });
-    // Pick once on mount.
+    const key = source === "channeling" ? "channelingStarters" : "starters";
+    const pool = t.raw(key) as string[];
+    setStarters(pickRandomStarters(Array.isArray(pool) ? pool : []));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [source]);
+
+  useEffect(() => {
+    // Pick the greeting once on mount.
+    setGreetingKey(GREETING_KEYS[Math.floor(Math.random() * GREETING_KEYS.length)]);
+    askAnalytics.welcomeScreenViewed({ starterCount: STARTER_DISPLAY_COUNT });
   }, []);
 
   const handlePick = (starter: string, index: number) => {
