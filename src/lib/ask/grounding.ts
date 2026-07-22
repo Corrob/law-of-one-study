@@ -115,17 +115,13 @@ function selectSupplements(
 }
 
 /**
- * Match conscious-channeling themes for a query. English-only (the transcripts
- * have no translations) and only when the user enabled the option; uses the
- * same message-then-recent-history fallback as the other layers.
+ * Match conscious-channeling themes for a query, using the same
+ * message-then-recent-history fallback as the other layers.
  */
 function selectChannelingThemes(
   message: string,
-  history: AskHistoryTurn[],
-  locale: AvailableLanguage,
-  includeChanneling: boolean
+  history: AskHistoryTurn[]
 ): ChannelingTheme[] {
-  if (!includeChanneling || locale !== "en") return [];
   let found = identifyChannelingThemes(message);
   if (found.length === 0 && history.length > 0) {
     const recent = history
@@ -138,41 +134,52 @@ function selectChannelingThemes(
 }
 
 /**
- * Build the full grounding (atlas + focused context) for a query. The focused
- * block combines relevant concepts with any matched hidden supplements and —
- * when the option is on — matched conscious-channeling themes.
+ * Build the full grounding (atlas + focused context) for a query.
+ *
+ * The two source libraries are never blended:
+ * - `"ra"` (default): concepts + hidden supplements, exactly as always.
+ * - `"channeling"` (English-only — other locales fall back to "ra"): ONLY the
+ *   matched conscious-channeling themes, so the model has no Ra references to
+ *   cite in that mode. The concept atlas in the system prompt still provides
+ *   background vocabulary, but the citable grounding is channeling alone.
  */
 export function buildGrounding(
   message: string,
   history: AskHistoryTurn[] = [],
   locale: AvailableLanguage = DEFAULT_LOCALE,
-  includeChanneling = false
+  source: "ra" | "channeling" = "ra"
 ): Grounding {
+  const channelingMode = source === "channeling" && locale === "en";
+
+  if (channelingMode) {
+    const channeling = selectChannelingThemes(message, history);
+    return {
+      focused: buildChannelingGrounding(channeling),
+      matchedConceptIds: channeling.map((t) => `${CHANNELING_ID_PREFIX}${t.id}`),
+      matchedTerms: channeling.map((t) => t.id.replace(/-/g, " ")),
+      excerpts: [],
+      channelingIds: channeling.map((t) => t.id),
+    };
+  }
+
   const concepts = selectConcepts(message, history, locale);
   const supplements = selectSupplements(message, history, locale);
-  const channeling = selectChannelingThemes(message, history, locale, includeChanneling);
 
   const focused = [
     buildGroundingContext(concepts, locale),
     buildSupplementGrounding(supplements, locale),
-    buildChannelingGrounding(channeling),
   ]
     .filter(Boolean)
     .join("\n\n---\n\n");
 
   return {
     focused,
-    matchedConceptIds: [
-      ...concepts.map((c) => c.id),
-      ...supplements.map((s) => s.id),
-      ...channeling.map((t) => `${CHANNELING_ID_PREFIX}${t.id}`),
-    ],
+    matchedConceptIds: [...concepts.map((c) => c.id), ...supplements.map((s) => s.id)],
     matchedTerms: [
       ...concepts.map((c) => getLocalizedText(c.term, locale)),
       ...supplements.map((s) => s.id.replace(/-/g, " ")),
-      ...channeling.map((t) => t.id.replace(/-/g, " ")),
     ],
     excerpts: getConceptExcerpts(concepts, locale),
-    channelingIds: channeling.map((t) => t.id),
+    channelingIds: [],
   };
 }

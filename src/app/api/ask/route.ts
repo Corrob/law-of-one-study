@@ -83,16 +83,14 @@ export async function POST(request: Request): Promise<Response> {
   if (!parsed.success) {
     return jsonError("Invalid request.", 400);
   }
-  const { message, history, locale, distinctId, includeChanneling } = parsed.data;
+  const { message, history, locale, distinctId, source } = parsed.data;
+  // Channeling is English-only; other locales always answer from the Ra material.
+  const effectiveSource = locale === "en" ? source : "ra";
 
   // Build grounding (no RAG) and prompts.
-  const grounding = buildGrounding(message, history, locale, includeChanneling);
+  const grounding = buildGrounding(message, history, locale, effectiveSource);
   const systemPrompt = buildSystemPrompt(locale);
-  const userContent = buildUserContent(
-    message,
-    grounding.focused,
-    grounding.channelingIds.length > 0
-  );
+  const userContent = buildUserContent(message, grounding.focused, effectiveSource);
 
   // OpenAI automatically caches the long, stable system prefix (the atlas).
   const messages = [
@@ -117,9 +115,9 @@ export async function POST(request: Request): Promise<Response> {
     });
   }
 
-  // Channeling-recall telemetry: the option is on but no curated theme matched
+  // Channeling-recall telemetry: channeling mode but no curated theme matched
   // — steers where the channeling library needs aliases or new themes.
-  if (includeChanneling && locale === "en" && grounding.channelingIds.length === 0) {
+  if (effectiveSource === "channeling" && grounding.channelingIds.length === 0) {
     trackEvent(analyticsId, "ask_channeling_no_match", {
       trace_id: traceId,
       message_length: message.length,
@@ -228,7 +226,7 @@ export async function POST(request: Request): Promise<Response> {
           metadata: {
             locale,
             conceptCount: grounding.matchedConceptIds.length,
-            includeChanneling,
+            source: effectiveSource,
             channelingCount: grounding.channelingIds.length,
           },
         });

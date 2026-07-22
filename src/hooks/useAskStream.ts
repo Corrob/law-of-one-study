@@ -37,7 +37,7 @@ interface UseAskStreamReturn {
 export function useAskStream(
   locale: AvailableLanguage = DEFAULT_LOCALE,
   disclaimers: string[] = [],
-  includeChanneling = false
+  source: "ra" | "channeling" = "ra"
 ): UseAskStreamReturn {
   const [messages, setMessages] = useState<AskMessage[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -159,8 +159,8 @@ export function useAskStream(
             history,
             locale,
             distinctId: getDistinctId(),
-            // English-only option — omitted entirely when off or non-en.
-            ...(includeChanneling && locale === "en" ? { includeChanneling: true } : {}),
+            // English-only channeling mode — omitted for the default Ra source.
+            ...(source === "channeling" && locale === "en" ? { source } : {}),
           }),
         });
 
@@ -262,7 +262,7 @@ export function useAskStream(
         abortRef.current = null;
       }
     },
-    [messages, isStreaming, locale, disclaimers, includeChanneling]
+    [messages, isStreaming, locale, disclaimers, source]
   );
 
   const retry = useCallback(() => {

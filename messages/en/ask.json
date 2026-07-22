@@ -140,6 +140,9 @@
       "concept": "Concept"
     }
   },
-  "channelingToggle": "Conscious channeling (Q'uo)",
-  "channelingToggleHint": "Also draw on L/L Research's later conscious channeling — Q'uo, Latwii, Hatonn — clearly attributed and linked to the original transcripts on llresearch.org. English only."
+  "sourceLabel": "Answer from",
+  "sourceRa": "Ra Material",
+  "sourceRaHint": "Answers grounded in the trance-channeled Ra contact (1981–1984), cited by session and question.",
+  "sourceChanneling": "Conscious channeling (Q'uo)",
+  "sourceChannelingHint": "Answers drawn from L/L Research's later conscious channeling — Q'uo, Latwii, Hatonn — attributed by source and linked to the original transcripts on llresearch.org. English only."
 }

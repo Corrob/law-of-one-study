@@ -28,8 +28,10 @@ import {
 } from "@/lib/ask/export-markdown";
 import { type AvailableLanguage } from "@/lib/language-config";
 
-/** localStorage key for the conscious-channeling opt-in (persists across visits). */
-const CHANNELING_PREF_KEY = "lo1-ask-include-channeling";
+/** localStorage key for the chosen source library (persists across visits). */
+const SOURCE_PREF_KEY = "lo1-ask-source";
+
+type AskSource = "ra" | "channeling";
 
 export default function AskContent() {
   const locale = useLocale() as AvailableLanguage;
@@ -41,31 +43,29 @@ export default function AskContent() {
     return Array.isArray(raw) ? (raw as string[]) : [];
   }, [t]);
 
-  // Conscious-channeling opt-in (English-only — the transcripts have no
-  // translations, so the toggle only renders for en). Restored after mount to
-  // avoid a hydration mismatch; flips apply from the next question.
-  const [includeChanneling, setIncludeChanneling] = useState(false);
+  // Source library: the Ra contact (default) or the conscious channeling —
+  // one or the other, never blended. English-only (the transcripts have no
+  // translations, so the selector only renders for en). Restored after mount
+  // to avoid a hydration mismatch; a switch applies from the next question.
+  const [source, setSource] = useState<AskSource>("ra");
   useEffect(() => {
     try {
-      setIncludeChanneling(localStorage.getItem(CHANNELING_PREF_KEY) === "1");
+      if (localStorage.getItem(SOURCE_PREF_KEY) === "channeling") setSource("channeling");
     } catch {
       // Storage unavailable — the preference just doesn't persist.
     }
   }, []);
-  const toggleChanneling = useCallback(() => {
-    setIncludeChanneling((prev) => {
-      const next = !prev;
-      try {
-        localStorage.setItem(CHANNELING_PREF_KEY, next ? "1" : "0");
-      } catch {
-        // Best-effort persistence.
-      }
-      return next;
-    });
+  const selectSource = useCallback((next: AskSource) => {
+    setSource(next);
+    try {
+      localStorage.setItem(SOURCE_PREF_KEY, next);
+    } catch {
+      // Best-effort persistence.
+    }
   }, []);
 
   const { messages, isStreaming, error, suggestions, sendMessage, canRetry, retry, reset } =
-    useAskStream(locale, disclaimers, includeChanneling);
+    useAskStream(locale, disclaimers, source);
 
   // ?q= deep link (e.g. the weekly email's Ask button): submit the question
   // automatically, captured at mount so later URL changes don't retrigger it.
@@ -203,38 +203,59 @@ export default function AskContent() {
       transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
     >
       <AskComposer onSend={handleSend} disabled={isStreaming} />
-      {/* Conscious-channeling opt-in — English-only (see CHANNELING_PREF_KEY).
-          A quiet pill switch in the site's language: a small star that lights
-          gold when the deeper library is open. */}
+      {/* Source library selector — English-only (see SOURCE_PREF_KEY). A quiet
+          segmented pill in the site's language: the chosen library glows gold,
+          marked by a small lit star. */}
       {locale === "en" && (
         <div className="mt-2 flex justify-center">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={includeChanneling}
-            onClick={toggleChanneling}
-            title={t("channelingToggleHint")}
-            className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs
-                        transition-all duration-300 cursor-pointer select-none backdrop-blur-sm
-                        ${
-                          includeChanneling
-                            ? `border-[var(--lo1-gold)]/50 bg-[var(--lo1-gold)]/10 text-[var(--lo1-gold)]
-                               shadow-[0_0_14px_-4px_var(--lo1-gold)]`
-                            : `border-[var(--lo1-gold)]/15 bg-[var(--lo1-indigo)]/40 text-[var(--lo1-stardust)]/60
-                               hover:border-[var(--lo1-gold)]/35 hover:text-[var(--lo1-stardust)]`
-                        }`}
+          <div
+            role="radiogroup"
+            aria-label={t("sourceLabel")}
+            className="flex items-center gap-0.5 rounded-full border border-[var(--lo1-gold)]/15
+                       bg-[var(--lo1-indigo)]/40 p-0.5 backdrop-blur-sm"
           >
-            <span
-              aria-hidden
-              className={`h-1.5 w-1.5 rounded-full transition-all duration-300
-                          ${
-                            includeChanneling
-                              ? "bg-[var(--lo1-gold)] shadow-[0_0_6px_1px_var(--lo1-gold)]"
-                              : "bg-[var(--lo1-stardust)]/30"
-                          }`}
-            />
-            {t("channelingToggle")}
-          </button>
+            {(
+              [
+                { id: "ra" as const, label: t("sourceRa"), hint: t("sourceRaHint") },
+                {
+                  id: "channeling" as const,
+                  label: t("sourceChanneling"),
+                  hint: t("sourceChannelingHint"),
+                },
+              ]
+            ).map(({ id, label, hint }) => {
+              const selected = source === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  onClick={() => selectSource(id)}
+                  title={hint}
+                  className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs
+                              transition-all duration-300 cursor-pointer select-none
+                              ${
+                                selected
+                                  ? `bg-[var(--lo1-gold)]/15 text-[var(--lo1-gold)]
+                                     shadow-[0_0_10px_-3px_var(--lo1-gold)]`
+                                  : "text-[var(--lo1-stardust)]/55 hover:text-[var(--lo1-stardust)]"
+                              }`}
+                >
+                  <span
+                    aria-hidden
+                    className={`h-1 w-1 rounded-full transition-all duration-300
+                                ${
+                                  selected
+                                    ? "bg-[var(--lo1-gold)] shadow-[0_0_5px_1px_var(--lo1-gold)]"
+                                    : "bg-[var(--lo1-stardust)]/25"
+                                }`}
+                  />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </motion.div>

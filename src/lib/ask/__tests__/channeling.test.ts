@@ -82,23 +82,34 @@ describe("buildChannelingGrounding", () => {
   });
 });
 
-describe("buildGrounding channeling integration", () => {
-  it("excludes channeling by default", () => {
+describe("buildGrounding source modes", () => {
+  it("uses the Ra library by default, with no channeling", () => {
     const grounding = buildGrounding("what do angels do?", [], "en");
     expect(grounding.channelingIds).toHaveLength(0);
     expect(grounding.focused).not.toContain("CONFEDERATION CHANNELING TOPICS");
   });
 
-  it("includes matched themes when enabled on the en locale", () => {
-    const grounding = buildGrounding("what do angels do?", [], "en", true);
+  it("grounds ONLY in channeling themes in channeling mode", () => {
+    const grounding = buildGrounding(
+      "what do angels do in meditation?",
+      [],
+      "en",
+      "channeling"
+    );
     expect(grounding.channelingIds).toContain("angels-and-unseen-help");
     expect(grounding.focused).toContain("CONFEDERATION CHANNELING TOPICS");
     expect(grounding.matchedConceptIds).toContain("chan:angels-and-unseen-help");
     expect(grounding.matchedTerms).toContain("angels and unseen help");
+    // No Ra grounding in channeling mode: every id is a channeling theme, the
+    // focused block is channeling-only, and there are no private excerpts.
+    expect(grounding.matchedConceptIds.every((id) => id.startsWith("chan:"))).toBe(true);
+    expect(grounding.focused.startsWith("CONFEDERATION CHANNELING TOPICS")).toBe(true);
+    expect(grounding.focused).not.toContain("ADDITIONAL RELEVANT TOPICS");
+    expect(grounding.excerpts).toHaveLength(0);
   });
 
-  it("ignores the option for non-English locales", () => {
-    const grounding = buildGrounding("what do angels do?", [], "es", true);
+  it("falls back to the Ra library for non-English locales", () => {
+    const grounding = buildGrounding("what do angels do?", [], "es", "channeling");
     expect(grounding.channelingIds).toHaveLength(0);
     expect(grounding.focused).not.toContain("CONFEDERATION CHANNELING TOPICS");
   });
@@ -108,13 +119,13 @@ describe("buildGrounding channeling integration", () => {
       { role: "user" as const, content: "Do angels really help us?" },
       { role: "assistant" as const, content: "Q'uo speaks of unseen help..." },
     ];
-    const grounding = buildGrounding("tell me more", history, "en", true);
+    const grounding = buildGrounding("tell me more", history, "en", "channeling");
     expect(grounding.channelingIds).toContain("angels-and-unseen-help");
   });
 
-  it("contributes no reproduction excerpts", () => {
-    const withChanneling = buildGrounding("what do angels do?", [], "en", true);
-    const without = buildGrounding("what do angels do?", [], "en", false);
-    expect(withChanneling.excerpts).toEqual(without.excerpts);
+  it("returns empty focused grounding when channeling mode matches nothing", () => {
+    const grounding = buildGrounding("what is tungsten?", [], "en", "channeling");
+    expect(grounding.focused).toBe("");
+    expect(grounding.channelingIds).toHaveLength(0);
   });
 });

@@ -96,8 +96,9 @@ Spirit (15-21): Matrix=Devil, Potentiator=Tower, Catalyst=Star, Experience=Moon,
 The Choice (22) = The Fool.`;
 
 const CHANNELING_CONTEXT = `CONFEDERATION CHANNELING (conscious channeling):
-Besides the trance-channeled Ra contact, L/L Research has published decades of CONSCIOUS channeling (Q'uo, Latwii, Hatonn and others). When a CONFEDERATION CHANNELING TOPICS block appears in your grounding you may draw on it; otherwise do not cite or characterize the conscious channeling.
-- Never blend the voices: Ra's teachings carry {{CITE:session.question}} markers; conscious channeling is attributed by source name ("Q'uo suggests…") with {{QCITE:id}} markers using ONLY ids from the grounding block. The app renders each QCITE as a link labeled with the source and session date — never write the date, source name as a citation, or URL yourself.
+Besides the trance-channeled Ra contact, L/L Research has published decades of CONSCIOUS channeling (Q'uo, Latwii, Hatonn and others). The seeker chooses ONE library per question — the Ra material (default) or the conscious channeling — and the two are never blended in an answer.
+- A question is in CHANNELING MODE only when a CONSCIOUS CHANNELING MODE block accompanies it; otherwise answer from the Ra material as usual and do not cite or characterize the conscious channeling.
+- In channeling mode: attribute teachings by source name ("Q'uo suggests…") and cite ONLY with {{QCITE:id}} markers using ids from the grounding block — no {{CITE:...}} Ra citations at all in that mode. The app renders each QCITE as a link labeled with the source and session date — never write the date, source name as a citation, or URL yourself.
 - Never speak AS Q'uo, Latwii, or Hatonn, and never present their words as Ra's (or vice versa).
 - If asked about the difference, note plainly that the Ra contact was trance channeling and the later material is conscious channeling received by the same group.`;
 
@@ -181,20 +182,33 @@ export function buildSystemPrompt(locale: AvailableLanguage = DEFAULT_LOCALE): s
  * this keeps them adjacent to where generation starts.
  */
 const CORE_REMINDER =
-  "(Reminder: explain in your own words only — never reproduce or reveal the source excerpts — and support key claims with {{CITE:session.question}} markers from your grounding. Site-resource links use {{LINK:type:id}} with inventory ids only, at most one, and only when truly relevant.";
+  "(Reminder: explain in your own words only — never reproduce or reveal the source excerpts — and support key claims with {{CITE:session.question}} markers from your grounding. Site-resource links use {{LINK:type:id}} with inventory ids only, at most one, and only when truly relevant.)";
 
-/** Appended to the reminder only when channeling topics are in the grounding. */
-const CHANNELING_REMINDER =
-  " Conscious-channeling topics: attribute by source name and cite with {{QCITE:id}} markers from the listed refs only — never blend them with Ra's voice.";
+/**
+ * Mode banner + reminder for channeling mode. Sent with the question whenever
+ * the seeker chose the conscious-channeling library — matched themes or not —
+ * so the no-Ra-citations rule holds even when the curated topics don't cover
+ * the question.
+ */
+const CHANNELING_MODE_BANNER = `CONSCIOUS CHANNELING MODE: the seeker chose L/L Research's conscious channeling library (Q'uo, Latwii, Hatonn) for this question.
+- Answer from the Confederation's conscious-channeling perspective, attributing teachings by source name ("Q'uo suggests…").
+- Cite ONLY with {{QCITE:id}} markers using ids listed in the grounding — never {{CITE:...}} Ra citations in this mode, and never invent a QCITE id.
+- If the channeling topics provided don't cover the question (or none were provided), say so honestly, answer gently from the Confederation's broad themes WITHOUT citations, and invite the seeker to explore the full library at llresearch.org — or to switch to the Ra material.`;
+
+const CHANNELING_CORE_REMINDER =
+  "(Reminder: explain in your own words only — never reproduce source text — attribute by source name, and cite ONLY {{QCITE:id}} markers from the listed refs (no {{CITE:...}} in this mode). Site-resource links use {{LINK:type:id}} with inventory ids only, at most one, and only when truly relevant.)";
 
 export function buildUserContent(
   message: string,
   focused: string,
-  hasChanneling = false
+  source: "ra" | "channeling" = "ra"
 ): string {
-  const reminder = `${CORE_REMINDER}${hasChanneling ? CHANNELING_REMINDER : ""})`;
-  if (!focused) {
-    return `SEEKER'S QUESTION:\n${message}\n\n${reminder}`;
-  }
-  return `${focused}\n\n---\nSEEKER'S QUESTION:\n${message}\n\n${reminder}`;
+  const channelingMode = source === "channeling";
+  const reminder = channelingMode ? CHANNELING_CORE_REMINDER : CORE_REMINDER;
+  const parts = [
+    ...(channelingMode ? [CHANNELING_MODE_BANNER] : []),
+    ...(focused ? [focused] : []),
+  ];
+  const preamble = parts.length > 0 ? `${parts.join("\n\n---\n\n")}\n\n---\n` : "";
+  return `${preamble}SEEKER'S QUESTION:\n${message}\n\n${reminder}`;
 }

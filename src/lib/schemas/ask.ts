@@ -28,14 +28,16 @@ export const AskRequestSchema = z.object({
     .default([]),
   locale: AvailableLanguageSchema.optional().default("en"),
   /**
-   * Opt-in to conscious-channeling grounding (Q'uo, Latwii, Hatonn).
-   * English-only — ignored for other locales (the transcripts have no
-   * translations).
+   * Which library grounds the answer: the trance-channeled Ra contact
+   * (default) or L/L Research's conscious channeling (Q'uo, Latwii, Hatonn).
+   * The two are never blended. Channeling is English-only — other locales are
+   * always answered from the Ra material.
    */
-  includeChanneling: z.boolean().optional().default(false),
+  source: z.enum(["ra", "channeling"]).optional().default("ra"),
   /** PostHog distinct id from the client, for server-side LLM analytics. */
   distinctId: z.string().max(200).optional(),
 });
 
 export type AskRequest = z.infer<typeof AskRequestSchema>;
 export type AskHistoryTurn = z.infer<typeof AskHistoryTurnSchema>;
+export type AskSource = AskRequest["source"];

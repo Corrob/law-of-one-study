@@ -47,14 +47,17 @@ NOT permit without further permission: storing/indexing/retrieving their text
 
 ## 2. The user-facing option
 
-- **Placement:** a small toggle (or labeled chip) in the Ask composer area,
-  visible before and during a conversation. Label (en):
-  *"Include conscious channeling (Q'uo)"* with an info tooltip: *"Adds
-  perspectives from L/L Research's later conscious channeling — Q'uo, Latwii,
-  Hatonn — clearly attributed and linked to the original transcripts."*
-- **Default: off** at launch. Ra-only remains the baseline experience; the
-  toggle is an invitation, not a change to existing behavior. Revisit the
-  default after telemetry (see §9).
+> **As implemented:** the option became a **source selector**, not an additive
+> toggle — a segmented pill under the composer choosing "Ra Material" or
+> "Conscious channeling (Q'uo)". The two libraries are never blended in one
+> answer: channeling mode grounds ONLY in the channeling themes (no Ra
+> citations are offered to the model, and the mode banner forbids
+> {{CITE:...}}), while Ra mode is byte-identical to the pre-feature behavior.
+
+- **Placement:** a segmented pill selector under the Ask composer, visible
+  before and during a conversation, with per-option tooltips.
+- **Default: Ra Material.** The channeling library is an invitation, not a
+  change to existing behavior. Revisit after telemetry (see §9).
 - **Persistence:** `localStorage` (same pattern as other Ask client prefs), so
   the choice sticks across visits. Mid-conversation flips apply from the next
   question; no need to restart the thread.

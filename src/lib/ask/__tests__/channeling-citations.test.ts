@@ -66,10 +66,19 @@ describe("prompts channeling rules", () => {
     expect(buildSystemPrompt("fr")).not.toContain("CONFEDERATION CHANNELING");
   });
 
-  it("appends the channeling reminder only when channeling topics are grounded", () => {
-    const withChanneling = buildUserContent("q", "focused", true);
-    const without = buildUserContent("q", "focused", false);
-    expect(withChanneling).toContain("{{QCITE:id}}");
-    expect(without).not.toContain("QCITE");
+  it("adds the channeling-mode banner and QCITE-only reminder in channeling mode", () => {
+    const channeling = buildUserContent("q", "focused", "channeling");
+    const ra = buildUserContent("q", "focused", "ra");
+    expect(channeling).toContain("CONSCIOUS CHANNELING MODE");
+    expect(channeling).toContain("{{QCITE:id}}");
+    expect(channeling).toContain("focused");
+    expect(ra).not.toContain("QCITE");
+    expect(ra).not.toContain("CONSCIOUS CHANNELING MODE");
+  });
+
+  it("keeps the mode banner even when no channeling grounding matched", () => {
+    const channeling = buildUserContent("q", "", "channeling");
+    expect(channeling).toContain("CONSCIOUS CHANNELING MODE");
+    expect(channeling).toContain("SEEKER'S QUESTION:");
   });
 });
