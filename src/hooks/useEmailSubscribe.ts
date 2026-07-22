@@ -13,13 +13,13 @@ export function useEmailSubscribe(locale: string) {
   const [status, setStatus] = useState<SubscribeStatus>("idle");
 
   const subscribe = useCallback(
-    async (email: string, website: string = "") => {
+    async (email: string, website: string = "", cadence: "weekly" | "daily" = "weekly") => {
       setStatus("submitting");
       try {
         const response = await fetch("/api/subscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, locale, website }),
+          body: JSON.stringify({ email, locale, website, cadence }),
         });
         const data = (await response.json()) as { status?: string };
         setStatus(response.ok && data.status === "ok" ? "success" : "error");

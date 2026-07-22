@@ -8,7 +8,15 @@ import { upsertSubscriber } from "@/lib/email/mailerlite";
 
 jest.mock("@/lib/email/mailerlite", () => ({
   upsertSubscriber: jest.fn().mockResolvedValue(undefined),
-  getGroupIdForLocale: jest.fn().mockReturnValue("group-en"),
+  // Weekly groups exist for every locale; only EN has a daily group.
+  getGroupIdForLocale: jest.fn(
+    (locale: string, cadence: string = "weekly") =>
+      cadence === "daily"
+        ? locale === "en"
+          ? "group-daily-en"
+          : undefined
+        : `group-${locale}`
+  ),
 }));
 
 const upsertSubscriberMock = upsertSubscriber as jest.Mock;
@@ -42,6 +50,32 @@ describe("POST /api/subscribe", () => {
       email: "seeker@example.com",
       locale: "en",
       groupId: "group-en",
+    });
+  });
+
+  it("subscribes to the daily group when the daily cadence is chosen", async () => {
+    const response = await POST(
+      makeRequest({ email: "seeker@example.com", locale: "en", cadence: "daily" })
+    );
+
+    expect(response.status).toBe(200);
+    expect(upsertSubscriberMock).toHaveBeenCalledWith({
+      email: "seeker@example.com",
+      locale: "en",
+      groupId: "group-daily-en",
+    });
+  });
+
+  it("falls back to the weekly group when a locale has no daily list", async () => {
+    const response = await POST(
+      makeRequest({ email: "seeker@example.com", locale: "es", cadence: "daily" })
+    );
+
+    expect(response.status).toBe(200);
+    expect(upsertSubscriberMock).toHaveBeenCalledWith({
+      email: "seeker@example.com",
+      locale: "es",
+      groupId: "group-es",
     });
   });
 

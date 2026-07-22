@@ -29,9 +29,19 @@ function getApiKey(): string {
   return key;
 }
 
-/** Group ID for a locale from MAILERLITE_GROUP_{EN,ES,DE,FR}, if configured. */
-export function getGroupIdForLocale(locale: AvailableLanguage): string | undefined {
-  return process.env[`MAILERLITE_GROUP_${locale.toUpperCase()}`];
+export type EmailCadence = "weekly" | "daily";
+
+/**
+ * Group ID for a locale and cadence, if configured:
+ * weekly → MAILERLITE_GROUP_{EN,ES,DE,FR}, daily → MAILERLITE_GROUP_DAILY_*.
+ * A locale without the env var simply has no list for that cadence.
+ */
+export function getGroupIdForLocale(
+  locale: AvailableLanguage,
+  cadence: EmailCadence = "weekly"
+): string | undefined {
+  const prefix = cadence === "daily" ? "MAILERLITE_GROUP_DAILY_" : "MAILERLITE_GROUP_";
+  return process.env[`${prefix}${locale.toUpperCase()}`];
 }
 
 async function mailerLiteFetch(path: string, init?: RequestInit): Promise<unknown> {
@@ -94,8 +104,9 @@ export async function listCampaignNames(): Promise<string[]> {
 }
 
 /**
- * Create a regular campaign targeted at a single group.
- * Returns the new campaign's ID.
+ * Create a regular campaign targeted at one or more groups. MailerLite
+ * dedupes recipients across groups, so a subscriber in several target
+ * groups still receives exactly one email. Returns the new campaign's ID.
  *
  * MailerLite generates the plain-text MIME part from the HTML at send
  * time; the API rejects payloads that try to supply one explicitly.
@@ -103,7 +114,7 @@ export async function listCampaignNames(): Promise<string[]> {
 export async function createCampaign(params: {
   name: string;
   subject: string;
-  groupId: string;
+  groupIds: string[];
   html: string;
 }): Promise<string> {
   const fromEmail = process.env.MAILERLITE_FROM_EMAIL;
@@ -117,7 +128,7 @@ export async function createCampaign(params: {
     body: JSON.stringify({
       name: params.name,
       type: "regular",
-      groups: [params.groupId],
+      groups: params.groupIds,
       emails: [
         {
           subject: params.subject,

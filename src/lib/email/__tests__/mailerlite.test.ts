@@ -31,11 +31,15 @@ describe("mailerlite client", () => {
       MAILERLITE_FROM_NAME: "Law of One Study",
       MAILERLITE_GROUP_EN: "group-en",
     };
+    process.env.MAILERLITE_GROUP_DAILY_EN = "group-daily-en";
     // Tests assume only EN is configured — drop any group ids inherited from
     // the ambient shell (e.g. a dev machine with real MailerLite env vars).
     delete process.env.MAILERLITE_GROUP_ES;
     delete process.env.MAILERLITE_GROUP_DE;
     delete process.env.MAILERLITE_GROUP_FR;
+    delete process.env.MAILERLITE_GROUP_DAILY_ES;
+    delete process.env.MAILERLITE_GROUP_DAILY_DE;
+    delete process.env.MAILERLITE_GROUP_DAILY_FR;
   });
 
   afterEach(() => {
@@ -44,12 +48,17 @@ describe("mailerlite client", () => {
   });
 
   describe("getGroupIdForLocale", () => {
-    it("returns the configured group id", () => {
+    it("returns the configured weekly group id by default", () => {
       expect(getGroupIdForLocale("en")).toBe("group-en");
+    });
+
+    it("returns the daily group id for the daily cadence", () => {
+      expect(getGroupIdForLocale("en", "daily")).toBe("group-daily-en");
     });
 
     it("returns undefined when unconfigured", () => {
       expect(getGroupIdForLocale("fr")).toBeUndefined();
+      expect(getGroupIdForLocale("fr", "daily")).toBeUndefined();
     });
   });
 
@@ -121,9 +130,9 @@ describe("mailerlite client", () => {
       global.fetch = fetchMock;
 
       const id = await createCampaign({
-        name: "weekly-quote-2026-192-en",
+        name: "quote-2026-192-en",
         subject: "Your weekly quote",
-        groupId: "group-en",
+        groupIds: ["group-daily-en", "group-en"],
         html: "<html></html>",
       });
 
@@ -132,7 +141,7 @@ describe("mailerlite client", () => {
       expect(url).toBe("https://connect.mailerlite.com/api/campaigns");
       const body = JSON.parse(init.body);
       expect(body.type).toBe("regular");
-      expect(body.groups).toEqual(["group-en"]);
+      expect(body.groups).toEqual(["group-daily-en", "group-en"]);
       expect(body.emails[0].from).toBe("quotes@lawofone.study");
     });
 
@@ -142,7 +151,7 @@ describe("mailerlite client", () => {
         createCampaign({
           name: "n",
           subject: "s",
-          groupId: "g",
+          groupIds: ["g"],
           html: "<html></html>",
         })
       ).rejects.toThrow("MAILERLITE_FROM_EMAIL");

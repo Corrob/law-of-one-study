@@ -51,7 +51,10 @@
     "newReflectionTomorrow": "A new reflection awaits tomorrow"
   },
   "emailSignup": {
-    "description": "Receive a quote from the Ra Material in your inbox each Sunday.",
+    "description": "Receive a quote from the Ra Material in your inbox.",
+    "cadenceLabel": "How often",
+    "cadenceWeekly": "Every Sunday",
+    "cadenceDaily": "Every day",
     "emailLabel": "Email address",
     "emailPlaceholder": "you@example.com",
     "subscribe": "Subscribe",

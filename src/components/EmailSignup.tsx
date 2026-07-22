@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import posthog from "posthog-js";
 import { useEmailSubscribe } from "@/hooks/useEmailSubscribe";
+import { DAILY_QUOTE_LOCALES } from "@/lib/email/cadence";
 import { type AvailableLanguage } from "@/lib/language-config";
 
 export const EMAIL_SIGNUP_DISMISSED_KEY = "lo1-email-signup-dismissed";
@@ -27,8 +28,11 @@ export default function EmailSignup({ reopenSignal = 0 }: EmailSignupProps) {
   const { status, subscribe } = useEmailSubscribe(locale);
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState("");
+  const [cadence, setCadence] = useState<"weekly" | "daily">("weekly");
   const honeypotRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  // Only locales with a daily list get the choice; others are weekly-only.
+  const showCadence = DAILY_QUOTE_LOCALES.includes(locale);
 
   useEffect(() => {
     if (
@@ -59,16 +63,16 @@ export default function EmailSignup({ reopenSignal = 0 }: EmailSignupProps) {
     if (status === "success") {
       // Remember the subscription so the card doesn't reappear next visit.
       localStorage.setItem(EMAIL_SIGNUP_SUBSCRIBED_KEY, "1");
-      posthog.capture("email_signup_completed", { locale });
+      posthog.capture("email_signup_completed", { locale, cadence });
     }
-  }, [status, locale]);
+  }, [status, locale, cadence]);
 
   if (!visible) return null;
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (status === "submitting") return;
-    void subscribe(email.trim(), honeypotRef.current?.value ?? "");
+    void subscribe(email.trim(), honeypotRef.current?.value ?? "", cadence);
   };
 
   const handleDismiss = () => {
@@ -126,6 +130,31 @@ export default function EmailSignup({ reopenSignal = 0 }: EmailSignupProps) {
               {status === "submitting" ? t("submitting") : t("subscribe")}
             </button>
           </form>
+          {showCadence && (
+            <div role="radiogroup" aria-label={t("cadenceLabel")} className="flex gap-2">
+              {(["weekly", "daily"] as const).map((option) => (
+                <label
+                  key={option}
+                  className={`px-3 py-1 rounded-full text-xs cursor-pointer transition-colors border
+                    ${
+                      cadence === option
+                        ? "bg-[var(--lo1-gold)]/20 border-[var(--lo1-gold)]/60 text-[var(--lo1-starlight)]"
+                        : "border-[var(--lo1-celestial)]/30 text-[var(--lo1-stardust)] hover:border-[var(--lo1-celestial)]/60"
+                    }`}
+                >
+                  <input
+                    type="radio"
+                    name="cadence"
+                    value={option}
+                    checked={cadence === option}
+                    onChange={() => setCadence(option)}
+                    className="sr-only"
+                  />
+                  {t(option === "weekly" ? "cadenceWeekly" : "cadenceDaily")}
+                </label>
+              ))}
+            </div>
+          )}
           {status === "error" && (
             <p role="alert" className="text-xs text-red-400">
               {t("error")}

@@ -52,6 +52,9 @@
   },
   "emailSignup": {
     "description": "Recevez chaque dimanche une citation du Matériel de Ra dans votre boîte mail.",
+    "cadenceLabel": "Fréquence",
+    "cadenceWeekly": "Chaque dimanche",
+    "cadenceDaily": "Chaque jour",
     "emailLabel": "Adresse e-mail",
     "emailPlaceholder": "vous@exemple.com",
     "subscribe": "S'abonner",

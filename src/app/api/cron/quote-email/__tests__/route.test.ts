@@ -29,12 +29,18 @@ function makeRequest(authorization?: string): Request {
   });
 }
 
+// 2026-07-21 is a Tuesday, 2026-07-26 a Sunday (times in UTC).
+const A_TUESDAY = new Date("2026-07-21T13:00:00Z");
+const A_SUNDAY = new Date("2026-07-26T13:00:00Z");
+
 describe("GET /api/cron/quote-email", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.useFakeTimers().setSystemTime(A_TUESDAY);
     process.env.CRON_SECRET = "cron-secret";
-    getGroupIdMock.mockImplementation((locale: string) =>
-      locale === "en" ? "group-en" : undefined
+    // Weekly groups: EN only. Daily groups: EN only.
+    getGroupIdMock.mockImplementation((locale: string, cadence: string = "weekly") =>
+      locale === "en" ? (cadence === "daily" ? "group-daily-en" : "group-en") : undefined
     );
     listCampaignNamesMock.mockResolvedValue([]);
     createCampaignMock.mockResolvedValue("42");
@@ -42,6 +48,7 @@ describe("GET /api/cron/quote-email", () => {
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     delete process.env.CRON_SECRET;
   });
 
@@ -62,7 +69,7 @@ describe("GET /api/cron/quote-email", () => {
     expect(response.status).toBe(401);
   });
 
-  it("creates and schedules a campaign per configured locale group", async () => {
+  it("sends a daily campaign to the daily group on a weekday", async () => {
     const response = await GET(makeRequest("Bearer cron-secret"));
 
     expect(response.status).toBe(200);
@@ -72,15 +79,58 @@ describe("GET /api/cron/quote-email", () => {
 
     expect(createCampaignMock).toHaveBeenCalledTimes(1);
     const call = createCampaignMock.mock.calls[0][0];
-    expect(call.groupId).toBe("group-en");
+    expect(call.groupIds).toEqual(["group-daily-en"]);
     expect(call.name).toBe(
-      `weekly-quote-${new Date().getFullYear()}-${getDayOfYear(new Date())}-en`
+      `quote-${new Date().getFullYear()}-${getDayOfYear(new Date())}-en`
     );
     expect(call.html).toContain("L/L Research");
     expect(call.html).toContain("/en/ask?q=");
     expect(call.html).toContain(encodeURIComponent(getQuoteForDay(new Date(), "en").reference));
     expect(call.subject).toContain(getQuoteForDay(new Date(), "en").reference);
+    expect(call.subject).toContain("Your daily quote");
     expect(scheduleCampaignMock).toHaveBeenCalledWith("42");
+  });
+
+  it("targets the daily and weekly groups together on Sundays", async () => {
+    jest.setSystemTime(A_SUNDAY);
+
+    const response = await GET(makeRequest("Bearer cron-secret"));
+
+    expect(response.status).toBe(200);
+    expect(createCampaignMock).toHaveBeenCalledTimes(1);
+    const call = createCampaignMock.mock.calls[0][0];
+    // One campaign to both groups — MailerLite dedupes overlapping members.
+    expect(call.groupIds).toEqual(["group-daily-en", "group-en"]);
+    expect(call.subject).toContain("Your weekly quote");
+  });
+
+  it("sends Sunday campaigns to weekly-only locales without a daily group", async () => {
+    jest.setSystemTime(A_SUNDAY);
+    getGroupIdMock.mockImplementation((locale: string, cadence: string = "weekly") =>
+      cadence === "weekly" ? `group-${locale}` : undefined
+    );
+
+    const response = await GET(makeRequest("Bearer cron-secret"));
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.sent).toBe(4);
+    expect(createCampaignMock).toHaveBeenCalledTimes(4);
+    expect(createCampaignMock.mock.calls[0][0].groupIds).toEqual(["group-en"]);
+  });
+
+  it("skips weekly-only locales on weekdays", async () => {
+    getGroupIdMock.mockImplementation((locale: string, cadence: string = "weekly") =>
+      cadence === "weekly" ? `group-${locale}` : undefined
+    );
+
+    const response = await GET(makeRequest("Bearer cron-secret"));
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.sent).toBe(0);
+    expect(body.skipped).toEqual(expect.arrayContaining(["en", "es", "de", "fr"]));
+    expect(createCampaignMock).not.toHaveBeenCalled();
   });
 
   it("returns 502 when listing existing campaigns fails", async () => {
@@ -96,7 +146,7 @@ describe("GET /api/cron/quote-email", () => {
 
   it("skips locales whose campaign for today already exists", async () => {
     listCampaignNamesMock.mockResolvedValue([
-      `weekly-quote-${new Date().getFullYear()}-${getDayOfYear(new Date())}-en`,
+      `quote-${new Date().getFullYear()}-${getDayOfYear(new Date())}-en`,
     ]);
 
     const response = await GET(makeRequest("Bearer cron-secret"));

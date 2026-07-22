@@ -52,6 +52,9 @@
   },
   "emailSignup": {
     "description": "Erhalte jeden Sonntag ein Zitat aus dem Ra-Material in dein Postfach.",
+    "cadenceLabel": "Wie oft",
+    "cadenceWeekly": "Jeden Sonntag",
+    "cadenceDaily": "Jeden Tag",
     "emailLabel": "E-Mail-Adresse",
     "emailPlaceholder": "du@beispiel.de",
     "subscribe": "Abonnieren",

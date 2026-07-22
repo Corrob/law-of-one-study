@@ -53,12 +53,14 @@ export async function POST(request: Request): Promise<Response> {
     );
   }
 
+  const { email, locale, cadence } = result.data;
+  // Fall back to the weekly list when a locale has no daily group yet —
+  // better a Sunday quote than a silent subscription to nothing.
+  const groupId =
+    getGroupIdForLocale(locale, cadence) ?? getGroupIdForLocale(locale, "weekly");
+
   try {
-    await upsertSubscriber({
-      email: result.data.email,
-      locale: result.data.locale,
-      groupId: getGroupIdForLocale(result.data.locale),
-    });
+    await upsertSubscriber({ email, locale, groupId });
     return Response.json({ status: "ok" });
   } catch (error) {
     console.error("Subscribe failed:", error);

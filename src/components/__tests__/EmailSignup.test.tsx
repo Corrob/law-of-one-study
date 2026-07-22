@@ -20,6 +20,9 @@ jest.mock("next-intl", () => ({
       error: "Something went wrong. Please try again.",
       privacyNote: "We store only your email and language.",
       dismiss: "Dismiss email signup",
+      cadenceLabel: "How often",
+      cadenceWeekly: "Every Sunday",
+      cadenceDaily: "Every day",
     };
     return translations[key] ?? key;
   },
@@ -110,11 +113,27 @@ describe("EmailSignup", () => {
       email: "seeker@example.com",
       locale: "en",
       website: "",
+      cadence: "weekly",
     });
     expect(posthog.capture).toHaveBeenCalledWith("email_signup_completed", {
       locale: "en",
+      cadence: "weekly",
     });
     expect(localStorage.getItem(EMAIL_SIGNUP_SUBSCRIBED_KEY)).toBe("1");
+  });
+
+  it("subscribes with the daily cadence when Every day is selected", async () => {
+    mockFetchOnce({ status: "ok" });
+    const user = userEvent.setup();
+    render(<EmailSignup />);
+
+    await user.click(screen.getByRole("radio", { name: "Every day" }));
+    await user.type(screen.getByLabelText("Email address"), "seeker@example.com");
+    await user.click(screen.getByRole("button", { name: "Subscribe" }));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    const [, init] = (global.fetch as jest.Mock).mock.calls[0];
+    expect(JSON.parse(init.body).cadence).toBe("daily");
   });
 
   it("shows an error message when the API rejects", async () => {

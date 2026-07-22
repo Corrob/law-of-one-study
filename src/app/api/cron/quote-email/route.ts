@@ -1,18 +1,20 @@
 /**
- * GET /api/cron/quote-email — invoked by Vercel Cron (see vercel.json).
+ * GET /api/cron/quote-email — invoked daily by Vercel Cron (see vercel.json).
  *
- * Sends the quote-of-the-week campaign: one MailerLite campaign per locale
- * group, built from the same deterministic daily quote shown on the site
- * (src/lib/daily-quote.ts). Idempotent per day: campaign names embed the
- * year and day-of-year, and locales whose campaign already exists are
- * skipped, so a duplicate cron firing cannot double-send.
+ * Sends the quote email: one MailerLite campaign per locale, built from the
+ * same deterministic daily quote shown on the site (src/lib/daily-quote.ts).
+ * Weekday sends target the locale's daily group; Sunday's campaign targets
+ * the daily AND weekly groups together — MailerLite dedupes recipients
+ * across groups, so someone on both lists still gets one email. Locales
+ * with no configured group for the day are skipped. Idempotent per day:
+ * campaign names embed the year and day-of-year, and locales whose campaign
+ * already exists are skipped, so a duplicate cron firing cannot double-send.
  */
 
 import { AVAILABLE_LANGUAGES, type AvailableLanguage } from "@/lib/language-config";
 import { getDayOfYear, getQuoteForDay } from "@/lib/daily-quote";
 import {
   getEmailMessages,
-  getEmailSubject,
   renderQuoteEmailHtml,
 } from "@/lib/email/quote-email-template";
 import {
@@ -25,7 +27,7 @@ import {
 const SITE_URL = "https://lawofone.study";
 
 function campaignName(date: Date, locale: AvailableLanguage): string {
-  return `weekly-quote-${date.getFullYear()}-${getDayOfYear(date)}-${locale}`;
+  return `quote-${date.getFullYear()}-${getDayOfYear(date)}-${locale}`;
 }
 
 export async function GET(request: Request): Promise<Response> {
@@ -45,13 +47,17 @@ export async function GET(request: Request): Promise<Response> {
       { status: 502 }
     );
   }
+  const isSunday = today.getUTCDay() === 0;
   const sent: AvailableLanguage[] = [];
   const skipped: AvailableLanguage[] = [];
   const failed: AvailableLanguage[] = [];
 
   for (const locale of AVAILABLE_LANGUAGES) {
-    const groupId = getGroupIdForLocale(locale);
-    if (!groupId) {
+    const groupIds = [
+      getGroupIdForLocale(locale, "daily"),
+      ...(isSunday ? [getGroupIdForLocale(locale, "weekly")] : []),
+    ].filter((id): id is string => Boolean(id));
+    if (groupIds.length === 0) {
       skipped.push(locale);
       continue;
     }
@@ -63,10 +69,11 @@ export async function GET(request: Request): Promise<Response> {
     }
 
     const quote = getQuoteForDay(today, locale);
+    const messages = getEmailMessages(locale);
     // Deep link into Ask with the composer pre-filled, so one tap turns the
     // quote into a conversation.
-    const prefill = getEmailMessages(locale)
-      .askPrefill.replace("{citation}", quote.reference)
+    const prefill = messages.askPrefill
+      .replace("{citation}", quote.reference)
       .replace("{quote}", quote.text);
     const params = {
       quote: quote.text,
@@ -81,11 +88,12 @@ export async function GET(request: Request): Promise<Response> {
       const campaignId = await createCampaign({
         name,
         // Citation first: mobile inboxes truncate at ~33 chars, so the part
-        // that changes each week must survive. It also keeps subjects unique —
+        // that changes each send must survive. It also keeps subjects unique —
         // identical subjects make Gmail thread the emails. The brand lives in
-        // the From name, not the subject.
-        subject: `${quote.reference} — ${getEmailSubject(locale)}`,
-        groupId,
+        // the From name, not the subject. Sunday's shared campaign uses the
+        // weekly wording; every other day is the daily wording.
+        subject: `${quote.reference} — ${isSunday ? messages.subject : messages.subjectDaily}`,
+        groupIds,
         html: renderQuoteEmailHtml(params),
       });
       await scheduleCampaign(campaignId);
