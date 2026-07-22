@@ -51,7 +51,7 @@ export interface QuoteEmailParams {
   /** Link to the full session in the source material. */
   sourceUrl: string;
   locale: AvailableLanguage;
-  /** Picks the greeting wording ("your week" vs "your day"). Default weekly. */
+  /** Picks the eyebrow, greeting, and footer wording. Default weekly. */
   cadence?: "weekly" | "daily";
   /** Unsubscribe merge tag or URL; defaults to the MailerLite tag. */
   unsubscribeTag?: string;
@@ -80,7 +80,10 @@ export function escapeHtml(value: string): string {
  */
 export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
   const m = getEmailMessages(params.locale);
-  const greeting = params.cadence === "daily" ? m.greetingDaily : m.greeting;
+  const isDaily = params.cadence === "daily";
+  const greeting = isDaily ? m.greetingDaily : m.greeting;
+  const eyebrow = isDaily ? m.eyebrowDaily : m.eyebrow;
+  const footerReason = isDaily ? m.footerReasonDaily : m.footerReason;
   const unsubscribe = params.unsubscribeTag ?? MAILERLITE_UNSUBSCRIBE_TAG;
   const quote = escapeHtml(params.quote);
   const citation = escapeHtml(params.citation);
@@ -111,7 +114,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
           <tr>
             <td style="background-color:${COSMIC_INDIGO};padding:28px 32px;text-align:center;">
               <div style="font-family:${serif};font-size:26px;color:${STARLIGHT};letter-spacing:1px;">Law of One Study</div>
-              <div style="font-family:${sans};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${RA_GOLD};margin-top:10px;">&#10022; ${escapeHtml(m.eyebrow)} &#10022;</div>
+              <div style="font-family:${sans};font-size:11px;letter-spacing:3px;text-transform:uppercase;color:${RA_GOLD};margin-top:10px;">&#10022; ${escapeHtml(eyebrow)} &#10022;</div>
             </td>
           </tr>
           <tr>
@@ -166,7 +169,7 @@ export function renderQuoteEmailHtml(params: QuoteEmailParams): string {
           </tr>
           <tr>
             <td style="padding:20px 32px;background-color:${STARLIGHT};font-family:${sans};font-size:11px;line-height:1.7;color:${STARDUST};text-align:center;">
-              ${escapeHtml(m.footerReason)}<br />
+              ${escapeHtml(footerReason)}<br />
               <a href="${escapeHtml(unsubscribe)}" style="color:${STARDUST};">${escapeHtml(m.unsubscribe)}</a><br />
               ${SENDER_IDENTITY_LINES.map((line) => escapeHtml(line)).join("<br />\n              ")}
             </td>

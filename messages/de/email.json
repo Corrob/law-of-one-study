@@ -2,6 +2,7 @@
   "subject": "Dein wöchentliches Zitat",
   "subjectDaily": "Dein tägliches Zitat",
   "eyebrow": "Wöchentliche Reflexion",
+  "eyebrowDaily": "Tägliche Reflexion",
   "greeting": "Atme tief durch. Hier ist ein Abschnitt, der dich durch die Woche begleiten möge:",
   "greetingDaily": "Atme tief durch. Hier ist ein Abschnitt, der dich durch den Tag begleiten möge:",
   "askCta": "Fragen",
@@ -14,5 +15,6 @@
   "creditIndependent": "lawofone.study ist ein unabhängiges, gemeinschaftlich finanziertes Studienwerkzeug und ist weder mit L/L Research verbunden noch wird es von L/L Research unterstützt.",
   "creditLearnMore": "Erfahre mehr und unterstütze die Originalquelle:",
   "footerReason": "Du erhältst diese E-Mail, weil du dich auf lawofone.study für wöchentliche Zitate aus dem Ra-Material angemeldet hast.",
+  "footerReasonDaily": "Du erhältst diese E-Mail, weil du dich auf lawofone.study für tägliche Zitate aus dem Ra-Material angemeldet hast.",
   "unsubscribe": "Abmelden"
 }

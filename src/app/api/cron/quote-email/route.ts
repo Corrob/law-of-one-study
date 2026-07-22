@@ -70,6 +70,9 @@ export async function GET(request: Request): Promise<Response> {
 
     const quote = getQuoteForDay(today, locale);
     const messages = getEmailMessages(locale);
+    // Sunday's shared campaign reaches weekly readers too — use the
+    // weekly wording; every other day speaks to the daily list.
+    const cadence = isSunday ? ("weekly" as const) : ("daily" as const);
     // Deep link into Ask with the composer pre-filled, so one tap turns the
     // quote into a conversation.
     const prefill = messages.askPrefill
@@ -79,12 +82,10 @@ export async function GET(request: Request): Promise<Response> {
       quote: quote.text,
       citation: quote.reference,
       quoteUrl: quote.url,
-      askUrl: `${SITE_URL}/${locale}/ask?q=${encodeURIComponent(prefill)}&utm_source=email&utm_medium=email&utm_campaign=weekly-quote`,
+      askUrl: `${SITE_URL}/${locale}/ask?q=${encodeURIComponent(prefill)}&utm_source=email&utm_medium=email&utm_campaign=${cadence}-quote`,
       sourceUrl: quote.url,
       locale,
-      // Sunday's shared campaign reaches weekly readers too — use the
-      // weekly wording; every other day speaks to the daily list.
-      cadence: isSunday ? ("weekly" as const) : ("daily" as const),
+      cadence,
     };
 
     try {
@@ -93,9 +94,8 @@ export async function GET(request: Request): Promise<Response> {
         // Citation first: mobile inboxes truncate at ~33 chars, so the part
         // that changes each send must survive. It also keeps subjects unique —
         // identical subjects make Gmail thread the emails. The brand lives in
-        // the From name, not the subject. Sunday's shared campaign uses the
-        // weekly wording; every other day is the daily wording.
-        subject: `${quote.reference} — ${isSunday ? messages.subject : messages.subjectDaily}`,
+        // the From name, not the subject.
+        subject: `${quote.reference} — ${cadence === "weekly" ? messages.subject : messages.subjectDaily}`,
         groupIds,
         html: renderQuoteEmailHtml(params),
       });

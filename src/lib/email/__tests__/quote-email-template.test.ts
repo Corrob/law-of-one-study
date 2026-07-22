@@ -91,6 +91,20 @@ describe("renderQuoteEmailHtml", () => {
     expect(daily).not.toContain(escapeHtml(messages.greeting));
   });
 
+  it("uses the daily eyebrow and footer reason for the daily cadence", () => {
+    for (const locale of AVAILABLE_LANGUAGES) {
+      const m = getEmailMessages(locale);
+      const weekly = renderQuoteEmailHtml({ ...params, locale });
+      const daily = renderQuoteEmailHtml({ ...params, locale, cadence: "daily" });
+      expect(weekly).toContain(escapeHtml(m.eyebrow));
+      expect(weekly).toContain(escapeHtml(m.footerReason));
+      expect(daily).toContain(escapeHtml(m.eyebrowDaily));
+      expect(daily).toContain(escapeHtml(m.footerReasonDaily));
+      expect(daily).not.toContain(escapeHtml(m.eyebrow));
+      expect(daily).not.toContain(escapeHtml(m.footerReason));
+    }
+  });
+
   it("renders localized chrome for every supported locale", () => {
     for (const locale of AVAILABLE_LANGUAGES) {
       const html = renderQuoteEmailHtml({ ...params, locale });
