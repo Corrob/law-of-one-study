@@ -48,6 +48,21 @@ export default function Dashboard() {
     return formatQuoteForShare(quote);
   }, [quote]);
 
+  // Even 2-up feature tiles. The two "browse the material" surfaces (Explore,
+  // Channeling) sit together; Channeling and Listen are English-only, so
+  // non-English shows a clean four-tile grid. Built as a list so the
+  // animation indices stay contiguous regardless of which cards are present.
+  const featureCards = [
+    { href: "/ask", icon: AskIcon, labelKey: "ask" },
+    { href: "/explore", icon: ExploreIcon, labelKey: "explore" },
+    ...(locale === "en"
+      ? [{ href: "/channeling", icon: ChannelingIcon, labelKey: "channeling" }]
+      : []),
+    { href: "/paths", icon: BookIcon, labelKey: "study" },
+    { href: "/meditate", icon: MeditateIcon, labelKey: "meditate" },
+    ...(locale === "en" ? [{ href: "/listen", icon: MusicIcon, labelKey: "music" }] : []),
+  ];
+
   return (
     <div
       className={`max-w-2xl mx-auto px-4 py-8 space-y-8 transition-opacity duration-500 ease-out ${
@@ -135,62 +150,19 @@ export default function Dashboard() {
       {/* Weekly Quote Email Signup */}
       <EmailSignup reopenSignal={signupReopenCount} />
 
-      {/* Feature Cards Grid — even 2-up tiles. The two "browse the material"
-          surfaces (Explore, Channeling) sit together; Channeling and Listen are
-          English-only, so non-English shows a clean four-tile grid. */}
+      {/* Feature Cards Grid */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
-        <FeatureCard
-          href="/ask"
-          icon={AskIcon}
-          title={t("features.ask.title")}
-          description={t("features.ask.description")}
-          index={0}
-          skipAnimation={skipAnimations}
-        />
-        <FeatureCard
-          href="/explore"
-          icon={ExploreIcon}
-          title={t("features.explore.title")}
-          description={t("features.explore.description")}
-          index={1}
-          skipAnimation={skipAnimations}
-        />
-        {locale === "en" && (
+        {featureCards.map((card, i) => (
           <FeatureCard
-            href="/channeling"
-            icon={ChannelingIcon}
-            title={t("features.channeling.title")}
-            description={t("features.channeling.description")}
-            index={2}
+            key={card.href}
+            href={card.href}
+            icon={card.icon}
+            title={t(`features.${card.labelKey}.title`)}
+            description={t(`features.${card.labelKey}.description`)}
+            index={i}
             skipAnimation={skipAnimations}
           />
-        )}
-        <FeatureCard
-          href="/paths"
-          icon={BookIcon}
-          title={t("features.study.title")}
-          description={t("features.study.description")}
-          index={3}
-          skipAnimation={skipAnimations}
-        />
-        <FeatureCard
-          href="/meditate"
-          icon={MeditateIcon}
-          title={t("features.meditate.title")}
-          description={t("features.meditate.description")}
-          index={4}
-          skipAnimation={skipAnimations}
-        />
-        {locale === "en" && (
-          <FeatureCard
-            href="/listen"
-            icon={MusicIcon}
-            title={t("features.music.title")}
-            description={t("features.music.description")}
-            index={5}
-            skipAnimation={skipAnimations}
-          />
-        )}
+        ))}
       </div>
 
       {/* Footer Links */}

@@ -4,11 +4,7 @@ import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import MotionFadeIn from "@/components/MotionFadeIn";
-import {
-  getChannelingThemes,
-  getChannelingTheme,
-  channelingThemeTitle,
-} from "@/lib/ask/channeling";
+import { getChannelingTheme, channelingThemeTitle } from "@/lib/ask/channeling";
 import {
   channelingCitationLabel,
   channelingCitationUrl,
@@ -16,11 +12,6 @@ import {
 
 interface ThemePageProps {
   params: Promise<{ theme: string }>;
-}
-
-/** Prerender the English theme pages only (channeling is English-only). */
-export function generateStaticParams() {
-  return getChannelingThemes().map((theme) => ({ locale: "en", theme: theme.id }));
 }
 
 export async function generateMetadata({ params }: ThemePageProps): Promise<Metadata> {

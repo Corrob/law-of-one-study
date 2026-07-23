@@ -57,6 +57,15 @@ export default async function ChannelingPage() {
             </p>
 
             <ChannelingIndex themes={themes} />
+
+            <footer className="mt-14 pt-6 border-t border-[var(--lo1-celestial)]/20 max-w-2xl mx-auto text-center">
+              <h2 className="text-sm uppercase tracking-wider text-[var(--lo1-gold)]/80 mb-2">
+                {t("aboutHeading")}
+              </h2>
+              <p className="text-sm leading-relaxed text-[var(--lo1-stardust)]/70">
+                {t("aboutBody")}
+              </p>
+            </footer>
           </div>
         </div>
       </main>

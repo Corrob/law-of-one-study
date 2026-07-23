@@ -45,16 +45,29 @@ export default function ChannelingIndex({ themes }: ChannelingIndexProps) {
     <div>
       {/* Search + voice filter */}
       <div className="mb-6 flex flex-col gap-3">
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          aria-label={t("searchLabel")}
-          placeholder={t("searchPlaceholder")}
-          className="w-full rounded-xl border border-[var(--lo1-celestial)]/40 bg-[var(--lo1-indigo)]/40 px-4 py-2.5
-                     text-base text-[var(--lo1-starlight)] placeholder:text-[var(--lo1-stardust)]/50 backdrop-blur-sm
-                     focus:border-[var(--lo1-gold)]/50 focus:outline-none"
-        />
+        <div className="relative">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label={t("searchLabel")}
+            placeholder={t("searchPlaceholder")}
+            className="w-full rounded-xl border border-[var(--lo1-celestial)]/40 bg-[var(--lo1-indigo)]/40 px-4 py-2.5 pr-10
+                       text-base text-[var(--lo1-starlight)] placeholder:text-[var(--lo1-stardust)]/50 backdrop-blur-sm
+                       focus:border-[var(--lo1-gold)]/50 focus:outline-none"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label={t("clearSearch")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-6 w-6 items-center justify-center rounded-full
+                         text-[var(--lo1-stardust)]/60 hover:text-[var(--lo1-starlight)] hover:bg-[var(--lo1-gold)]/10 transition-colors cursor-pointer"
+            >
+              ✕
+            </button>
+          )}
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           <FilterChip active={source === null} onClick={() => setSource(null)}>
             {t("allSources")}
@@ -99,6 +112,12 @@ export default function ChannelingIndex({ themes }: ChannelingIndexProps) {
                     </span>
                   ))}
                 </div>
+                <span
+                  aria-hidden="true"
+                  className="mt-3 text-xs text-[var(--lo1-gold)]/70 group-hover:text-[var(--lo1-gold)] transition-colors"
+                >
+                  {t("readMore")} →
+                </span>
               </Link>
             </li>
           ))}

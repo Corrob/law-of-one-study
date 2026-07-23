@@ -17,7 +17,11 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale = routing.defaultLocale;
   }
 
-  // Load all message files and merge them
+  // Load all message files and merge them. Note: `channeling` is loaded for
+  // every locale even though the channeling page is English-only (it 404s
+  // elsewhere) — this loader imports one file per namespace per locale, so the
+  // es/de/fr channeling.json files exist as English copies purely to satisfy
+  // it. If the channeling material is ever translated, replace those copies.
   const [common, about, donate, installApp, pwaPrompt, music, ask, channeling] =
     await Promise.all([
       import(`../../messages/${locale}/common.json`),
