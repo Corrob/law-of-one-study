@@ -6,7 +6,7 @@ import { useTranslations, useLocale } from "next-intl";
 import FeatureCard from "./FeatureCard";
 import CopyButton from "./CopyButton";
 import EmailSignup from "./EmailSignup";
-import { AskIcon, ExploreIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon, MailIcon } from "./icons";
+import { AskIcon, ExploreIcon, ChannelingIcon, BookIcon, MeditateIcon, MusicIcon, InfoIcon, HeartIcon, DownloadIcon, MailIcon } from "./icons";
 import { getDailyQuote, getRawQuoteForDay, formatQuoteForShare, type LocalizedDailyQuote } from "@/lib/daily-quote";
 import { type DailyQuote } from "@/data/daily-quotes";
 import { type AvailableLanguage } from "@/lib/language-config";
@@ -135,9 +135,9 @@ export default function Dashboard() {
       {/* Weekly Quote Email Signup */}
       <EmailSignup reopenSignal={signupReopenCount} />
 
-      {/* Feature Cards Grid — Ask spans a full-width row on top, then four
-          equal tiles below (Study & Listen, Explore & Meditate). Listen is
-          English-only. */}
+      {/* Feature Cards Grid — even 2-up tiles. The two "browse the material"
+          surfaces (Explore, Channeling) sit together; Channeling and Listen are
+          English-only, so non-English shows a clean four-tile grid. */}
       <div className="grid grid-cols-2 gap-3 max-w-md mx-auto">
         <FeatureCard
           href="/ask"
@@ -145,33 +145,31 @@ export default function Dashboard() {
           title={t("features.ask.title")}
           description={t("features.ask.description")}
           index={0}
-          featured
-          className="col-span-2"
           skipAnimation={skipAnimations}
         />
-        <FeatureCard
-          href="/paths"
-          icon={BookIcon}
-          title={t("features.study.title")}
-          description={t("features.study.description")}
-          index={1}
-          skipAnimation={skipAnimations}
-        />
-        {locale === "en" && (
-          <FeatureCard
-            href="/listen"
-            icon={MusicIcon}
-            title={t("features.music.title")}
-            description={t("features.music.description")}
-            index={2}
-            skipAnimation={skipAnimations}
-          />
-        )}
         <FeatureCard
           href="/explore"
           icon={ExploreIcon}
           title={t("features.explore.title")}
           description={t("features.explore.description")}
+          index={1}
+          skipAnimation={skipAnimations}
+        />
+        {locale === "en" && (
+          <FeatureCard
+            href="/channeling"
+            icon={ChannelingIcon}
+            title={t("features.channeling.title")}
+            description={t("features.channeling.description")}
+            index={2}
+            skipAnimation={skipAnimations}
+          />
+        )}
+        <FeatureCard
+          href="/paths"
+          icon={BookIcon}
+          title={t("features.study.title")}
+          description={t("features.study.description")}
           index={3}
           skipAnimation={skipAnimations}
         />
@@ -183,6 +181,16 @@ export default function Dashboard() {
           index={4}
           skipAnimation={skipAnimations}
         />
+        {locale === "en" && (
+          <FeatureCard
+            href="/listen"
+            icon={MusicIcon}
+            title={t("features.music.title")}
+            description={t("features.music.description")}
+            index={5}
+            skipAnimation={skipAnimations}
+          />
+        )}
       </div>
 
       {/* Footer Links */}

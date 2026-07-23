@@ -82,6 +82,10 @@
     "ask": {
       "title": "Demander",
       "description": "Poser une question sur le Matériau Ra"
+    },
+    "channeling": {
+      "title": "Channeling",
+      "description": "Browse Q'uo's teachings"
     }
   },
   "explorePage": {
