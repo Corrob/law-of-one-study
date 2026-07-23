@@ -23,5 +23,8 @@
       "step2": "Klicke auf \"Installieren\" in der erscheinenden Aufforderung.",
       "step3": "Die App öffnet sich in einem eigenen Fenster — hefte sie an deine Taskleiste oder dein Dock."
     }
-  }
+  },
+  "installButton": "App installieren",
+  "installedLabel": "App installiert",
+  "installHint": "Wenn keine Schaltfläche erscheint, unterstützt dein Browser die Ein-Klick-Installation möglicherweise nicht — folge den Schritten für deine Plattform unten."
 }
