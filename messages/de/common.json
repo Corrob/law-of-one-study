@@ -33,7 +33,8 @@
     "support": "Unterstützen",
     "install": "Installieren",
     "music": "Hören",
-    "ask": "Fragen"
+    "ask": "Fragen",
+    "channeling": "Channeling"
   },
   "header": {
     "appTitle": "Gesetz des Einen Studienbegleiter",
@@ -81,6 +82,10 @@
     "ask": {
       "title": "Fragen",
       "description": "Frag etwas über das Ra-Material"
+    },
+    "channeling": {
+      "title": "Channeling",
+      "description": "Browse Q'uo's teachings"
     }
   },
   "explorePage": {

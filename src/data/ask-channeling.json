@@ -3,6 +3,7 @@
   "themes": [
     {
       "id": "illness-and-the-body",
+      "title": "Illness & the Body",
       "aliases": [
         "illness",
         "ill",
@@ -26,6 +27,7 @@
     },
     {
       "id": "money-and-work",
+      "title": "Money & Work",
       "aliases": [
         "money",
         "work",
@@ -49,6 +51,7 @@
     },
     {
       "id": "anger-and-irritation",
+      "title": "Anger & Irritation",
       "aliases": [
         "anger",
         "angry",
@@ -70,6 +73,7 @@
     },
     {
       "id": "parenting-and-children",
+      "title": "Parenting & Children",
       "aliases": [
         "child",
         "children",
@@ -92,6 +96,7 @@
     },
     {
       "id": "forgiving-others",
+      "title": "Forgiving Others",
       "aliases": [
         "forgive others",
         "forgiving others",
@@ -113,6 +118,7 @@
     },
     {
       "id": "loneliness-and-connection",
+      "title": "Loneliness & Connection",
       "aliases": [
         "lonely",
         "loneliness",
@@ -134,6 +140,7 @@
     },
     {
       "id": "energy-centers",
+      "title": "The Energy Centers",
       "aliases": [
         "energy center",
         "energy centers",
@@ -155,6 +162,7 @@
     },
     {
       "id": "free-will-and-respecting-others",
+      "title": "Free Will & Respecting Others",
       "aliases": [
         "free will",
         "law of confusion",
@@ -175,6 +183,7 @@
     },
     {
       "id": "patience-and-surrender",
+      "title": "Patience & Surrender",
       "aliases": [
         "patience",
         "patient",
@@ -197,6 +206,7 @@
     },
     {
       "id": "the-confederation-sources",
+      "title": "Who Is Q'uo? The Confederation",
       "aliases": [
         "who are you",
         "where do you come from",
@@ -216,6 +226,7 @@
     },
     {
       "id": "aging-and-later-life",
+      "title": "Aging & Later Life",
       "aliases": [
         "aging",
         "getting older",
@@ -236,6 +247,7 @@
     },
     {
       "id": "change-and-uncertainty",
+      "title": "Change & Uncertainty",
       "aliases": [
         "change",
         "uncertain",
@@ -256,6 +268,7 @@
     },
     {
       "id": "wanderers-lived-experience",
+      "title": "Wanderers",
       "aliases": [
         "wanderer",
         "wanderers",
@@ -279,6 +292,7 @@
     },
     {
       "id": "fourth-density-transition-now",
+      "title": "The Fourth-Density Transition",
       "aliases": [
         "fourth density",
         "fourth-density",
@@ -302,6 +316,7 @@
     },
     {
       "id": "ethics-and-limits-of-service",
+      "title": "The Ethics & Limits of Service",
       "aliases": [
         "service",
         "service to others",
@@ -324,6 +339,7 @@
     },
     {
       "id": "acceptance-of-catalyst",
+      "title": "Accepting Catalyst",
       "aliases": [
         "acceptance",
         "accept what happens",
@@ -346,6 +362,7 @@
     },
     {
       "id": "meditation-and-silence",
+      "title": "Meditation & Silence",
       "aliases": [
         "silence",
         "meditation",
@@ -365,6 +382,7 @@
     },
     {
       "id": "the-open-heart",
+      "title": "The Open Heart",
       "aliases": [
         "open heart",
         "open my heart",
@@ -385,6 +403,7 @@
     },
     {
       "id": "love-before-wisdom",
+      "title": "Love Before Wisdom",
       "aliases": [
         "love and wisdom",
         "wisdom without love",
@@ -406,6 +425,7 @@
     },
     {
       "id": "angels-and-unseen-help",
+      "title": "Angels & Unseen Help",
       "aliases": [
         "angel",
         "angels",
@@ -422,6 +442,7 @@
     },
     {
       "id": "the-veil-and-not-knowing",
+      "title": "The Veil & Not-Knowing",
       "aliases": [
         "the veil",
         "veil of forgetting",
@@ -439,6 +460,7 @@
     },
     {
       "id": "illusion-as-beautiful-dream",
+      "title": "The Illusion as a Beautiful Dream",
       "aliases": [
         "is this a dream",
         "the illusion",
@@ -457,6 +479,7 @@
     },
     {
       "id": "will-and-desire",
+      "title": "Will & Desire",
       "aliases": [
         "willpower",
         "strengthen my will",
@@ -473,6 +496,7 @@
     },
     {
       "id": "self-forgiveness-and-shadow",
+      "title": "Self-Forgiveness & the Shadow",
       "aliases": [
         "forgiveness",
         "forgive",
@@ -497,6 +521,7 @@
     },
     {
       "id": "time-and-the-present",
+      "title": "Time & the Present",
       "aliases": [
         "not enough time",
         "running out of time",
@@ -515,6 +540,7 @@
     },
     {
       "id": "sacredness-of-daily-life",
+      "title": "The Sacredness of Daily Life",
       "aliases": [
         "ordinary life",
         "daily life",
@@ -535,6 +561,7 @@
     },
     {
       "id": "relationships-as-mirrors",
+      "title": "Relationships as Mirrors",
       "aliases": [
         "relationship",
         "relationships",
@@ -552,6 +579,7 @@
     },
     {
       "id": "unity-and-the-creator",
+      "title": "Unity & the One Creator",
       "aliases": [
         "unity",
         "all is one",
@@ -574,6 +602,7 @@
     },
     {
       "id": "the-choice-and-polarity",
+      "title": "The Choice & Polarity",
       "aliases": [
         "the choice",
         "polarity",
@@ -594,6 +623,7 @@
     },
     {
       "id": "death-and-afterlife",
+      "title": "Death & the Afterlife",
       "aliases": [
         "death",
         "dying",
@@ -616,6 +646,7 @@
     },
     {
       "id": "despair-and-the-dark-night",
+      "title": "Despair & the Dark Night",
       "aliases": [
         "despair",
         "hopeless",
@@ -639,6 +670,7 @@
     },
     {
       "id": "life-purpose-and-direction",
+      "title": "Life Purpose & Direction",
       "aliases": [
         "purpose",
         "life purpose",
@@ -660,6 +692,7 @@
     },
     {
       "id": "understanding-negativity",
+      "title": "Understanding Negativity",
       "aliases": [
         "negativity",
         "negative entities",
@@ -681,6 +714,7 @@
     },
     {
       "id": "grief-and-loss",
+      "title": "Grief & Loss",
       "aliases": [
         "grief",
         "grieving",
@@ -701,6 +735,7 @@
     },
     {
       "id": "anxiety-fear-and-peace",
+      "title": "Anxiety, Fear & Peace",
       "aliases": [
         "anxiety",
         "anxious",
@@ -725,6 +760,7 @@
     },
     {
       "id": "faith-and-doubt",
+      "title": "Faith & Doubt",
       "aliases": [
         "faith",
         "doubt",
@@ -744,6 +780,7 @@
     },
     {
       "id": "sacred-sexuality",
+      "title": "Sacred Sexuality",
       "aliases": [
         "sexuality",
         "sexual energy",
@@ -763,6 +800,7 @@
     },
     {
       "id": "prayer-and-healing",
+      "title": "Prayer & Healing",
       "aliases": [
         "prayer",
         "praying",
@@ -783,6 +821,7 @@
     },
     {
       "id": "dreams-and-dreamwork",
+      "title": "Dreams & Dreamwork",
       "aliases": [
         "dream",
         "dreams",
@@ -803,6 +842,7 @@
     },
     {
       "id": "guidance-and-higher-self",
+      "title": "Guidance & the Higher Self",
       "aliases": [
         "higher self",
         "inner guidance",
@@ -821,6 +861,7 @@
     },
     {
       "id": "discernment-of-channeling",
+      "title": "Discerning Channeled Material",
       "aliases": [
         "channeling",
         "channeled messages",
@@ -843,6 +884,7 @@
     },
     {
       "id": "animals-and-second-density",
+      "title": "Animals & Second Density",
       "aliases": [
         "animal",
         "animals",
@@ -866,6 +908,7 @@
     },
     {
       "id": "gratitude-as-tuning",
+      "title": "Gratitude as Tuning",
       "aliases": [
         "gratitude",
         "grateful",
@@ -883,6 +926,7 @@
     },
     {
       "id": "synchronicity-and-group-intention",
+      "title": "Synchronicity & Group Intention",
       "aliases": [
         "synchronicity",
         "coincidences",

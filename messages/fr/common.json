@@ -33,7 +33,8 @@
     "support": "Soutenir",
     "install": "Installer",
     "music": "Écouter",
-    "ask": "Demander"
+    "ask": "Demander",
+    "channeling": "Channeling"
   },
   "header": {
     "appTitle": "Compagnon d'Étude de la Loi Une",
@@ -81,6 +82,10 @@
     "ask": {
       "title": "Demander",
       "description": "Poser une question sur le Matériau Ra"
+    },
+    "channeling": {
+      "title": "Channeling",
+      "description": "Browse Q'uo's teachings"
     }
   },
   "explorePage": {

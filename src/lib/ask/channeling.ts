@@ -19,6 +19,9 @@ import {
 
 const ChannelingThemeSchema = z.object({
   id: z.string().min(1),
+  /** Optional human display title for the public browse page; falls back to a
+   * humanized id (see `channelingThemeTitle`). The Ask grounding never uses it. */
+  title: z.string().min(1).optional(),
   aliases: z.array(z.string().min(1)).min(1),
   summary: z.string().min(1),
   references: z.array(z.string().regex(CHANNELING_REFERENCE_ID_PATTERN)).min(1),
@@ -36,6 +39,25 @@ const THEMES: ChannelingTheme[] = ChannelingFileSchema.parse(channelingData).the
 /** All curated themes (for validation and tests). */
 export function getChannelingThemes(): readonly ChannelingTheme[] {
   return THEMES;
+}
+
+/** A curated theme by id, or null. */
+export function getChannelingTheme(id: string): ChannelingTheme | null {
+  return THEMES.find((t) => t.id === id) ?? null;
+}
+
+/**
+ * Human display title for a theme — the curated `title` when present, otherwise
+ * a humanized id ("the-open-heart" → "The Open Heart"). Small words stay
+ * lowercase except as the first word.
+ */
+export function channelingThemeTitle(theme: ChannelingTheme): string {
+  if (theme.title) return theme.title;
+  const small = new Set(["and", "the", "of", "in", "to", "a", "as", "for"]);
+  return theme.id
+    .split("-")
+    .map((w, i) => (i > 0 && small.has(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(" ");
 }
 
 // Compiled matcher: one alternation regex plus an alias→theme lookup, built

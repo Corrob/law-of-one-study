@@ -55,9 +55,11 @@ jest.mock("next-intl", () => ({
       "labels.language": "Language",
       "labels.theme": "Theme",
       "buttons.new": "New",
+      "nav.channeling": "Channeling",
     };
     return translations[key] || key;
   },
+  useLocale: () => "en",
 }));
 
 import Header from "../Header";
