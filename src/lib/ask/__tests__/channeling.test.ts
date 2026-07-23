@@ -2,7 +2,9 @@ import {
   identifyChannelingThemes,
   buildChannelingGrounding,
   getChannelingThemes,
+  getChannelingTheme,
   getChannelingThemeReferences,
+  channelingThemeTitle,
 } from "../channeling";
 import {
   getChannelingReference,
@@ -43,6 +45,33 @@ describe("channeling theme data integrity", () => {
   it("theme ids are unique", () => {
     const ids = getChannelingThemes().map((t) => t.id);
     expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("every theme resolves a non-empty display title", () => {
+    for (const theme of getChannelingThemes()) {
+      expect(channelingThemeTitle(theme).length).toBeGreaterThan(0);
+    }
+  });
+
+  it("every theme has at least one reference that resolves to a live URL + label", () => {
+    for (const theme of getChannelingThemes()) {
+      const resolved = theme.references.filter(
+        (r) => channelingCitationUrl(r) && channelingCitationLabel(r)
+      );
+      expect(resolved.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("getChannelingTheme returns a theme by id and null for unknown", () => {
+    const first = getChannelingThemes()[0];
+    expect(getChannelingTheme(first.id)?.id).toBe(first.id);
+    expect(getChannelingTheme("not-a-real-theme")).toBeNull();
+  });
+
+  it("channelingThemeTitle humanizes an id when no title is set", () => {
+    expect(
+      channelingThemeTitle({ id: "the-open-heart", aliases: ["x"], summary: "y", references: ["2000-0220"] })
+    ).toBe("The Open Heart");
   });
 
   it("no alias is shared across themes (last-wins would mis-route it)", () => {

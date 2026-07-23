@@ -457,3 +457,22 @@ export function AskIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function ChannelingIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {/* A dove in flight — the Confederation's gentle, freely-offered contact */}
+      <path d="M3 13c3.5 0 5.5-1.5 7-4 1 3 3 5 6 5 2.5 0 4-1.4 4-3.2 0-1-.6-1.8-1.6-1.8-.8 0-1.4.5-1.4 1.2" />
+      <path d="M10 9c-.6-2 .3-4 2.4-5" />
+      <path d="M3 13c1.6 3.4 4.7 5.5 8 5.5 1.4 0 2.6-.3 3.6-.8" />
+    </svg>
+  );
+}

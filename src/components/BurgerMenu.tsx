@@ -3,12 +3,13 @@
 import { useEffect, useCallback, useRef } from "react";
 import { usePathname, Link } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   CloseIcon,
   HomeIcon,
   AskIcon,
   ExploreIcon,
+  ChannelingIcon,
   BookIcon,
   MeditateIcon,
   InfoIcon,
@@ -33,6 +34,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/", labelKey: "home", icon: HomeIcon },
   { href: "/ask", labelKey: "ask", icon: AskIcon },
   { href: "/explore", labelKey: "explore", icon: ExploreIcon },
+  { href: "/channeling", labelKey: "channeling", icon: ChannelingIcon },
   { href: "/paths", labelKey: "study", icon: BookIcon },
   { href: "/meditate", labelKey: "meditate", icon: MeditateIcon },
 ];
@@ -46,6 +48,12 @@ const SECONDARY_ITEMS: NavItem[] = [
 export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
   const pathname = usePathname();
   const t = useTranslations();
+  const locale = useLocale();
+  // Conscious channeling is English-only (transcripts have no translations),
+  // so its nav entry appears only on the en locale.
+  const navItems = NAV_ITEMS.filter(
+    (item) => item.href !== "/channeling" || locale === "en"
+  );
 
   // Close on escape key
   const handleKeyDown = useCallback(
@@ -122,7 +130,7 @@ export default function BurgerMenu({ isOpen, onClose }: BurgerMenuProps) {
             {/* Navigation */}
             <nav className="p-4">
               <ul className="space-y-1" role="menu">
-                {NAV_ITEMS.map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = pathname === item.href ||
                     (item.href !== "/" && pathname.startsWith(item.href));

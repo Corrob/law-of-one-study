@@ -18,15 +18,17 @@ export default getRequestConfig(async ({ requestLocale }) => {
   }
 
   // Load all message files and merge them
-  const [common, about, donate, installApp, pwaPrompt, music, ask] = await Promise.all([
-    import(`../../messages/${locale}/common.json`),
-    import(`../../messages/${locale}/about.json`),
-    import(`../../messages/${locale}/donate.json`),
-    import(`../../messages/${locale}/install-app.json`),
-    import(`../../messages/${locale}/pwa-prompt.json`),
-    import(`../../messages/${locale}/music.json`),
-    import(`../../messages/${locale}/ask.json`),
-  ]);
+  const [common, about, donate, installApp, pwaPrompt, music, ask, channeling] =
+    await Promise.all([
+      import(`../../messages/${locale}/common.json`),
+      import(`../../messages/${locale}/about.json`),
+      import(`../../messages/${locale}/donate.json`),
+      import(`../../messages/${locale}/install-app.json`),
+      import(`../../messages/${locale}/pwa-prompt.json`),
+      import(`../../messages/${locale}/music.json`),
+      import(`../../messages/${locale}/ask.json`),
+      import(`../../messages/${locale}/channeling.json`),
+    ]);
 
   return {
     locale,
@@ -38,6 +40,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
       pwaPrompt: pwaPrompt.default,
       music: music.default,
       ask: ask.default,
+      channeling: channeling.default,
     },
   };
 });

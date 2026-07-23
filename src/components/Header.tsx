@@ -17,6 +17,7 @@ interface HeaderProps {
 const PAGE_TITLE_KEYS: Record<string, string> = {
   "/ask": "ask",
   "/explore": "explore",
+  "/channeling": "channeling",
   "/paths": "study",
   "/meditate": "meditate",
   "/listen": "music",
@@ -40,7 +41,8 @@ export default function Header({
 
   // Get page title for non-dashboard pages
   const pageTitleKey = PAGE_TITLE_KEYS[pathname] ||
-    (pathname.startsWith("/paths/") ? "study" : "");
+    (pathname.startsWith("/paths/") ? "study" :
+     pathname.startsWith("/channeling/") ? "channeling" : "");
   const pageTitle = pageTitleKey ? t(`nav.${pageTitleKey}`) : "";
 
   return (
