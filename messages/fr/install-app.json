@@ -23,5 +23,8 @@
       "step2": "Cliquez sur \"Installer\" dans l'invite qui apparaît.",
       "step3": "L'app s'ouvrira dans sa propre fenêtre — épinglez-la à votre barre des tâches ou dock."
     }
-  }
+  },
+  "installButton": "Installer l'app",
+  "installedLabel": "App installée",
+  "installHint": "Si aucun bouton n'apparaît, votre navigateur ne prend peut-être pas en charge l'installation en un clic ; suivez les étapes de votre plateforme ci-dessous."
 }

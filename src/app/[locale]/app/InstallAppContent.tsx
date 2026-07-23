@@ -1,11 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import NavigationWrapper from "@/components/NavigationWrapper";
 import MotionFadeIn from "@/components/MotionFadeIn";
 import { MotionStaggerGroup, MotionStaggerItem } from "@/components/MotionStaggerGroup";
 import { useTranslations } from "next-intl";
 import { DownloadIcon } from "@/components/icons";
+
+/** Chromium's install-prompt event (not in the standard DOM lib types). */
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
+/** Shared with PwaInstallPrompt so a native install here also silences the prompt. */
+const INSTALLED_KEY = "lo1-pwa-installed";
 
 type Platform = "ios" | "android" | "desktop";
 
@@ -54,6 +63,22 @@ function DesktopIcon({ className }: { className?: string }) {
     >
       <rect x="2" y="3" width="20" height="14" rx="2" />
       <path strokeLinecap="round" d="M8 21h8M12 17v4" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 6 9 17l-5-5" />
     </svg>
   );
 }
@@ -150,9 +175,61 @@ export default function InstallAppContent() {
   const t = useTranslations("installApp");
   const [detectedPlatform, setDetectedPlatform] =
     useState<Platform>("desktop");
+  const [canInstall, setCanInstall] = useState(false);
+  const [installed, setInstalled] = useState(false);
+  const promptRef = useRef<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     setDetectedPlatform(detectPlatform());
+  }, []);
+
+  // Capture the browser's deferred install prompt (Chromium: Android + desktop
+  // Chrome/Edge). Not fired by iOS Safari or browsers without PWA install, so
+  // the one-tap button simply won't appear there — the step cards below cover
+  // those platforms.
+  useEffect(() => {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setInstalled(true);
+      return;
+    }
+    const onBeforeInstall = (e: Event) => {
+      e.preventDefault();
+      promptRef.current = e as BeforeInstallPromptEvent;
+      setCanInstall(true);
+    };
+    const onInstalled = () => {
+      try {
+        localStorage.setItem(INSTALLED_KEY, "true");
+      } catch {
+        /* best effort */
+      }
+      promptRef.current = null;
+      setCanInstall(false);
+      setInstalled(true);
+    };
+    window.addEventListener("beforeinstallprompt", onBeforeInstall);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onBeforeInstall);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
+  }, []);
+
+  const handleInstall = useCallback(async () => {
+    const prompt = promptRef.current;
+    if (!prompt) return;
+    await prompt.prompt();
+    const { outcome } = await prompt.userChoice;
+    if (outcome === "accepted") {
+      try {
+        localStorage.setItem(INSTALLED_KEY, "true");
+      } catch {
+        /* best effort */
+      }
+      setInstalled(true);
+    }
+    promptRef.current = null;
+    setCanInstall(false);
   }, []);
 
   const allPlatforms: Platform[] = ["ios", "android", "desktop"];
@@ -176,6 +253,29 @@ export default function InstallAppContent() {
               <p className="text-[var(--lo1-stardust)] text-lg max-w-xl mx-auto">
                 {t("subtitle")}
               </p>
+
+              {/* Direct install — only where the browser supports it. */}
+              <div className="mt-6 flex justify-center">
+                {installed ? (
+                  <span className="inline-flex items-center gap-2 rounded-full border border-[var(--lo1-gold)]/40 bg-[var(--lo1-gold)]/10 px-4 py-2 text-sm text-[var(--lo1-gold)]">
+                    <CheckIcon className="w-4 h-4" />
+                    {t("installedLabel")}
+                  </span>
+                ) : canInstall ? (
+                  <button
+                    type="button"
+                    onClick={handleInstall}
+                    className="inline-flex items-center gap-2 rounded-full bg-[var(--lo1-gold)] px-6 py-2.5 text-sm font-medium text-[var(--lo1-indigo)] shadow-[0_0_30px_rgba(212,168,83,0.25)] transition-colors hover:bg-[var(--lo1-gold)]/85 cursor-pointer"
+                  >
+                    <DownloadIcon className="w-4 h-4" />
+                    {t("installButton")}
+                  </button>
+                ) : (
+                  <p className="max-w-md text-xs text-[var(--lo1-stardust)]/50">
+                    {t("installHint")}
+                  </p>
+                )}
+              </div>
             </MotionFadeIn>
 
             {/* Detected Platform */}

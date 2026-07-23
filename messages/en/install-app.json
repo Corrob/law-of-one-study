@@ -23,5 +23,8 @@
       "step2": "Click \"Install\" in the prompt that appears.",
       "step3": "The app will open in its own window — pin it to your taskbar or dock."
     }
-  }
+  },
+  "installButton": "Install app",
+  "installedLabel": "App installed",
+  "installHint": "If no button appears, your browser may not support one-tap install — follow your platform's steps below."
 }
