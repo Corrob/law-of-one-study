@@ -68,9 +68,12 @@ export default async function ChannelingThemePage({ params }: ThemePageProps) {
               >
                 ← {t("back")}
               </Link>
-              <h1 className="text-3xl md:text-4xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-starlight)] mb-4 text-balance">
+              <h1 className="text-3xl md:text-4xl font-[family-name:var(--font-cormorant)] text-[var(--lo1-starlight)] mb-3 text-balance">
                 {channelingThemeTitle(theme)}
               </h1>
+              <p className="mb-6 rounded-xl border border-[var(--lo1-celestial)]/25 bg-[var(--lo1-indigo)]/30 px-4 py-3 text-sm italic leading-relaxed text-[var(--lo1-stardust)]/80">
+                {t("themeDisclaimer")}
+              </p>
             </MotionFadeIn>
 
             <div className="space-y-4">
@@ -112,10 +115,6 @@ export default async function ChannelingThemePage({ params }: ThemePageProps) {
                 </ul>
               </section>
             )}
-
-            <p className="mt-10 text-xs italic leading-relaxed text-[var(--lo1-stardust)]/60">
-              {t("disclaimer")}
-            </p>
           </article>
         </div>
       </main>
