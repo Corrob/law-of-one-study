@@ -122,16 +122,17 @@ export function buildChannelingGrounding(themes: ChannelingTheme[]): string {
   if (themes.length === 0) return "";
   const lines: string[] = [
     "CONFEDERATION CHANNELING TOPICS (from L/L Research's later CONSCIOUS channeling — our summaries):",
-    "Attribute these by source name (\"Q'uo suggests…\") and cite them ONLY with {{QCITE:id}} markers using ids from this list — never {{CITE:...}}, and never blend them with Ra's voice.",
+    "Attribute these by source name (\"Q'uo suggests…\") and cite them ONLY with {{QCITE:id}} markers using ids from the QCITE lines below — never {{CITE:...}}, and never blend them with Ra's voice. Each topic lists its citable sessions on their own lines; where a note is given it describes that session's distinct angle, so cite the one(s) that best fit the seeker's question.",
   ];
   for (const theme of themes) {
-    const refs = theme.references
-      .map((id) => {
-        const known = getChannelingReference(id);
-        return known ? `${id} (${known.source})` : id;
-      })
-      .join(", ");
-    lines.push(`- ${theme.summary} [QCITE refs: ${refs}]`);
+    lines.push(`- ${theme.summary}`);
+    // Each citable session on its own line so in-note punctuation can never be
+    // confused with a delimiter between references.
+    for (const id of theme.references) {
+      const known = getChannelingReference(id);
+      const base = known ? `${id} (${known.source})` : id;
+      lines.push(`    QCITE ${known?.note ? `${base} — ${known.note}` : base}`);
+    }
   }
   return lines.join("\n");
 }

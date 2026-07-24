@@ -21,6 +21,13 @@ const ChannelingReferenceSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   /** Path on llresearch.org, e.g. "/channeling/2000/0220". */
   path: z.string().regex(/^\/channeling\/\d{4}\/\d{4}(?:_\d{2})?$/),
+  /**
+   * Optional short, our-words note on this session's distinctive angle. When a
+   * theme cites several references, the grounding surfaces these so the model
+   * can cite the session that best fits the seeker's question rather than
+   * picking among interchangeable-looking ids. Never transcript text.
+   */
+  note: z.string().min(1).optional(),
 });
 
 const ChannelingReferencesFileSchema = z.object({

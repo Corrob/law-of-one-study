@@ -159,6 +159,27 @@ describe("buildChannelingGrounding", () => {
     expect(block).toContain("2011-0212 (Q'uo)");
     expect(block).toContain("never left the vibration of the Creator");
   });
+
+  it("surfaces per-reference notes so the model can choose the best-fitting citation", () => {
+    const themes = identifyChannelingThemes("tell me about angels");
+    const block = buildChannelingGrounding(themes);
+    // 2006-0401 carries a distinguishing note, rendered after its id + source.
+    expect(block).toContain(
+      "2006-0401 (Q'uo) — unseen help cannot intrude on free will"
+    );
+    // The instruction tells the model to pick the reference that best fits.
+    expect(block).toContain("cite the one(s) that best fit");
+  });
+
+  it("renders each citable session on its own QCITE line, unknown ids as bare id", () => {
+    const block = buildChannelingGrounding([
+      { id: "x", aliases: ["x"], summary: "S", references: ["2011-0212", "9999-9999"] },
+    ]);
+    // Known ref: id + source (a note may follow); unknown ref: bare id, no source.
+    expect(block).toContain("    QCITE 2011-0212 (Q'uo)");
+    expect(block).toContain("    QCITE 9999-9999");
+    expect(block).not.toContain("9999-9999 (");
+  });
 });
 
 describe("buildGrounding source modes", () => {
